@@ -1,13 +1,184 @@
 {
   "schemaVersion": 1,
-  "description": "Planned shared assets. A null file means that no asset has been imported.",
+  "description": "Seven imported SVG POC emblems. File paths are repository-root-relative. PNGs can be exported with the included tool; they are not committed. No final character illustrations or audio files are implied.",
   "assets": [
-    { "id": "ugallu", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
-    { "id": "girtablilu", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
-    { "id": "pazuzu", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
-    { "id": "warder", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
-    { "id": "censer", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
-    { "id": "harrier", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
-    { "id": "foundry-mechanism", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null }
-  ]
+    {
+      "id": "ugallu",
+      "category": "token",
+      "plannedFor": [
+        "poc-001-linked-formation"
+      ],
+      "status": "available-prototype-emblem",
+      "file": "assets/tokens/ugallu.svg",
+      "creator": "Lorc",
+      "source": "https://game-icons.net/1x1/lorc/lion.html",
+      "license": "CC-BY-3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "width": 256,
+      "height": 256,
+      "changes": "Removed black background; preserved original foreground path; added attribution metadata and explicit SVG dimensions.",
+      "usageNote": "Symbolic POC emblem, not final or historically authenticated character art. White foreground supports runtime tinting.",
+      "sha256": "edee7187ec8e2ed842e788488b8ff1b89745c26c36512dc08ed7aae4f74c1d83",
+      "pngExport": {
+        "width": 256,
+        "height": 256,
+        "tool": "tools/export-token-pngs.py",
+        "committed": false
+      },
+      "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/3e93b78aec99f419ce8a701f16c77adc303eb46e"
+    },
+    {
+      "id": "girtablilu",
+      "category": "token",
+      "plannedFor": [
+        "poc-001-linked-formation"
+      ],
+      "status": "available-prototype-emblem",
+      "file": "assets/tokens/girtablilu.svg",
+      "creator": "Lorc",
+      "source": "https://game-icons.net/1x1/lorc/scorpion.html",
+      "license": "CC-BY-3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "width": 256,
+      "height": 256,
+      "changes": "Removed black background; preserved original foreground path; added attribution metadata and explicit SVG dimensions.",
+      "usageNote": "Symbolic POC emblem, not final or historically authenticated character art. White foreground supports runtime tinting.",
+      "sha256": "5ff6a400a07d3496003638a5ceac0b6e5bf49f651ef9ae27bb11d50783d05df1",
+      "pngExport": {
+        "width": 256,
+        "height": 256,
+        "tool": "tools/export-token-pngs.py",
+        "committed": false
+      },
+      "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/92998bdf3a83141586edbd3fe6e72d54f222f092"
+    },
+    {
+      "id": "pazuzu",
+      "category": "token",
+      "plannedFor": [
+        "poc-001-linked-formation"
+      ],
+      "status": "available-prototype-emblem",
+      "file": "assets/tokens/pazuzu.svg",
+      "creator": "Lorc",
+      "source": "https://game-icons.net/1x1/lorc/daemon-skull.html",
+      "license": "CC-BY-3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "width": 256,
+      "height": 256,
+      "changes": "Removed black background; preserved original foreground path; added attribution metadata and explicit SVG dimensions.",
+      "usageNote": "Symbolic POC emblem, not final or historically authenticated character art. White foreground supports runtime tinting.",
+      "sha256": "487ecddfbcbd315f5b60395c985bf53537ae34b23250a7dcd717978297419d77",
+      "pngExport": {
+        "width": 256,
+        "height": 256,
+        "tool": "tools/export-token-pngs.py",
+        "committed": false
+      },
+      "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/4eacf1119f93b7db98b3eeb3908f13900456a8b3"
+    },
+    {
+      "id": "warder",
+      "category": "token",
+      "plannedFor": [
+        "poc-001-linked-formation"
+      ],
+      "status": "available-prototype-emblem",
+      "file": "assets/tokens/warder.svg",
+      "creator": "Lorc",
+      "source": "https://game-icons.net/1x1/lorc/portculis.html",
+      "license": "CC-BY-3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "width": 256,
+      "height": 256,
+      "changes": "Removed black background; preserved original foreground path; added attribution metadata and explicit SVG dimensions.",
+      "usageNote": "Symbolic POC emblem, not final or historically authenticated character art. White foreground supports runtime tinting.",
+      "sha256": "9ceddb4b1c1cb0ac15e70e37f069d69b0e1224b6b1c97e13b08930cbb7d48336",
+      "pngExport": {
+        "width": 256,
+        "height": 256,
+        "tool": "tools/export-token-pngs.py",
+        "committed": false
+      },
+      "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/36bd6d3c99c40c22c3ab949a895b309471b9624f"
+    },
+    {
+      "id": "censer",
+      "category": "token",
+      "plannedFor": [
+        "poc-001-linked-formation"
+      ],
+      "status": "available-prototype-emblem",
+      "file": "assets/tokens/censer.svg",
+      "creator": "Lorc",
+      "source": "https://game-icons.net/1x1/lorc/incense.html",
+      "license": "CC-BY-3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "width": 256,
+      "height": 256,
+      "changes": "Removed black background; preserved original foreground path; added attribution metadata and explicit SVG dimensions.",
+      "usageNote": "Symbolic POC emblem, not final or historically authenticated character art. White foreground supports runtime tinting.",
+      "sha256": "459f8c8aa923ab90c82a0aee445d8987ccfbe59294436297c3e44cdaf8ae5063",
+      "pngExport": {
+        "width": 256,
+        "height": 256,
+        "tool": "tools/export-token-pngs.py",
+        "committed": false
+      },
+      "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/93497f033ffbaa0dbf9446ddf5a13ff93cd969d2"
+    },
+    {
+      "id": "harrier",
+      "category": "token",
+      "plannedFor": [
+        "poc-001-linked-formation"
+      ],
+      "status": "available-prototype-emblem",
+      "file": "assets/tokens/harrier.svg",
+      "creator": "Lorc",
+      "source": "https://game-icons.net/1x1/lorc/winged-sword.html",
+      "license": "CC-BY-3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "width": 256,
+      "height": 256,
+      "changes": "Removed black background; preserved original foreground path; added attribution metadata and explicit SVG dimensions.",
+      "usageNote": "Symbolic POC emblem, not final or historically authenticated character art. White foreground supports runtime tinting.",
+      "sha256": "d81c132c5db6379f653627b4640366b566449532536c5bc969505a99cae8cc79",
+      "pngExport": {
+        "width": 256,
+        "height": 256,
+        "tool": "tools/export-token-pngs.py",
+        "committed": false
+      },
+      "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/346c44f876d7c14de633189167c2daaaf1de9293"
+    },
+    {
+      "id": "foundry-mechanism",
+      "category": "token",
+      "plannedFor": [
+        "poc-001-linked-formation"
+      ],
+      "status": "available-prototype-emblem",
+      "file": "assets/tokens/foundry-mechanism.svg",
+      "creator": "Lorc",
+      "source": "https://game-icons.net/1x1/lorc/cog.html",
+      "license": "CC-BY-3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "width": 512,
+      "height": 512,
+      "changes": "Removed black background; preserved original foreground path; added attribution metadata and explicit SVG dimensions.",
+      "usageNote": "Symbolic POC emblem, not final or historically authenticated character art. White foreground supports runtime tinting.",
+      "sha256": "e4d0ad456b539ced761e31126b8f6c04be6c79153bd9d699efd5b873969b7651",
+      "pngExport": {
+        "width": 512,
+        "height": 512,
+        "tool": "tools/export-token-pngs.py",
+        "committed": false
+      },
+      "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/41d2afa778d8fcd39a2b7d0d887ce58105ac8f7b"
+    }
+  ],
+  "retrievedOn": "2026-10-02",
+  "licenseNotice": "assets/licenses/game-icons-license.txt",
+  "attribution": "assets/CREDITS.md"
 }
