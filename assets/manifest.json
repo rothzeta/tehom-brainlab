@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "description": "Planned shared assets. A null file means that no asset has been imported.",
+  "assets": [
+    { "id": "ugallu", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
+    { "id": "girtablilu", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
+    { "id": "pazuzu", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
+    { "id": "warder", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
+    { "id": "censer", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
+    { "id": "harrier", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null },
+    { "id": "foundry-mechanism", "category": "token", "plannedFor": ["poc-001-linked-formation"], "status": "planned", "file": null, "creator": null, "source": null, "license": null }
+  ]
+}

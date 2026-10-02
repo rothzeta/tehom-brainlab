@@ -1,0 +1,28 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# JavaScript / TypeScript
+node_modules/
+dist/
+coverage/
+.vite/
+*.tsbuildinfo
+
+# Potential .NET / Godot experiments
+bin/
+obj/
+.godot/
+.mono/
+
+# Local editor state
+.idea/
+.vs/
+
+# Commit per-prototype dependency lockfiles; do not ignore them.
