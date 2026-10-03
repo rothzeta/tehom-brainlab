@@ -1,0 +1,142 @@
+[
+  {
+    "kind": "claude",
+    "tested_revision": "7a329126bc8b4730e50634f383059962cd360103",
+    "checks": [
+      {
+        "check": "entry point from foreign cwd",
+        "passed": true,
+        "exit": 0,
+        "stdout": "/tmp/brainlab-orch-claude\n",
+        "stderr": ""
+      },
+      {
+        "check": "just recipe",
+        "passed": true,
+        "exit": 0,
+        "stdout": "/tmp/brainlab-orch-claude\n",
+        "stderr": ""
+      },
+      {
+        "check": "single argument rejected",
+        "passed": true,
+        "exit": 2,
+        "stdout": "",
+        "stderr": "usage: repo-root (takes no arguments)\n"
+      },
+      {
+        "check": "multiple arguments rejected",
+        "passed": true,
+        "exit": 2,
+        "stdout": "",
+        "stderr": "usage: repo-root (takes no arguments)\n"
+      },
+      {
+        "check": "spaced checkout from foreign cwd",
+        "passed": true,
+        "exit": 0,
+        "stdout": "/tmp/brainlab root acceptance 8j_ldbht/checkout with spaces\n",
+        "stderr": ""
+      },
+      {
+        "check": "just in spaced checkout",
+        "passed": true,
+        "exit": 0,
+        "stdout": "/tmp/brainlab root acceptance 8j_ldbht/checkout with spaces\n",
+        "stderr": ""
+      },
+      {
+        "check": "spaced checkout rejects argument",
+        "passed": true,
+        "exit": 2,
+        "stdout": "",
+        "stderr": "usage: repo-root (takes no arguments)\n"
+      },
+      {
+        "check": "worker black-box suite",
+        "passed": true,
+        "exit": 0,
+        "stdout": "",
+        "stderr": "test_checkout_path_with_spaces (test_repo_root.RepoRootTest.test_checkout_path_with_spaces) ... ok\ntest_entry_points_are_executable (test_repo_root.RepoRootTest.test_entry_points_are_executable) ... ok\ntest_extra_arguments_fail_with_usage (test_repo_root.RepoRootTest.test_extra_arguments_fail_with_usage) ... ok\ntest_just_recipe (test_repo_root.RepoRootTest.test_just_recipe) ... ok\ntest_prints_this_checkout_root_from_unrelated_cwds (test_repo_root.RepoRootTest.test_prints_this_checkout_root_from_unrelated_cwds) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.084s\n\nOK\n"
+      },
+      {
+        "check": "committed whitespace",
+        "passed": true,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "passed": true
+  },
+  {
+    "kind": "codex",
+    "tested_revision": "976d7e20739b0927ca3a42f12e56e95b343ff1f1",
+    "checks": [
+      {
+        "check": "entry point from foreign cwd",
+        "passed": true,
+        "exit": 0,
+        "stdout": "/tmp/brainlab-orch-codex\n",
+        "stderr": ""
+      },
+      {
+        "check": "just recipe",
+        "passed": true,
+        "exit": 0,
+        "stdout": "/tmp/brainlab-orch-codex\n",
+        "stderr": ""
+      },
+      {
+        "check": "single argument rejected",
+        "passed": true,
+        "exit": 2,
+        "stdout": "",
+        "stderr": "Usage: repo-root\n"
+      },
+      {
+        "check": "multiple arguments rejected",
+        "passed": true,
+        "exit": 2,
+        "stdout": "",
+        "stderr": "Usage: repo-root\n"
+      },
+      {
+        "check": "spaced checkout from foreign cwd",
+        "passed": true,
+        "exit": 0,
+        "stdout": "/tmp/brainlab root acceptance 81ei_llg/checkout with spaces\n",
+        "stderr": ""
+      },
+      {
+        "check": "just in spaced checkout",
+        "passed": true,
+        "exit": 0,
+        "stdout": "/tmp/brainlab root acceptance 81ei_llg/checkout with spaces\n",
+        "stderr": ""
+      },
+      {
+        "check": "spaced checkout rejects argument",
+        "passed": true,
+        "exit": 2,
+        "stdout": "",
+        "stderr": "Usage: repo-root\n"
+      },
+      {
+        "check": "worker black-box suite",
+        "passed": true,
+        "exit": 0,
+        "stdout": "",
+        "stderr": "test_absolute_invocation_from_unrelated_cwd (test_repo_root.RepoRootAcceptance.test_absolute_invocation_from_unrelated_cwd) ... ok\ntest_checkout_path_with_spaces_from_unrelated_cwd (test_repo_root.RepoRootAcceptance.test_checkout_path_with_spaces_from_unrelated_cwd) ... ok\ntest_entry_point_delegates_to_implementation (test_repo_root.RepoRootAcceptance.test_entry_point_delegates_to_implementation) ... ok\ntest_extra_arguments_are_rejected (test_repo_root.RepoRootAcceptance.test_extra_arguments_are_rejected) ... ok\ntest_just_delegates_to_entry_point (test_repo_root.RepoRootAcceptance.test_just_delegates_to_entry_point) ... ok\ntest_just_discovers_recipe_from_nested_checkout_directory (test_repo_root.RepoRootAcceptance.test_just_discovers_recipe_from_nested_checkout_directory) ... ok\ntest_spaced_checkout_rejects_arguments (test_repo_root.RepoRootAcceptance.test_spaced_checkout_rejects_arguments) ... ok\ntest_zero_arguments_in_this_checkout (test_repo_root.RepoRootAcceptance.test_zero_arguments_in_this_checkout) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.143s\n\nOK\n"
+      },
+      {
+        "check": "committed whitespace",
+        "passed": true,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "passed": true
+  }
+]

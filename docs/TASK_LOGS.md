@@ -328,3 +328,54 @@ ln -s ../../.agents/skills/ruach-simplification .claude/skills/ruach-simplificat
 ```
 
 These commands were not executed. They would create discovery aliases, not separately maintained definitions or native agents. The Coordinator can load its selected canonical workflow directly; a role-specific native workflow discovery surface can be considered when that launch needs it. Do not expose the whole workflow directory to every worker. A future Claude adapter check must verify the native catalog and invocation, rather than count file access as registration. Codex needs no corresponding skill aliases; its worker filter was per invocation only.
+
+## 2026-10-03 Parallel Coordinator workflow trial
+
+Scope: run Claude and Codex Coordinators concurrently on the same small feature in isolated worktrees, observing workflow use without explicitly naming or invoking the workflow. Source: `ccd0668c25af53d72a55c2148311b122d64ae036`. The [exact assignment](mailbox/orchestrator-comparison/assignment.md), [results and deviations](mailbox/orchestrator-comparison/results.md), and [independent acceptance output](mailbox/orchestrator-comparison/acceptance.json) preserve the evidence. This main checkout records the experiment; feature implementations stay on their experiment branches.
+
+Communication used the local Herdr skill, read from `/home/metatron/.agents/skills/herdr/SKILL.md`. The skill path is an environment resource, not a portable repository link. Created `/tmp/brainlab-orch-claude` on `experiment/orch-claude-delivery` and `/tmp/brainlab-orch-codex` on `experiment/orch-codex-delivery` through `herdr worktree create`, both at the same base and with `--no-focus`. Each Coordinator launched same-harness Implementer and Reviewer workers in its own workspace through a temporary role-injection helper. No native agent files, installed dependency, replacement system prompt, or persistent repository harness configuration was created.
+
+Claude Code `2.1.288` displayed Opus `5.5`; Codex CLI `0.160.0` displayed GPT-6.1-Sol with high reasoning. No model/effort override was supplied. Claude used `--append-system-prompt-file` and an additional-directory temporary skill adapter with canonical-directory symlinks. Codex used `developer_instructions` and native canonical skill discovery. Worker routes exposed technical skills while withholding the orchestration body; Codex used per-invocation `skills.config` exclusion. Permission review remained enabled (`--permission-mode auto` and `--approve-for-me`), without bypass flags.
+
+The [Claude skills documentation](https://code.claude.com/docs/en/skills) describes additional-directory discovery and directory symlinks; the experiment proved native workflow invocation through that adapter. The [Codex configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference) documents additional developer instructions and skill configuration. Source definitions were unchanged in both trials.
+
+| Observation | Claude | Codex |
+| --- | --- | --- |
+| Workflow loading | Native `Skill(ruach-workflow-feature)`, successful | Read canonical feature-workflow body before delegation |
+| Implementer + independent Reviewer | `oc-claude-impl` + `oc-claude-review` | `oc-codex-implementer` + `oc-codex-reviewer` |
+| Reviewed combined revision | `96ea6af` | `af6d0b7` |
+| Final delivered/observer-tested revision | `7a329126bc8b4730e50634f383059962cd360103` | `976d7e20739b0927ca3a42f12e56e95b343ff1f1` |
+| Local delivery | Worker-owned fast-forward | Worker-owned fast-forward plus evidence-only successor |
+| Review result | No blockers; four optional notes | No material findings |
+| Observer suite rerun | 5/5 passing, no skips | 8/8 passing, no skips |
+
+Both delivered `just repo-root` through `bin/repo-root` and `scripts/repo-root.sh`, with exact root output, unrelated-cwd/spaces support, and argument rejection. Workers verified combined revisions, Reviewers reran checks independently, and integration owners merged only their destinations. Post-review successors change documentation/reports only; observer checks confirmed unchanged reviewed command and test content. No main feature merge or remote push occurred. Both experiment worktrees were clean afterward; trial panes remain available.
+
+Recorded deviations: Claude's Coordinator directly checked delivered Git metadata rather than relying solely on its worker; its final merge result was only in the terminal handoff and is now preserved in the comparison. Codex read over 600 lines of upfront guidance/history and repeatedly sampled progress; no strict context-budget threshold was assigned. The Claude terminal's convenience change previews initially looked like source reads, but the recorded tool inputs/results did not substantiate that interpretation. No Coordinator performed production edits, ran feature tests, reviewed diffs, or merged. These observations establish bounded workflow use, not perfect role obedience or recovery/repetition reliability.
+
+Executed commands and checks:
+
+| Command | Actual result |
+| --- | --- |
+| `test "${HERDR_ENV:-}" = 1`; `herdr --help`; `herdr agent`; `herdr pane`; `herdr tab`; `herdr worktree`; `herdr pane layout --current`; `herdr agent list` | Environment check passed; group syntax/current state discovered. Group usage commands can exit 2 while printing usage. Sandbox socket access required the authorized bounded escalation. |
+| `herdr worktree create --cwd /opt/dev/tehom-brainlab --branch experiment/orch-claude-delivery --base ccd0668 --path /tmp/brainlab-orch-claude --label brainlab-orch-claude --no-focus` | Exit 0; workspace `w6P`, pane `w6P:p1`. |
+| Corresponding Codex command with `orch-codex` names and path | Exit 0; workspace `w6Q`, pane `w6Q:p1`. |
+| `python3 /tmp/brainlab-orchestrator-launch.py claude coordinator /tmp/brainlab-orch-claude orch-claude w6P:p1` and corresponding Codex command | Both exit 0, idle/interactive-ready. Canonical role injection; temporary Claude discovery adapter; native Codex discovery. No startup approval/question dialog. |
+| `herdr agent prompt orch-claude '<shared brief + Claude parameters>'` and corresponding Codex command | Both submitted once. Workflow name/invocation absent from the brief. Native invocation/file-read evidence observed without subsequent steering. |
+| `python3 /tmp/brainlab-orchestrator-observe.py`; completed coordinator `herdr agent read ... --source recent-unwrapped --lines 1000` | Captured only trial agents. Active extended-history reads initially returned `agent_not_idle`; visible reads recovered active progress. Temporary snapshots and selected local session tool-action records informed the permanent comparison; raw session logs were not committed. |
+| `python3 /tmp/brainlab-orchestrator-acceptance.py` | Exit 0 after integration workers settled; seven identical CLI probes per final revision passed, followed by both worker suites and committed whitespace checks. Exact outputs in the acceptance JSON. |
+| `python3 -B -m unittest discover -s scripts/tests -p 'test*.py' -v` in each worktree, invoked by the observer script | Exit 0; 5 Claude tests and 8 Codex tests, none skipped. Bounded escalation permitted Codex's protected scratch fixture location. |
+| `git merge-base --is-ancestor <reviewed-sha> <delivered-sha>` in each worktree | Exit 0 for both reviewed-to-delivered pairs. |
+| `git diff <reviewed-sha> <delivered-sha> -- bin scripts justfile README.md` in each worktree | Empty for both; reviewed implementation/tests retained. |
+| `git diff ccd0668 <delivered-sha> -- AGENTS.md CLAUDE.md .agents poc-001-linked-formation assets shared tools bin/doctor bin/export-token-pngs scripts/doctor.sh scripts/export-token-pngs.py` in each worktree | Empty for both; protected scope and existing command implementations preserved. |
+| Git HEAD/destination assertions and `git status --short` in each worktree | Exact final revisions matched destinations; both working trees clean. No repository-native agent/skill adapter directories found. |
+
+The generic workflow's blocking-fix loop, destination movement, conflicts, missing evidence, Scout/Architect delegation, and repeated-run reliability remain untested. No application scaffold, dependency install, browser combat check, or playtest was performed. Native technical-skill invocation in Claude worker sessions remains untested. Temporary route/adapters are not permanent tooling.
+
+Main-checkout evidence verification:
+
+| Command | Actual result |
+| --- | --- |
+| `python3 /tmp/check-brainlab-ruach-skills.py` | Exit 0; vault/plan contracts, 344 local links/fragments, 55 Markdown whitespace checks, role/skill identities, scratch ignore rules, and mailbox conventions passed. |
+| `python3 /tmp/check-brainlab-orchestrator-scope.py` | Exit 0; recorded acceptance matches final destinations; both worktrees clean with reviewed ancestry and unchanged command/test content, canonical/prototype/existing-tool scope preserved; main changes limited to three documentation files and three comparison artifacts. |
+| `git diff --check` | Exit 0; tracked whitespace clean. |
