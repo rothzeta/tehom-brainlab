@@ -219,3 +219,62 @@ Moved the mailbox README from `.agents/mailbox/` to `docs/mailbox/`. Updated all
 | `claude --version` | Exit 0; installed Claude Code reports `2.1.288`. |
 
 Reviewed the final changed file set and content. Protected mailbox movement and agent-resource edits used the approval-reviewed path. No game implementation, application suite, playtest, dependency installation, or push occurred. The revised commit is reported in the session after execution. Harness initialization and Architect behavior remain to be tested after this baseline.
+
+## 2026-10-03 Claude Architect injection startup
+
+Scope: begin the authorized Claude Code Architect experiment without a native Claude agent definition. Inspected baseline: `384e26233a41d9930d16ff93ecd732458d347682` (`Refine portable roles and Ruach workflows`); the working tree was clean after that commit.
+
+Consulted the installed Claude CLI and Herdr skill. The official [CLI reference](https://code.claude.com/docs/en/cli-reference) documents `--append-system-prompt-file` as appending to the default prompt; no replacement flag was used. The [memory documentation](https://code.claude.com/docs/en/memory) documents the existing `@AGENTS.md` import shim. The [skills documentation](https://code.claude.com/docs/en/skills) lists `.claude/skills/` for native project discovery; filesystem access to `.agents/skills/` must be distinguished from native skill registration in the runtime check.
+
+| Command | Result |
+| --- | --- |
+| `test "${HERDR_ENV:-}" = 1` | Exit 0; this session is running inside Herdr. |
+| `herdr pane layout --current` | Sandbox socket access was denied; the approval-reviewed retry succeeded and returned the current layout. |
+| `herdr pane split --current --direction down --cwd /opt/dev/tehom-brainlab --no-focus` | Exit 0; created sibling pane `w2G:p5` without changing focus. |
+| `herdr agent start brainlab-architect --kind claude --pane w2G:p5 -- --append-system-prompt-file .agents/agents/architect.md` | Exit 1, `agent_not_ready`; Claude Code reached a startup approval dialog. |
+| `herdr agent read brainlab-architect --source recent-unwrapped --lines 100` | Exit 0; showed the launched command and first-run trust prompt for this repository. |
+| `git show -1 --format=fuller --stat` | Exit 0; confirmed the revised baseline commit and its changed file set. |
+
+Requested user confirmation before answering the startup dialog, as explicitly required by the Herdr skill. At the end of that turn the session was waiting at that prompt; this agent had submitted neither a trust choice nor a task prompt. No runtime instruction-loading, skill-discovery, or Architect behavior check had passed. The Claude shim was unchanged, and `.claude/agents/`, `.claude/skills/`, `.codex/agents/`, and `.opencode/agents/` remained absent. No installation, application implementation, or push occurred. The user subsequently approved trust and closed the pane; the restart and completed task are recorded below.
+
+## 2026-10-03 Claude Architect injection experiment
+
+Scope: resume the authorized Architect launch after the user trusted the repository and closed the initial pane. Baseline: `384e26233a41d9930d16ff93ecd732458d347682`. The startup-record edits in CURRENT and TASK_LOGS remained uncommitted during the worker's assessment; its report explicitly identifies that working-tree context.
+
+Used the locally installed `herdr` skill for communication. Created a replacement sibling pane in the same tab and working directory with `--no-focus`, then launched a fresh Claude Code session. No native agent definition, replacement system prompt, plan-mode constraint, or tool removal was used. The session retained the user's trust choice and reached `idle` without another startup question.
+
+| Check | Evidence and result |
+| --- | --- |
+| AGENTS received | `/memory` showed project instructions at `./CLAUDE.md` and `AGENTS.md` as `@-imported`. Before any file read or tool call, the startup response reported the Ruach prefix, Coordinator-only workflows, and ADR-0006 verification rules. Passed. |
+| Architect received | Herdr returned the argv containing `--append-system-prompt-file .agents/agents/architect.md`. Before any file read or tool call, the response identified `architect`, its permitted artifact locations, and the prohibition on implementation or role switching. Passed for this launch. |
+| Normal harness instructions preserved | The documented append flag was used without a replacement flag. The startup response also reported normal Claude Code tool guidance, and `/context` showed system prompt and system tools. Preservation follows the documented flag semantics; the full default prompt was not extracted or compared. |
+| Expected skills visible | No Ruach skills were registered in the native Skill tool. The worker read both technical skills from their canonical files and reported their titles and applied principles. Filesystem access passed; native discovery did not. No orchestration workflow was supplied or reported loaded. |
+| Architect behavior | The bounded P01 readiness task created only [its handoff](mailbox/claude-architect-injection/architect.md). It reused the existing plan, proposed boundaries and verification, selected no dependency versions, and implemented nothing. Passed for one scoped task; repeated or conflicting-task reliability is not established. |
+
+The assignment supplied a task ID, baseline, relevant source locations, read-only source scope, owned report location, acceptance conditions, technical skill paths, and structured handoff fields. It did not supply a workflow. The worker returned a concise structured result and a detailed durable report. P01 implementation remains future work; recommendations in the report do not establish new accepted repository decisions.
+
+| Command | Result |
+| --- | --- |
+| `herdr pane layout --current` | Exit 0; confirmed the initial experiment pane was closed. |
+| `herdr pane split --current --direction down --cwd /opt/dev/tehom-brainlab --no-focus` | Exit 0; created replacement pane `w2G:p6`. |
+| `herdr agent start brainlab-architect --kind claude --pane w2G:p6 -- --append-system-prompt-file .agents/agents/architect.md` | Exit 0; returned the launch argv and an idle, interactive-ready Claude session. |
+| `herdr agent prompt brainlab-architect '<startup context probe>' --wait --timeout 60000` | Exit 0; the probe explicitly required a response before any tool call or file read. Returned role, editing boundary, three project facts, native Ruach registration, and high-level harness-guidance presence. |
+| `herdr agent prompt brainlab-architect /context` | Exit 0; diagnostic showed memory files, system prompt, tools, and skills. |
+| `herdr agent prompt brainlab-architect '/context all'` | Exit 0; expanded diagnostic. Terminal recovery showed only its tail, so the memory menu supplied the import-path evidence. |
+| `herdr agent prompt brainlab-architect /memory` | Exit 0; visible memory menu confirmed the project shim and imported AGENTS file. |
+| `herdr agent send-keys brainlab-architect esc` | Exit 0; dismissed diagnostics without selecting an edit or changing settings. |
+| `herdr agent prompt brainlab-architect '<bounded P01 readiness assignment>' --wait --timeout 60000` | Prompt submitted; the wait timed out while the worker was still running. The prompt was not resent. |
+| `herdr agent wait brainlab-architect --timeout 60000` | Exit 0; the existing task settled at idle. |
+| `herdr agent read brainlab-architect --source recent-unwrapped --lines 300` | Exit 0 after task completion; recovered the structured handoff tail. The durable report supplied the detailed result. |
+
+The worker reported these executed read-only checks: `git rev-parse HEAD`, `just --list`, `just doctor`, `uname -m`, `id -u`, prototype file listing, and a search of downstream plan command usages. Its handoff records the exact environment results and explicitly excludes installation, builds, application tests, browser checks, and image pulls. These are worker-reported environment checks, not independent verification of P01 acceptance.
+
+Independent repository checks after the handoff:
+
+| Command | Result |
+| --- | --- |
+| `python3 /tmp/check-brainlab-ruach-skills.py` | Exit 0; vault contracts, 315 local links/fragments, 52 Markdown whitespace checks, role/skill structure, skill identities, scratch ignore rules, and mailbox conventions passed. |
+| `python3 /tmp/check-claude-architect-scope.py` | Exit 0; only the worker's owned report was newly untracked, tracked changes were limited to the parent agent's three documentation files, AGENTS/CLAUDE/agent resources were unchanged, the entire prototype file inventory matched HEAD, and native agent/skill adapter directories were absent. |
+| `git diff --check` | Exit 0; no tracked whitespace errors. |
+
+The experiment leaves native skill discovery open. The official [skills documentation](https://code.claude.com/docs/en/skills) documents `.claude/skills/` for project discovery; direct reading of `.agents/skills/` does not register native skills. The [CLI reference](https://code.claude.com/docs/en/cli-reference) documents the append behavior used here, and the [memory documentation](https://code.claude.com/docs/en/memory) documents the import shim. No adapter, installation, production implementation, dependency selection, or push occurred. The Architect session was left idle for inspection.
