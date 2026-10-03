@@ -7,7 +7,11 @@ A collection of small, independent experiments for TEHOM. Each prototype tests a
 ```text
 tehom-brainlab/
 ├── .agents/                     # Repository-owned agent resources
+│   ├── agents/                 # Canonical role definitions
+│   ├── skills/                 # Canonical skills and workflows
+│   └── scratch/                # Ignored working files; README retained
 ├── docs/                        # Obsidian vault: decisions, plans, state, and evidence
+│   └── mailbox/                # Durable worker reports
 ├── assets/                      # Reusable art/audio and asset provenance
 ├── shared/                      # Reusable code only when reuse is demonstrated
 ├── justfile                     # Repository CLI orchestration
@@ -33,6 +37,8 @@ Run `just` to list repository commands and `just doctor` to inspect available to
 
 The root `.agents/`, `bin/`, and `scripts/` folders are mandatory. [ADR-0005](docs/adr/0005-repository-management-and-tooling.md) defines their roles and just's repository management and tooling aggregation contract.
 
+Agent instructions start in [AGENTS.md](AGENTS.md); [CLAUDE.md](CLAUDE.md) imports that canonical file. [Agent resources](.agents/README.md) include portable roles and workflows, durable reports, and local scratch space. See [SCHEMA](docs/SCHEMA.md#agent-work-artifacts) for artifact conventions. Harness integration has not been configured or verified.
+
 ## Working rules
 
 - Keep experiments independent. Do not import combat rules from another prototype merely to avoid duplication.
@@ -48,4 +54,4 @@ Open [`docs/`](docs/README.md) as an Obsidian vault. Its [schema](docs/SCHEMA.md
 
 Read the [POC 001 brief](docs/prototypes/poc-001-linked-formation.md), the [direction ADR](docs/adr/0004-repository-and-poc-direction.md), and the [asset register](assets/manifest.json).
 
-There is no runnable application yet. This initial setup contains repository structure and design documentation only.
+There is no runnable application yet. The repository contains structure, design documentation, CLI tooling, and portable agent resources.

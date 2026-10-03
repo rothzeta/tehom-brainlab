@@ -13,7 +13,10 @@
 | [Exploitation](exploitation/README.md) | Operational procedures and records for delivered tools |
 | [Prototype briefs](prototypes/README.md) | Experiment scope, hypotheses, and acceptance questions |
 | [Playtests](playtests/README.md) | Observed outcomes tied to tested commits and conditions |
+| [Mailbox](mailbox/README.md) | Durable worker findings, reviews, and handoffs |
 
 Read relevant ADRs and current evidence before creating plans or tasks. A decision describes an obligation, a plan describes intended work, and a task log records actual execution. Setup and run instructions belong in the owning prototype README.
+
+[Agent work artifact conventions](SCHEMA.md#agent-work-artifacts) define durable handoffs in `docs/mailbox/` and local working files in `.agents/scratch/`. Canonical designs and plans remain in this vault; handoffs reference them.
 
 The game-design documentation comes from the TEHOM Brainlab planning conversation of 2 October 2026. It does not replace the complete TEHOM project overview, which has not been copied into this repository. POC 001 is not playable, and no playtests have been recorded.

@@ -44,7 +44,7 @@ Verify that recipes and tests exist before presenting commands as available. Lab
 
 Documentation-only changes require content, link, naming, and whitespace review. Implemented game rules require tests. For a bug, retain a deterministic failing regression before the production fix when feasible; a new capability need not be recast as a historical defect.
 
-Hand-back records the tested revision or implementation commit, changed paths, exact commands and results, acceptance mapping, findings, limitations, and deferred work. Record execution in a dated task log entry and update CURRENT when facts change. Link detailed playtest results from `playtests/`. Do not claim independent reviews, application checks, or live operation unless they occurred.
+Hand-back records the tested revision or implementation commit, changed paths, exact commands and results, acceptance mapping, findings, limitations, and deferred work. Durable worker handoffs belong in `docs/mailbox/` under the [schema's artifact conventions](../SCHEMA.md#agent-work-artifacts), with references to the canonical plan. Record execution in a dated task log entry and update CURRENT when facts change. Link detailed playtest results from `playtests/`. Do not claim independent reviews, application checks, or live operation unless they occurred.
 
 ## Rationale and consequences
 

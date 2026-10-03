@@ -29,4 +29,8 @@ obj/
 .idea/
 .vs/
 
+# Agent working files; keep the directory instructions in Git.
+/.agents/scratch/*
+!/.agents/scratch/README.md
+
 # Commit per-prototype dependency lockfiles; do not ignore them.
