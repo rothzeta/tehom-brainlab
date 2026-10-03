@@ -1,6 +1,6 @@
 # Current state
 
-As of 2026-10-03. Repository inspected at `1cd41a0b419ddc0ac805f92c0af57b57064e800d` with existing tooling and documentation changes. The [commit preparation record](TASK_LOGS.md#2026-10-03-commit-preparation) documents verification of the combined vault and tooling changes.
+As of 2026-10-03. Repository inspected at `f849d5e9a436876b5e05eeeea102ded23648cc69` with a clean working tree before the portable agent baseline. The [portable agent baseline record](TASK_LOGS.md#2026-10-03-portable-agent-baseline) documents the new definitions and their verification.
 
 ## Delivered repository
 
@@ -12,7 +12,9 @@ The root justfile exposes repository tooling inspection and the optional token e
 
 [ADR-0004](adr/0004-repository-and-poc-direction.md) preserves agreed repository and experiment constraints. Bun is the default JavaScript/TypeScript runtime and package manager; POC 001 retains TypeScript, Phaser, Vite, and Vitest. Prefer Docker where useful and expose CLI work through thin just recipes.
 
-[ADR-0005](adr/0005-repository-management-and-tooling.md) establishes mandatory repository-root `.agents/`, `bin/`, and `scripts/` folders and formalizes just as the repository management and tooling aggregation surface. The existing folders and command implementations remain in place; `.agents/README.md` represents the previously empty agent-resources folder in Git. See its [task log entry](TASK_LOGS.md#2026-10-03-repository-tooling-adr) for verification.
+[ADR-0005](adr/0005-repository-management-and-tooling.md) establishes mandatory repository-root `.agents/`, `bin/`, and `scripts/` folders and formalizes just as the repository management and tooling aggregation surface. The existing folders and command implementations remain in place. See its [task log entry](TASK_LOGS.md#2026-10-03-repository-tooling-adr) for verification.
+
+[AGENTS.md](../AGENTS.md) is the canonical portable instruction entry point; [CLAUDE.md](../CLAUDE.md) contains only `@AGENTS.md`. Five roles live in `.agents/agents/`, and four skills live in `.agents/skills/`. No harness-specific agents or integrations have been configured. The next intended experiment is to inject the portable Architect role into Claude Code and verify instruction loading, skill visibility, and role behavior; that experiment has not run.
 
 The [P01–P12 sequence](plans/README.md) is proposed work. P01–P04 target an interactive formation lab; subsequent slices target deterministic patrol combat, accurate previews, a playable patrol, and reproducible evidence. The boss remains gated on the patrol review. No implementation plan has been completed.
 

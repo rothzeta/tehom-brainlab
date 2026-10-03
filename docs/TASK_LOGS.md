@@ -55,3 +55,22 @@ Reviewed the existing `doc/` to `docs/` migration, Bun/Docker/just conventions, 
 | `git diff --check` | Exit 0; no whitespace errors. |
 
 These checks verify documentation and CLI discovery/dispatch. No PNG export, application build, game-rule suite, browser combat check, or human playtest ran. Git commit and push outcomes are reported in the session after execution.
+
+## 2026-10-03 Portable agent baseline
+
+Scope: create and commit the user-supplied portable source-of-truth layer, then stop before harness integration. Inspected parent revision: `f849d5e9a436876b5e05eeeea102ded23648cc69`; the working tree was clean.
+
+Replaced root `AGENTS.md` with the requested small canonical instructions and added `CLAUDE.md` containing only `@AGENTS.md`. Added the five supplied roles under `.agents/agents/` and four supplied skills under `.agents/skills/`, preserving their text. Updated the existing `.agents/README.md` and current-state note to reflect these resources. No harness-specific agents, workflow YAML, mission state, campaign files, or Herdr scripts were added; no tools or dependencies were installed.
+
+### Executed verification
+
+| Command | Result |
+| --- | --- |
+| `python3 /home/metatron/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/workflow-feature` | Exit 0; skill valid. |
+| `python3 /home/metatron/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/workflow-review` | Exit 0; skill valid. |
+| `python3 /home/metatron/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/blackbox-testing` | Exit 0; skill valid. |
+| `python3 /home/metatron/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/simplification` | Exit 0; skill valid. |
+| `python3 /tmp/check-brainlab-portable-agents.py` (temporary audit) | Exit 0; five roles, four skill directories, minimal Claude shim, absence of native agent files, Markdown whitespace, and local links/fragments passed. |
+| `git diff --check` | Exit 0; no tracked whitespace errors. |
+
+The initial write to `.agents/` encountered the sandbox's read-only protection; the approval-reviewed write succeeded. These checks establish file structure and skill format only. Role injection, normal harness instruction preservation, skill visibility inside a harness, and Architect behavior have not been tested. No application tests or playtests ran. The requested baseline commit is reported in the session after execution; no push is requested.
