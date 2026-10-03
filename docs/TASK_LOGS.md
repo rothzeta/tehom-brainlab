@@ -278,3 +278,53 @@ Independent repository checks after the handoff:
 | `git diff --check` | Exit 0; no tracked whitespace errors. |
 
 The experiment leaves native skill discovery open. The official [skills documentation](https://code.claude.com/docs/en/skills) documents `.claude/skills/` for project discovery; direct reading of `.agents/skills/` does not register native skills. The [CLI reference](https://code.claude.com/docs/en/cli-reference) documents the append behavior used here, and the [memory documentation](https://code.claude.com/docs/en/memory) documents the import shim. No adapter, installation, production implementation, dependency selection, or push occurred. The Architect session was left idle for inspection.
+
+## 2026-10-03 Codex Architect injection and native skill discovery
+
+Scope: answer the native discovery question and repeat the five Architect checks in Codex. Inspected baseline: `68203a63f37f62d55f6c58c6d988c712ee49ba95`; the working tree was clean before launching the worker. Used the OpenAI Docs skill for current Codex documentation and the Herdr skill for communication.
+
+The [official skill documentation](https://learn.chatgpt.com/docs/build-skills) confirms native discovery of `.agents/skills/`. The [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference) documents `developer_instructions` as additional session instructions and per-skill enablement overrides. The installed CLI exposes `codex debug prompt-input`; its output was inspected programmatically without printing full instruction text. A temporary launcher read the canonical Architect file at launch, serialized it into the CLI configuration value, preserved any prior user developer instructions, and retained existing skill overrides while disabling the feature workflow for this worker. No role copy, native agent file, repository script, or persistent configuration was written.
+
+| Check | Evidence and result |
+| --- | --- |
+| AGENTS received | The prompt-input diagnostic contained the exact canonical AGENTS body. Before any file read or tool call, the live response reported Coordinator-only workflows, existing-code inspection, and observable verification. Passed. |
+| Architect received | The diagnostic contained the exact role body read from `.agents/agents/architect.md`. The initial live response identified Architect and its design/report/scratch editing boundary. Passed. |
+| Normal instructions preserved | Comparing default and role-added developer messages showed one insertion of 1,829 characters and no removals; the other two developer messages were unchanged. The default text remained intact. No replacement instruction file, model override, plan-mode constraint, or tool removal was used. Passed for the diagnostic comparison; the live session also reported normal Codex guidance. |
+| Expected skills visible | Default native discovery listed all three Ruach skills. The worker invocation's override removed `ruach-workflow-feature` from its catalog, leaving `ruach-testing` and `ruach-simplification`. The live startup response listed both before file access. Explicit `$` references supplied their bodies through native skill handling; the worker also read both canonical bodies and reported applicable principles. Passed without a discovery adapter. |
+| Architect behavior | The same bounded P01 readiness task produced only [the owned handoff](mailbox/codex-architect-injection/architect.md), followed by structured output. It reused the existing draft, selected no versions, and implemented nothing. Passed for one scoped task. |
+
+The canonical Architect source SHA-256 used for the diagnostic was `31ae4594b6a4bb17b4814b7e09ff95e200f253cd25833ca136fc7214900497f7`. The unfiltered catalog exposed workflow metadata without its body; the worker override removed even that catalog entry. The assignment supplied the same sources, artifact ownership, acceptance conditions, and restrictions as the Claude trial, with baseline and report path updated. Native `$ruach-testing` and `$ruach-simplification` activation replaced the earlier direct-file-only skill request. The prior worker report was excluded as an assessment source.
+
+| Command | Result |
+| --- | --- |
+| `codex --version` | Exit 0; `codex-cli 0.160.0`. Sandbox execution printed a PATH-alias initialization warning because its state directory was read-only. |
+| `codex --help`, `codex debug --help`, `codex debug prompt-input --help` | Exit 0; confirmed CLI configuration overrides and the installed prompt diagnostic. |
+| `python3 /tmp/brainlab-codex-architect.py audit` | Exit 0 on the approval-reviewed path. Rendered default, role-added, and worker-filtered inputs and printed only structural metadata, booleans, source hash, and Ruach names. Exact role addition and existing-message preservation passed. The initial equality comparison was refined to account for appending within an existing message; the final comparison confirmed insertion only. |
+| `herdr pane split --current --direction down --cwd /opt/dev/tehom-brainlab --no-focus` | Exit 0; created sibling pane `w2G:p8` without changing focus. |
+| `python3 /tmp/brainlab-codex-architect.py start w2G:p8` | Exit 0; Herdr started `brainlab-codex-architect` with canonical role text in `-c developer_instructions=…` and a per-invocation `skills.config` exclusion. Reached idle without a startup question. |
+| `herdr agent prompt brainlab-codex-architect '<startup context probe>' --wait --timeout 60000` | Exit 0; returned role, editing boundary, repository facts, two native technical skills, and normal-guidance presence before any tool call or file read. |
+| `herdr agent prompt brainlab-codex-architect '<bounded P01 readiness assignment>' --wait --timeout 60000` | Submitted once; its wait timed out while the task was working. The assignment was not resent. |
+| `herdr agent wait brainlab-codex-architect --timeout 60000` | Continued settled-state waits; the final wait returned exit 0 at `done`. |
+| `herdr agent read brainlab-codex-architect --source recent-unwrapped --lines 260` | Exit 0; recovered the startup response, tool-use history, owned artifact creation, and completed structured handoff. |
+
+The worker's report records its exact read-only environment checks and report validation. It observed Bun unavailable on its session PATH and Docker daemon access unavailable, whereas the earlier Claude environment check reported both accessible. Those observations do not establish why the environments differ or that the proposed stack is incompatible. No permissions were broadened to fix toolchain access. No application acceptance checks were executed, and P01 remains unimplemented. Repeated or conflicting-task role reliability and other roles remain untested.
+
+Independent repository checks after the completed task:
+
+| Command | Result |
+| --- | --- |
+| `python3 /tmp/check-brainlab-ruach-skills.py` | Exit 0; vault contracts, 336 local links/fragments, 53 Markdown whitespace checks, role/skill identities, scratch ignore rules, and mailbox conventions passed. |
+| `python3 /tmp/check-codex-architect-scope.py` | Exit 0; Codex added only its owned report, parent edits were limited to README/CURRENT/TASK_LOGS, canonical instructions and agent resources were unchanged, prototype file inventory matched HEAD, and native agent/skill adapter directories were absent. |
+| `git diff --check` | Exit 0; no tracked whitespace errors. |
+
+### Proposed Claude discovery adapter
+
+Keep `.agents/skills/` canonical. The [Claude skills documentation](https://code.claude.com/docs/en/skills) supports individual symlinked skill folders under `.claude/skills/`. Expose the two reusable technical skills there while keeping workflow loading specific to Coordinator assignments. Proposed commands from the repository root:
+
+```sh
+mkdir -p .claude/skills
+ln -s ../../.agents/skills/ruach-testing .claude/skills/ruach-testing
+ln -s ../../.agents/skills/ruach-simplification .claude/skills/ruach-simplification
+```
+
+These commands were not executed. They would create discovery aliases, not separately maintained definitions or native agents. The Coordinator can load its selected canonical workflow directly; a role-specific native workflow discovery surface can be considered when that launch needs it. Do not expose the whole workflow directory to every worker. A future Claude adapter check must verify the native catalog and invocation, rather than count file access as registration. Codex needs no corresponding skill aliases; its worker filter was per invocation only.

@@ -37,7 +37,7 @@ Run `just` to list repository commands and `just doctor` to inspect available to
 
 The root `.agents/`, `bin/`, and `scripts/` folders are mandatory. [ADR-0005](docs/adr/0005-repository-management-and-tooling.md) defines their roles and just's repository management and tooling aggregation contract.
 
-Agent instructions start in [AGENTS.md](AGENTS.md); [CLAUDE.md](CLAUDE.md) imports that canonical file. [Agent resources](.agents/README.md) include portable roles and workflows, durable reports, and local scratch space. See [SCHEMA](docs/SCHEMA.md#agent-work-artifacts) for artifact conventions. A [Claude Code Architect launch experiment](docs/TASK_LOGS.md#2026-10-03-claude-architect-injection-experiment) verified the import and a bounded role task without a native agent definition; native Ruach skill discovery remains unresolved.
+Agent instructions start in [AGENTS.md](AGENTS.md); [CLAUDE.md](CLAUDE.md) imports that canonical file. [Agent resources](.agents/README.md) include portable roles and workflows, durable reports, and local scratch space. See [SCHEMA](docs/SCHEMA.md#agent-work-artifacts) for artifact conventions. [Claude Code](docs/TASK_LOGS.md#2026-10-03-claude-architect-injection-experiment) and [Codex](docs/TASK_LOGS.md#2026-10-03-codex-architect-injection-and-native-skill-discovery) launch experiments verified bounded Architect tasks without native agent definitions. Codex discovers the canonical skills directly; a Claude skill discovery adapter remains proposed.
 
 ## Working rules
 
