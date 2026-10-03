@@ -4,7 +4,11 @@
 
 **P01. Draft; not implemented or verified.** No prerequisites. Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
-Authority: [AGENTS](../../AGENTS.md), [prototype README](../../poc-001-linked-formation/README.md), and the [technology decision](../../doc/decisions.md). The user's supplied ADR-0008 section template and ADR-0007 filename rule govern this document. Neither referenced ADR file exists at the inspected baseline; see the [plan index](README.md). Do not claim the full ADRs were reviewed.
+Authority: [AGENTS](../../AGENTS.md), [prototype README](../../poc-001-linked-formation/README.md), and the [technology decision](../adr/0004-repository-and-poc-direction.md). The local naming and format ADRs linked below govern this document.
+
+Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
+
+Task `P01` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -14,47 +18,54 @@ A contributor can install dependencies inside this prototype, start one browser 
 
 `poc-001-linked-formation/` currently contains a README, empty source/test directories, and placeholders. There is no package manifest, installed dependency set, application, or executable test suite.
 
-Own only this prototype's package and lock files, TypeScript/Vite/Vitest configuration, HTML entry, `src/main.ts`, a minimal scene under `src/view/`, one pure smoke function under `src/core/`, its test, and local run instructions. These are proposed paths, not existing implementations. Do not create a root workspace or move shared assets.
+Own this prototype's package and lock files, TypeScript/Vite/Vitest configuration, HTML entry, `src/main.ts`, a minimal scene under `src/view/`, one pure smoke function under `src/core/`, its test, and local run instructions. Add prototype-local CLI implementations under `scripts/`, executable entry points under `bin/`, and the corresponding thin recipes to the root justfile. Prefer prototype-local Docker configuration for an isolated reproducible Bun toolchain. These are proposed paths, not existing implementations. Do not create a root workspace or move shared assets.
 
 ## Fixture and inputs
 
 Use a fresh checkout and an empty dependency directory. The smoke scene displays `TEHOM — Formation Lab` plus a labelled placeholder; its pure fixture returns an explicit constant without DOM or Phaser access. Use a second clean install from the committed lockfile to test reproducibility.
 
-Choose compatible supported dependency/runtime versions during implementation, verify against their official documentation, and record the exact Node and package-manager versions used. This plan does not assert current version numbers.
+Choose compatible supported dependency/runtime versions during implementation, verify against their official documentation, and record the exact Bun version and any required compatibility runtime versions used. This plan does not assert current version numbers.
 
 ## Contracts and decisions
 
 ### Required contracts
 
-Installation, execution, testing, and build commands run from the prototype directory. Core modules must not import Phaser, the DOM, browser storage, network clients, or presentation modules. Tests must fail when the smoke expectation is deliberately broken; an empty suite is not acceptance evidence. A build must not require credentials or a running service.
+Invoke just recipes from the repository root; their implementations run installation, execution, testing, and build commands with the prototype as their working directory. Core modules must not import Phaser, the DOM, browser storage, network clients, or presentation modules. Tests must fail when the smoke expectation is deliberately broken; an empty suite is not acceptance evidence. A build must not require credentials or a running application service.
 
 ### Settled choices
 
 The initial stack target is TypeScript, Phaser, Vite, and Vitest. Browser-first, one screen, no backend. The renderer illustrates rules and does not own them. This does not select the production engine.
 
+The user's 3 October preference establishes Bun as the default runtime/package manager, Docker where applicable, and justfile orchestration with scripts in `scripts/` and executable entry points in `bin/`. Retain Vitest; replacing it with Bun's built-in test runner is not part of this tooling change.
+
 ### Proposed implementation
 
-Use npm with one committed `package-lock.json`, strict TypeScript, and local scripts `dev`, `typecheck`, `test:unit`, `build`, and `preview`. Define `test:unit` as a non-watch test run so later plans can pass explicit file paths. Use relative build asset paths to support static hosting beneath a directory. Declare the selected runtime in local documentation and a version file. Keep Phaser initialization in the browser entry; the unit test imports only the smoke core module. Avoid a starter game's physics or example assets.
+Use Bun with one committed `bun.lock`, strict TypeScript, and local scripts `dev`, `typecheck`, `test:unit`, `build`, and `preview`. Define `test:unit` as a non-watch test run so later plans can pass explicit file paths. Use relative build asset paths to support static hosting beneath a directory. Declare and pin the selected Bun runtime in local documentation and tool configuration; verify the Vite/Vitest toolchain under Bun before declaring it supported. Keep Phaser initialization in the browser entry; the unit test imports only the smoke core module. Avoid a starter game's physics or example assets.
+
+Expose `just poc-001-install`, `just poc-001-dev`, `just poc-001-typecheck`, `just poc-001-test`, `just poc-001-build`, and `just poc-001-preview`. The install implementation uses `bun install --frozen-lockfile` after the initial lockfile is generated; the other commands delegate to `bun run --bun <script>` and preserve arguments and exit codes. Test filters are relative to the prototype. Prefer a pinned official Bun container for toolchain isolation, exposing its CLI through the same entry points and documenting the selected mode. Bind any development server to an accessible container interface, publish ports on localhost, and prevent generated files becoming owned by root. Verify the chosen image contains everything the toolchain needs; document compatibility exceptions rather than silently falling back to npm or Node.
 
 ## Implementation checkpoints
 
-1. Inspect the latest branch and local guidance; preserve unrelated changes. Select and lock dependencies inside this prototype.
-2. Add the smallest browser scene and a pure module with a nontrivial assertion. Confirm the module runs under the unit runner without browser globals.
-3. Add the command scripts and a production build. Exercise both the development server and the built output.
-4. Replace the prototype README's obsolete run section with actual commands and tested environment. Describe this as a runnable shell, not a playable patrol.
+1. **P01.C1** — Inspect the latest branch and local guidance; preserve unrelated changes. Select and lock dependencies inside this prototype.
+2. **P01.C2** — Add the smallest browser scene and a pure module with a nontrivial assertion. Confirm the module runs under the unit runner without browser globals.
+3. **P01.C3** — Add the command scripts and a production build. Exercise both the development server and the built output.
+4. **P01.C4** — Replace the prototype README's obsolete run section with actual commands and tested environment. Describe this as a runnable shell, not a playable patrol.
 
 ## Acceptance criteria
 
-1. `npm ci` succeeds in a clean prototype checkout using the committed lockfile.
-2. `npm run dev` displays the named scene without application-origin console errors or an unhandled rejection.
-3. `npm run typecheck` and `npm run test:unit` pass; temporarily inverting the smoke assertion makes the test command return nonzero.
-4. `npm run build` produces a static `dist/`; `npm run preview` serves it with no required backend requests or missing local entry assets.
+1. `just poc-001-install` succeeds in a clean prototype checkout using the committed lockfile.
+2. `just poc-001-dev` displays the named scene without application-origin console errors or an unhandled rejection.
+3. `just poc-001-typecheck` and `just poc-001-test` pass; temporarily inverting the smoke assertion makes the test command return nonzero.
+4. `just poc-001-build` produces a static `dist/`; `just poc-001-preview` serves it with no required backend requests or missing local entry assets.
 5. Importing the smoke core fixture in the unit process does not create a Phaser game or access `window` or `document`.
 6. The change creates no root application, mandatory workspace, dependency directory in Git, or dependency on another prototype.
+7. The root just recipes delegate to prototype-local scripts/executables, preserve argument boundaries and exit codes, and exercise the documented Bun/Docker mode using pinned versions. A missing runtime or inaccessible Docker daemon yields a clear failure rather than a passing check.
 
 ## Verification and hand-back
 
-From `poc-001-linked-formation/`, run `npm ci`, `npm run typecheck`, `npm run test:unit`, and `npm run build`. Record exact commands, runtime/package-manager versions, exit codes, and the tested commit. Manually open development and preview builds; record the browser and any console/network errors. Return the entry-point paths, a screenshot of the actual shell, and known limitations. No commands or tests in this draft have been executed against an application.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+
+From the repository root, run `just poc-001-install`, `just poc-001-typecheck`, `just poc-001-test`, and `just poc-001-build`. Record exact commands, runtime/package-manager versions, exit codes, and the tested commit. Manually open development and preview builds; record the browser and any console/network errors. Return the entry-point paths, a screenshot of the actual shell, and known limitations. No commands or tests in this draft have been executed against an application.
 
 ## Non-goals and stop conditions
 

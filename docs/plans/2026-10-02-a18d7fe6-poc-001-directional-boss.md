@@ -4,7 +4,11 @@
 
 **P12. Draft; conditionally blocked, not implemented or verified.** Depends on [P11](2026-10-02-825a6700-poc-001-reproducible-playtests.md) with an explicit **open** boss gate and the playable/core outputs of [P10](2026-10-02-e7c77542-poc-001-playable-patrol.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
-Authority: [brief Directional boss and Implementation order](../../doc/prototypes/poc-001-linked-formation.md). Do not execute merely because the earlier code compiles. The boss numbers/pattern below are a proposed test fixture, not an approved final boss. See the [index](README.md) for authority and missing ADRs.
+Authority: [brief Directional boss and Implementation order](../../docs/prototypes/poc-001-linked-formation.md). Do not execute merely because the earlier code compiles. The boss numbers/pattern below are a proposed test fixture, not an approved final boss. See the [index](README.md) and local ADRs below for authority.
+
+Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
+
+Task `P12` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -38,10 +42,10 @@ Use the existing encounter factory/announcement selection to supply the boss dat
 
 ## Implementation checkpoints
 
-1. Read the actual P11 report and verify the open gate and tested commit. On hold or absent evidence, stop before implementing this plan and state the reason.
-2. Add the boss fixture and its deterministic two-intention announcement using existing primitives.
-3. Add selector/UI coverage and regression tests for sweep/mark interaction, Crosswind, facing cadence, and terminal cancellation.
-4. Run actual boss attempts and record whether choices differ from a rote rotation sequence. Compare observed problems with the patrol rather than changing global rules ad hoc.
+1. **P12.C1** — Read the actual P11 report and verify the open gate and tested commit. On hold or absent evidence, stop before implementing this plan and state the reason.
+2. **P12.C2** — Add the boss fixture and its deterministic two-intention announcement using existing primitives.
+3. **P12.C3** — Add selector/UI coverage and regression tests for sweep/mark interaction, Crosswind, facing cadence, and terminal cancellation.
+4. **P12.C4** — Run actual boss attempts and record whether choices differ from a rote rotation sequence. Compare observed problems with the patrol rather than changing global rules ad hoc.
 
 ## Acceptance criteria
 
@@ -55,7 +59,9 @@ Use the existing encounter factory/announcement selection to supply the boss dat
 
 ## Verification and hand-back
 
-Run `npm run test:unit` including focused boss tests, `npm run test:browser` with the boss selector/preview/reset cases, `npm run typecheck`, and `npm run build`. Replay saved boss traces with P11. Hand back the gate reference, exact boss data, actual traces, screenshots, and observed design findings. If tests or playtests are blocked, identify the missing evidence; do not mark the boss validated.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+
+Run `just poc-001-test` including focused boss tests, `just poc-001-test-browser` with the boss selector/preview/reset cases, `just poc-001-typecheck`, and `just poc-001-build`. Replay saved boss traces with P11. Hand back the gate reference, exact boss data, actual traces, screenshots, and observed design findings. If tests or playtests are blocked, identify the missing evidence; do not mark the boss validated.
 
 ## Non-goals and stop conditions
 

@@ -4,7 +4,11 @@
 
 **P05. Draft; not implemented or verified.** Depends on [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md) and [P03](2026-10-02-2dfffcd3-poc-001-command-boundary.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
-Authority: [brief Round structure, Test abilities, and encounter descriptions](../../doc/prototypes/poc-001-linked-formation.md). Exact sector masks and cancellation rules are explicitly open in that source; the choices below are proposals, not recovered requirements. Formatting authority is recorded in the [index](README.md).
+Authority: [brief Round structure, Test abilities, and encounter descriptions](../../docs/prototypes/poc-001-linked-formation.md). Exact sector masks and cancellation rules are explicitly open in that source; the choices below are proposals, not recovered requirements. Formatting authority is recorded in the [index](README.md).
+
+Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
+
+Task `P05` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -40,10 +44,10 @@ Warder protection is a relation from one living source to a designated living en
 
 ## Implementation checkpoints
 
-1. Encode explicit sector and front-mask fixtures with stable cell ordering.
-2. Define intention types and pure recipient/protection selectors using current live eligibility.
-3. Implement the explicit one-step facing/turnable-area transform; keep target IDs unchanged.
-4. Test maneuvers, deaths, boundaries, and wraparound against hand-written expected sets.
+1. **P05.C1** — Encode explicit sector and front-mask fixtures with stable cell ordering.
+2. **P05.C2** — Define intention types and pure recipient/protection selectors using current live eligibility.
+3. **P05.C3** — Implement the explicit one-step facing/turnable-area transform; keep target IDs unchanged.
+4. **P05.C4** — Test maneuvers, deaths, boundaries, and wraparound against hand-written expected sets.
 
 ## Acceptance criteria
 
@@ -56,7 +60,9 @@ Warder protection is a relation from one living source to a designated living en
 
 ## Verification and hand-back
 
-Run `npm run test:unit -- tests/intents.test.ts tests/formation.test.ts` and `npm run typecheck`. Return exact mask/recipient examples before and after a maneuver and Crosswind, plus the documented distinction between committed areas and explicitly changed directional intentions. Test expected sets independently; do not build expected masks by calling the function under test.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+
+Run `just poc-001-test tests/intents.test.ts tests/formation.test.ts` and `just poc-001-typecheck`. Return exact mask/recipient examples before and after a maneuver and Crosswind, plus the documented distinction between committed areas and explicitly changed directional intentions. Test expected sets independently; do not build expected masks by calling the function under test.
 
 ## Non-goals and stop conditions
 

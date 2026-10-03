@@ -4,7 +4,11 @@
 
 **P02. Draft; not implemented or verified.** Depends on [P01](2026-10-02-a87b131a-poc-001-browser-harness.md) for the unit-test harness. Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
-Authority: the [brief's Formation rules and Initial tests](../../doc/prototypes/poc-001-linked-formation.md) and [decision log](../../doc/decisions.md). The exact coordinate mapping below is a proposed implementation of the accepted experiment, not an existing approved coordinate specification. The [index](README.md) records the unavailable ADRs and the supplied formatting authority.
+Authority: the [brief's Formation rules and Initial tests](../../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../adr/0004-repository-and-poc-direction.md). The exact coordinate mapping below is a proposed implementation of the accepted experiment, not an existing approved coordinate specification. The [index](README.md) and local ADRs below establish formatting authority.
+
+Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
+
+Task `P02` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -46,10 +50,10 @@ Return link endpoints, integer distance, and `close`/`stretched` in stable roste
 
 ## Implementation checkpoints
 
-1. Encode the board and ring fixtures independently of pixel conversion; hand-check orientation zero.
-2. Implement public validation, position derivation, maneuvers, and link derivation.
-3. Exhaustively test both shapes at every orientation and all inverse operations, including wraparound.
-4. Publish typed exports and the coordinate convention so the renderer and intent masks use the same ordering.
+1. **P02.C1** — Encode the board and ring fixtures independently of pixel conversion; hand-check orientation zero.
+2. **P02.C2** — Implement public validation, position derivation, maneuvers, and link derivation.
+3. **P02.C3** — Exhaustively test both shapes at every orientation and all inverse operations, including wraparound.
+4. **P02.C4** — Publish typed exports and the coordinate convention so the renderer and intent masks use the same ordering.
 
 ## Acceptance criteria
 
@@ -62,7 +66,9 @@ Return link endpoints, integer distance, and `close`/`stretched` in stable roste
 
 ## Verification and hand-back
 
-After P01 exists, run `npm run test:unit -- tests/formation.test.ts` and `npm run typecheck` from the prototype. Return the coordinate table, exhaustive assertion count, command results, and a serialized example of both orientation-zero shapes. Verify the implementation, not only a drawing. Any independent arithmetic check of this draft is not a passing application test.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+
+After P01 exists, run `just poc-001-test tests/formation.test.ts` and `just poc-001-typecheck` from the repository root. Return the coordinate table, exhaustive assertion count, command results, and a serialized example of both orientation-zero shapes. Verify the implementation, not only a drawing. Any independent arithmetic check of this draft is not a passing application test.
 
 ## Non-goals and stop conditions
 

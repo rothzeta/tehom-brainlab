@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rasterize the registered SVG tokens. Run from any directory.
+"""Rasterize the registered SVG tokens via bin/export-token-pngs.
 
 Optional dependency: pip install cairosvg (plus native Cairo where needed).
 This is an asset utility, not a shared game engine or root application.

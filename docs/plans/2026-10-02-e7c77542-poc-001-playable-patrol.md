@@ -4,7 +4,11 @@
 
 **P10. Draft; not implemented or verified.** Depends on [P04](2026-10-02-9d81c6df-poc-001-formation-lab.md), [P08](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md), and [P09](2026-10-02-d28ae958-poc-001-preview-equivalence.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
-Authority: [brief Presentation requirements, Round structure, and Ordinary patrol](../../doc/prototypes/poc-001-linked-formation.md), plus [prototype rendering boundary](../../poc-001-linked-formation/README.md). Interface choices below are proposals; they do not change the six abilities or action economics. See the [index](README.md) for formatting authority.
+Authority: [brief Presentation requirements, Round structure, and Ordinary patrol](../../docs/prototypes/poc-001-linked-formation.md), plus [prototype rendering boundary](../../poc-001-linked-formation/README.md). Interface choices below are proposals; they do not change the six abilities or action economics. See the [index](README.md) for formatting authority.
+
+Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
+
+Task `P10` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -40,11 +44,11 @@ The early lab-only configuration selector must be clearly separated from the pla
 
 ## Implementation checkpoints
 
-1. Add playable-patrol mode and preset selection using the existing factories.
-2. Wire ability/target selection, previews, confirmation, maneuvers, and end phase through the session controller.
-3. Add outcome/reset behavior and view-only action feedback with cancellation guards.
-4. Add browser smoke/regression cases using real controls rather than directly dispatching commands from tests.
-5. Review readability in both emblem and placeholder modes and capture actual screenshots.
+1. **P10.C1** — Add playable-patrol mode and preset selection using the existing factories.
+2. **P10.C2** — Wire ability/target selection, previews, confirmation, maneuvers, and end phase through the session controller.
+3. **P10.C3** — Add outcome/reset behavior and view-only action feedback with cancellation guards.
+4. **P10.C4** — Add browser smoke/regression cases using real controls rather than directly dispatching commands from tests.
+5. **P10.C5** — Review readability in both emblem and placeholder modes and capture actual screenshots.
 
 ## Acceptance criteria
 
@@ -59,7 +63,9 @@ The early lab-only configuration selector must be clearly separated from the pla
 
 ## Verification and hand-back
 
-Run `npm run typecheck`, `npm run test:unit`, `npm run test:browser`, and `npm run build`. Run browser tests against the actual built or served application using a documented command/setup. Record viewport/browser, tested commit, trace IDs, screenshots, and console/network failures. If the browser environment cannot run, report that check as blocked rather than equating unit tests with UI verification. Hand back a playable patrol, not claims about fun.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+
+Run `just poc-001-typecheck`, `just poc-001-test`, `just poc-001-test-browser`, and `just poc-001-build`. Run browser tests against the actual built or served application using a documented command/setup. Record viewport/browser, tested commit, trace IDs, screenshots, and console/network failures. If the browser environment cannot run, report that check as blocked rather than equating unit tests with UI verification. Hand back a playable patrol, not claims about fun.
 
 ## Non-goals and stop conditions
 

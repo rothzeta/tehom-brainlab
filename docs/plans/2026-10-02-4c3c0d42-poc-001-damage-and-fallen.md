@@ -4,7 +4,11 @@
 
 **P06. Draft; not implemented or verified.** Depends on [P03](2026-10-02-2dfffcd3-poc-001-command-boundary.md) and [P05](2026-10-02-d66a7452-poc-001-intent-semantics.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
-Authority: the [brief's deterministic combat requirement, Shelter description, and Open decisions](../../doc/prototypes/poc-001-linked-formation.md). Fallen-slot behavior, simultaneous-hit ordering, and terminal precedence are unresolved there; this plan proposes explicit local defaults. See the [index](README.md) for draft/ADR authority.
+Authority: the [brief's deterministic combat requirement, Shelter description, and Open decisions](../../docs/prototypes/poc-001-linked-formation.md). Fallen-slot behavior, simultaneous-hit ordering, and terminal precedence are unresolved there; this plan proposes explicit local defaults. See the [index](README.md) for draft/ADR authority.
+
+Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
+
+Task `P06` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -42,10 +46,10 @@ After each attack batch: all Brood fallen means defeat; otherwise all enemies fa
 
 ## Implementation checkpoints
 
-1. Add pure single/multi-target damage calculation with independently tested mitigation.
-2. Apply one batch and derive fallen events only on transitions from positive HP to zero.
-3. Remove fallen-source protections and expose terminal status while preserving formation slots.
-4. Add the explicit status-expiry helper for P08 and test its idempotence.
+1. **P06.C1** — Add pure single/multi-target damage calculation with independently tested mitigation.
+2. **P06.C2** — Apply one batch and derive fallen events only on transitions from positive HP to zero.
+3. **P06.C3** — Remove fallen-source protections and expose terminal status while preserving formation slots.
+4. **P06.C4** — Add the explicit status-expiry helper for P08 and test its idempotence.
 
 ## Acceptance criteria
 
@@ -59,7 +63,9 @@ After each attack batch: all Brood fallen means defeat; otherwise all enemies fa
 
 ## Verification and hand-back
 
-Run `npm run test:unit -- tests/damage.test.ts tests/intents.test.ts tests/commands.test.ts` and `npm run typecheck`. Return ordered event traces for an ordinary hit, a same-blast guardian death, and both terminal outcomes. Document which defaults were implemented or amended; do not describe the proposed numbers as balanced.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+
+Run `just poc-001-test tests/damage.test.ts tests/intents.test.ts tests/commands.test.ts` and `just poc-001-typecheck`. Return ordered event traces for an ordinary hit, a same-blast guardian death, and both terminal outcomes. Document which defaults were implemented or amended; do not describe the proposed numbers as balanced.
 
 ## Non-goals and stop conditions
 

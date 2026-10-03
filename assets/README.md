@@ -11,11 +11,11 @@ These are symbolic placeholders, not final creature illustrations. They do not r
 SVGs are the committed source assets. Generate transparent PNGs when the prototype needs them:
 
 ```sh
-python -m pip install cairosvg
-python tools/export-token-pngs.py
+python3 -m pip install cairosvg
+just export-tokens
 ```
 
-This creates six 256 x 256 PNGs and one 512 x 512 boss PNG in `assets/exports/tokens/`. CairoSVG also needs the native Cairo runtime on platforms that do not already provide it. The exporter supports `--output` to choose another directory. It verifies input hashes before rendering. Exported PNGs keep the same credit requirement.
+Run these commands from the repository root, using an environment with CairoSVG installed. This creates six 256 x 256 PNGs and one 512 x 512 boss PNG in `assets/exports/tokens/`. CairoSVG also needs the native Cairo runtime on platforms that do not already provide it. The exporter supports `just export-tokens --output <directory>` to choose another directory. Its executable entry point is `bin/export-token-pngs`, backed by `scripts/export-token-pngs.py`. It verifies input hashes before rendering. Exported PNGs keep the same credit requirement.
 
 ## Integration contract
 

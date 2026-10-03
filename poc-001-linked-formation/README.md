@@ -6,7 +6,7 @@
 
 Test whether rotating, expanding, and contracting three linked Brood creates interesting ordinary combat decisions without leaving short-range characters unable to contribute.
 
-The design source is the [POC brief](../doc/prototypes/poc-001-linked-formation.md). See the [decision log](../doc/decisions.md) for the current scope and the [asset plan](../assets/README.md) for presentation.
+The design source is the [POC brief](../docs/prototypes/poc-001-linked-formation.md). See the [direction ADR](../docs/adr/0004-repository-and-poc-direction.md) for the current scope and the [asset plan](../assets/README.md) for presentation.
 
 ## Local structure
 
@@ -21,6 +21,8 @@ poc-001-linked-formation/
 ```
 
 The initial stack target is TypeScript + Phaser + Vite + Vitest. Package files, dependency versions, application entry points, and run commands will be added when the first implementation is scaffolded. No root workspace is required.
+
+Bun is the default runtime and package manager; retain Vitest for unit tests and commit a local `bun.lock`. Prefer Docker where useful for a reproducible toolchain, with container configuration inside this prototype. Expose CLI commands through the root justfile, delegating to this prototype's `scripts/` and executable `bin/` entry points as needed. P01 will supply the runnable recipes and pinned tool versions.
 
 ## Architectural boundary
 

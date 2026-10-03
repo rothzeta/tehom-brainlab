@@ -4,7 +4,11 @@
 
 **P04. Draft; not implemented or verified.** Depends on [P01](2026-10-02-a87b131a-poc-001-browser-harness.md), [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md), and [P03](2026-10-02-2dfffcd3-poc-001-command-boundary.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
-Authority: [prototype First implementation slice](../../poc-001-linked-formation/README.md), [brief Presentation requirements](../../doc/prototypes/poc-001-linked-formation.md), [asset manifest](../../assets/manifest.json), and [credits](../../assets/CREDITS.md). See the [index](README.md) for formatting authority and unavailable ADRs. Full combat previews belong to P09, not this slice.
+Authority: [prototype First implementation slice](../../poc-001-linked-formation/README.md), [brief Presentation requirements](../../docs/prototypes/poc-001-linked-formation.md), [asset manifest](../../assets/manifest.json), and [credits](../../assets/CREDITS.md). See the [index](README.md) and local ADRs below for formatting authority. Full combat previews belong to P09, not this slice.
+
+Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
+
+Task `P04` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -40,11 +44,11 @@ A small prototype-local preparation script copies only the seven allowlisted SVG
 
 ## Implementation checkpoints
 
-1. Project P02 axial coordinates into pixels and render a neutral board and labelled anchors.
-2. Add link styles and textual equivalents; distinguish actual positions from pending destinations.
-3. Connect hover/focus/commit/cancel to P03. A used maneuver remains visibly unavailable until a fresh lab fixture is selected.
-4. Add the limited asset-copy step, runtime fallback, and a visible credits control.
-5. Inspect normal and placeholder modes, then capture an actual screenshot and a maneuver sequence.
+1. **P04.C1** — Project P02 axial coordinates into pixels and render a neutral board and labelled anchors.
+2. **P04.C2** — Add link styles and textual equivalents; distinguish actual positions from pending destinations.
+3. **P04.C3** — Connect hover/focus/commit/cancel to P03. A used maneuver remains visibly unavailable until a fresh lab fixture is selected.
+4. **P04.C4** — Add the limited asset-copy step, runtime fallback, and a visible credits control.
+5. **P04.C5** — Inspect normal and placeholder modes, then capture an actual screenshot and a maneuver sequence.
 
 ## Acceptance criteria
 
@@ -58,7 +62,9 @@ A small prototype-local preparation script copies only the seven allowlisted SVG
 
 ## Verification and hand-back
 
-Run `npm run test:unit -- tests/formation.test.ts tests/commands.test.ts tests/asset-copy.test.ts`, `npm run typecheck`, and `npm run build`. Exercise the browser at the stated viewport: preview, cancel, rotate, attempt a second maneuver, reset, and expand. Repeat with placeholder mode and a simulated failed token request. Record screenshots, exact asset destinations, and any visual ambiguity. This milestone is an interactive formation lab, not a playable battle.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+
+Run `just poc-001-test tests/formation.test.ts tests/commands.test.ts tests/asset-copy.test.ts`, `just poc-001-typecheck`, and `just poc-001-build`. Exercise the browser at the stated viewport: preview, cancel, rotate, attempt a second maneuver, reset, and expand. Repeat with placeholder mode and a simulated failed token request. Record screenshots, exact asset destinations, and any visual ambiguity. This milestone is an interactive formation lab, not a playable battle.
 
 ## Non-goals and stop conditions
 

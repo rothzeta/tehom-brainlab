@@ -4,7 +4,11 @@
 
 **P09. Draft; not implemented or verified.** Depends on [P04](2026-10-02-9d81c6df-poc-001-formation-lab.md) and [P08](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md), including their core prerequisites. Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
-Authority: [AGENTS](../../AGENTS.md), [prototype architectural boundary](../../poc-001-linked-formation/README.md), and [brief Presentation requirements](../../doc/prototypes/poc-001-linked-formation.md). This extends the early formation-only preview, not a second rules implementation. The [index](README.md) records the supplied format and missing ADRs.
+Authority: [AGENTS](../../AGENTS.md), [prototype architectural boundary](../../poc-001-linked-formation/README.md), and [brief Presentation requirements](../../docs/prototypes/poc-001-linked-formation.md). This extends the early formation-only preview, not a second rules implementation. The [index](README.md) and local ADRs below establish formatting authority.
+
+Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
+
+Task `P09` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -40,10 +44,10 @@ The UI retains the live revision and session generation used to calculate the pr
 
 ## Implementation checkpoints
 
-1. Implement a read-only projection over the existing public transition and selectors.
-2. Add the conditional end-now forecast using P08 and separate its events from immediate effects.
-3. Add golden fixtures for broken Shelter, removed protection, changed facing, and terminal cancellation.
-4. Add revision/session invalidation at the P04 adapter boundary, then exhaustively compare preview and commit over the legal command matrix.
+1. **P09.C1** — Implement a read-only projection over the existing public transition and selectors.
+2. **P09.C2** — Add the conditional end-now forecast using P08 and separate its events from immediate effects.
+3. **P09.C3** — Add golden fixtures for broken Shelter, removed protection, changed facing, and terminal cancellation.
+4. **P09.C4** — Add revision/session invalidation at the P04 adapter boundary, then exhaustively compare preview and commit over the legal command matrix.
 
 ## Acceptance criteria
 
@@ -57,7 +61,9 @@ The UI retains the live revision and session generation used to calculate the pr
 
 ## Verification and hand-back
 
-Run `npm run test:unit -- tests/preview.test.ts tests/patrol.test.ts tests/intents.test.ts` and `npm run typecheck`. Record the tested state/command matrix, golden examples, and mutation checks. In the lab, capture an actual preview/commit pair and its conditional forecast label. Distinguish unit equivalence from browser rendering correctness; P10 verifies the integrated display.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+
+Run `just poc-001-test tests/preview.test.ts tests/patrol.test.ts tests/intents.test.ts` and `just poc-001-typecheck`. Record the tested state/command matrix, golden examples, and mutation checks. In the lab, capture an actual preview/commit pair and its conditional forecast label. Distinguish unit equivalence from browser rendering correctness; P10 verifies the integrated display.
 
 ## Non-goals and stop conditions
 

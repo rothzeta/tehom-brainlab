@@ -4,7 +4,11 @@
 
 **P08. Draft; not implemented or verified.** Depends on [P05](2026-10-02-d66a7452-poc-001-intent-semantics.md), [P06](2026-10-02-4c3c0d42-poc-001-damage-and-fallen.md), and [P07](2026-10-02-f8938420-poc-001-brood-abilities.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
-Authority: [brief Ordinary patrol, Round structure, and wounded starting conditions](../../doc/prototypes/poc-001-linked-formation.md). All HP values, damage, targeting ties, and resolution ordering below are proposed reproducible fixture defaults, not settled balance. See the [index](README.md) for authority labels and ADR availability.
+Authority: [brief Ordinary patrol, Round structure, and wounded starting conditions](../../docs/prototypes/poc-001-linked-formation.md). All HP values, damage, targeting ties, and resolution ordering below are proposed reproducible fixture defaults, not settled balance. See the [index](README.md) for authority labels and local ADRs.
+
+Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
+
+Task `P08` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -49,10 +53,10 @@ Persist Warder facing between rounds, including Crosswind changes. Select Censer
 
 ## Implementation checkpoints
 
-1. Add the three factories and exact, inspectable content defaults.
-2. Implement deterministic announcement and stable target selection, including ties and fallen candidates.
-3. Implement end-phase resolution, cancellation, expiry, terminal checks, and next-round budgets.
-4. Author actual winning and losing command traces after running the implementation; retain their fixtures as regressions rather than assuming this draft proves winnability.
+1. **P08.C1** — Add the three factories and exact, inspectable content defaults.
+2. **P08.C2** — Implement deterministic announcement and stable target selection, including ties and fallen candidates.
+3. **P08.C3** — Implement end-phase resolution, cancellation, expiry, terminal checks, and next-round budgets.
+4. **P08.C4** — Author actual winning and losing command traces after running the implementation; retain their fixtures as regressions rather than assuming this draft proves winnability.
 
 ## Acceptance criteria
 
@@ -66,7 +70,9 @@ Persist Warder facing between rounds, including Crosswind changes. Select Censer
 
 ## Verification and hand-back
 
-Run `npm run test:unit -- tests/patrol.test.ts tests/abilities.test.ts tests/damage.test.ts` and `npm run typecheck`. Return factory definitions, targets per tested round, the actual traces, and terminal outputs. A trace failure may require proposing a fixture change; version and document it. Do not convert a headless win into a claim of interesting decisions or human playtest success.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+
+Run `just poc-001-test tests/patrol.test.ts tests/abilities.test.ts tests/damage.test.ts` and `just poc-001-typecheck`. Return factory definitions, targets per tested round, the actual traces, and terminal outputs. A trace failure may require proposing a fixture change; version and document it. Do not convert a headless win into a claim of interesting decisions or human playtest success.
 
 ## Non-goals and stop conditions
 

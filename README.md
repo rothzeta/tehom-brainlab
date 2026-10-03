@@ -6,10 +6,14 @@ A collection of small, independent experiments for TEHOM. Each prototype tests a
 
 ```text
 tehom-brainlab/
-├── doc/                         # Shared design notes, decisions, and playtests
+├── .agents/                     # Repository-owned agent resources
+├── docs/                        # Obsidian vault: decisions, plans, state, and evidence
 ├── assets/                      # Reusable art/audio and asset provenance
 ├── shared/                      # Reusable code only when reuse is demonstrated
-├── tools/                       # Repository and asset utilities
+├── justfile                     # Repository CLI orchestration
+├── scripts/                     # Repository script implementations
+├── bin/                         # Executable CLI entry points
+├── tools/                       # Supporting utility resources
 └── poc-001-linked-formation/     # First independent combat experiment
 ```
 
@@ -23,10 +27,16 @@ Each prototype lives directly under the repository root, named `poc-NNN-short-na
 
 The initial implementation target for POC 001 is TypeScript + Phaser + Vite + Vitest. This does not commit other prototypes, or the production game, to that stack. No dependency versions have been selected or installed yet.
 
+Use Bun by default for JavaScript/TypeScript runtime and dependency management, with a local `bun.lock` per prototype. Prefer Docker for dependency isolation and reproducible tooling where useful. Keep prototype-specific container configuration, scripts, and executables inside that prototype.
+
+Run `just` to list repository commands and `just doctor` to inspect available tooling. The root justfile delegates to implementations in `scripts/` through executable entry points in `bin/`. `just export-tokens` runs the existing optional PNG exporter; see the [asset instructions](assets/README.md). Prototype install, run, test, and build recipes will be added with P01's scaffold.
+
+The root `.agents/`, `bin/`, and `scripts/` folders are mandatory. [ADR-0005](docs/adr/0005-repository-management-and-tooling.md) defines their roles and just's repository management and tooling aggregation contract.
+
 ## Working rules
 
 - Keep experiments independent. Do not import combat rules from another prototype merely to avoid duplication.
-- Put shared documentation in [`doc/`](doc/README.md), reusable assets in [`assets/`](assets/README.md), and prototype-specific rules inside the prototype.
+- Put shared documentation in [`docs/`](docs/README.md), reusable assets in [`assets/`](assets/README.md), and prototype-specific rules inside the prototype.
 - Promote code into `shared/` only after at least two prototypes genuinely need the same behavior. Do not build a generic engine in advance.
 - Keep simulation separate from rendering. Previews and committed actions must use the same rules.
 - Record hypotheses separately from observations. A proposed mechanic is not a playtest result.
@@ -34,6 +44,8 @@ The initial implementation target for POC 001 is TypeScript + Phaser + Vite + Vi
 
 ## Start here
 
-Read the [POC 001 brief](doc/prototypes/poc-001-linked-formation.md), the [decision log](doc/decisions.md), and the [asset register](assets/manifest.json).
+Open [`docs/`](docs/README.md) as an Obsidian vault. Its [schema](docs/SCHEMA.md) defines the structure; [CURRENT](docs/CURRENT.md) summarizes implementation facts and [TASK_LOGS](docs/TASK_LOGS.md) records executed work.
+
+Read the [POC 001 brief](docs/prototypes/poc-001-linked-formation.md), the [direction ADR](docs/adr/0004-repository-and-poc-direction.md), and the [asset register](assets/manifest.json).
 
 There is no runnable application yet. This initial setup contains repository structure and design documentation only.

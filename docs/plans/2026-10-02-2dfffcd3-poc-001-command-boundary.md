@@ -4,7 +4,11 @@
 
 **P03. Draft; not implemented or verified.** Depends on [P01](2026-10-02-a87b131a-poc-001-browser-harness.md) and [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
-Authority: [prototype architecture](../../poc-001-linked-formation/README.md) and the [brief's Round structure](../../doc/prototypes/poc-001-linked-formation.md). Atomic rejection and revision checking are proposed engineering contracts for this plan; they are not claimed as previously approved game design. Formatting authority and missing ADRs are described in the [index](README.md).
+Authority: [prototype architecture](../../poc-001-linked-formation/README.md) and the [brief's Round structure](../../docs/prototypes/poc-001-linked-formation.md). Atomic rejection and revision checking are proposed engineering contracts for this plan; they are not claimed as previously approved game design. Formatting authority is linked below and in the [index](README.md).
+
+Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
+
+Task `P03` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -40,10 +44,10 @@ Only the P08 round driver may reset budgets. Until that driver exists, unsupport
 
 ## Implementation checkpoints
 
-1. Define minimal state and command/result types with a stable error vocabulary.
-2. Wire P02 maneuvers through the immutable transition and revision guard.
-3. Implement reusable actor/budget validation and accepted-action accounting without adding game abilities.
-4. Test invalid commands before adding consumers; document that round reset and abilities are intentionally unavailable at this slice.
+1. **P03.C1** — Define minimal state and command/result types with a stable error vocabulary.
+2. **P03.C2** — Wire P02 maneuvers through the immutable transition and revision guard.
+3. **P03.C3** — Implement reusable actor/budget validation and accepted-action accounting without adding game abilities.
+4. **P03.C4** — Test invalid commands before adding consumers; document that round reset and abilities are intentionally unavailable at this slice.
 
 ## Acceptance criteria
 
@@ -56,7 +60,9 @@ Only the P08 round driver may reset budgets. Until that driver exists, unsupport
 
 ## Verification and hand-back
 
-Run `npm run test:unit -- tests/commands.test.ts tests/formation.test.ts` and `npm run typecheck`. Return the public command/result contracts, error examples, and passing/rejected fixture traces. State which command kinds are actually supported at this milestone. Tests must exercise the production boundary, not an independent test-only rules implementation.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+
+Run `just poc-001-test tests/commands.test.ts tests/formation.test.ts` and `just poc-001-typecheck`. Return the public command/result contracts, error examples, and passing/rejected fixture traces. State which command kinds are actually supported at this milestone. Tests must exercise the production boundary, not an independent test-only rules implementation.
 
 ## Non-goals and stop conditions
 

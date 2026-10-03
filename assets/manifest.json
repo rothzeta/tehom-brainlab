@@ -22,7 +22,7 @@
       "pngExport": {
         "width": 256,
         "height": 256,
-        "tool": "tools/export-token-pngs.py",
+        "tool": "scripts/export-token-pngs.py",
         "committed": false
       },
       "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/3e93b78aec99f419ce8a701f16c77adc303eb46e"
@@ -47,7 +47,7 @@
       "pngExport": {
         "width": 256,
         "height": 256,
-        "tool": "tools/export-token-pngs.py",
+        "tool": "scripts/export-token-pngs.py",
         "committed": false
       },
       "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/92998bdf3a83141586edbd3fe6e72d54f222f092"
@@ -72,7 +72,7 @@
       "pngExport": {
         "width": 256,
         "height": 256,
-        "tool": "tools/export-token-pngs.py",
+        "tool": "scripts/export-token-pngs.py",
         "committed": false
       },
       "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/4eacf1119f93b7db98b3eeb3908f13900456a8b3"
@@ -97,7 +97,7 @@
       "pngExport": {
         "width": 256,
         "height": 256,
-        "tool": "tools/export-token-pngs.py",
+        "tool": "scripts/export-token-pngs.py",
         "committed": false
       },
       "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/36bd6d3c99c40c22c3ab949a895b309471b9624f"
@@ -122,7 +122,7 @@
       "pngExport": {
         "width": 256,
         "height": 256,
-        "tool": "tools/export-token-pngs.py",
+        "tool": "scripts/export-token-pngs.py",
         "committed": false
       },
       "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/93497f033ffbaa0dbf9446ddf5a13ff93cd969d2"
@@ -147,7 +147,7 @@
       "pngExport": {
         "width": 256,
         "height": 256,
-        "tool": "tools/export-token-pngs.py",
+        "tool": "scripts/export-token-pngs.py",
         "committed": false
       },
       "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/346c44f876d7c14de633189167c2daaaf1de9293"
@@ -172,7 +172,7 @@
       "pngExport": {
         "width": 512,
         "height": 512,
-        "tool": "tools/export-token-pngs.py",
+        "tool": "scripts/export-token-pngs.py",
         "committed": false
       },
       "sourceBlob": "https://api.github.com/repos/game-icons/icons/git/blobs/41d2afa778d8fcd39a2b7d0d887ce58105ac8f7b"

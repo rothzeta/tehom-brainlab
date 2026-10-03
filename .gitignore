@@ -16,7 +16,11 @@ coverage/
 *.tsbuildinfo
 
 # Potential .NET / Godot experiments
-bin/
+**/bin/
+!/bin/
+!/bin/**
+!/poc-*/bin/
+!/poc-*/bin/**
 obj/
 .godot/
 .mono/

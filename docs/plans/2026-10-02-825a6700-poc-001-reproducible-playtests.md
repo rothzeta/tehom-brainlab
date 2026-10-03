@@ -4,7 +4,11 @@
 
 **P11. Draft; not implemented or verified.** Depends on [P10](2026-10-02-e7c77542-poc-001-playable-patrol.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
-Authority: [existing playtest template](../../doc/playtests/TEMPLATE.md), [brief Acceptance questions and Implementation order](../../doc/prototypes/poc-001-linked-formation.md), and [decision-log Promotion rule](../../doc/decisions.md). The export format and explicit boss gate are proposed implementation details. The [index](README.md) records the unavailable ADRs and draft status.
+Authority: [existing playtest template](../../docs/playtests/TEMPLATE.md), [brief Acceptance questions and Implementation order](../../docs/prototypes/poc-001-linked-formation.md), and [direction ADR Promotion rule](../adr/0004-repository-and-poc-direction.md). The export format and explicit boss gate are proposed implementation details. The [index](README.md) records local ADR authority and draft status.
+
+Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
+
+Task `P11` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -12,7 +16,7 @@ A tester can export one exact patrol attempt, a developer can replay it against 
 
 ## Starting source and ownership
 
-Own proposed `src/core/run-record.ts`, a local export control, `scripts/replay-run.ts` or equivalent, and `tests/run-record.test.ts`. Use P10's accepted-command stream and P08's factories without adding analytics infrastructure. Actual observations belong in new files under `doc/playtests/`, based on the existing template; do not overwrite that template. This plan introduces no root telemetry service.
+Own proposed `src/core/run-record.ts`, a local export control, `scripts/replay-run.ts` or equivalent, and `tests/run-record.test.ts`. Use P10's accepted-command stream and P08's factories without adding analytics infrastructure. Actual observations belong in new files under `docs/playtests/`, based on the existing template; do not overwrite that template. This plan introduces no root telemetry service.
 
 ## Fixture and inputs
 
@@ -34,7 +38,7 @@ Evaluate ordinary encounters and wounded starts before relying on the boss. Look
 
 ### Proposed implementation and review gate
 
-Export JSON locally with no network transmission. Provide a local replay command, proposed as `npm run replay -- <record-path>`, using the same public reducer. Validate the record schema and rules version; return a useful first-divergence report. Do not build browser import, migrations, or a replay timeline.
+Export JSON locally with no network transmission. Provide a local replay command, proposed as `just poc-001-replay <record-path>`, using the same public reducer. Validate the record schema and rules version; return a useful first-divergence report. Do not build browser import, migrations, or a replay timeline.
 
 For each preset, record build/conditions, the player's reason for key decisions when actually obtained, unused/unavailable-action incidents, target order, meaningful holds, and whether the player would retry differently. Missing explanations are marked `not obtained`; never supply plausible quotations.
 
@@ -42,10 +46,10 @@ Add a review field `boss gate: open | hold` with evidence references. Proposed o
 
 ## Implementation checkpoints
 
-1. Capture/export one session's accepted inputs and fixture/rules context; reset creates a clean record.
-2. Add the deterministic local replay verifier and malformed/version-mismatch tests.
-3. Run actual attempts for all three starts using P10; save factual notes through the existing report structure.
-4. Separate implementation defects from design findings and write an explicit open/hold gate decision with the tested commit.
+1. **P11.C1** — Capture/export one session's accepted inputs and fixture/rules context; reset creates a clean record.
+2. **P11.C2** — Add the deterministic local replay verifier and malformed/version-mismatch tests.
+3. **P11.C3** — Run actual attempts for all three starts using P10; save factual notes through the existing report structure.
+4. **P11.C4** — Separate implementation defects from design findings and write an explicit open/hold gate decision with the tested commit.
 
 ## Acceptance criteria
 
@@ -59,7 +63,9 @@ Add a review field `boss gate: open | hold` with evidence references. Proposed o
 
 ## Verification and hand-back
 
-Run `npm run test:unit -- tests/run-record.test.ts tests/patrol.test.ts`, `npm run typecheck`, and the actual local replay command on saved attempts. Record exact results and first-divergence output from a deliberately altered record. Hand back the records, factual playtest report, open/hold decision, and one bounded next revision supported by findings. Do not count preparing empty templates as conducting a playtest.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+
+Run `just poc-001-test tests/run-record.test.ts tests/patrol.test.ts`, `just poc-001-typecheck`, and the actual local replay command on saved attempts. Record exact results and first-divergence output from a deliberately altered record. Hand back the records, factual playtest report, open/hold decision, and one bounded next revision supported by findings. Do not count preparing empty templates as conducting a playtest.
 
 ## Non-goals and stop conditions
 

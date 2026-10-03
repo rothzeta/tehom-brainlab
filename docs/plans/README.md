@@ -6,20 +6,20 @@ Twelve draft plans for the linked-formation prototype, written on 2 October 2026
 
 ## Authority and source limits
 
-The user supplied the ADR-0008 structure and instructed that each spec be an executable plan for one bounded capability or safety invariant, with numbered observable acceptance criteria. The user also supplied the ADR-0007 filename rule: `docs/plans/yyyy-mm-dd-[8 random characters]-{name}.md`.
+Plans and standalone tasks follow the local [ADR-0002 filename rule](../adr/0002-plan-filenames.md) and [ADR-0003 bounded writing format](../adr/0003-implementation-plan-writing.md). Read [CURRENT](../CURRENT.md) and actual source before execution; record executed evidence in [TASK_LOGS](../TASK_LOGS.md).
 
-Direct reads of `docs/adr/0008-implementation-plan-writing.md` and `docs/adr/0007-plan-filenames.md` returned Not Found at the inspected baseline. The repository tree contains no `docs/adr/` there. These plans therefore use only the supplied ADR excerpts; they do not invent the missing ADR texts or claim complete ADR compliance. Read and reconcile the actual ADRs if they become available before implementation.
+The drafts originally used user-supplied excerpts labelled ADR-0007 and ADR-0008 because the referenced local files were absent at their baseline. On 3 October, the user's vault instruction established local ADRs adapted from `../enoch`. These local records now replace the unavailable references. Existing filenames already comply, so their 2 October creation dates and eight-character random hexadecimal identifiers are retained. Delivery order is expressed by P01–P12 and dependency links, not filename sorting.
 
-The user explicitly requested `docs/plans/` for these files. Existing design material remains in `doc/`; no migration or second copy of that material is performed. The filename date is the drafting date. Eight-character tokens are randomly generated lowercase hexadecimal values, not sequence numbers. Execution order is expressed by P01–P12 and dependency links, not filename sorting.
+Each plan is a proposed standalone task with an unassigned implementer/integration-owner role and stable sequential checkpoint identifiers. The acceptance criteria and verification sections define its task contract. The index describes a proposed delivery sequence; writing a plan does not complete its prerequisites or approve its provisional game rules.
 
 Grounding sources:
 
 - [Repository working guidance](../../AGENTS.md).
-- [POC 001 design brief](../../doc/prototypes/poc-001-linked-formation.md).
-- [Decision log](../../doc/decisions.md).
+- [POC 001 design brief](../../docs/prototypes/poc-001-linked-formation.md).
+- [Direction ADR](../adr/0004-repository-and-poc-direction.md).
 - [Prototype architecture and starting status](../../poc-001-linked-formation/README.md).
 - [Actual shared asset manifest](../../assets/manifest.json) and [credits](../../assets/CREDITS.md).
-- [Existing playtest report structure](../../doc/playtests/TEMPLATE.md).
+- [Existing playtest report structure](../../docs/playtests/TEMPLATE.md).
 
 The original fixed Apex/Shadow direction is not silently promoted back into this prototype. Conversely, these plans do not promote the new formation experiment to the production combat system.
 
@@ -32,6 +32,8 @@ The original fixed Apex/Shadow direction is not silently promoted back into this
 **Proposed implementation / experimental defaults** fill explicitly open implementation details such as coordinate presets, mask boundaries, damage values, targeting ties, and defeat behavior. They are recommendations for executable fixtures, not historical decisions or balanced gameplay. Resolve/amend them explicitly at implementation start; a change affecting another plan requires reconciling that dependent plan's fixtures and tests, not creating a second hidden constant.
 
 All source/test file paths listed as proposed ownership are intended future paths. At the baseline the prototype has folders and a README, not a working TypeScript application. All commands in verification sections become executable only after the prerequisite plan supplies their scripts.
+
+The user's 3 October tooling preference supersedes the original npm proposal: use Bun with a prototype-local `bun.lock`, prefer Docker where useful, and orchestrate commands through the root justfile. Run the proposed `just poc-001-*` recipes from the repository root; P01 will implement the install/dev/typecheck/test/build/preview recipes, with test-browser and replay supplied by their later owning plans. Keep implementations in the prototype's `scripts/` and executable entry points in its `bin/`. The current root justfile supplies only repository tooling checks and the existing asset exporter.
 
 ## Execution map
 
@@ -72,7 +74,7 @@ Fixtures may use artificial values to isolate an invariant; those unit-test valu
 
 Before each plan, re-read the actual target branch and affected files. Confirm prerequisites have delivered their specified outputs; writing a predecessor plan is not completing it. Keep unrelated work intact. Record any divergence from the baseline and reconcile overlapping proposed paths with the real implementation.
 
-For each executed plan, return the changed paths, exact commands and results, tested commit, fixture/configuration version, observable evidence for the numbered criteria, and remaining blockers. Only mark a check passed when it ran. Browser failures are not covered by unit-test success; human playtest results are not covered by either. Preserve negative findings and distinguish a partial hand-back from a verified capability.
+For each executed plan, record a dated [task log entry](../TASK_LOGS.md), link it from the plan, and update [CURRENT](../CURRENT.md) when facts change. Return the changed paths, exact commands and results, tested commit, fixture/configuration version, observable evidence for the numbered criteria, and remaining blockers. Only mark a check passed when it ran. Browser failures are not covered by unit-test success; human playtest results are not covered by either. Preserve negative findings and distinguish a partial hand-back from a verified capability.
 
 ## Deliberately beyond this dozen
 
