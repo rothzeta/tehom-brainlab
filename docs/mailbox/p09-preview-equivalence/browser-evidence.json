@@ -1,0 +1,171 @@
+{
+  "candidate_revision": "63b567ba2b92262624c6cb4cf6332091b7009dea",
+  "p09": {
+    "ok": true,
+    "assertions": 24,
+    "version": {
+      "protocolVersion": "1.3",
+      "product": "HeadlessChrome/148.0.7778.96",
+      "revision": "@8625e066febc721e015ea99842da12901eb7ed73",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.96 Safari/537.36",
+      "jsVersion": "14.8.178.14"
+    },
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "initial": {
+      "revision": 0,
+      "panel": "Patrol preview fixture \u2014 maneuvers only. Live: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14.Hover or focus a maneuver to preview its immediate result and conditional enemy phase.",
+      "readout": "No pending maneuver.",
+      "positions": [
+        {
+          "brood": "ugallu",
+          "cell": {
+            "q": 2,
+            "r": 0
+          }
+        },
+        {
+          "brood": "girtablilu",
+          "cell": {
+            "q": 1,
+            "r": 1
+          }
+        },
+        {
+          "brood": "pazuzu",
+          "cell": {
+            "q": 1,
+            "r": 0
+          }
+        }
+      ],
+      "ghosts": []
+    },
+    "preview": {
+      "revision": 0,
+      "panel": "Patrol preview fixture \u2014 maneuvers only. Live: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14.Immediate: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14 \u00b7 player.Destination links: ugallu \u2194 girtablilu stretched; ugallu \u2194 pazuzu stretched; girtablilu \u2194 pazuzu stretched.Protection gained: none; lost: girtablilu \u2192 censer, pazuzu \u2192 censer.Threats: Mark patrol:1:warder at (2,0) \u2192 ugallu; Mark patrol:1:censer at (-2,2) \u2192 girtablilu; Mark patrol:1:harrier at (2,0) \u2192 ugallu.Abilities enabled: Impale; disabled: Shelter.If end phase now: Ugallu 8/18 \u00b7 Girtablilu 11/14 \u00b7 Pazuzu 14/14 \u00b7 player. Remaining player choices are excluded.",
+      "readout": "Preview: Expand \u2192 Spread / 0. Live state unchanged.",
+      "positions": [
+        {
+          "brood": "ugallu",
+          "cell": {
+            "q": 2,
+            "r": 0
+          }
+        },
+        {
+          "brood": "girtablilu",
+          "cell": {
+            "q": 1,
+            "r": 1
+          }
+        },
+        {
+          "brood": "pazuzu",
+          "cell": {
+            "q": 1,
+            "r": 0
+          }
+        }
+      ],
+      "ghosts": [
+        {
+          "brood": "ugallu",
+          "cell": {
+            "q": 2,
+            "r": 0
+          }
+        },
+        {
+          "brood": "girtablilu",
+          "cell": {
+            "q": -2,
+            "r": 2
+          }
+        },
+        {
+          "brood": "pazuzu",
+          "cell": {
+            "q": 0,
+            "r": -2
+          }
+        }
+      ]
+    },
+    "committed": {
+      "revision": 1,
+      "panel": "Patrol preview fixture \u2014 maneuvers only. Live: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14.Hover or focus a maneuver to preview its immediate result and conditional enemy phase.",
+      "readout": "No pending maneuver.",
+      "positions": [
+        {
+          "brood": "ugallu",
+          "cell": {
+            "q": 2,
+            "r": 0
+          }
+        },
+        {
+          "brood": "girtablilu",
+          "cell": {
+            "q": -2,
+            "r": 2
+          }
+        },
+        {
+          "brood": "pazuzu",
+          "cell": {
+            "q": 0,
+            "r": -2
+          }
+        }
+      ],
+      "ghosts": []
+    },
+    "exceptions": []
+  },
+  "p04": {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "version": {
+      "protocolVersion": "1.3",
+      "product": "HeadlessChrome/148.0.7778.96",
+      "revision": "@8625e066febc721e015ea99842da12901eb7ed73",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.96 Safari/537.36",
+      "jsVersion": "14.8.178.14"
+    },
+    "assertions": 177,
+    "baseUrl": "http://localhost:4173/",
+    "exceptions": [],
+    "failures": [
+      {
+        "requestId": "2944.51",
+        "timestamp": 1183516.122672,
+        "type": "Image",
+        "errorText": "",
+        "canceled": false,
+        "blockedReason": "inspector"
+      },
+      {
+        "requestId": "2944.54",
+        "timestamp": 1183516.123041,
+        "type": "Image",
+        "errorText": "",
+        "canceled": false,
+        "blockedReason": "inspector"
+      }
+    ]
+  },
+  "p04_modes": [
+    "normal",
+    "placeholder",
+    "failed-image"
+  ],
+  "retained_screenshots": [
+    "preview.png",
+    "commit.png"
+  ]
+}
