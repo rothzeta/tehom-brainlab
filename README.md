@@ -27,7 +27,7 @@ Each prototype lives directly under the repository root, named `poc-NNN-short-na
 
 | Prototype | Question | Status |
 |---|---|---|
-| [001 — Linked formation](poc-001-linked-formation/README.md) | Do rotation and expansion create interesting combat decisions without useless character turns? | P01 browser shell; review pending; not playable |
+| [001 — Linked formation](poc-001-linked-formation/README.md) | Do rotation and expansion create interesting combat decisions without useless character turns? | P01 browser shell verified, reviewed and accepted; not playable |
 
 The initial implementation target for POC 001 is TypeScript + Phaser + Vite + Vitest. This does not commit other prototypes, or the production game, to that stack. P01 pins and verifies a prototype-local toolchain; see its README for exact versions and evidence.
 

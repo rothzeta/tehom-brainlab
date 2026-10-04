@@ -1,6 +1,6 @@
 # POC 001 — Linked formation
 
-**Status: P01 browser shell implemented; independent review pending. Not a playable patrol.**
+**Status: P01 browser shell implemented, independently verified/reviewed, and accepted. Not a playable patrol.**
 
 Test whether rotating, expanding, and contracting three linked Brood creates interesting ordinary combat decisions. The [design brief](../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../docs/adr/0004-repository-and-poc-direction.md) describe the experiment. P01 supplies only a named Phaser scene, labelled placeholder, and pure readiness fixture. Formation rules and combat remain later work.
 
@@ -52,4 +52,4 @@ Dependencies, configuration, scripts, and lockfile stay local. `node_modules/` a
 
 ## Evidence and limitations
 
-See the [Implementer handoff](../docs/mailbox/p01-browser-harness/implementer.md) and [verification record](../docs/mailbox/p01-browser-harness/verification.md) for the exact committed revision, clean reinstall, deliberate test failure, wrapper probes, and actual automated browser captures. These checks are not human playtests or combat acceptance. Vite reports the expected large Phaser bundle warning; no optimization or gameplay was added. Independent review and delivery remain pending.
+See the [Implementer handoff](../docs/mailbox/p01-browser-harness/implementer.md) and [verification record](../docs/mailbox/p01-browser-harness/verification.md) for the exact committed revision, clean reinstall, deliberate test failure, wrapper probes, and actual automated browser captures. These checks are not human playtests or combat acceptance. Vite reports the expected large Phaser bundle warning; no optimization or gameplay was added. The [independent review](../docs/mailbox/p01-browser-harness/reviewer.md) found no issues; the Coordinator accepted P01 criteria 1–7. Local delivery is recorded in [TASK_LOGS](../docs/TASK_LOGS.md#2026-10-04-p01-local-delivery).
