@@ -8,7 +8,7 @@ Authority: [brief Presentation requirements, Round structure, and Ordinary patro
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
-Task `P10` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
+Task `P10` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
 
 ## Smallest useful outcome
 
@@ -63,7 +63,7 @@ The early lab-only configuration selector must be clearly separated from the pla
 
 ## Verification and hand-back
 
-Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+Return exact executed commands, results, acceptance evidence, and limitations in the implementer's [mailbox](../mailbox/README.md) handoff; the Coordinator then records them in [TASK_LOGS](../TASK_LOGS.md), links that entry here, and updates [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
 
 Run `just poc-001-typecheck`, `just poc-001-test`, `just poc-001-test-browser`, and `just poc-001-build`. Run browser tests against the actual built or served application using a documented command/setup. Record viewport/browser, tested commit, trace IDs, screenshots, and console/network failures. If the browser environment cannot run, report that check as blocked rather than equating unit tests with UI verification. Hand back a playable patrol, not claims about fun.
 

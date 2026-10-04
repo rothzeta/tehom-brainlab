@@ -1,6 +1,6 @@
 # ADR-0003 — Writing bounded implementation plans
 
-Status: accepted by user instruction, 2026-10-03.
+Status: accepted by user instruction, 2026-10-03; amended by user decision, 2026-10-04 (see Amendments).
 
 ## Decision
 
@@ -49,3 +49,7 @@ Hand-back records the tested revision or implementation commit, changed paths, e
 ## Rationale and consequences
 
 Bounded outcomes, explicit contracts, and reviewable evidence make completion assessable without adding generic engines or permanent gates to every checkpoint. This local rule adapts Enoch's ADR-0003 to Brainlab and replaces the former reference to an unavailable ADR-0008.
+
+## Amendments
+
+**2026-10-04, user decision: the Coordinator records execution.** The hand-back's task log entry and CURRENT update are made by the Coordinator from worker handoffs after acceptance and delivery. Workers return their hand-back evidence in a `docs/mailbox/` handoff and do not edit `TASK_LOGS.md` or `CURRENT.md`. See [SCHEMA agent work artifacts](../SCHEMA.md#agent-work-artifacts).

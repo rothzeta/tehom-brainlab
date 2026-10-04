@@ -6,7 +6,7 @@ Twelve plans for the linked-formation prototype (P01 implemented, independently 
 
 ## Authority and source limits
 
-Plans and standalone tasks follow the local [ADR-0002 filename rule](../adr/0002-plan-filenames.md) and [ADR-0003 bounded writing format](../adr/0003-implementation-plan-writing.md). Read [CURRENT](../CURRENT.md) and actual source before execution; record executed evidence in [TASK_LOGS](../TASK_LOGS.md).
+Plans and standalone tasks follow the local [ADR-0002 filename rule](../adr/0002-plan-filenames.md) and [ADR-0003 bounded writing format](../adr/0003-implementation-plan-writing.md). Read [CURRENT](../CURRENT.md) and actual source before execution; the Coordinator records executed evidence in [TASK_LOGS](../TASK_LOGS.md) from worker handoffs.
 
 The drafts originally used user-supplied excerpts labelled ADR-0007 and ADR-0008 because the referenced local files were absent at their baseline. On 3 October, the user's vault instruction established local ADRs adapted from `../enoch`. These local records now replace the unavailable references. Existing filenames already comply, so their 2 October creation dates and eight-character random hexadecimal identifiers are retained. Delivery order is expressed by P01–P12 and dependency links, not filename sorting.
 

@@ -1,6 +1,6 @@
 # ADR-0005 — Mandatory repository folders and just tooling aggregation
 
-Status: accepted by user instruction, 2026-10-03.
+Status: accepted by user instruction, 2026-10-03; amended by user decision, 2026-10-04 (see Amendments).
 
 ## Decision
 
@@ -31,3 +31,7 @@ Mandatory folder roles make agent resources, command entry points, and implement
 New repository tooling follows the `justfile` → `bin/` → `scripts/` convention. Prototype recipes route to prototype-owned implementations. Update relevant READMEs when commands or prerequisites change, and verify changed commands with focused checks that exercise their argument handling and failures where relevant.
 
 Existing `doctor` and `export-tokens` recipes illustrate the convention. This ADR formalizes the mandatory folders and tooling aggregation, extending the earlier CLI decision without implementing the planned prototype recipes. Record actual work in [TASK_LOGS](../TASK_LOGS.md) and summarize current facts in [CURRENT](../CURRENT.md).
+
+## Amendments
+
+**2026-10-04, user decision: `.agents/scratch/` is retired.** The `scratch/` provision above no longer applies; the folder, its README, and its ignore rule are removed. Disposable working files live outside the repository, in the OS temporary directory or the harness's session scratch. Durable findings, worker reports, and Coordinator assignments go to `docs/mailbox/`. See [SCHEMA agent work artifacts](../SCHEMA.md#agent-work-artifacts).
