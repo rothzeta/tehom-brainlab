@@ -173,13 +173,24 @@ export type FacingTurn =
 
 /** Explicit Crosswind geometry only; P07 owns legality, action cost and dispatch. */
 export function turnEnemyClockwise(enemy: EnemyState, intentions: readonly Intention[]): FacingTurn {
+  return turnEnemy(enemy, intentions, 'clockwise');
+}
+
+/** Signed P07 turn, using the same P05 transform for either direction. */
+export function turnEnemy(
+  enemy: EnemyState, intentions: readonly Intention[], direction: 'clockwise' | 'anticlockwise',
+): FacingTurn {
   validateFacing(enemy.facing);
   if (enemy.hp <= 0) return { ok: false, reason: 'source-fallen', enemy, intentions, events: [] };
-  const facing = ((enemy.facing + 1) % 6) as Orientation;
+  const facing = ((enemy.facing + (direction === 'clockwise' ? 1 : 5)) % 6) as Orientation;
   const events: FacingEvent[] = [{ type: 'facing-changed', sourceId: enemy.id, before: enemy.facing, after: facing }];
   const next = intentions.map((intention): Intention => {
     if (intention.sourceId !== enemy.id || intention.kind !== 'fixed-area' || !intention.turnable) return intention;
-    const cells = turnCellsClockwise(intention.cells);
+    // Five clockwise transforms are exactly one anticlockwise step, with no extra events.
+    let cells = intention.cells;
+    for (let step = 0; step < (direction === 'clockwise' ? 1 : 5); step += 1) {
+      cells = turnCellsClockwise(cells);
+    }
     events.push({ type: 'intention-turned', intentionId: intention.id, sourceId: enemy.id,
       beforeCells: intention.cells, afterCells: cells });
     return { ...intention, cells };

@@ -2,6 +2,8 @@ import type { Formation } from './formation';
 import type { GameState } from './state';
 import type { AttackCommand, DamageEvent } from './damage';
 import type { LifecycleEvent } from './lifecycle';
+import type { FacingEvent } from './intents';
+import type { AbilityCommand, AbilityEvent } from './abilities';
 
 export type Maneuver = 'clockwise' | 'anticlockwise' | 'expand' | 'contract';
 
@@ -13,6 +15,7 @@ export interface ActorAction {
 }
 
 export type Command =
+  | AbilityCommand
   | AttackCommand
   | { readonly kind: 'maneuver'; readonly expectedRevision: number; readonly maneuver: Maneuver }
   | ({ readonly kind: 'useAbility' } & ActorAction)
@@ -29,7 +32,7 @@ export interface CommandError {
 }
 
 export type GameplayEvent =
-  | DamageEvent | LifecycleEvent
+  | DamageEvent | LifecycleEvent | FacingEvent | AbilityEvent
   | { readonly type: 'maneuver-applied'; readonly maneuver: Maneuver;
       readonly formation: Formation; readonly revision: number }
   | { readonly type: 'action-applied'; readonly actorId: string;
