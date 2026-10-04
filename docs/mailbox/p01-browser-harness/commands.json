@@ -1,0 +1,609 @@
+[
+  {
+    "label": null,
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {},
+    "exit": 0,
+    "output": "fce94b20cf69eae8030b20282a2f3ad82099d418\n"
+  },
+  {
+    "label": null,
+    "argv": [
+      "just",
+      "poc-001-install"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {},
+    "exit": 0,
+    "output": "bun install v1.4.2 (744846f84)\n\nChecked 43 installs across 86 packages (no changes) [3.00ms]\n"
+  },
+  {
+    "label": null,
+    "argv": [
+      "just",
+      "poc-001-typecheck"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {},
+    "exit": 0,
+    "output": "$ tsc --noEmit\n"
+  },
+  {
+    "label": null,
+    "argv": [
+      "just",
+      "poc-001-test"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {},
+    "exit": 0,
+    "output": "$ vitest run\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv5.0.3 \u001b[39m\u001b[90m/app\u001b[39m\n\n \u001b[32m\u2713\u001b[39m tests/smoke.test.ts \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 15\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m\n\u001b[2m   Start at \u001b[22m 01:46:12\n\u001b[2m   Duration \u001b[22m 177ms\u001b[2m (transform 48%, tests 22%, import 19%, worker 11%)\u001b[22m\n\n"
+  },
+  {
+    "label": null,
+    "argv": [
+      "just",
+      "poc-001-build"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {},
+    "exit": 0,
+    "output": "$ vite build\nvite v8.3.2 building client environment for production...\ntransforming...\n\u2713 7 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                     0.48 kB \u2502 gzip:   0.30 kB\ndist/assets/index-CXVwlNtD.css      0.11 kB \u2502 gzip:   0.10 kB\ndist/assets/index-Dsr-fa2K.js   1,375.84 kB \u2502 gzip: 358.19 kB\n\n\u2713 built in 797ms\n[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+  },
+  {
+    "label": "negative literal assertion",
+    "argv": [
+      "just",
+      "poc-001-test"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {},
+    "exit": 1,
+    "output": "$ vitest run\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv5.0.3 \u001b[39m\u001b[90m/app\u001b[39m\n\n \u001b[31m\u276f\u001b[39m tests/smoke.test.ts \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m | \u001b[22m\u001b[31m1 failed\u001b[39m\u001b[2m)\u001b[22m\u001b[32m 28\u001b[2mms\u001b[22m\u001b[39m\n\u001b[31m   \u001b[31m\u00d7\u001b[31m P01 fixture imports without browser globals and returns the declared literal\u001b[39m\u001b[32m 25\u001b[2mms\u001b[22m\u001b[39m\n   \u001b[32m\u2713\u001b[39m unit runner executes under the pinned Bun runtime\u001b[32m 1\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[31m\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u001b[39m\u001b[1m\u001b[41m Failed Tests 1 \u001b[49m\u001b[22m\u001b[31m\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u001b[39m\n\n\u001b[41m\u001b[1m FAIL \u001b[22m\u001b[49m tests/smoke.test.ts\u001b[2m > \u001b[22mP01 fixture imports without browser globals and returns the declared literal\n\u001b[31m\u001b[1mAssertionError\u001b[22m: expected 'formation-lab-ready' to be 'deliberately-wrong' // Object.is equality\u001b[39m\n\nExpected: \u001b[32m\"deliberately-wrong\"\u001b[39m\nReceived: \u001b[31m\"formation-lab-ready\"\u001b[39m\n\n\u001b[36m \u001b[2m\u276f\u001b[22m tests/smoke.test.ts:\u001b[2m15:28\u001b[22m\u001b[39m\n    \u001b[90m 13|\u001b[39m   try {\n    \u001b[90m 14|\u001b[39m     const { smokeFixture } = await import('../src/core/smoke');\n    \u001b[90m 15|\u001b[39m     expect(smokeFixture()).toBe('deliberately-wrong');\n    \u001b[90m   |\u001b[39m                            \u001b[31m^\u001b[39m\n    \u001b[90m 16|\u001b[39m   } finally {\n    \u001b[90m 17|\u001b[39m     for (const [name, descriptor] of saved) {\n\n\u001b[31m\u001b[2m\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af[1/1]\u23af\u001b[22m\u001b[39m\n\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[31m1 failed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[31m1 failed\u001b[39m\u001b[22m\u001b[2m | \u001b[22m\u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m\n\u001b[2m   Start at \u001b[22m 01:46:17\n\u001b[2m   Duration \u001b[22m 208ms\u001b[2m (transform 41%, tests 34%, import 14%, worker 10%)\u001b[22m\n\nerror: script \"test:unit\" exited with code 1\nerror: Recipe `poc-001-test` failed on line 29 with exit code 1\n"
+  },
+  {
+    "label": "restored passing suite",
+    "argv": [
+      "just",
+      "poc-001-test"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {},
+    "exit": 0,
+    "output": "$ vitest run\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv5.0.3 \u001b[39m\u001b[90m/app\u001b[39m\n\n \u001b[32m\u2713\u001b[39m tests/smoke.test.ts \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 12\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m\n\u001b[2m   Start at \u001b[22m 01:46:19\n\u001b[2m   Duration \u001b[22m 191ms\u001b[2m (transform 48%, import 19%, tests 19%, worker 13%, environment 1%)\u001b[22m\n\n"
+  },
+  {
+    "label": null,
+    "argv": [
+      "git",
+      "diff",
+      "--exit-code",
+      "--",
+      "poc-001-linked-formation/tests/smoke.test.ts"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {},
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "label": "real file and spaced name filter",
+    "argv": [
+      "just",
+      "poc-001-test",
+      "tests/smoke.test.ts",
+      "-t",
+      "declared literal"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {},
+    "exit": 0,
+    "output": "$ vitest run tests/smoke.test.ts -t \"declared literal\"\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv5.0.3 \u001b[39m\u001b[90m/app\u001b[39m\n\n \u001b[32m\u2713\u001b[39m tests/smoke.test.ts \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m | \u001b[22m\u001b[33m1 skipped\u001b[39m\u001b[2m)\u001b[22m\u001b[32m 15\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[2m | \u001b[22m\u001b[33m1 skipped\u001b[39m\u001b[90m (2)\u001b[39m\n\u001b[2m   Start at \u001b[22m 01:46:21\n\u001b[2m   Duration \u001b[22m 185ms\u001b[2m (transform 54%, tests 21%, import 18%, worker 7%)\u001b[22m\n\n"
+  },
+  {
+    "label": "real missing file filter nonzero",
+    "argv": [
+      "just",
+      "poc-001-test",
+      "tests/does-not-exist.test.ts"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {},
+    "exit": 1,
+    "output": "$ vitest run tests/does-not-exist.test.ts\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv5.0.3 \u001b[39m\u001b[90m/app\u001b[39m\n\n\u001b[31mNo test files found, exiting with code 1\n\u001b[39m\n\u001b[2mfilter: \u001b[22m\u001b[33mtests/does-not-exist.test.ts\u001b[39m\n\u001b[2minclude: \u001b[22m\u001b[33mtests/**/*.test.ts\u001b[39m\n\u001b[2mexclude:  \u001b[22m\u001b[33m**/node_modules/**\u001b[2m, \u001b[22m**/.git/**\u001b[39m\n\nerror: script \"test:unit\" exited with code 1\nerror: Recipe `poc-001-test` failed on line 29 with exit code 1\n"
+  },
+  {
+    "label": "explicit host install",
+    "argv": [
+      "just",
+      "poc-001-install"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/home/metatron/.bun/bin:/home/metatron/.codex/packages/standalone/releases/0.160.0-x86_64-unknown-linux-musl/codex-path:/home/metatron/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
+    },
+    "exit": 0,
+    "output": "bun install v1.4.2 (744846f84)\n\nChecked 43 installs across 86 packages (no changes) [4.00ms]\n"
+  },
+  {
+    "label": "explicit host typecheck",
+    "argv": [
+      "just",
+      "poc-001-typecheck"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/home/metatron/.bun/bin:/home/metatron/.codex/packages/standalone/releases/0.160.0-x86_64-unknown-linux-musl/codex-path:/home/metatron/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
+    },
+    "exit": 0,
+    "output": "$ tsc --noEmit\n"
+  },
+  {
+    "label": "explicit host test",
+    "argv": [
+      "just",
+      "poc-001-test"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/home/metatron/.bun/bin:/home/metatron/.codex/packages/standalone/releases/0.160.0-x86_64-unknown-linux-musl/codex-path:/home/metatron/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
+    },
+    "exit": 0,
+    "output": "$ vitest run\n\n RUN  v5.0.3 /opt/dev/tehom-brainlab/poc-001-linked-formation\n\n\n Test Files  1 passed (1)\n      Tests  2 passed (2)\n   Start at  01:46:23\n   Duration  135ms (transform 52%, tests 20%, import 18%, worker 10%)\n\n"
+  },
+  {
+    "label": "explicit host build",
+    "argv": [
+      "just",
+      "poc-001-build"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/home/metatron/.bun/bin:/home/metatron/.codex/packages/standalone/releases/0.160.0-x86_64-unknown-linux-musl/codex-path:/home/metatron/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
+    },
+    "exit": 0,
+    "output": "$ vite build\nvite v8.3.2 building client environment for production...\ntransforming...\n\u2713 7 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                     0.48 kB \u2502 gzip:   0.30 kB\ndist/assets/index-CXVwlNtD.css      0.11 kB \u2502 gzip:   0.10 kB\ndist/assets/index-Dsr-fa2K.js   1,375.84 kB \u2502 gzip: 358.19 kB\n\n\u2713 built in 721ms\n[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+  },
+  {
+    "label": "real missing Bun",
+    "argv": [
+      "just",
+      "poc-001-test"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/usr/bin:/bin"
+    },
+    "exit": 1,
+    "output": "P01: Bun 1.4.2 required on PATH in host mode\nerror: Recipe `poc-001-test` failed on line 29 with exit code 1\n"
+  },
+  {
+    "label": "real inaccessible Docker",
+    "argv": [
+      "just",
+      "poc-001-test"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "DOCKER_HOST": "unix:///tmp/p01-inaccessible-docker.sock"
+    },
+    "exit": 1,
+    "output": "P01: Docker daemon inaccessible; check availability and socket permissions\nerror: Recipe `poc-001-test` failed on line 29 with exit code 1\n"
+  },
+  {
+    "label": "install argument/just exit boundary",
+    "argv": [
+      "just",
+      "poc-001-install",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": "error: Recipe `poc-001-install` failed on line 17 with exit code 37\n",
+    "observed_child": {
+      "argv": [
+        "install",
+        "--frozen-lockfile",
+        "value with spaces",
+        "literal;$(echo unsafe)",
+        "--example"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab/poc-001-linked-formation"
+    }
+  },
+  {
+    "label": "install direct exit forwarding",
+    "argv": [
+      "/opt/dev/tehom-brainlab/poc-001-linked-formation/bin/run",
+      "install",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": ""
+  },
+  {
+    "label": "dev argument/just exit boundary",
+    "argv": [
+      "just",
+      "poc-001-dev",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": "error: Recipe `poc-001-dev` failed on line 21 with exit code 37\n",
+    "observed_child": {
+      "argv": [
+        "run",
+        "--bun",
+        "dev",
+        "--port",
+        "5173",
+        "value with spaces",
+        "literal;$(echo unsafe)",
+        "--example"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab/poc-001-linked-formation"
+    }
+  },
+  {
+    "label": "dev direct exit forwarding",
+    "argv": [
+      "/opt/dev/tehom-brainlab/poc-001-linked-formation/bin/run",
+      "dev",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": ""
+  },
+  {
+    "label": "typecheck argument/just exit boundary",
+    "argv": [
+      "just",
+      "poc-001-typecheck",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": "error: Recipe `poc-001-typecheck` failed on line 25 with exit code 37\n",
+    "observed_child": {
+      "argv": [
+        "run",
+        "--bun",
+        "typecheck",
+        "value with spaces",
+        "literal;$(echo unsafe)",
+        "--example"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab/poc-001-linked-formation"
+    }
+  },
+  {
+    "label": "typecheck direct exit forwarding",
+    "argv": [
+      "/opt/dev/tehom-brainlab/poc-001-linked-formation/bin/run",
+      "typecheck",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": ""
+  },
+  {
+    "label": "test argument/just exit boundary",
+    "argv": [
+      "just",
+      "poc-001-test",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": "error: Recipe `poc-001-test` failed on line 29 with exit code 37\n",
+    "observed_child": {
+      "argv": [
+        "run",
+        "--bun",
+        "test:unit",
+        "value with spaces",
+        "literal;$(echo unsafe)",
+        "--example"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab/poc-001-linked-formation"
+    }
+  },
+  {
+    "label": "test direct exit forwarding",
+    "argv": [
+      "/opt/dev/tehom-brainlab/poc-001-linked-formation/bin/run",
+      "test",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": ""
+  },
+  {
+    "label": "build argument/just exit boundary",
+    "argv": [
+      "just",
+      "poc-001-build",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": "error: Recipe `poc-001-build` failed on line 33 with exit code 37\n",
+    "observed_child": {
+      "argv": [
+        "run",
+        "--bun",
+        "build",
+        "value with spaces",
+        "literal;$(echo unsafe)",
+        "--example"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab/poc-001-linked-formation"
+    }
+  },
+  {
+    "label": "build direct exit forwarding",
+    "argv": [
+      "/opt/dev/tehom-brainlab/poc-001-linked-formation/bin/run",
+      "build",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": ""
+  },
+  {
+    "label": "preview argument/just exit boundary",
+    "argv": [
+      "just",
+      "poc-001-preview",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": "error: Recipe `poc-001-preview` failed on line 37 with exit code 37\n",
+    "observed_child": {
+      "argv": [
+        "run",
+        "--bun",
+        "preview",
+        "--port",
+        "4173",
+        "value with spaces",
+        "literal;$(echo unsafe)",
+        "--example"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab/poc-001-linked-formation"
+    }
+  },
+  {
+    "label": "preview direct exit forwarding",
+    "argv": [
+      "/opt/dev/tehom-brainlab/poc-001-linked-formation/bin/run",
+      "preview",
+      "value with spaces",
+      "literal;$(echo unsafe)",
+      "--example"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": ""
+  },
+  {
+    "label": "mismatched Bun pin",
+    "argv": [
+      "just",
+      "poc-001-test"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37",
+      "STUB_VERSION": "0.0.0"
+    },
+    "exit": 1,
+    "output": "P01: Bun 1.4.2 required; found 0.0.0\nerror: Recipe `poc-001-test` failed on line 29 with exit code 1\n"
+  },
+  {
+    "label": "missing Docker CLI",
+    "argv": [
+      "/usr/bin/just",
+      "poc-001-test"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/minimal"
+    },
+    "exit": 1,
+    "output": "P01: Docker CLI missing; install Docker or explicitly select POC001_MODE=host\nerror: Recipe `poc-001-test` failed on line 29 with exit code 1\n"
+  },
+  {
+    "label": "missing committed lockfile",
+    "argv": [
+      "just",
+      "poc-001-install"
+    ],
+    "cwd": "/tmp/brainlab-p01-cli-fr_0env7/path with spaces",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/home/metatron/.bun/bin:/home/metatron/.codex/packages/standalone/releases/0.160.0-x86_64-unknown-linux-musl/codex-path:/home/metatron/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
+    },
+    "exit": 1,
+    "output": "P01: committed bun.lock required for frozen install\nerror: Recipe `poc-001-install` failed on line 17 with exit code 1\n"
+  },
+  {
+    "label": "path with spaces and unrelated cwd",
+    "argv": [
+      "/tmp/brainlab-p01-cli-fr_0env7/path with spaces/poc-001-linked-formation/bin/run",
+      "test",
+      "a b"
+    ],
+    "cwd": "/tmp/brainlab-p01-cli-fr_0env7",
+    "environment": {
+      "POC001_MODE": "host",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "0"
+    },
+    "exit": 0,
+    "output": "",
+    "observed_child": {
+      "argv": [
+        "run",
+        "--bun",
+        "test:unit",
+        "a b"
+      ],
+      "cwd": "/tmp/brainlab-p01-cli-fr_0env7/path with spaces/poc-001-linked-formation"
+    }
+  },
+  {
+    "label": "Docker argument and exit forwarding",
+    "argv": [
+      "/opt/dev/tehom-brainlab/poc-001-linked-formation/bin/run",
+      "test",
+      "file with spaces.test.ts"
+    ],
+    "cwd": "/opt/dev/tehom-brainlab",
+    "environment": {
+      "POC001_MODE": "docker",
+      "PATH": "/tmp/brainlab-p01-cli-fr_0env7/stub:/usr/bin:/bin",
+      "STUB_CAPTURE": "/tmp/brainlab-p01-cli-fr_0env7/capture.json",
+      "STUB_EXIT": "37"
+    },
+    "exit": 37,
+    "output": "",
+    "observed_child": [
+      "run",
+      "--rm",
+      "--init",
+      "--user",
+      "1000:1000",
+      "--env",
+      "HOME=/tmp",
+      "--env",
+      "BUN_INSTALL_CACHE_DIR=/tmp/bun-cache",
+      "--env",
+      "POC001_PORT=0",
+      "--volume",
+      "/opt/dev/tehom-brainlab/poc-001-linked-formation:/app",
+      "--workdir",
+      "/app",
+      "oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895",
+      "sh",
+      "./scripts/toolchain.sh",
+      "test",
+      "file with spaces.test.ts"
+    ]
+  }
+]

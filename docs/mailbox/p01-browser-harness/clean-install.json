@@ -1,0 +1,16 @@
+{
+  "tested_revision": "fce94b20cf69eae8030b20282a2f3ad82099d418",
+  "checkout": "/tmp/brainlab-p01-clean-aaaca78",
+  "empty_node_modules_before_install": true,
+  "command": "git switch --detach fce94b20cf69eae8030b20282a2f3ad82099d418 && test ! -e poc-001-linked-formation/node_modules && sha256sum poc-001-linked-formation/bun.lock && just poc-001-install && sha256sum poc-001-linked-formation/bun.lock && just poc-001-typecheck && just poc-001-test && just poc-001-build && git status --short",
+  "exit": 0,
+  "lock_sha256_before": "97cf0bb58eea9ea8b98751e06d83bd64d8ea8df1660cae2ba135bddda9f9477a",
+  "lock_sha256_after": "97cf0bb58eea9ea8b98751e06d83bd64d8ea8df1660cae2ba135bddda9f9477a",
+  "install_packages": 43,
+  "vitest_test_files": 1,
+  "vitest_tests_passed": 2,
+  "typecheck_exit": 0,
+  "build_exit": 0,
+  "git_status": "clean; ignored dependencies/build output present",
+  "cache": "Bun cache temporary inside each --rm Docker container; pinned Docker image reused"
+}

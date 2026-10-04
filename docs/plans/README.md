@@ -1,6 +1,6 @@
 # POC 001 — bounded implementation plan index
 
-Twelve plans for the linked-formation prototype (P01 implemented candidate; verification/review pending, P02–P12 draft), written on 2 October 2026 against repository baseline `79f9498051df0281e6e9d3c904e9eee32f014873`.
+Twelve plans for the linked-formation prototype (P01 implementation/assigned verification complete; review/delivery pending, P02–P12 draft), written on 2 October 2026 against repository baseline `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 **This is a navigation and authority note, not a thirteenth implementation plan.** Adding these documents does not implement the prototype, approve new game rules, or constitute a playtest. No package installation, application build, unit test suite, or browser combat test was run as part of drafting.
 
@@ -10,7 +10,7 @@ Plans and standalone tasks follow the local [ADR-0002 filename rule](../adr/0002
 
 The drafts originally used user-supplied excerpts labelled ADR-0007 and ADR-0008 because the referenced local files were absent at their baseline. On 3 October, the user's vault instruction established local ADRs adapted from `../enoch`. These local records now replace the unavailable references. Existing filenames already comply, so their 2 October creation dates and eight-character random hexadecimal identifiers are retained. Delivery order is expressed by P01–P12 and dependency links, not filename sorting.
 
-Each plan is a proposed standalone task with an unassigned implementer/integration-owner role and stable sequential checkpoint identifiers. The acceptance criteria and verification sections define its task contract. The index describes a proposed delivery sequence; writing a plan does not complete its prerequisites or approve its provisional game rules.
+At drafting, each plan was a proposed standalone task with an unassigned implementer/integration-owner role and stable sequential checkpoint identifiers. The acceptance criteria and verification sections define its task contract. The index describes a proposed delivery sequence; writing a plan does not complete its prerequisites or approve its provisional game rules.
 
 Grounding sources:
 
@@ -27,19 +27,19 @@ The original fixed Apex/Shadow direction is not silently promoted back into this
 
 **Settled choices** are constraints already stated in the inspected sources or the user's instruction: the accepted POC scope, no walking/translation, shared maneuvers, engine-independent rules, existing assets, and the requested document format.
 
-**Required contracts** describe what must be observably true to accept the bounded implementation. Some are engineering invariants proposed by the plan; those are identified locally. Because every plan is a draft, these are not claims that an implementation already satisfies them.
+**Required contracts** describe what must be observably true to accept the bounded implementation. Some are engineering invariants proposed by the plan; those are identified locally. The draft contracts alone are not claims that an implementation satisfies them; P01 now links its executed evidence.
 
 **Proposed implementation / experimental defaults** fill explicitly open implementation details such as coordinate presets, mask boundaries, damage values, targeting ties, and defeat behavior. They are recommendations for executable fixtures, not historical decisions or balanced gameplay. Resolve/amend them explicitly at implementation start; a change affecting another plan requires reconciling that dependent plan's fixtures and tests, not creating a second hidden constant.
 
 All source/test file paths listed as proposed ownership are intended future paths. At the baseline the prototype has folders and a README, not a working TypeScript application. All commands in verification sections become executable only after the prerequisite plan supplies their scripts.
 
-The user's 3 October tooling preference supersedes the original npm proposal: use Bun with a prototype-local `bun.lock`, prefer Docker where useful, and orchestrate commands through the root justfile. Run the proposed `just poc-001-*` recipes from the repository root; P01 will implement the install/dev/typecheck/test/build/preview recipes, with test-browser and replay supplied by their later owning plans. Keep implementations in the prototype's `scripts/` and executable entry points in its `bin/`. The current root justfile supplies only repository tooling checks and the existing asset exporter.
+The user's 3 October tooling preference supersedes the original npm proposal: use Bun with a prototype-local `bun.lock`, prefer Docker where useful, and orchestrate commands through the root justfile. Run `just poc-001-*` recipes from the repository root; P01 now supplies the install/dev/typecheck/test/build/preview recipes, with test-browser and replay supplied by their later owning plans. Keep implementations in the prototype's `scripts/` and executable entry points in its `bin/`. The current root justfile also retains repository tooling checks and the existing asset exporter.
 
 ## Execution map
 
 | ID | Plan | Bounded outcome | Direct prerequisites |
 |---|---|---|---|
-| P01 | [Browser harness](2026-10-02-a87b131a-poc-001-browser-harness.md) | Independently install, run, test, and build one browser shell. | None |
+| P01 | [Browser harness](2026-10-02-a87b131a-poc-001-browser-harness.md) | Independently install, run, test, and build one browser shell. Implementation/assigned verification complete; independent review pending. | None |
 | P02 | [Formation algebra](2026-10-02-2e228a2b-poc-001-formation-algebra.md) | Preserve twelve labelled, reversible formations on 37 cells. | P01 |
 | P03 | [Command boundary](2026-10-02-2dfffcd3-poc-001-command-boundary.md) | Reject illegal/stale commands without spending resources or mutating state. | P01, P02 |
 | P04 | [Formation lab](2026-10-02-9d81c6df-poc-001-formation-lab.md) | Inspect, preview, commit, and reset formation-only interaction. | P01, P02, P03 |

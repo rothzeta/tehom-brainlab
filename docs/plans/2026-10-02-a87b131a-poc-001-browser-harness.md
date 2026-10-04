@@ -2,13 +2,13 @@
 
 ## Status and authority
 
-**P01. Implemented candidate; committed-revision verification and independent review pending.** No prerequisites. Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
+**P01. Implementation and assigned combined verification complete; independent review and delivery pending.** No prerequisites. Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 Authority: [AGENTS](../../AGENTS.md), [prototype README](../../poc-001-linked-formation/README.md), and the [technology decision](../adr/0004-repository-and-poc-direction.md). The local naming and format ADRs linked below govern this document.
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
-Task `P01` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); see the [P01 implementation entry](../TASK_LOGS.md#2026-10-04-p01-browser-harness). Starting-source and proposed-path descriptions below preserve the planning baseline.
+Task `P01` implementation and combined-verification owner: assigned Implementer. Independent review and delivery will be assigned separately. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); see the [P01 implementation entry](../TASK_LOGS.md#2026-10-04-p01-browser-harness). Starting-source and proposed-path descriptions below preserve the planning baseline.
 
 ## Smallest useful outcome
 
@@ -16,7 +16,7 @@ A contributor can install dependencies inside this prototype, start one browser 
 
 ## Starting source and ownership
 
-`poc-001-linked-formation/` currently contains a README, empty source/test directories, and placeholders. There is no package manifest, installed dependency set, application, or executable test suite.
+At the planning baseline, `poc-001-linked-formation/` contained a README, empty source/test directories, and placeholders. There was no package manifest, installed dependency set, application, or executable test suite.
 
 Own this prototype's package and lock files, TypeScript/Vite/Vitest configuration, HTML entry, `src/main.ts`, a minimal scene under `src/view/`, one pure smoke function under `src/core/`, its test, and local run instructions. Add prototype-local CLI implementations under `scripts/`, executable entry points under `bin/`, and the corresponding thin recipes to the root justfile. Prefer prototype-local Docker configuration for an isolated reproducible Bun toolchain. These are proposed paths, not existing implementations. Do not create a root workspace or move shared assets.
 
@@ -65,7 +65,7 @@ Expose `just poc-001-install`, `just poc-001-dev`, `just poc-001-typecheck`, `ju
 
 Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
 
-From the repository root, run `just poc-001-install`, `just poc-001-typecheck`, `just poc-001-test`, and `just poc-001-build`. Record exact commands, runtime/package-manager versions, exit codes, and the tested commit. Manually open development and preview builds; record the browser and any console/network errors. Return the entry-point paths, a screenshot of the actual shell, and known limitations. No commands or tests in this draft have been executed against an application.
+From the repository root, run `just poc-001-install`, `just poc-001-typecheck`, `just poc-001-test`, and `just poc-001-build`. Record exact commands, runtime/package-manager versions, exit codes, and the tested commit. Manually open development and preview builds; record the browser and any console/network errors. Return the entry-point paths, a screenshot of the actual shell, and known limitations. Execution update: the [Implementer handoff](../mailbox/p01-browser-harness/implementer.md) records criteria 1–7 evidence at `fce94b20cf69eae8030b20282a2f3ad82099d418`. The assigned automated real-browser captures and agent visual inspection substitute for the manual viewing step under the 4 October assignment; no human visit/playtest is claimed.
 
 ## Non-goals and stop conditions
 

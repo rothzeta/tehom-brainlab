@@ -1,0 +1,260 @@
+{
+  "tested_revision": "fce94b20cf69eae8030b20282a2f3ad82099d418",
+  "baseline": "656dd6a76d0bb4fedf74a96e9fcdce412becbd51",
+  "lock_hash": "97cf0bb58eea9ea8b98751e06d83bd64d8ea8df1660cae2ba135bddda9f9477a",
+  "records": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": "fce94b20cf69eae8030b20282a2f3ad82099d418\n"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "656dd6a76d0bb4fedf74a96e9fcdce412becbd51",
+        "--",
+        "AGENTS.md",
+        "CLAUDE.md",
+        ".agents",
+        "bin",
+        "scripts",
+        "assets",
+        "shared",
+        "tools",
+        ".gitignore",
+        ".codex",
+        ".aws"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "aaaca78ba7b39c0173eac6ea39ed487a024809d6",
+        "--",
+        "docs/mailbox/p01-browser-harness/scout.md"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "HEAD",
+        "--",
+        "poc-001-linked-formation",
+        "justfile"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "ls-files"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": ".agents/README.md\n.agents/agents/architect.md\n.agents/agents/coordinator.md\n.agents/agents/implementer.md\n.agents/agents/reviewer.md\n.agents/agents/scout.md\n.agents/scratch/README.md\n.agents/skills/ruach-handoff/SKILL.md\n.agents/skills/ruach-simplification/SKILL.md\n.agents/skills/ruach-testing/SKILL.md\n.agents/skills/ruach-workflow-feature/SKILL.md\n.editorconfig\n.gitignore\nAGENTS.md\nCLAUDE.md\nREADME.md\nassets/.gitignore\nassets/CREDITS.md\nassets/README.md\nassets/audio/.gitkeep\nassets/audio/SOURCES.md\nassets/backgrounds/.gitkeep\nassets/licenses/game-icons-license.txt\nassets/manifest.json\nassets/tokens/.gitkeep\nassets/tokens/censer.svg\nassets/tokens/foundry-mechanism.svg\nassets/tokens/girtablilu.svg\nassets/tokens/harrier.svg\nassets/tokens/pazuzu.svg\nassets/tokens/ugallu.svg\nassets/tokens/warder.svg\nbin/doctor\nbin/export-token-pngs\ndocs/CURRENT.md\ndocs/README.md\ndocs/SCHEMA.md\ndocs/TASK_LOGS.md\ndocs/adr/0001-documentation-vault.md\ndocs/adr/0002-plan-filenames.md\ndocs/adr/0003-implementation-plan-writing.md\ndocs/adr/0004-repository-and-poc-direction.md\ndocs/adr/0005-repository-management-and-tooling.md\ndocs/adr/0006-contract-invariants-and-black-box-testing.md\ndocs/adr/README.md\ndocs/exploitation/README.md\ndocs/exploitation/asset-import-001.md\ndocs/lexicon/README.md\ndocs/mailbox/README.md\ndocs/mailbox/claude-architect-injection/architect.md\ndocs/mailbox/codex-architect-injection/architect.md\ndocs/mailbox/orchestrator-comparison/acceptance.json\ndocs/mailbox/orchestrator-comparison/assignment.md\ndocs/mailbox/orchestrator-comparison/results.md\ndocs/mailbox/orchestrator-four-harness/acceptance.json\ndocs/mailbox/orchestrator-four-harness/agy-initial-scope-failure.json\ndocs/mailbox/orchestrator-four-harness/assignment.md\ndocs/mailbox/orchestrator-four-harness/observer-source.md\ndocs/mailbox/orchestrator-four-harness/results.md\ndocs/mailbox/orchestrator-four-harness/scope.json\ndocs/mailbox/p01-browser-harness/scout.md\ndocs/plans/2026-10-02-2dfffcd3-poc-001-command-boundary.md\ndocs/plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md\ndocs/plans/2026-10-02-4c3c0d42-poc-001-damage-and-fallen.md\ndocs/plans/2026-10-02-825a6700-poc-001-reproducible-playtests.md\ndocs/plans/2026-10-02-9d81c6df-poc-001-formation-lab.md\ndocs/plans/2026-10-02-a18d7fe6-poc-001-directional-boss.md\ndocs/plans/2026-10-02-a87b131a-poc-001-browser-harness.md\ndocs/plans/2026-10-02-d28ae958-poc-001-preview-equivalence.md\ndocs/plans/2026-10-02-d66a7452-poc-001-intent-semantics.md\ndocs/plans/2026-10-02-dc6612ec-poc-001-patrol-round-loop.md\ndocs/plans/2026-10-02-e7c77542-poc-001-playable-patrol.md\ndocs/plans/2026-10-02-f8938420-poc-001-brood-abilities.md\ndocs/plans/README.md\ndocs/playtests/README.md\ndocs/playtests/TEMPLATE.md\ndocs/prototypes/README.md\ndocs/prototypes/poc-001-linked-formation.md\njustfile\npoc-001-linked-formation/.bun-version\npoc-001-linked-formation/README.md\npoc-001-linked-formation/bin/run\npoc-001-linked-formation/bun.lock\npoc-001-linked-formation/index.html\npoc-001-linked-formation/package.json\npoc-001-linked-formation/public/.gitkeep\npoc-001-linked-formation/runtime.env\npoc-001-linked-formation/scripts/run.sh\npoc-001-linked-formation/scripts/toolchain.sh\npoc-001-linked-formation/src/content/.gitkeep\npoc-001-linked-formation/src/core/.gitkeep\npoc-001-linked-formation/src/core/smoke.ts\npoc-001-linked-formation/src/main.ts\npoc-001-linked-formation/src/style.css\npoc-001-linked-formation/src/view/.gitkeep\npoc-001-linked-formation/src/view/FormationLab.ts\npoc-001-linked-formation/tests/.gitkeep\npoc-001-linked-formation/tests/smoke.test.ts\npoc-001-linked-formation/tsconfig.json\npoc-001-linked-formation/vite.config.ts\npoc-001-linked-formation/vitest.config.ts\nscripts/doctor.sh\nscripts/export-token-pngs.py\nshared/README.md\ntools/README.md\n"
+    },
+    {
+      "argv": [
+        "git",
+        "check-ignore",
+        "poc-001-linked-formation/node_modules",
+        "poc-001-linked-formation/dist"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": "poc-001-linked-formation/node_modules\npoc-001-linked-formation/dist\n"
+    },
+    {
+      "argv": [
+        "find",
+        "/opt/dev/tehom-brainlab/poc-001-linked-formation/node_modules",
+        "/opt/dev/tehom-brainlab/poc-001-linked-formation/dist",
+        "-uid",
+        "0",
+        "-print"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "stat",
+        "-c",
+        "%u:%g %n",
+        "/opt/dev/tehom-brainlab/poc-001-linked-formation/bun.lock",
+        "/opt/dev/tehom-brainlab/poc-001-linked-formation/node_modules",
+        "/opt/dev/tehom-brainlab/poc-001-linked-formation/dist"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": "1000:1000 /opt/dev/tehom-brainlab/poc-001-linked-formation/bun.lock\n1000:1000 /opt/dev/tehom-brainlab/poc-001-linked-formation/node_modules\n1000:1000 /opt/dev/tehom-brainlab/poc-001-linked-formation/dist\n"
+    },
+    {
+      "argv": [
+        "/home/metatron/.bun/bin/bun",
+        "--eval",
+        "let accesses=0; for(const name of ['window','document','Phaser']) Object.defineProperty(globalThis,name,{get(){ accesses++; throw new Error(name); }}); const {smokeFixture}=await import('./src/core/smoke.ts'); if(smokeFixture()!=='formation-lab-ready'||accesses!==0) process.exit(1); console.log(JSON.stringify({bun:process.versions.bun,fixture:smokeFixture(),browserGlobalAccesses:accesses}));"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab/poc-001-linked-formation",
+      "exit": 0,
+      "output": "{\"bun\":\"1.4.2\",\"fixture\":\"formation-lab-ready\",\"browserGlobalAccesses\":0}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "--version"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": "Docker version 29.7.2, build a7dcaa6\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "info",
+        "--format",
+        "{{.ServerVersion}}"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": "29.7.2\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--user",
+        "1000:1000",
+        "oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895",
+        "sh",
+        "-c",
+        "bun --version; ls -l /usr/local/bun-node-fallback-bin/node; node -e 'console.log(process.versions.bun)' "
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": "1.4.2\nlrwxrwxrwx 1 root root 18 Sep  5 05:58 /usr/local/bun-node-fallback-bin/node -> /usr/local/bin/bun\n1.4.2\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "--filter",
+        "ancestor=oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895",
+        "--format",
+        "{{.ID}}"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": "17c0832096e0\n63cce125bf4d\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "17c0832096e0"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": "[\n    {\n        \"Id\": \"17c0832096e0d7484149d6404b195840cc50fdd02fe725b4aec16f3598fd2aea\",\n        \"Created\": \"2026-10-04T01:46:52.182239172Z\",\n        \"Path\": \"/usr/local/bin/docker-entrypoint.sh\",\n        \"Args\": [\n            \"sh\",\n            \"./scripts/toolchain.sh\",\n            \"preview\"\n        ],\n        \"State\": {\n            \"Status\": \"running\",\n            \"Running\": true,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 2517678,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-04T01:46:52.429461117Z\",\n            \"FinishedAt\": \"0001-01-01T00:00:00Z\"\n        },\n        \"Image\": \"sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/17c0832096e0d7484149d6404b195840cc50fdd02fe725b4aec16f3598fd2aea/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/17c0832096e0d7484149d6404b195840cc50fdd02fe725b4aec16f3598fd2aea/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/17c0832096e0d7484149d6404b195840cc50fdd02fe725b4aec16f3598fd2aea/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/17c0832096e0d7484149d6404b195840cc50fdd02fe725b4aec16f3598fd2aea/17c0832096e0d7484149d6404b195840cc50fdd02fe725b4aec16f3598fd2aea-json.log\",\n        \"Name\": \"/competent_tu\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"docker-default\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": [\n                \"/opt/dev/tehom-brainlab/poc-001-linked-formation:/app\"\n            ],\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"bridge\",\n            \"PortBindings\": {\n                \"4173/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"4173\"\n                    }\n                ]\n            },\n            \"RestartPolicy\": {\n                \"Name\": \"no\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": true,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                24,\n                80\n            ],\n            \"CapAdd\": null,\n            \"CapDrop\": null,\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": null,\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": false,\n            \"SecurityOpt\": null,\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 0,\n            \"NanoCpus\": 0,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 0,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": [],\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ],\n            \"Init\": true\n        },\n        \"Storage\": {\n            \"RootFS\": {\n                \"Snapshot\": {\n                    \"Name\": \"overlayfs\"\n                }\n            }\n        },\n        \"Mounts\": [\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/opt/dev/tehom-brainlab/poc-001-linked-formation\",\n                \"Destination\": \"/app\",\n                \"Mode\": \"\",\n                \"RW\": true,\n                \"Propagation\": \"rprivate\"\n            }\n        ],\n        \"Config\": {\n            \"Hostname\": \"17c0832096e0\",\n            \"Domainname\": \"\",\n            \"User\": \"1000:1000\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": true,\n            \"AttachStderr\": true,\n            \"ExposedPorts\": {\n                \"4173/tcp\": {}\n            },\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"HOME=/tmp\",\n                \"BUN_INSTALL_CACHE_DIR=/tmp/bun-cache\",\n                \"POC001_PORT=4173\",\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bun-node-fallback-bin\",\n                \"BUN_RUNTIME_TRANSPILER_CACHE_PATH=0\",\n                \"BUN_INSTALL_BIN=/usr/local/bin\"\n            ],\n            \"Cmd\": [\n                \"sh\",\n                \"./scripts/toolchain.sh\",\n                \"preview\"\n            ],\n            \"Image\": \"oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"/app\",\n            \"Entrypoint\": [\n                \"/usr/local/bin/docker-entrypoint.sh\"\n            ],\n            \"Labels\": {\n                \"org.opencontainers.image.created\": \"2026-09-05T05:58:20.106Z\",\n                \"org.opencontainers.image.description\": \"Incredibly fast JavaScript runtime, bundler, test runner, and package manager \u2013 all in one\",\n                \"org.opencontainers.image.licenses\": \"NOASSERTION\",\n                \"org.opencontainers.image.revision\": \"744846f844374847c902b5e7fd59b4342a51ef99\",\n                \"org.opencontainers.image.source\": \"https://github.com/oven-sh/bun\",\n                \"org.opencontainers.image.title\": \"bun\",\n                \"org.opencontainers.image.url\": \"https://github.com/oven-sh/bun\",\n                \"org.opencontainers.image.version\": \"1.4.2\"\n            }\n        },\n        \"NetworkSettings\": {\n            \"SandboxID\": \"38167b30602ae45670f2d0acbddc5f57373aa24eb6c6e66bdbe159553c756e72\",\n            \"SandboxKey\": \"/var/run/docker/netns/38167b30602a\",\n            \"Ports\": {\n                \"4173/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"4173\"\n                    }\n                ]\n            },\n            \"Networks\": {\n                \"bridge\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": null,\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"43ccb986b492f235656200c92a1510398702ad63b7ff22b004fa6f4e85017310\",\n                    \"EndpointID\": \"789abd0ed82a5d857763514d4cbe81f8f817f7f416cf628821e56e76124f9ff2\",\n                    \"Gateway\": \"172.17.0.1\",\n                    \"IPAddress\": \"172.17.0.3\",\n                    \"MacAddress\": \"76:34:b4:8f:94:48\",\n                    \"IPPrefixLen\": 16,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": null\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:296a79bbc988bb0a91ef11099af70a78a8cba98b73fd53f7b2a7715b7c86ced2\",\n            \"size\": 1620,\n            \"platform\": {\n                \"architecture\": \"amd64\",\n                \"os\": \"linux\"\n            }\n        }\n    }\n]\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "17c0832096e0",
+        "sh",
+        "-c",
+        "for exe in /proc/[0-9]*/exe; do readlink \"$exe\" 2>/dev/null || true; done"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": "/usr/sbin/docker-init\n/usr/local/bin/bun\n/usr/local/bin/bun\n/usr/bin/dash\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "63cce125bf4d"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": "[\n    {\n        \"Id\": \"63cce125bf4dc0f61b9d90754aab20652778ab34880cf98b8b0a42de6b62709c\",\n        \"Created\": \"2026-10-04T01:46:48.62081332Z\",\n        \"Path\": \"/usr/local/bin/docker-entrypoint.sh\",\n        \"Args\": [\n            \"sh\",\n            \"./scripts/toolchain.sh\",\n            \"dev\"\n        ],\n        \"State\": {\n            \"Status\": \"running\",\n            \"Running\": true,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 2517418,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-04T01:46:48.785331028Z\",\n            \"FinishedAt\": \"0001-01-01T00:00:00Z\"\n        },\n        \"Image\": \"sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/63cce125bf4dc0f61b9d90754aab20652778ab34880cf98b8b0a42de6b62709c/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/63cce125bf4dc0f61b9d90754aab20652778ab34880cf98b8b0a42de6b62709c/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/63cce125bf4dc0f61b9d90754aab20652778ab34880cf98b8b0a42de6b62709c/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/63cce125bf4dc0f61b9d90754aab20652778ab34880cf98b8b0a42de6b62709c/63cce125bf4dc0f61b9d90754aab20652778ab34880cf98b8b0a42de6b62709c-json.log\",\n        \"Name\": \"/relaxed_chatelet\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"docker-default\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": [\n                \"/opt/dev/tehom-brainlab/poc-001-linked-formation:/app\"\n            ],\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"bridge\",\n            \"PortBindings\": {\n                \"5173/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"5173\"\n                    }\n                ]\n            },\n            \"RestartPolicy\": {\n                \"Name\": \"no\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": true,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                24,\n                80\n            ],\n            \"CapAdd\": null,\n            \"CapDrop\": null,\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": null,\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": false,\n            \"SecurityOpt\": null,\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 0,\n            \"NanoCpus\": 0,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 0,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": [],\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ],\n            \"Init\": true\n        },\n        \"Storage\": {\n            \"RootFS\": {\n                \"Snapshot\": {\n                    \"Name\": \"overlayfs\"\n                }\n            }\n        },\n        \"Mounts\": [\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/opt/dev/tehom-brainlab/poc-001-linked-formation\",\n                \"Destination\": \"/app\",\n                \"Mode\": \"\",\n                \"RW\": true,\n                \"Propagation\": \"rprivate\"\n            }\n        ],\n        \"Config\": {\n            \"Hostname\": \"63cce125bf4d\",\n            \"Domainname\": \"\",\n            \"User\": \"1000:1000\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": true,\n            \"AttachStderr\": true,\n            \"ExposedPorts\": {\n                \"5173/tcp\": {}\n            },\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"HOME=/tmp\",\n                \"BUN_INSTALL_CACHE_DIR=/tmp/bun-cache\",\n                \"POC001_PORT=5173\",\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bun-node-fallback-bin\",\n                \"BUN_RUNTIME_TRANSPILER_CACHE_PATH=0\",\n                \"BUN_INSTALL_BIN=/usr/local/bin\"\n            ],\n            \"Cmd\": [\n                \"sh\",\n                \"./scripts/toolchain.sh\",\n                \"dev\"\n            ],\n            \"Image\": \"oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"/app\",\n            \"Entrypoint\": [\n                \"/usr/local/bin/docker-entrypoint.sh\"\n            ],\n            \"Labels\": {\n                \"org.opencontainers.image.created\": \"2026-09-05T05:58:20.106Z\",\n                \"org.opencontainers.image.description\": \"Incredibly fast JavaScript runtime, bundler, test runner, and package manager \u2013 all in one\",\n                \"org.opencontainers.image.licenses\": \"NOASSERTION\",\n                \"org.opencontainers.image.revision\": \"744846f844374847c902b5e7fd59b4342a51ef99\",\n                \"org.opencontainers.image.source\": \"https://github.com/oven-sh/bun\",\n                \"org.opencontainers.image.title\": \"bun\",\n                \"org.opencontainers.image.url\": \"https://github.com/oven-sh/bun\",\n                \"org.opencontainers.image.version\": \"1.4.2\"\n            }\n        },\n        \"NetworkSettings\": {\n            \"SandboxID\": \"e8b2a76e7a8cccebc47d5db86ecf1b28fef7f50070c542970dd12641ea21f7d4\",\n            \"SandboxKey\": \"/var/run/docker/netns/e8b2a76e7a8c\",\n            \"Ports\": {\n                \"5173/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"5173\"\n                    }\n                ]\n            },\n            \"Networks\": {\n                \"bridge\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": null,\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"43ccb986b492f235656200c92a1510398702ad63b7ff22b004fa6f4e85017310\",\n                    \"EndpointID\": \"7250ab47fbd33e32a215c66de34ba07b23ada3b4a3b36bbb81222cdcca5854ec\",\n                    \"Gateway\": \"172.17.0.1\",\n                    \"IPAddress\": \"172.17.0.2\",\n                    \"MacAddress\": \"6a:74:42:15:2c:d2\",\n                    \"IPPrefixLen\": 16,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": null\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:296a79bbc988bb0a91ef11099af70a78a8cba98b73fd53f7b2a7715b7c86ced2\",\n            \"size\": 1620,\n            \"platform\": {\n                \"architecture\": \"amd64\",\n                \"os\": \"linux\"\n            }\n        }\n    }\n]\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "63cce125bf4d",
+        "sh",
+        "-c",
+        "for exe in /proc/[0-9]*/exe; do readlink \"$exe\" 2>/dev/null || true; done"
+      ],
+      "cwd": "/opt/dev/tehom-brainlab",
+      "exit": 0,
+      "output": "/usr/sbin/docker-init\n/usr/local/bin/bun\n/usr/local/bin/bun\n/usr/bin/dash\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/tmp/brainlab-p01-clean-aaaca78",
+      "exit": 0,
+      "output": "fce94b20cf69eae8030b20282a2f3ad82099d418\n"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/tmp/brainlab-p01-clean-aaaca78",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "--",
+        "poc-001-linked-formation/bun.lock"
+      ],
+      "cwd": "/tmp/brainlab-p01-clean-aaaca78",
+      "exit": 0,
+      "output": ""
+    }
+  ]
+}

@@ -1,0 +1,497 @@
+{
+  "tested_revision": "fce94b20cf69eae8030b20282a2f3ad82099d418",
+  "captured_at": "2026-10-04T01:48:05.641Z",
+  "browserVersion": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/148.0.7778.96",
+    "revision": "@8625e066febc721e015ea99842da12901eb7ed73",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.96 Safari/537.36",
+    "jsVersion": "14.8.178.14"
+  },
+  "chrome": "/home/metatron/.cache/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-linux64/chrome-headless-shell",
+  "args": [
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--disable-background-networking",
+    "--remote-debugging-port=9227",
+    "--user-data-dir=/opt/dev/tehom-brainlab/.agents/scratch/p01/browser-profile",
+    "about:blank"
+  ],
+  "sandbox": "enabled; no bypass flags",
+  "viewport": {
+    "width": 1100,
+    "height": 750
+  },
+  "results": [
+    {
+      "mode": "dev",
+      "url": "http://localhost:5173/",
+      "canvas": {
+        "title": "TEHOM \u2014 Formation Lab",
+        "width": 960,
+        "height": 600,
+        "nonBackground": 5747
+      },
+      "screenshot": "dev.png",
+      "consoles": [
+        {
+          "type": "debug",
+          "args": [
+            {
+              "type": "string",
+              "value": "[vite] connecting..."
+            }
+          ],
+          "executionContextId": 2,
+          "timestamp": 1791078481389.362,
+          "stackTrace": {
+            "callFrames": [
+              {
+                "functionName": "",
+                "scriptId": "7",
+                "url": "http://localhost:5173/@vite/client",
+                "lineNumber": 933,
+                "columnNumber": 8
+              }
+            ]
+          }
+        },
+        {
+          "type": "debug",
+          "args": [
+            {
+              "type": "string",
+              "value": "[vite] connected."
+            }
+          ],
+          "executionContextId": 2,
+          "timestamp": 1791078481603.303,
+          "stackTrace": {
+            "callFrames": [
+              {
+                "functionName": "handleMessage",
+                "scriptId": "7",
+                "url": "http://localhost:5173/@vite/client",
+                "lineNumber": 1046,
+                "columnNumber": 11
+              },
+              {
+                "functionName": "",
+                "scriptId": "7",
+                "url": "http://localhost:5173/@vite/client",
+                "lineNumber": 662,
+                "columnNumber": 41
+              },
+              {
+                "functionName": "dequeue",
+                "scriptId": "7",
+                "url": "http://localhost:5173/@vite/client",
+                "lineNumber": 684,
+                "columnNumber": 7
+              },
+              {
+                "functionName": "",
+                "scriptId": "7",
+                "url": "http://localhost:5173/@vite/client",
+                "lineNumber": 676,
+                "columnNumber": 8
+              },
+              {
+                "functionName": "enqueue",
+                "scriptId": "7",
+                "url": "http://localhost:5173/@vite/client",
+                "lineNumber": 670,
+                "columnNumber": 9
+              },
+              {
+                "functionName": "",
+                "scriptId": "7",
+                "url": "http://localhost:5173/@vite/client",
+                "lineNumber": 662,
+                "columnNumber": 27
+              },
+              {
+                "functionName": "onMessage",
+                "scriptId": "7",
+                "url": "http://localhost:5173/@vite/client",
+                "lineNumber": 96,
+                "columnNumber": 5
+              },
+              {
+                "functionName": "",
+                "scriptId": "7",
+                "url": "http://localhost:5173/@vite/client",
+                "lineNumber": 214,
+                "columnNumber": 4
+              }
+            ]
+          }
+        },
+        {
+          "type": "log",
+          "args": [
+            {
+              "type": "string",
+              "value": "%cPhaser v4.2.1 (Canvas | Web Audio)%c https://phaser.io/v4021"
+            },
+            {
+              "type": "string",
+              "value": "color: #ffffff; background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAOCAYAAAAmL5yKAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAARBJREFUeNpi/P//P0OHsPB/BiCoePuWkYFEwALSXJElzMBgLwE2CNkQxgWr/yMr/p8QimlBu5DQ//+8vBBco/ofzAe6imH+qv/53/6jYJAYSA4ZoxoANYTPKhiuCQZwGcJU+e4dqpMmvsDq14krV2MPAxDha2CMKvoXoiE/PBQUDgQD8j82UFae9B9bOIC8B9UD9gIjjIMN7Ns6lWHn4XMoYu62RgxO3tkMjIyMII2MYAOAtmFVhA+ADHf2ycGMRhANjUq8YO+WKWCvgAORIV8CkpDCrzIwsLIymC1qAtuAD4Bsh3sBmqAY3qcGwL2AC4DCpKtzHlgzOLWihwEuzTCN0GhDJHeYC4gByBphACDAAH2dDIxdjr+VAAAAAElFTkSuQmCC\"), linear-gradient(to bottom, #000814, #001d3d, #003566); background-repeat: no-repeat; background-position: 4px center, 0 0; padding: 2px 6px 2px 24px;"
+            },
+            {
+              "type": "string",
+              "value": "background: transparent"
+            }
+          ],
+          "executionContextId": 2,
+          "timestamp": 1791078482065.719,
+          "stackTrace": {
+            "callFrames": [
+              {
+                "functionName": "DebugHeader",
+                "scriptId": "9",
+                "url": "http://localhost:5173/node_modules/.vite/deps/phaser.js?v=75c5f656",
+                "lineNumber": 12756,
+                "columnNumber": 16
+              },
+              {
+                "functionName": "boot",
+                "scriptId": "9",
+                "url": "http://localhost:5173/node_modules/.vite/deps/phaser.js?v=75c5f656",
+                "lineNumber": 13060,
+                "columnNumber": 4
+              },
+              {
+                "functionName": "DOMContentLoaded",
+                "scriptId": "9",
+                "url": "http://localhost:5173/node_modules/.vite/deps/phaser.js?v=75c5f656",
+                "lineNumber": 23724,
+                "columnNumber": 4
+              },
+              {
+                "functionName": "Game",
+                "scriptId": "9",
+                "url": "http://localhost:5173/node_modules/.vite/deps/phaser.js?v=75c5f656",
+                "lineNumber": 13037,
+                "columnNumber": 4
+              },
+              {
+                "functionName": "",
+                "scriptId": "4",
+                "url": "http://localhost:5173/src/main.ts",
+                "lineNumber": 3,
+                "columnNumber": 0
+              }
+            ]
+          }
+        }
+      ],
+      "exceptions": [],
+      "logs": [
+        {
+          "source": "rendering",
+          "level": "warning",
+          "text": "[GroupMarkerNotSet(crbug.com/242999)!:2D0C0020A0A0]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.",
+          "timestamp": 1791078482089.192,
+          "url": "http://localhost:5173/"
+        }
+      ],
+      "requests": [
+        {
+          "url": "http://localhost:5173/",
+          "method": "GET",
+          "type": "Document"
+        },
+        {
+          "url": "http://localhost:5173/@vite/client",
+          "method": "GET",
+          "type": "Script"
+        },
+        {
+          "url": "http://localhost:5173/src/main.ts",
+          "method": "GET",
+          "type": "Script"
+        },
+        {
+          "url": "http://localhost:5173/node_modules/.vite/deps/phaser.js?v=75c5f656",
+          "method": "GET",
+          "type": "Script"
+        },
+        {
+          "url": "http://localhost:5173/src/view/FormationLab.ts",
+          "method": "GET",
+          "type": "Script"
+        },
+        {
+          "url": "http://localhost:5173/src/style.css",
+          "method": "GET",
+          "type": "Script"
+        },
+        {
+          "url": "http://localhost:5173/node_modules/vite/dist/client/env.mjs",
+          "method": "GET",
+          "type": "Script"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/AP804Oa6AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+          "method": "GET",
+          "type": "Image"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABVJREFUeF7NwIEAAAAAgKD9qdeocAMAoAABm3DkcAAAAABJRU5ErkJggg==",
+          "method": "GET",
+          "type": "Image"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg==",
+          "method": "GET",
+          "type": "Image"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi/P//PwMMMDEgAdwcgAADAJZuAwXJYZOzAAAAAElFTkSuQmCC",
+          "method": "GET",
+          "type": "Image"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX//wCKxvRFAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+          "method": "GET",
+          "type": "Image"
+        }
+      ],
+      "responses": [
+        {
+          "url": "http://localhost:5173/",
+          "status": 200,
+          "mimeType": "text/html"
+        },
+        {
+          "url": "http://localhost:5173/src/main.ts",
+          "status": 200,
+          "mimeType": "text/javascript"
+        },
+        {
+          "url": "http://localhost:5173/src/view/FormationLab.ts",
+          "status": 200,
+          "mimeType": "text/javascript"
+        },
+        {
+          "url": "http://localhost:5173/src/style.css",
+          "status": 200,
+          "mimeType": "text/javascript"
+        },
+        {
+          "url": "http://localhost:5173/@vite/client",
+          "status": 200,
+          "mimeType": "text/javascript"
+        },
+        {
+          "url": "http://localhost:5173/node_modules/vite/dist/client/env.mjs",
+          "status": 200,
+          "mimeType": "text/javascript"
+        },
+        {
+          "url": "http://localhost:5173/node_modules/.vite/deps/phaser.js?v=75c5f656",
+          "status": 200,
+          "mimeType": "text/javascript"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/AP804Oa6AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+          "status": 200,
+          "mimeType": "image/png"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABVJREFUeF7NwIEAAAAAgKD9qdeocAMAoAABm3DkcAAAAABJRU5ErkJggg==",
+          "status": 200,
+          "mimeType": "image/png"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg==",
+          "status": 200,
+          "mimeType": "image/png"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi/P//PwMMMDEgAdwcgAADAJZuAwXJYZOzAAAAAElFTkSuQmCC",
+          "status": 200,
+          "mimeType": "image/png"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX//wCKxvRFAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+          "status": 200,
+          "mimeType": "image/png"
+        }
+      ],
+      "failures": [],
+      "sockets": [
+        "ws://localhost:5173/"
+      ]
+    },
+    {
+      "mode": "preview",
+      "url": "http://localhost:4173/",
+      "canvas": {
+        "title": "TEHOM \u2014 Formation Lab",
+        "width": 960,
+        "height": 600,
+        "nonBackground": 5747
+      },
+      "screenshot": "preview.png",
+      "consoles": [
+        {
+          "type": "log",
+          "args": [
+            {
+              "type": "string",
+              "value": "%cPhaser v4.2.1 (Canvas | Web Audio)%c https://phaser.io/v4021"
+            },
+            {
+              "type": "string",
+              "value": "color: #ffffff; background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAOCAYAAAAmL5yKAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAARBJREFUeNpi/P//P0OHsPB/BiCoePuWkYFEwALSXJElzMBgLwE2CNkQxgWr/yMr/p8QimlBu5DQ//+8vBBco/ofzAe6imH+qv/53/6jYJAYSA4ZoxoANYTPKhiuCQZwGcJU+e4dqpMmvsDq14krV2MPAxDha2CMKvoXoiE/PBQUDgQD8j82UFae9B9bOIC8B9UD9gIjjIMN7Ns6lWHn4XMoYu62RgxO3tkMjIyMII2MYAOAtmFVhA+ADHf2ycGMRhANjUq8YO+WKWCvgAORIV8CkpDCrzIwsLIymC1qAtuAD4Bsh3sBmqAY3qcGwL2AC4DCpKtzHlgzOLWihwEuzTCN0GhDJHeYC4gByBphACDAAH2dDIxdjr+VAAAAAElFTkSuQmCC\"), linear-gradient(to bottom, #000814, #001d3d, #003566); background-repeat: no-repeat; background-position: 4px center, 0 0; padding: 2px 6px 2px 24px;"
+            },
+            {
+              "type": "string",
+              "value": "background: transparent"
+            }
+          ],
+          "executionContextId": 3,
+          "timestamp": 1791078483950.614,
+          "stackTrace": {
+            "callFrames": [
+              {
+                "functionName": "e.exports",
+                "scriptId": "10",
+                "url": "http://localhost:4173/assets/index-Dsr-fa2K.js",
+                "lineNumber": 0,
+                "columnNumber": 79155
+              },
+              {
+                "functionName": "boot",
+                "scriptId": "10",
+                "url": "http://localhost:4173/assets/index-Dsr-fa2K.js",
+                "lineNumber": 0,
+                "columnNumber": 80300
+              },
+              {
+                "functionName": "e.exports",
+                "scriptId": "10",
+                "url": "http://localhost:4173/assets/index-Dsr-fa2K.js",
+                "lineNumber": 0,
+                "columnNumber": 145358
+              },
+              {
+                "functionName": "initialize",
+                "scriptId": "10",
+                "url": "http://localhost:4173/assets/index-Dsr-fa2K.js",
+                "lineNumber": 0,
+                "columnNumber": 80093
+              },
+              {
+                "functionName": "",
+                "scriptId": "10",
+                "url": "http://localhost:4173/assets/index-Dsr-fa2K.js",
+                "lineNumber": 102,
+                "columnNumber": 9112
+              }
+            ]
+          }
+        }
+      ],
+      "exceptions": [],
+      "logs": [
+        {
+          "source": "rendering",
+          "level": "warning",
+          "text": "[GroupMarkerNotSet(crbug.com/242999)!:2D0C0020A0A0]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.",
+          "timestamp": 1791078483959.829,
+          "url": "http://localhost:4173/"
+        }
+      ],
+      "requests": [
+        {
+          "url": "http://localhost:4173/",
+          "method": "GET",
+          "type": "Document"
+        },
+        {
+          "url": "http://localhost:4173/assets/index-Dsr-fa2K.js",
+          "method": "GET",
+          "type": "Script"
+        },
+        {
+          "url": "http://localhost:4173/assets/index-CXVwlNtD.css",
+          "method": "GET",
+          "type": "Stylesheet"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/AP804Oa6AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+          "method": "GET",
+          "type": "Image"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABVJREFUeF7NwIEAAAAAgKD9qdeocAMAoAABm3DkcAAAAABJRU5ErkJggg==",
+          "method": "GET",
+          "type": "Image"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg==",
+          "method": "GET",
+          "type": "Image"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi/P//PwMMMDEgAdwcgAADAJZuAwXJYZOzAAAAAElFTkSuQmCC",
+          "method": "GET",
+          "type": "Image"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX//wCKxvRFAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+          "method": "GET",
+          "type": "Image"
+        }
+      ],
+      "responses": [
+        {
+          "url": "http://localhost:4173/",
+          "status": 200,
+          "mimeType": "text/html"
+        },
+        {
+          "url": "http://localhost:4173/assets/index-CXVwlNtD.css",
+          "status": 200,
+          "mimeType": "text/css"
+        },
+        {
+          "url": "http://localhost:4173/assets/index-Dsr-fa2K.js",
+          "status": 200,
+          "mimeType": "text/javascript"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/AP804Oa6AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+          "status": 200,
+          "mimeType": "image/png"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABVJREFUeF7NwIEAAAAAgKD9qdeocAMAoAABm3DkcAAAAABJRU5ErkJggg==",
+          "status": 200,
+          "mimeType": "image/png"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg==",
+          "status": 200,
+          "mimeType": "image/png"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi/P//PwMMMDEgAdwcgAADAJZuAwXJYZOzAAAAAElFTkSuQmCC",
+          "status": 200,
+          "mimeType": "image/png"
+        },
+        {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX//wCKxvRFAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+          "status": 200,
+          "mimeType": "image/png"
+        }
+      ],
+      "failures": [],
+      "sockets": []
+    }
+  ],
+  "evidence_normalization": "Transient Vite HMR token query removed from socket URLs."
+}
