@@ -1,0 +1,1173 @@
+{
+  "tested_revision": "90e96d301bcbe7886755425b489123d87c455776",
+  "rules_version": "p07-v1",
+  "fixture_version": "p07-fix-traces-v1",
+  "boundary": "applyCommand",
+  "ability_rules": {
+    "clawDamage": 4,
+    "stingDamage": 4,
+    "impaleDamage": 6,
+    "galeDamage": 3,
+    "damageRules": {
+      "directionalReduction": 2,
+      "shelterReduction": 2,
+      "closeThreshold": 2
+    }
+  },
+  "traces": [
+    {
+      "ability_id": "claw",
+      "input": {
+        "state": {
+          "revision": 0,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "compact",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "censer",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [],
+          "resolvedAttackIds": [],
+          "declaredIntentions": []
+        },
+        "command": {
+          "kind": "useAbility",
+          "expectedRevision": 0,
+          "abilityId": "claw",
+          "actorId": "ugallu",
+          "targetId": "censer"
+        }
+      },
+      "result": {
+        "ok": true,
+        "state": {
+          "revision": 1,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "compact",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [
+            "ugallu"
+          ],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "censer",
+              "hp": 18,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [],
+          "resolvedAttackIds": [
+            "ability:[0,\"ugallu\",\"claw\"]"
+          ],
+          "declaredIntentions": []
+        },
+        "events": [
+          {
+            "type": "action-applied",
+            "actorId": "ugallu",
+            "abilityId": "claw",
+            "targetId": "censer",
+            "revision": 1
+          },
+          {
+            "type": "attack-settled",
+            "eventId": "ability:[0,\"ugallu\",\"claw\"]",
+            "sourceId": "ugallu",
+            "revision": 1
+          },
+          {
+            "type": "damage-applied",
+            "eventId": "ability:[0,\"ugallu\",\"claw\"]",
+            "targetId": "censer",
+            "rawDamage": 4,
+            "directionalReduction": 2,
+            "shelterReduction": 0,
+            "damage": 2,
+            "hpBefore": 20,
+            "hpAfter": 18
+          }
+        ]
+      }
+    },
+    {
+      "ability_id": "shelter",
+      "input": {
+        "state": {
+          "revision": 0,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "compact",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "censer",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [],
+          "resolvedAttackIds": [],
+          "declaredIntentions": []
+        },
+        "command": {
+          "kind": "useAbility",
+          "expectedRevision": 0,
+          "abilityId": "shelter",
+          "actorId": "ugallu",
+          "targetId": "girtablilu"
+        }
+      },
+      "result": {
+        "ok": true,
+        "state": {
+          "revision": 1,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "compact",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [
+            "ugallu"
+          ],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "censer",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [
+            {
+              "id": "ability:[0,\"ugallu\",\"shelter\"]",
+              "sourceId": "ugallu",
+              "targetId": "girtablilu"
+            }
+          ],
+          "resolvedAttackIds": [],
+          "declaredIntentions": []
+        },
+        "events": [
+          {
+            "type": "action-applied",
+            "actorId": "ugallu",
+            "abilityId": "shelter",
+            "targetId": "girtablilu",
+            "revision": 1
+          },
+          {
+            "type": "shelter-installed",
+            "shelterId": "ability:[0,\"ugallu\",\"shelter\"]",
+            "sourceId": "ugallu",
+            "targetId": "girtablilu"
+          }
+        ]
+      }
+    },
+    {
+      "ability_id": "sting",
+      "input": {
+        "state": {
+          "revision": 0,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "compact",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "censer",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [],
+          "resolvedAttackIds": [],
+          "declaredIntentions": []
+        },
+        "command": {
+          "kind": "useAbility",
+          "expectedRevision": 0,
+          "abilityId": "sting",
+          "actorId": "girtablilu",
+          "targetId": "censer"
+        }
+      },
+      "result": {
+        "ok": true,
+        "state": {
+          "revision": 1,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "compact",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [
+            "girtablilu"
+          ],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "censer",
+              "hp": 18,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [],
+          "resolvedAttackIds": [
+            "ability:[0,\"girtablilu\",\"sting\"]"
+          ],
+          "declaredIntentions": []
+        },
+        "events": [
+          {
+            "type": "action-applied",
+            "actorId": "girtablilu",
+            "abilityId": "sting",
+            "targetId": "censer",
+            "revision": 1
+          },
+          {
+            "type": "attack-settled",
+            "eventId": "ability:[0,\"girtablilu\",\"sting\"]",
+            "sourceId": "girtablilu",
+            "revision": 1
+          },
+          {
+            "type": "damage-applied",
+            "eventId": "ability:[0,\"girtablilu\",\"sting\"]",
+            "targetId": "censer",
+            "rawDamage": 4,
+            "directionalReduction": 2,
+            "shelterReduction": 0,
+            "damage": 2,
+            "hpBefore": 20,
+            "hpAfter": 18
+          }
+        ]
+      }
+    },
+    {
+      "ability_id": "impale",
+      "input": {
+        "state": {
+          "revision": 0,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "spread",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "censer",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [],
+          "resolvedAttackIds": [],
+          "declaredIntentions": []
+        },
+        "command": {
+          "kind": "useAbility",
+          "expectedRevision": 0,
+          "abilityId": "impale",
+          "actorId": "girtablilu",
+          "targetId": "censer"
+        }
+      },
+      "result": {
+        "ok": true,
+        "state": {
+          "revision": 1,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "spread",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [
+            "girtablilu"
+          ],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "censer",
+              "hp": 14,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [],
+          "resolvedAttackIds": [
+            "ability:[0,\"girtablilu\",\"impale\"]"
+          ],
+          "declaredIntentions": []
+        },
+        "events": [
+          {
+            "type": "action-applied",
+            "actorId": "girtablilu",
+            "abilityId": "impale",
+            "targetId": "censer",
+            "revision": 1
+          },
+          {
+            "type": "attack-settled",
+            "eventId": "ability:[0,\"girtablilu\",\"impale\"]",
+            "sourceId": "girtablilu",
+            "revision": 1
+          },
+          {
+            "type": "damage-applied",
+            "eventId": "ability:[0,\"girtablilu\",\"impale\"]",
+            "targetId": "censer",
+            "rawDamage": 6,
+            "directionalReduction": 0,
+            "shelterReduction": 0,
+            "damage": 6,
+            "hpBefore": 20,
+            "hpAfter": 14
+          }
+        ]
+      }
+    },
+    {
+      "ability_id": "gale",
+      "input": {
+        "state": {
+          "revision": 0,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "compact",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "censer",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [],
+          "resolvedAttackIds": [],
+          "declaredIntentions": []
+        },
+        "command": {
+          "kind": "useAbility",
+          "expectedRevision": 0,
+          "abilityId": "gale",
+          "actorId": "pazuzu",
+          "targetId": "censer"
+        }
+      },
+      "result": {
+        "ok": true,
+        "state": {
+          "revision": 1,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "compact",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [
+            "pazuzu"
+          ],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "censer",
+              "hp": 17,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [],
+          "resolvedAttackIds": [
+            "ability:[0,\"pazuzu\",\"gale\"]"
+          ],
+          "declaredIntentions": []
+        },
+        "events": [
+          {
+            "type": "action-applied",
+            "actorId": "pazuzu",
+            "abilityId": "gale",
+            "targetId": "censer",
+            "revision": 1
+          },
+          {
+            "type": "attack-settled",
+            "eventId": "ability:[0,\"pazuzu\",\"gale\"]",
+            "sourceId": "pazuzu",
+            "revision": 1
+          },
+          {
+            "type": "damage-applied",
+            "eventId": "ability:[0,\"pazuzu\",\"gale\"]",
+            "targetId": "censer",
+            "rawDamage": 3,
+            "directionalReduction": 0,
+            "shelterReduction": 0,
+            "damage": 3,
+            "hpBefore": 20,
+            "hpAfter": 17
+          }
+        ]
+      }
+    },
+    {
+      "ability_id": "crosswind",
+      "input": {
+        "state": {
+          "revision": 0,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "compact",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "censer",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [],
+          "resolvedAttackIds": [],
+          "declaredIntentions": [
+            {
+              "id": "area",
+              "sourceId": "warder",
+              "kind": "fixed-area",
+              "cells": [
+                {
+                  "q": 2,
+                  "r": 0
+                },
+                {
+                  "q": 1,
+                  "r": 1
+                },
+                {
+                  "q": 1,
+                  "r": 0
+                }
+              ],
+              "turnable": true
+            },
+            {
+              "id": "mark",
+              "sourceId": "warder",
+              "kind": "marked-hit",
+              "targetId": "girtablilu"
+            }
+          ]
+        },
+        "command": {
+          "kind": "useAbility",
+          "expectedRevision": 0,
+          "abilityId": "crosswind",
+          "actorId": "pazuzu",
+          "targetId": "warder",
+          "direction": "anticlockwise"
+        }
+      },
+      "result": {
+        "ok": true,
+        "state": {
+          "revision": 1,
+          "round": 1,
+          "phase": "player",
+          "formation": {
+            "shape": "compact",
+            "orientation": 0
+          },
+          "brood": [
+            {
+              "id": "ugallu",
+              "brood": "ugallu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "girtablilu",
+              "brood": "girtablilu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            },
+            {
+              "id": "pazuzu",
+              "brood": "pazuzu",
+              "owner": "player",
+              "hp": 10,
+              "maxHp": 10,
+              "statuses": []
+            }
+          ],
+          "actedIds": [
+            "pazuzu"
+          ],
+          "maneuverUsed": false,
+          "intentions": [],
+          "enemies": [
+            {
+              "id": "warder",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 5
+            },
+            {
+              "id": "censer",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0
+            },
+            {
+              "id": "unprotected",
+              "hp": 20,
+              "maxHp": 20,
+              "facing": 0,
+              "rotatable": false
+            }
+          ],
+          "protections": [
+            {
+              "sourceId": "warder",
+              "targetId": "censer"
+            }
+          ],
+          "shelters": [],
+          "resolvedAttackIds": [],
+          "declaredIntentions": [
+            {
+              "id": "area",
+              "sourceId": "warder",
+              "kind": "fixed-area",
+              "cells": [
+                {
+                  "q": 2,
+                  "r": -2
+                },
+                {
+                  "q": 2,
+                  "r": -1
+                },
+                {
+                  "q": 1,
+                  "r": -1
+                }
+              ],
+              "turnable": true
+            },
+            {
+              "id": "mark",
+              "sourceId": "warder",
+              "kind": "marked-hit",
+              "targetId": "girtablilu"
+            }
+          ]
+        },
+        "events": [
+          {
+            "type": "action-applied",
+            "actorId": "pazuzu",
+            "abilityId": "crosswind",
+            "targetId": "warder",
+            "revision": 1
+          },
+          {
+            "type": "facing-changed",
+            "sourceId": "warder",
+            "before": 0,
+            "after": 5
+          },
+          {
+            "type": "intention-turned",
+            "intentionId": "area",
+            "sourceId": "warder",
+            "beforeCells": [
+              {
+                "q": 2,
+                "r": 0
+              },
+              {
+                "q": 1,
+                "r": 1
+              },
+              {
+                "q": 1,
+                "r": 0
+              }
+            ],
+            "afterCells": [
+              {
+                "q": 2,
+                "r": -2
+              },
+              {
+                "q": 2,
+                "r": -1
+              },
+              {
+                "q": 1,
+                "r": -1
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
