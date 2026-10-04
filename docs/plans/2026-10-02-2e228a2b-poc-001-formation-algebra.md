@@ -6,15 +6,92 @@
 
 Authority: the [brief's Formation rules and Initial tests](../../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../adr/0004-repository-and-poc-direction.md). The exact coordinate mapping below is now implemented as the experimental fixture under assignment B-impl; verification does not establish balanced gameplay. The [index](README.md) and local ADRs below establish formatting authority.
 
-**Amended 2026-10-04:** Compact is now a triangle by user decision; see [Amendment CT](#amendment-ct-2026-10-04--compact-triangle). Not yet implemented.
+**Amended 2026-10-04:** Compact is now a triangle by user decision; see [Amendment CT](#amendment-ct-2026-10-04--compact-triangle) (implemented and locally delivered on the radius-3 board).
+
+**Amended 2026-10-04 (later):** the board is now two rings, 19 cells, by user decision; see [Amendment TR](#amendment-tr-2026-10-04--two-ring-board). It supersedes the radius-3 board, the ring table `R` and the Amendment CT mapping. Not yet implemented.
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P02` implementation and combined-verification owner: assignment B-impl Implementer; local integration/delivery owner: assignment B-merge Implementer. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Actual execution is recorded in [TASK_LOGS](../TASK_LOGS.md#2026-10-04-p02-formation-algebra-candidate).
 
+## Amendment TR (2026-10-04) — two-ring board
+
+**Status: accepted board decision with a provisional Compact placement; not yet implemented.** Source: user decision, 2026-10-04, recorded in the [brief's Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record). Execution task: [Two-ring board](2026-10-04-d005e5f4-poc-001-two-ring-board.md). Design rationale: [Architect report](../mailbox/two-ring-board/architect.md).
+
+This section supersedes the radius-3 enumeration, the 18-cell ring `R`, the original fixture and Amendment CT's mapping. Those sections stay below as the record of delivered behaviour: the original mapping at `803da5d`/`7e964c3`, and the Compact triangle at `40b516f`/`a76a0ff`. Where this section and an earlier one disagree, this section governs.
+
+**Settled (user):** the arena is the centre plus rings 1 and 2. The middle is enemy and boss space. Compact is the true triangle "tight against" the middle: Ugallu and Girtablilu on the outer ring (ring 2), Pazuzu one step inward on ring 1, all links distance 1. Spread is "wide around": three outer-ring cells about 120° apart. The Amendment CT decisions on slot (Pazuzu inward) and order (clockwise around the formation's own centre) still apply.
+
+**Board.** Enumerate the cells whose distance from `(0,0)` is at most two: 19 cells, made up of the centre, 6 cells on ring 1 and 12 on ring 2. Brood never occupy the centre.
+
+**Outer ring `T`** (ring 2, 12 cells). It is the same frozen table and order as Amendment CT's `T`, and is now the outermost ring. Clockwise from `(2,0)`, indexed 0 through 11:
+
+```text
+(2,0), (1,1), (0,2), (-1,2), (-2,2), (-2,1),
+(-2,0), (-1,-1), (0,-2), (1,-2), (2,-2), (2,-1)
+```
+
+Even indices are corners and odd indices are the single edge cell between two corners.
+
+**Ring-1 table `S`** (new, 6 cells). Clockwise from `(1,0)`, indexed 0 through 5:
+
+```text
+(1,0), (0,1), (-1,1), (-1,0), (0,-1), (1,-1)
+```
+
+`S[k]` lies radially inside corner `T[2k]`.
+
+**Orientation count and step.** There are still six orientations of 60°. One clockwise step is the axial turn `(-r,q+r)`. It advances `T` by 2 and `S` by 1, so `T[(j+2) mod 12]` is the turn of `T[j]`, and `S[(k+1) mod 6]` is the turn of `S[k]`. Rotation stays orientation ±1 modulo 6.
+
+**Proposed exports.** Keep `RING_TWO` (values unchanged) and add a frozen `RING_ONE` holding `S`. Remove the radius-3 `OUTER_RING`, because its cells are no longer on the board. Keeping it as an alias of `RING_TWO` was rejected: it would give one table two names. Radius-literal names stay true if the board changes again.
+
+**Geometric constraint (a conflict with the CT placement).** On ring 2 each side has one edge cell, so any two adjacent outer cells are a corner `T[2o]` and an edge `T[2o±1]`. Their only common ring-1 neighbour lies radially inside the corner. So every triangle of two outer cells and one ring-1 cell is lopsided: no such triangle is mirror-symmetric about a side's radial midline. The accepted "mid-side" placement (CT decision 3, `R[3o+1]`, `R[3o+2]`, `T[2o+1]`) has no radius-2 equivalent. There are exactly two rotation-consistent families, mirror images of each other:
+
+- **A, sector-aligned (provisional default):** `T[2o]`, `T[2o+1]`, `S[o]`.
+- **B, mirror:** `T[2o+1]`, `T[2o+2]`, `S[o+1]`.
+
+**Mapping (provisional default A, pending user confirmation; slot and order are accepted).** Roster order stays `[ugallu, girtablilu, pazuzu]`. For orientation `o` in `0..5`:
+
+- Compact: Ugallu `T[2o]`, Girtablilu `T[2o+1]`, Pazuzu `S[o]`.
+- Spread: Ugallu `T[2o]`, Girtablilu `T[(2o+4) mod 12]`, Pazuzu `T[(2o+8) mod 12]`.
+
+| o | Compact Ugallu | Compact Girtablilu | Compact Pazuzu | Spread Ugallu | Spread Girtablilu | Spread Pazuzu |
+|---|---|---|---|---|---|---|
+| 0 | (2,0) | (1,1) | (1,0) | (2,0) | (-2,2) | (0,-2) |
+| 1 | (0,2) | (-1,2) | (0,1) | (0,2) | (-2,0) | (2,-2) |
+| 2 | (-2,2) | (-2,1) | (-1,1) | (-2,2) | (0,-2) | (2,0) |
+| 3 | (-2,0) | (-1,-1) | (-1,0) | (-2,0) | (2,-2) | (0,2) |
+| 4 | (0,-2) | (1,-2) | (0,-1) | (0,-2) | (2,0) | (-2,2) |
+| 5 | (2,-2) | (2,-1) | (1,-1) | (2,-2) | (0,2) | (-2,0) |
+
+Rationale for A:
+
+- Compact orientation `o` is exactly encounter sector `o` under the [P05 two-ring amendment](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-tr-2026-10-04--two-ring-board). The whole formation stays inside one sector, as both earlier mappings did, so every delivered P05/P06 recipient and protection table keeps its value. B straddles sectors `o` and `o+1` and would change those tables.
+- Order is preserved without mirroring. Around the Compact centroid, Ugallu, Girtablilu and Pazuzu sit at −30°, 90° and 210° (downward-positive screen angles), the same angles as Amendment CT. Spread runs at 0°, 120° and 240° around the encounter centre. Expand is still an orientation-preserving scale and 30° twist.
+- Ugallu holds its corner through Expand/Contract (`T[2o]` in both shapes), Girtablilu moves `T[2o+1]` ↔ `T[2o+4]` and Pazuzu moves `S[o]` ↔ `T[2o+8]`. Only destinations matter.
+- Visual cost: the triangle sits towards its sector's leading corner rather than centred on a side. B has the same lopsidedness, mirrored.
+
+Spread uses the corners `T[2o]`, `T[2o+4]`, `T[2o+8]` (distance 4), which is the direct analogue of `R[3o]`, `R[3o+6]`, `R[3o+12]`. The edge cells `T[2o+1]`, `T[2o+5]`, `T[2o+9]` (distance 3) are also 120° apart; they were not chosen because corners are the widest "wide around" option and keep Ugallu stationary.
+
+**Reversibility and identity.** The twelve labelled states are distinct. Compact states are pairwise disjoint (one per sector), and only Compact uses ring 1. Spread occupied-cell sets still coincide for orientations 0/2/4 and 1/3/5 while keeping different labelled assignments. The axial clockwise turn maps every labelled position at orientation `o` to its position at `o+1`, for both shapes. So six turns restore the start, each rotation is undone by its inverse, and Expand/Contract preserve orientation and roster labels and reverse exactly.
+
+**Links and Close threshold.** In roster-pair order, Compact links are `[1,1,1]` and Spread links are `[4,4,4]`. Keep `CLOSE_THRESHOLD = 2`. Every threshold from 1 to 3 classifies both shapes identically (Compact Close, Spread Stretched), so a change would only cause churn. 2 also sits mid-range, which leaves room for a later distance-2 or distance-3 shape without retuning. **Spread links remain Stretched.** The classification boundaries are Compact between thresholds 0 and 1, and Spread between 3 and 4 (formerly 5 and 6).
+
+**Required contract change.** "Brood never overlap; Spread Brood and Compact Ugallu and Girtablilu occupy the outer ring; Compact Pazuzu occupies ring 2" becomes: "Brood never overlap and never occupy the centre. Spread Brood and Compact Ugallu and Girtablilu occupy ring 2. Compact Pazuzu occupies ring 1. Every Compact pair is adjacent."
+
+**Amended acceptance criteria (replace 1, 2, 4 and 7; add 8):**
+
+1. Board enumeration returns exactly 19 unique integer cells. Exactly 12 are at radius 2 and 6 at radius 1, and no returned cell exceeds radius two.
+2. All twelve labelled states match the Amendment TR table, have three distinct occupied cells, and keep roster order. Compact places Ugallu and Girtablilu at radius 2 and Pazuzu at radius 1; Spread places all three at radius 2. No state occupies `(0,0)`.
+4. At threshold two, all Compact links are Close with distance 1 and all Spread links are Stretched with distance 4, across wraparound. At threshold 0 Compact is Stretched; at threshold 4 Spread is Close.
+7. `RING_TWO` (`T`) contains exactly the 12 radius-2 cells in the declared order, and `T[(j+2) mod 12]` is the clockwise turn of `T[j]`.
+8. `RING_ONE` (`S`) contains exactly the 6 radius-1 cells in the declared order, and `S[(k+1) mod 6]` is the clockwise turn of `S[k]`. Both tables and their cells are frozen.
+
+Criteria 3, 5 and 6 are unchanged.
+
 ## Amendment CT (2026-10-04) — Compact triangle
 
-**Status: accepted design amendment, not yet implemented.** Source: user decision, 2026-10-04, recorded in the [brief's Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record). Execution task: [Compact triangle](2026-10-04-fb4bf201-poc-001-compact-triangle.md). This section supersedes the Compact parts of the original fixture, contracts and criteria below. Those parts stay as the record of the delivered `803da5d`/`7e964c3` behaviour. Spread is unchanged.
+**Status: implemented and locally delivered on the radius-3 board; geometry superseded by [Amendment TR](#amendment-tr-2026-10-04--two-ring-board).** Its slot and order decisions still apply; its `R`-based mapping and mid-side placement are historical. Source: user decision, 2026-10-04, recorded in the [brief's Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record). Execution task: [Compact triangle](2026-10-04-fb4bf201-poc-001-compact-triangle.md). This section supersedes the Compact parts of the original fixture, contracts and criteria below. Those parts stay as the record of the delivered `803da5d`/`7e964c3` behaviour. Spread is unchanged.
 
 **Settled (user):** Compact is three mutually adjacent cells, two on the outer ring and one on ring 2 just inside them. All three links are distance 1. Ugallu and Girtablilu hold the outer cells; Pazuzu is inward.
 

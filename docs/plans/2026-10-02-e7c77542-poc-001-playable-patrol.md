@@ -6,6 +6,8 @@
 
 Authority: [brief Presentation requirements, Round structure, and Ordinary patrol](../../docs/prototypes/poc-001-linked-formation.md), plus [prototype rendering boundary](../../poc-001-linked-formation/README.md). Interface choices below are proposals; they do not change the six abilities or action economics. See the [index](README.md) for formatting authority.
 
+**Amended 2026-10-04 (two-ring board):** see the TR note under Proposed implementation.
+
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P10` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
@@ -43,6 +45,8 @@ Show actor HP/actions, selected ability and target, maneuver availability, numbe
 The early lab-only configuration selector must be clearly separated from the playable patrol; it cannot change formation for free during a battle.
 
 *Amendment CT (2026-10-04):* Compact now places Pazuzu on ring 2 ([P02 amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle)). P08's proposed enemy anchors are ring-1 cells, for example Harrier `(1,0)`, which is adjacent to Compact orientation-zero Pazuzu `(1,1)`. Brood and enemy tokens must remain separately readable and selectable. Telegraphs over ring-2 cells must be visible, since P05 masks now include them.
+
+*Amendment TR (2026-10-04, two-ring board):* this supersedes the CT note's cells. On the [19-cell board](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-tr-2026-10-04--two-ring-board), Compact Pazuzu is on ring 1, and P08's former ring-1 enemy cells collide with it (Harrier `(1,0)` is Compact orientation-zero Pazuzu). Per the [P08 amendment](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-tr-2026-10-04--two-ring-board), enemies share the centre `(0,0)` as a provisional, view-only anchor. Render them as a compact labelled cluster centred there, using view-only pixel offsets. Keep them separately readable and selectable from each other and from an adjacent ring-1 Pazuzu; the browser check should assert pointer hit-tests for every enemy and Brood token. Telegraphs now cover ring-1 and ring-2 cells (P05's six-cell fronts) and must be visible on both. Encounter layout stays an open experiment question; this is presentation, not a placement rule.
 
 ## Implementation checkpoints
 

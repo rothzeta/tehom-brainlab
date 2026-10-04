@@ -6,9 +6,19 @@
 
 Authority: [brief Ordinary patrol, Round structure, and wounded starting conditions](../../docs/prototypes/poc-001-linked-formation.md). All HP values, damage, targeting ties, and resolution ordering below are proposed reproducible fixture defaults, not settled balance. See the [index](README.md) for authority labels and local ADRs.
 
+**Amended 2026-10-04 (two-ring board):** see [Amendment TR](#amendment-tr-2026-10-04--two-ring-board). The proposed enemy cells in the fixture table are superseded.
+
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P08` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
+
+## Amendment TR (2026-10-04) — two-ring board
+
+**Status: draft amendment; not implemented.** Trigger: the user's two-ring decision ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)) and the [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-tr-2026-10-04--two-ring-board)/[P05](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-tr-2026-10-04--two-ring-board) two-ring amendments. Board task: [Two-ring board](2026-10-04-d005e5f4-poc-001-two-ring-board.md).
+
+- **Enemy anchors (superseded).** The proposed Warder `(0,-1)`, Censer `(-1,1)` and Harrier `(1,0)` are ring-1 cells. On the two-ring board these are exactly Compact Pazuzu's cells at orientations 4, 2 and 0. At the proposed `patrol-v1` start (Compact orientation zero), Harrier would share Pazuzu's cell `(1,0)`.
+- **Provisional replacement.** Patrol content gives enemies no board cell. All patrol enemies use the centre `(0,0)` as their shared visual anchor, and P10 owns any pixel offsets that keep them readable as a cluster. No rule reads an enemy cell: protection, masks and intentions are encounter-centred through P05. Encounter layout is an open experiment question ([brief Open decisions](../../docs/prototypes/poc-001-linked-formation.md#open-decisions)). Do not encode a final enemy-placement rule. If content needs a placeholder field, mark it view-only and provisional.
+- **Unchanged.** HP, damage, targeting, round cadence, Warder facing 0 and the three presets are unchanged. Censer splash radius 2 hits all three Compact Brood and only its target in Spread (distance 4). Harrier's isolated bonus applies to every living Spread Brood and to no Compact Brood while two or more live. These are the same qualitative contrasts P05 already specifies.
 
 ## Smallest useful outcome
 

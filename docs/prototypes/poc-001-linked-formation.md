@@ -1,6 +1,6 @@
 # POC 001 — Linked formation
 
-**Status:** specified experiment; P01 shell delivered, P02 pure formation algebra implemented and verified at `3570610406886f18ca08c51effc79b3e8f3ddd34` with independent review/delivery pending. Combat and playtesting have not started.
+**Status:** specified experiment; P01–P06 and the Compact triangle are locally delivered on the radius-3 board (see [CURRENT](../CURRENT.md)). The two-ring board (2026-10-04) is specified but not implemented. Combat and playtesting have not started.
 
 **Basis:** the POC accepted in the TEHOM planning conversation, 2 October 2026. Initial tuning and unresolved mechanics are identified below rather than presented as playtest findings.
 
@@ -14,7 +14,7 @@ The experiment tests whether three Brood attacking individually but moving as a 
 
 | Element | Initial scope |
 |---|---|
-| Arena | Central hex plus three surrounding rings: 37 cells |
+| Arena | Central hex plus two surrounding rings: 19 cells *(accepted user decision, 2026-10-04; replaces three rings and 37 cells. See [Decision record](#decision-record).)* |
 | Party | Ugallu, Girtablilu, Pazuzu |
 | Abilities | Two per Brood; six total |
 | Maneuvers | Rotate left, rotate right, expand/contract |
@@ -26,20 +26,22 @@ The experiment tests whether three Brood attacking individually but moving as a 
 
 ## Formation rules
 
-Brood occupy the outer ring (radius 3), except that Compact places one Brood on ring 2 just inside the other two. Enemies occupy the central engagement area. The encounter centre is fixed and does not change when a target is selected or defeated.
+Brood occupy the two rings around the centre. The outer ring is ring 2 (12 cells) and the inner ring is ring 1 (6 cells). Spread uses the outer ring only; Compact places one Brood on ring 1, just inside the other two. The middle is enemy and boss space. The encounter centre is fixed and does not change when a target is selected or defeated. Sectors, fronts and protection are measured from that fixed centre, not from enemy tokens.
 
-- **Compact:** a true triangle of three mutually adjacent cells: two Brood on the outer ring and one on ring 2, just inside them. All three links are distance 1. Ugallu and Girtablilu hold the outer cells; Pazuzu is the inward Brood. *(Accepted user decision, 2026-10-04; replaces "three consecutive outer-ring cells". See [Decision record](#decision-record).)*
-- **Spread:** three outer-ring positions approximately 120 degrees apart.
+Exact enemy placement is deliberately not fixed. Bosses stand "in the middle" but need not be exactly centred, and encounter layout is one of the questions this POC explores (open experiment question, see [Open decisions](#open-decisions)). Until it is explored, the centre cell `(0,0)` is the provisional visual anchor for enemies. Enemy anchors carry no rule meaning.
+
+- **Compact:** "tight against" the middle. A true triangle of three mutually adjacent cells: two Brood on the outer ring (ring 2) and one on ring 1, just inside them. All three links are distance 1. Ugallu and Girtablilu hold the outer cells; Pazuzu is the inward Brood. *(Accepted user decision, 2026-10-04; replaces "three consecutive outer-ring cells". See [Decision record](#decision-record).)* On the two-ring board the triangle cannot be mirror-symmetric about a side. Its provisional placement is one encounter sector: Ugallu on an outer corner cell, Girtablilu on the next outer cell clockwise, and Pazuzu on the ring-1 cell inside Ugallu.
+- **Spread:** "wide around" the middle. Three outer-ring (ring 2) positions exactly 120 degrees apart. They are provisionally the outer ring's corner cells, the widest choice (pairwise distance 4).
 - **Rotate:** turn the entire formation one 60-degree step clockwise or anticlockwise.
 - **Expand / contract:** change shape while preserving the Brood's clockwise order around the formation's own centre and the formation's orientation.
 
-Expansion separates the Brood around the encounter. Ugallu and Girtablilu stay on the outer ring; Pazuzu steps out from ring 2 to the outer ring, and contraction steps it back in. No Brood ever leaves the outer two rings. There is no independent movement, squad translation, pursuit, pathfinding, collision resolution, opportunity attack, or damage from crossing a telegraph during a maneuver. Only destination states determine the initial rules.
+Expansion separates the Brood around the encounter. Ugallu stays on its corner cell, Girtablilu moves along the outer ring, and Pazuzu steps out from ring 1 to the outer ring; contraction reverses this. No Brood ever occupies the centre cell. There is no independent movement, squad translation, pursuit, pathfinding, collision resolution, opportunity attack, or damage from crossing a telegraph during a maneuver. Only destination states determine the initial rules.
 
-The exact experimental coordinate mapping and reversible shape transitions are now encoded in the [P02 implementation](../../poc-001-linked-formation/README.md#formation-algebra-p02) and tested against the [plan fixture](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md). All twelve labelled states are retained even when Spread occupied-cell sets coincide. The delivered P02 Compact mapping is still the superseded collinear one; the triangle mapping is specified in the [P02 amendment](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle) and the [Compact triangle task](../plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md), and is not yet implemented. Browser presentation remains the P01 placeholder; combat has not been added.
+The exact experimental coordinate mapping and reversible shape transitions are encoded in the [P02 implementation](../../poc-001-linked-formation/README.md#formation-algebra-p02) and tested against the [plan fixture](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md). All twelve labelled states are retained even when Spread occupied-cell sets coincide. The delivered code implements the Compact triangle on the superseded radius-3 board ([Compact triangle task](../plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md)). The two-ring mapping is specified in the [P02 two-ring amendment](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-tr-2026-10-04--two-ring-board) and the [two-ring board task](../plans/2026-10-04-d005e5f4-poc-001-two-ring-board.md), and is not yet implemented. The browser lab shows formations only; combat has not been added.
 
 ### Links
 
-All three links remain visible. The initial test threshold is Close at two hex steps or less and Stretched beyond that. Compact should make all links Close (each is distance 1); Spread should make them Stretched.
+All three links remain visible. The initial test threshold is Close at two hex steps or less and Stretched beyond that. Compact should make all links Close (each is distance 1); Spread should make them Stretched (each is distance 4 on the two-ring board).
 
 This first version deliberately tests shared formation stances, not independently adjustable links or asymmetric formations. The threshold is provisional, not balanced.
 
@@ -119,7 +121,7 @@ A fair comparison must preserve the original model's own strengths: Glare pressu
 
 ## Initial tests to implement
 
-- The radius-three board has exactly 37 unique cells.
+- The radius-two board has exactly 19 unique cells.
 - All twelve labelled formation states are legal; occupied cells do not overlap.
 - Six rotations restore the original labelled configuration.
 - Rotation followed by its inverse restores state.
@@ -134,11 +136,29 @@ The first six formation checks are implemented and pass in the P02 candidate (90
 
 ## Open decisions
 
-Numeric balance, sector masks, enemy intention tie-breaking, the definition of isolation, and how formation behaves after a Brood falls must be specified before calling the combat loop complete. The Compact triangle (see [Decision record](#decision-record)) puts one Brood on ring 2; by accepted user decision (2026-10-04), it is covered by sector-based areas, sweeps and protection fronts like the outer cells of its sector. P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
+Numeric balance, sector masks, enemy intention tie-breaking, the definition of isolation, and how formation behaves after a Brood falls must be specified before calling the combat loop complete. The Compact triangle (see [Decision record](#decision-record)) puts one Brood on the inner Brood ring (ring 1 on the two-ring board); by accepted user decision (2026-10-04), it is covered by sector-based areas, sweeps and protection fronts like the outer cells of its sector.
+
+**Open experiment question: encounter layout.** Where enemies stand, whether a boss is exactly centred, and whether an enemy's cell should ever carry rule meaning (for example which sector counts as its front, or whether it may stand on an empty ring-1 cell) are deliberately unresolved. This POC exists to explore them. Until then the centre cell is a provisional, view-only enemy anchor, and sectors and protection stay encounter-centred. P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
 
 ## Decision record
 
-**2026-10-04 — Compact is a true triangle (accepted; source: user decision, 2026-10-04).** The user observed that the delivered Compact formation placed the three Brood collinearly along one outer-ring edge (link distances 1, 2, 1), so it was not a triangle. Decision: Compact becomes three mutually adjacent cells, two Brood on the outer ring and one on ring 2 just inside them, with all three links at distance 1. The user's sketch places Ugallu and Girtablilu on the outer ring and Pazuzu inward:
+**2026-10-04 — Two-ring arena (accepted; source: user decision, 2026-10-04).** For this POC the arena has only two rings around the centre, not three: "i dont see what three would bring." The user's clarification:
+
+> some bosses will be in the midlle and a strategy will be to go wide around them vs thigt agains them, so i guess they wont be completly centered, as for encounters, thats what this pos is trying to figure out right
+
+Decision: the board is the centre plus rings 1 and 2, 19 cells instead of 37. The middle is enemy and boss space, and the Brood occupy the rings around it. Compact is "tight against" the middle: the accepted true triangle, with Ugallu and Girtablilu on the outer ring (now ring 2) and Pazuzu one step inward on ring 1. Spread is "wide around": three outer-ring cells 120 degrees apart. Enemy placement is deliberately not fixed; it is an open experiment question (see [Open decisions](#open-decisions)), and the centre cell is only a provisional visual anchor. The Compact-triangle decisions below keep their meaning on the new board: inward exposure (sectors now cover rings 1–2), Pazuzu inward, and clockwise order around the formation's own centre.
+
+One part of the earlier decisions cannot carry over exactly. The radius-2 outer ring has a single cell between corners, so no triangle of two outer cells and one ring-1 cell is mirror-symmetric about a side. Every such triangle pairs an outer corner cell with an outer edge cell, and its ring-1 cell sits radially inside the corner. "Mid-side" placement (CT decision 3) is therefore superseded by a **provisional default, pending user confirmation**: the triangle fills encounter sector `o`, with Ugallu `T[2o]` (corner), Girtablilu `T[2o+1]` and Pazuzu `S[o]`. Spread uses the outer corners `T[2o]`, `T[2o+4]`, `T[2o+8]`. Ugallu therefore does not move on Expand/Contract. The mapping, tables and alternatives are in the [P02 two-ring amendment](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-tr-2026-10-04--two-ring-board), the [P05 two-ring amendment](../plans/2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-tr-2026-10-04--two-ring-board) and the [two-ring board task](../plans/2026-10-04-d005e5f4-poc-001-two-ring-board.md).
+
+Orientation zero, screen convention with vertical coordinates increasing downward:
+
+```
+ C   P   U      C centre (0,0); P (1,0) on ring 1; U (2,0), an outer corner
+   ·   G        G (1,1), next outer cell clockwise; · is (0,1), ring 1
+U-G 1, U-P 1, G-P 1
+```
+
+**2026-10-04 — Compact is a true triangle (accepted; source: user decision, 2026-10-04).** *Board note: this entry uses the radius-3 coordinates delivered at `a76a0ff`. On the two-ring board (entry above) "outer ring" means ring 2 and "ring 2" means ring 1; placement decision 3 is superseded there by a provisional default.* The user observed that the delivered Compact formation placed the three Brood collinearly along one outer-ring edge (link distances 1, 2, 1), so it was not a triangle. Decision: Compact becomes three mutually adjacent cells, two Brood on the outer ring and one on ring 2 just inside them, with all three links at distance 1. The user's sketch places Ugallu and Girtablilu on the outer ring and Pazuzu inward:
 
 ```
    outer ring

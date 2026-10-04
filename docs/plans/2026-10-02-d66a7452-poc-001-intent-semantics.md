@@ -6,15 +6,48 @@
 
 Authority: [brief Round structure, Test abilities, and encounter descriptions](../../docs/prototypes/poc-001-linked-formation.md). Exact sector masks and cancellation rules are explicitly open in that source; the choices below are proposals, not recovered requirements. Formatting authority is recorded in the [index](README.md).
 
-**Amended 2026-10-04:** sectors extend to ring 2 for the Compact triangle; see [Amendment CT](#amendment-ct-2026-10-04--compact-triangle). Not yet implemented.
+**Amended 2026-10-04:** sectors extend to ring 2 for the Compact triangle; see [Amendment CT](#amendment-ct-2026-10-04--compact-triangle) (implemented and locally delivered on the radius-3 board).
+
+**Amended 2026-10-04 (later):** sectors cover rings 1–2 of the two-ring board; see [Amendment TR](#amendment-tr-2026-10-04--two-ring-board). Not yet implemented.
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P05` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
 
+## Amendment TR (2026-10-04) — two-ring board
+
+**Status: accepted design amendment, not yet implemented.** Trigger: the user's two-ring decision of 2026-10-04 ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)) and the [P02 two-ring amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-tr-2026-10-04--two-ring-board) (`T` = ring 2, `S` = ring 1). Execution: [Two-ring board task](2026-10-04-d005e5f4-poc-001-two-ring-board.md). This supersedes Amendment CT's mask cells, which describe delivered `40b516f`. The accepted inward-exposure decision is unchanged: sectors cover both Brood rings, now rings 1 and 2.
+
+**Masks (P05 owns these definitions):**
+
+- `sectorCells(s)` = `T[2s], T[2s+1], S[s]`: outer cells clockwise, then the ring-1 cell, which keeps Amendment CT's outer-then-inner order. These are the encounter-centred wedges from corner `T[2s]` clockwise.
+- `frontMask(f)` = `sectorCells(f)` followed by `sectorCells((f+1) mod 6)`: six cells. Facing zero is `T0,T1,S0,T2,T3,S1` = `(2,0),(1,1),(1,0),(0,2),(-1,2),(0,1)`. Facing five is `T10,T11,S5,T0,T1,S0` = `(2,-2),(2,-1),(1,-1),(2,0),(1,1),(1,0)`.
+- The six sectors are disjoint and partition the 18 cells of rings 1–2. Only the centre `(0,0)` is outside every mask.
+- `turnCellsClockwise(frontMask(f))` equals `frontMask((f+1) mod 6)` element by element, because the turn advances `T` by 2 and `S` by 1.
+- A front still covers two of six sectors, one third of the Brood cells (6 of 18, formerly 10 of 30).
+
+**Recipient and protection tables (unchanged values).** Compact orientation `o` is exactly sector `o`. Spread places Ugallu, Girtablilu and Pazuzu in sectors `o`, `o+2` and `o+4`, as before. So every hand-written table keeps its delivered value:
+
+- Fixture area (facing-zero front): Compact `[all, all, -, -, -, -]`. Spread `[U, U, P, P, G, G]`.
+- Turned area (facing one): Compact `[-, all, all, -, -, -]`. Spread `[G, U, U, P, P, G]`.
+- Warder facing-zero protection: attackers are protected exactly when they are fixture-area recipients.
+
+The Architect checked this arithmetic with a disposable script outside the repository; the task's tests must restate it independently.
+
+**Marks, splash and isolation.**
+
+- A mark on Girtablilu anchors at `T[2o+1]` in Compact and `T[(2o+4) mod 12]` in Spread.
+- Keep `SPLASH_RADIUS = 2`. Compact pairs are at distance 1, so a splash on any Compact Brood reaches all three. Spread pairs are at distance 4, so a splash reaches only its target. Radii 1–3 behave identically for both shapes. The board diameter is 4, so radius 4 or more would reach every Brood in any formation; 2 stays clear of that degenerate value.
+- Protection checks the attacker's current cell, on either Brood ring, against the six-cell front.
+- Isolation and active links are unchanged: Compact has no isolated Brood while two or more live, and in Spread every living Brood is isolated.
+
+**Enemy anchors.** Amendment CT's statement "rings 0–1 remain enemy visual anchors outside every mask" is superseded. Ring 1 is now Brood space, inside masks. Only the centre is outside masks, and it is the provisional enemy visual anchor. Enemy cells carry no rule meaning: protection and masks are encounter-centred, and selectors never read enemy positions. Encounter layout is an open experiment question ([brief Open decisions](../../docs/prototypes/poc-001-linked-formation.md#open-decisions)). If a later experiment gives enemy cells rule meaning, that needs a separate mask proposal; it must not quietly change these selectors.
+
+**Amended acceptance criterion 1:** a facing-zero front mask contains exactly `T[0],T[1],S[0],T[2],T[3],S[1]` in that order. A facing-five mask contains `T[10],T[11],S[5],T[0],T[1],S[0]`. The six sectors are disjoint and their union is exactly the 18 cells at radius 1 or 2. Criteria 2–6 are unchanged and are evaluated with the Amendment TR mapping.
+
 ## Amendment CT (2026-10-04) — Compact triangle
 
-**Status: accepted design amendment, not yet implemented.** Trigger: the user decision of 2026-10-04 ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)) places Compact Pazuzu on ring 2, using the mapping in the [P02 amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle). Execution: [Compact triangle task](2026-10-04-fb4bf201-poc-001-compact-triangle.md). This supersedes the outer-ring-only sector and eligibility statements below, which describe delivered `f3a0e233`.
+**Status: implemented and locally delivered on the radius-3 board; mask cells superseded by [Amendment TR](#amendment-tr-2026-10-04--two-ring-board).** Trigger: the user decision of 2026-10-04 ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)) places Compact Pazuzu on ring 2, using the mapping in the [P02 amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle). Execution: [Compact triangle task](2026-10-04-fb4bf201-poc-001-compact-triangle.md). This supersedes the outer-ring-only sector and eligibility statements below, which describe delivered `f3a0e233`.
 
 **Problem.** Delivered sectors contain outer-ring cells only, so an inward Brood could never be inside a protection front or a sector-built area. Compact Pazuzu would always ignore Warder protection, and a frontal sweep could never hit it. Neither outcome was chosen as a mechanic.
 

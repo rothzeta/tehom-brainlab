@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**Implemented, independently reviewed (no findings), accepted, locally delivered.** [Implementation evidence](../mailbox/compact-triangle/implementer.md); [independent review](../mailbox/compact-triangle/reviewer.md). Written 2026-10-04 against BASE `0f9c1b7` (local master content with P01–P06 delivered). The Coordinator assigns the owner. The task owner is a POC 001 Implementer, who also owns local integration unless assigned otherwise.
+**Implemented, independently reviewed (no findings), accepted, locally delivered.** *Geometry superseded 2026-10-04 by the user's two-ring decision; see the [Two-ring board task](2026-10-04-d005e5f4-poc-001-two-ring-board.md). The accepted slot, order and inward-exposure decisions below still apply. The radius-3 mapping, the ring-2 sectors and the mid-side placement are the historical record of this delivery.* [Implementation evidence](../mailbox/compact-triangle/implementer.md); [independent review](../mailbox/compact-triangle/reviewer.md). Written 2026-10-04 against BASE `0f9c1b7` (local master content with P01–P06 delivered). The Coordinator assigns the owner. The task owner is a POC 001 Implementer, who also owns local integration unless assigned otherwise.
 
 Authority: user decision of 2026-10-04, recorded in the [brief's Decision record](../prototypes/poc-001-linked-formation.md#decision-record). Compact is three mutually adjacent cells, two on the outer ring and one on ring 2, with all links at distance 1. Ugallu and Girtablilu are outer; Pazuzu is inward. The user also accepted the exact mapping and the sector coverage of the inward cell on 2026-10-04 (see Accepted user decisions below). They are specified in their owning plans:
 

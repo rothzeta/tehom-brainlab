@@ -6,15 +6,31 @@
 
 Authority: [prototype First implementation slice](../../poc-001-linked-formation/README.md), [brief Presentation requirements](../../docs/prototypes/poc-001-linked-formation.md), [asset manifest](../../assets/manifest.json), and [credits](../../assets/CREDITS.md). See the [index](README.md) and local ADRs below for formatting authority. Full combat previews belong to P09, not this slice.
 
-**Amended 2026-10-04:** the lab must render the Compact triangle; see [Amendment CT](#amendment-ct-2026-10-04--compact-triangle). Not yet implemented.
+**Amended 2026-10-04:** the lab must render the Compact triangle; see [Amendment CT](#amendment-ct-2026-10-04--compact-triangle) (implemented and locally delivered).
+
+**Amended 2026-10-04 (later):** the lab renders the 19-cell two-ring board; see [Amendment TR](#amendment-tr-2026-10-04--two-ring-board). Not yet implemented.
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P04` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
 
+## Amendment TR (2026-10-04) — two-ring board
+
+**Status: accepted design amendment, not yet implemented.** Trigger: the user's two-ring decision ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)) and the [P02 two-ring amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-tr-2026-10-04--two-ring-board). Execution: [Two-ring board task](2026-10-04-d005e5f4-poc-001-two-ring-board.md).
+
+The lab contracts are unchanged. Board cells, positions, links, ghosts and availability come from core, and `projectHex` projects any axial cell. The delivered view (`40b516f`) has these board-size assumptions, which must change:
+
+- **Cell count.** The legend hard-codes "37 cells". Derive it from `boardCells().length`, which already feeds `#board-stage[data-cells]`, so the text cannot drift. The lab must render 19 cells.
+- **Pixel pitch (view choice, provisional).** At the delivered spacing of 85 px the 19-cell board fills about half the 760×610 stage. Raise `PROJECTION.spacing` to 120 px and keep the origin at `(380, 295)` and the stage size. At 120 px the board's hexes span about 600×554 px, the token centres stay within x 140–620 and y 87–503, and tokens 112 px wide no longer overlap neighbouring tokens. The hex radius already derives from the spacing. An Implementer may choose another spacing from 100 to 120 px if screenshots show a reason. Any value must keep every token on screen, keep the 1280×800 layout fitting the viewport, and keep link labels clear of tokens.
+- **Empty-centre check.** The browser check clicks the stage origin as an empty cell. The centre `(0,0)` is still never occupied by a Brood, and the origin is unchanged, so that check stays valid.
+- **Labels and ghosts.** Compact link-label placement (away from the third vertex) and Spread placement need no logic change. Spread links now cross ring 1 instead of rings 1–2. Confirm in screenshots that labels and ghost captions stay readable at the new spacing.
+- **Enemy anchors.** None are rendered in this lab. Patrol emblems appear only in the credits panel.
+
+**Amended acceptance criterion 1:** every P02 fixture renders 19 cells, three distinct labelled Brood, and three links with the same states reported by core. The other criteria and the Amendment CT evidence (per-token hit-tests, readable Compact labels, exact ghosts, now including the ring-1 cell) are unchanged.
+
 ## Amendment CT (2026-10-04) — Compact triangle
 
-**Status: accepted design amendment, not yet implemented.** Trigger: the user decision of 2026-10-04 ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)) and the [P02 mapping amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle). Execution: [Compact triangle task](2026-10-04-fb4bf201-poc-001-compact-triangle.md).
+**Status: implemented and locally delivered on the radius-3 board; board size superseded by [Amendment TR](#amendment-tr-2026-10-04--two-ring-board).** Trigger: the user decision of 2026-10-04 ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)) and the [P02 mapping amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle). Execution: [Compact triangle task](2026-10-04-fb4bf201-poc-001-compact-triangle.md).
 
 The lab contracts are unchanged. Positions, links, ghosts and availability already come from core selectors, and `projectHex` projects any axial cell, including ring 2. The delivered view (`ad394558`) has one geometry assumption: Compact link-label offsets in `FormationLab.drawBoard` assume the long middle link of the old 1, 2, 1 line (a larger offset for link index 1). The view needs these changes:
 

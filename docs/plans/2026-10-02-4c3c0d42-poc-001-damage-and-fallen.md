@@ -6,11 +6,25 @@
 
 Authority: the [brief's deterministic combat requirement, Shelter description, and Open decisions](../../docs/prototypes/poc-001-linked-formation.md). Fallen-slot behavior, simultaneous-hit ordering, and terminal precedence are unresolved there; this plan proposes explicit local defaults. See the [index](README.md) for draft/ADR authority.
 
-**Amended 2026-10-04:** reviewed against the Compact triangle; no rule change. See [Amendment CT](#amendment-ct-2026-10-04--compact-triangle).
+**Amended 2026-10-04:** reviewed against the Compact triangle; no rule change. See [Amendment CT](#amendment-ct-2026-10-04--compact-triangle). Reviewed again against the two-ring board; no rule change. See [Amendment TR](#amendment-tr-2026-10-04--two-ring-board).
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P06` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
+
+## Amendment TR (2026-10-04) — two-ring board
+
+**Status: assessed, no contract change; fixtures stay valid.** Trigger: the user's two-ring decision ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)), the [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-tr-2026-10-04--two-ring-board) and [P05](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-tr-2026-10-04--two-ring-board) two-ring amendments. Execution: [Two-ring board task](2026-10-04-d005e5f4-poc-001-two-ring-board.md).
+
+P06 still reads geometry only through P05 selectors and P02 links. Hand-checking the delivered `tests/damage.test.ts` fixtures against the two-ring mapping and masks gives the following:
+
+- With Warder facing 0, Compact orientation zero puts Ugallu at `(2,0)`, inside the six-cell front, so the attack is mitigated (Censer 7). Orientation two puts Ugallu at `(-2,2)`, outside it (Censer 5).
+- Shelter pairs stay Close at distance 1 in Compact, and become Stretched in Spread (distance 4) and at threshold 0.
+- Splash radius 2 still covers all three Compact Brood, so the six recipient permutations and their events are unchanged.
+- After Ugallu falls, the only active link left is Girtablilu–Pazuzu.
+- Fallen Brood keep their labelled slots; a fallen Compact Pazuzu keeps its ring-1 cell.
+
+No P06 assertion is expected to change, and `tests/damage.test.ts` must pass unedited. The fixed-area fixture `[{q:3,r:0}]` is now off the board. It asserts only that the declaration is kept, and no selector validates area cells against the board, so it remains a valid fixture. Tidying it is optional, out of scope, and not part of the test-update exception.
 
 ## Amendment CT (2026-10-04) — Compact triangle
 
