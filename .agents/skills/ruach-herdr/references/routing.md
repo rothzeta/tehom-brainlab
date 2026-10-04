@@ -34,12 +34,18 @@ Selection uses the requested role's preference unless `--route` names its prefer
 
 | Root CLI | Worker CLI mapping |
 | --- | --- |
-| `resolve ROLE [--name NAME]` | `resolve --offline --role ROLE --name NAME --repo ROOT --cwd ROOT`; default name is `resolved-agent` |
-| `start ROLE NAME` | `start --role ROLE --name NAME --repo ROOT --cwd ROOT` |
+| `resolve ROLE [--name NAME]` | `resolve --offline --role ROLE --name NAME --repo ROOT --cwd ROOT --permissions auto-review`; default name is `resolved-agent` |
+| `start ROLE NAME` | `start --role ROLE --name NAME --repo ROOT --cwd ROOT --permissions auto-review` |
 | `--root DIR` | Absolute DIR supplies both `--repo` and `--cwd`; launcher code comes from the root surface's own skill directory |
 | `--route ID` | Forward unchanged; worker enforces preference/alternative selection |
 | `--pane ID` | Retired with a diagnostic; start creates a sibling pane |
 
-Root resolve retains its no-Herdr prerequisite through offline selection. It returns the worker's schema_version 1 JSON, with selection nested under `selection`, no native argv and `launchable: false`. Worker stdout, stderr and exit status are forwarded unchanged. Root policy/setup errors use 1; argument errors use 2. Names use the worker's safe identifier rule and permission policy is inherited, replacing the former root launch defaults.
+Root resolve retains its no-Herdr prerequisite through offline selection. It returns the worker's schema_version 1 JSON, with selection nested under `selection`, no native argv and `launchable: false`. Worker stdout, stderr and exit status are forwarded unchanged. Root policy/setup errors use 1; argument errors use 2. Names use the worker's safe identifier rule. Automatic approval review is the repository root's launch policy, passed through the portable permission option.
 
-Use the skill directly for live resolve, dry-run, direct selection, an external cwd with separate canonical repo, or supported native flags. Worker preparation composes effective native configuration, excludes discovered workflows for workers, and reports private material and uncertain submission state without retry. See [adapter evidence](adapters.md) for prerequisites and coverage limits. Prepared argv does not establish native role/skill acceptance or account/model availability.
+Use the skill directly for live resolve, dry-run, direct selection, an external cwd with separate canonical repo, or supported native flags. The root wrapper passes `--permissions auto-review` as repository launch policy; selected adapters own the native mapping and reject conflicting native permission flags. The skill defaults to inherit when invoked directly.
+
+Codex composes effective layered config through a matching existing daemon or short-lived native stdio reader and passes explicit cwd. The fallback may initialize Codex runtime state; user setting files remain untouched. Preparation fails when neither inspection transport works.
+
+Workers receive canonical role instructions and the Coordinator's self-contained assignment; the launcher never supplies workflow bodies. Claude uses targeted known local workflow suppression. Unverified complete account/plugin/managed catalog visibility does not prohibit preparation. Codex suppresses known workflows through native file/folder aliases. Existing developer and technical skill configuration and Coordinator visibility settings are preserved.
+
+The worker probes native capabilities, Herdr supported kinds and live names, forwards caller PATH/config roots to its sibling pane, and reports private material and uncertain submission state without retry. See [adapter evidence](adapters.md) for prerequisites and coverage limits. Prepared argv does not establish native role/skill acceptance or account/model availability.

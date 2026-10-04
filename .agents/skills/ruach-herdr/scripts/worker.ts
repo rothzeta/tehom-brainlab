@@ -2,17 +2,17 @@ import { resolve, join } from 'node:path';
 import { mkdtemp, chmod, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { createHash } from 'node:crypto';
-import { contents, directory, fail, Failure, identifier, kinds, efforts, string, type Selection } from './contracts';
+import { contents, directory, fail, Failure, identifier, kinds, efforts, string, type Selection, type Permissions } from './contracts';
 import { executable, json, run } from './process';
 import { routed } from './routing';
 import { prepare } from './adapters';
-const usage='bun scripts/worker.ts resolve|start --name NAME --role ROLE --cwd DIR [--repo DIR] [--route ID | --kind KIND --model MODEL [--effort LEVEL]] [--dry-run | --offline] [--temp-dir DIR] [-- NATIVE_FLAGS]';
+const usage='bun scripts/worker.ts resolve|start --name NAME --role ROLE --cwd DIR [--repo DIR] [--route ID | --kind KIND --model MODEL [--effort LEVEL]] [--dry-run | --offline] [--temp-dir DIR] [--permissions inherit|auto-review] [-- NATIVE_FLAGS]';
 function options(args:string[]) {
   if(args.includes('--help')||args.includes('-h')) {console.log(JSON.stringify({schema_version:1,ok:true,usage}));process.exit(0);}
   const command=args.shift();
   if(!['resolve','start'].includes(command??''))fail(2,'usage','Expected resolve or start','command');
   const values:Record<string,string>={};let dry=false,offline=false,pass:string[]=[];
-  const keys=['name','role','cwd','repo','route','kind','model','effort','temp-dir'];
+  const keys=['name','role','cwd','repo','route','kind','model','effort','temp-dir','permissions'];
   for(let i=0;i<args.length;i++) {
     const token=args[i];
     if(token==='--'){pass=args.slice(i+1);break;}
@@ -31,6 +31,7 @@ function options(args:string[]) {
   if(!direct&&values.effort)fail(2,'invalid_selection','Routed effort comes only from YAML','effort');
   if(direct&&!kinds.includes(values.kind as any))fail(2,'invalid_kind','Unknown harness kind','kind');
   if(values.effort&&!efforts.includes(values.effort as any))fail(2,'invalid_effort','Unknown effort value','effort');
+  if(values.permissions && !['inherit','auto-review'].includes(values.permissions))fail(2,'invalid_permissions','Expected inherit or auto-review','permissions');
   return {command,values,dry,offline,pass,direct};
 }
 function sha(s:string) {return createHash('sha256').update(s).digest('hex');}
@@ -50,14 +51,15 @@ try {
   const roleBody=await contents(roleFile);
   if(!roleBody.trim())fail(2,'invalid_role','Canonical role file is empty','role');
   const selection=o.direct ? {kind:v.kind as Selection['kind'],model:v.model,effort:v.effort,provenance:'explicit CLI'} : await routed(repo,v.role,v.route);
-  selected={name:v.name,role:v.role,roleFile,roleHash:sha(roleBody),repo,cwd,...selection};
+  selected={name:v.name,role:v.role,roleFile,roleHash:sha(roleBody),repo,cwd,...selection,permissions:(v.permissions??'inherit') as Permissions};
   const tempRoot=resolve(v['temp-dir']??tmpdir());await directory(tempRoot,'temp-dir');
   if(o.offline) {
     const {validatePass}=await import('./adapters');validatePass(selected,o.pass);
-    console.log(JSON.stringify({schema_version:1,ok:true,action:'resolved-offline',selection:selected,git_root:gitRoot??null,launchable:false,coverage:'fixture/failure-only',argv:[],temporary_operations:[],submission_state:state,diagnostics:[{code:'offline_unverified',message:'Native config, adapter capability, executable availability and Herdr context have not been verified.',field:'offline'}]}));
+    console.log(JSON.stringify({schema_version:1,ok:true,action:'resolved-offline',selection:selected,permissions:selected.permissions,git_root:gitRoot??null,launchable:false,coverage:'fixture/failure-only',argv:[],temporary_operations:[],submission_state:state,diagnostics:[{code:'offline_unverified',message:'Native config, adapter capability, executable availability and Herdr context have not been verified.',field:'offline'}]}));
     process.exit(0);
   }
-  // No generated files or mutations occur before every prerequisite passes.
+  // No launch material or pane mutations occur before every prerequisite passes.
+  // Codex native inspection may initialize its runtime state under authorization.
   const herdr=executable('herdr');executable(selected.kind);
   const h=await run([herdr,'agent','start','--help'],cwd);
   const available=h.stdout.match(/\[possible values:([^\]]+)\]/)?.[1].split(',').map(x=>x.trim());
@@ -77,7 +79,7 @@ try {
   if(agents.some((a:any)=>a.name===v.name))fail(2,'duplicate_name','Agent name is already in use','name');
   const plan=await prepare(selected,o.pass);
   const direction=current.rect.width>=120?'right':'down';
-  const output={schema_version:1,ok:true,selection:selected,git_root:gitRoot??null,launchable:true,coverage:plan.coverage,cli_version:plan.version,argv:plan.redactedArgv,hidden_workflows:plan.hiddenWorkflows,temporary_operations:plan.operations,direction,diagnostics:[],limits:['No paid session, native prompt/skill acceptance, account entitlement or model availability is established by preflight.']};
+  const output={schema_version:1,ok:true,selection:selected,permissions:selected.permissions,git_root:gitRoot??null,launchable:true,coverage:plan.coverage,cli_version:plan.version,config_reader:plan.configReader??null,argv:plan.redactedArgv,hidden_workflows:plan.hiddenWorkflows,temporary_operations:plan.operations,direction,diagnostics:[],limits:['No paid session, native prompt/skill acceptance, account entitlement or model availability is established by preflight.']};
   if(o.command==='resolve'||o.dry){console.log(JSON.stringify({...output,action:o.command==='resolve'?'resolved':'dry-run',submission_state:state}));}
   else {
     let argv=plan.argv;

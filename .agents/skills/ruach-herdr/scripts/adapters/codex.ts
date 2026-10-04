@@ -4,6 +4,7 @@ import { contents, fail, object, type Plan, type Selection } from '../contracts'
 import { help } from '../process';
 import { codexRead } from '../native-codex';
 import { scan } from '../skills';
+export const autoReview=['--approve-for-me'];
 export function toml(v:any):string {
   if(typeof v==='string')return JSON.stringify(v);
   if(typeof v==='boolean' || typeof v==='number' && Number.isFinite(v))return String(v);
@@ -15,7 +16,7 @@ export function validateEffort(effort?:string) {
   if(effort && !['none','minimal','low','medium','high','xhigh','max'].includes(effort)) fail(2,'unsupported_effort','Effort is not a verified Codex value','effort');
 }
 export async function prepare(s:Selection,pass:string[]):Promise<Plan> {
-  const {exe,version}=await help('codex',s.cwd,['--model','--config','--cd']);
+  const {exe,version}=await help('codex',s.cwd,['--model','--config','--cd',...(s.permissions==='auto-review'?autoReview:[])]);
   validateEffort(s.effort);
   const native=await codexRead(exe,s.cwd);
   const config=object(native.config,'codex effective config');
@@ -51,8 +52,9 @@ export async function prepare(s:Selection,pass:string[]):Promise<Plan> {
   const combined=[developer,await contents(s.roleFile)].filter(x=>x!==null&&x!==undefined&&x!=='').join('\n\n');
   const argv=['--model',s.model,'--cd',s.cwd,'-c',`developer_instructions=${toml(combined)}`];
   const redactedArgv=['--model',s.model,'--cd',s.cwd,'-c','developer_instructions=<redacted>'];
+  if(s.permissions==='auto-review'){argv.push(...autoReview);redactedArgv.push(...autoReview);}
   if(s.effort){argv.push('-c',`model_reasoning_effort=${toml(s.effort)}`);redactedArgv.push('-c',`model_reasoning_effort=${toml(s.effort)}`);}
   argv.push('-c',`skills.config=${toml(merged)}`,...pass);
   redactedArgv.push('-c','skills.config=<preserved + workflow overrides>',...pass);
-  return {argv,redactedArgv,coverage:'live-capable',version,hiddenWorkflows:s.role==='coordinator'?[]:[...new Set([...workflows.map((x:any)=>x.name),...canonical.filter(x=>x.workflow).map(x=>x.name)])],operations:[]};
+  return {argv,redactedArgv,coverage:'live-capable',version,hiddenWorkflows:s.role==='coordinator'?[]:[...new Set([...workflows.map((x:any)=>x.name),...canonical.filter(x=>x.workflow).map(x=>x.name)])],operations:native.reader==='stdio'?['short-lived Codex config/catalog reader may initialize native runtime state']:[],configReader:native.reader};
 }
