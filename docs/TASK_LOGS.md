@@ -880,3 +880,27 @@ The user asked to "implement p03 to p06". P03 was already delivered at `18d98989
 - Worktrees removed: `/opt/dev/tehom-brainlab-p04`, `-p05` and `-p06`.
 - Branches `p04-formation-lab`, `p05-intent-semantics` and `p06-damage-and-fallen` are kept.
 - No push. No human playtest. Open optional items: P04 O1 and P03 O1–O3.
+
+## 2026-10-04 Compact triangle
+
+After P04–P06 delivery, the user reported that "compact formation is not a triangle". The brief's "three consecutive outer-ring cells" (P02 `3o+[0,1,2]`) is collinear, with distances 1, 2, 1. The user chose a true triangle with two Brood on the outer ring and one on ring 2. The Coordinator ran `ruach-workflow-feature` in worktree `/opt/dev/tehom-brainlab-compact`, branch `compact-triangle`, from BASE `0f9c1b7`. The Coordinator ran no checks itself, and every handoff passed the `ruach-handoff` validator.
+
+**Design.**
+- The Architect (`ct-architect`, `claude-opus-5.5-high`, pane `w2G:p28`) amended the brief, the P02/P04/P05/P06/P10 plans and the index. It wrote task [CT](plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md) in `33dcf5e` ([report](mailbox/compact-triangle/architect.md)).
+- It raised three open questions. The user chose the recommended answer in each case: the inward Brood is exposed and protected like its sector (sectors extended to rings 2–3); Pazuzu goes inward; the triangle sits mid-side.
+- These were recorded as accepted decisions in `c30e8cc`.
+
+**Implementation.**
+- `ct-impl` (`gpt-6.1-sol-high`, pane `w2G:p29`) delivered candidate `4fa7613f`. It changed `src/core/{hex,formation,sectors}.ts`, `src/view/FormationLab.ts` and the prototype README.
+- Under the plan's explicit exception, it changed the old-geometry expectations in `tests/formation.test.ts`, `tests/intents.test.ts` and `tests/browser-lab.mjs`. It added 36 token hit tests. P03, P04 and P06 unit suites are unedited.
+- Results: 278 tests with 4,949 assertions, typecheck and build passed. The browser check passed 176 assertions with zero uncaught exceptions. Screenshots `compact-0.png` and `compact-4.png` are kept as evidence.
+
+**Review and delivery.**
+- `ct-review` (pane `w2G:p2A`) reviewed `4fa7613` and passed it with 0 blocking and 0 optional findings ([review](mailbox/compact-triangle/reviewer.md), `9b9cfde`). It independently ran all checks and inspected Compact captures at orientations 0–5.
+- Master was not advanced during the work, so no integration merge was needed.
+- Master fast-forwarded `0f9c1b7` → `40b516f4` (delivered and tested: 278 tests, typecheck and build exit 0; prototype and assets equal `4fa7613`) → `a76a0ff0` (delivery report). See the [delivery report](mailbox/compact-triangle/delivery.md).
+
+**Cleanup.**
+- Panes `w2G:p28`, `p29` and `p2A` closed. Architect launch directory `/tmp/ruach-herdr-cBeLUm` removed; the other launches reported none.
+- Worktree `/opt/dev/tehom-brainlab-compact` removed. Branch `compact-triangle` kept.
+- No push. No human playtest.

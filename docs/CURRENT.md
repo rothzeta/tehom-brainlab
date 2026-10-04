@@ -65,6 +65,15 @@ As of 2026-10-04, local master `a4ee3b95799a5d77805ab8f7c37bb95dad429145` contai
 - **Carry-forward for P07.** P03's `ActionRules.apply` returns only Brood data and cannot return enemy or effect collections, so P07 must integrate combat-state ability effects with P03 accounting. The P06 Reviewer confirmed this limitation.
 - **Limits.** No human playtest; combat is not playable in the browser. P03 optional O1–O3 remain open.
 
+## Compact triangle
+
+As of 2026-10-04, local master `a76a0ff03f3d1da84ef948ec3009e3c7d42f1f4d` makes Compact a true triangle. The user observed that the delivered Compact (three consecutive outer-ring cells, distances 1, 2, 1) was a straight line, and accepted the [Architect design](mailbox/compact-triangle/architect.md) and its defaults.
+
+- **Geometry.** Ugallu and Girtablilu sit on the outer ring and Pazuzu one cell inward on ring 2 (`R[3o+1]`, `R[3o+2]`, `T[2o+1]`, mid-side). All links are distance 1 and Spread is unchanged.
+- **Sectors.** P05 sectors and fronts now cover rings 2–3, so the inward Brood is exposed to areas and fronts and protected like the rest of its sector.
+- **Documents.** The brief and the P02/P04/P05/P06/P10 plans carry amendments, and the task is the [CT plan](plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md).
+- **Evidence.** The [review](mailbox/compact-triangle/reviewer.md) found 0 blocking and 0 optional findings and visually confirmed triangles at all six orientations. Delivered `40b516f4`: 278 tests, typecheck and build passed. [Implementer](mailbox/compact-triangle/implementer.md), [delivery](mailbox/compact-triangle/delivery.md), [execution record](TASK_LOGS.md#2026-10-04-compact-triangle).
+
 ## Verification and limits
 
 The [vault alignment task log](TASK_LOGS.md#2026-10-03-vault-alignment) records documentation changes and executed checks. That documentation-only alignment task ran no application tests, browser combat checks, or human playtests. P01 now has the separate application/unit/build/automated-browser evidence linked above; it still has no combat or human-playtest evidence. [Playtests](playtests/README.md) currently contains navigation and a template only.
