@@ -844,3 +844,39 @@ Recorded by the Coordinator from worker handoffs. User authorization: "use gh to
 - Nothing is retained apart from the branches listed above.
 
 **Limits.** No live model session, no account or harness acceptance, and no actual mailbox triage. The Coordinator ran no checks; the results come from the cited reports.
+
+## 2026-10-04 P04–P06 delivery
+
+The user asked to "implement p03 to p06". P03 was already delivered at `18d98989`, so the work covered P04, P05 and P06. The Coordinator ran `ruach-workflow-feature`. All workers used the preferred route `gpt-6.1-sol-high` (Codex), launched with `just agent-routing start`; no route switch occurred. Each assignment is committed unchanged next to its report under `docs/mailbox/<task>/`. The Coordinator ran no checks itself. Every result below comes from the cited handoffs, each of which passed the `ruach-handoff` validator.
+
+**Sequencing.** P04 and P05 have disjoint file ownership, so they ran in parallel worktrees from BASE `0d6f2336`. P06 depends on P05 and started from master after P05 delivery. Each candidate was merged with the current master into its branch with a merge commit before review, and verified as a combined revision. Every delivery was a fast-forward. No conflicts occurred: Git merged the shared prototype README automatically.
+
+**P05 intent semantics** ([implementer](mailbox/p05-intent-semantics/implementer.md), [review](mailbox/p05-intent-semantics/reviewer.md), [delivery](mailbox/p05-intent-semantics/delivery.md)).
+- Candidate `a9594472`. Added `src/core/intents.ts` and `sectors.ts` and `tests/intents.test.ts` (75 tests, 803 assertions). P05-owned defaults are recorded in the implementer report.
+- The independent review at `a959447` passed with 0 blocking and 0 optional findings.
+- Master fast-forwarded `0d6f233` → `f3a0e233` (delivered and tested: 204 tests, typecheck and build exit 0) → `04bd6a28` (delivery report).
+
+**P04 formation lab** ([implementer](mailbox/p04-formation-lab/implementer.md), [integration](mailbox/p04-formation-lab/integration.md), [review](mailbox/p04-formation-lab/reviewer.md), [delivery](mailbox/p04-formation-lab/delivery.md)).
+- Candidate `32f07c00`. Added the view and lab state, projection, asset preparation, and a read-only `/assets` Docker mount in `scripts/run.sh`, plus unit and asset tests and a headless Chrome `tests/browser-lab.mjs`.
+- Integration merged master `04bd6a2` into the branch as `b5e7c54e`: 226 tests, typecheck and build passed, and the browser check passed (136 assertions, 12 fixtures, 3 asset modes, 1280×800).
+- The review at `b5e7c54` found 0 blocking issues and 1 optional finding (O1, open): the browser assertions over-constrain the link-readout punctuation and button order.
+- Master fast-forwarded to `ad394558` (delivered and tested: 226 tests, typecheck and build exit 0) → `8f8c9e47` (delivery report).
+
+**P06 damage and Fallen** ([implementer](mailbox/p06-damage-and-fallen/implementer.md), [integration](mailbox/p06-damage-and-fallen/integration.md), [fix R1](mailbox/p06-damage-and-fallen/fix-r1.md), [review and re-review](mailbox/p06-damage-and-fallen/reviewer.md), [delivery](mailbox/p06-damage-and-fallen/delivery.md)).
+- Candidate `2be2d85c`, from BASE `04bd6a2`. Added `damage.ts`, `lifecycle.ts` and `tests/damage.test.ts`, with additive changes to P03 `state.ts`, `commands.ts` and `transition.ts`. P01–P05 tests are unchanged.
+- Integration merged master `8f8c9e4` as `cad6168d`: 272 tests passed, and the P04 browser check still passed.
+- The review at `cad6168` raised blocking R1: sparse `recipientIds` arrays bypassed validation and threw a TypeError instead of returning the rejection envelope.
+- Fix `47582306` reproduced the failure first, then passed with 274 tests and the browser check. The re-review at `4758230` resolved R1 with no remaining findings.
+- Master fast-forwarded to `c9f66250` (delivered and tested: 274 tests, 4710 assertions; typecheck and build exit 0) → `a4ee3b95` (delivery report).
+
+**Discoveries.**
+- P07 must extend P03 accounting for combat-state ability effects, because `ActionRules.apply` returns only Brood data. The P06 Reviewer confirmed this.
+- The Coordinator's assignments gave BASE as `0d6f2335`, a typo for `0d6f2336…`; the workers recorded the actual revision.
+- The prototype README's P02 evidence text is stale (it still says review and delivery are pending), as P05 and P06 reported. It was not corrected here.
+- Workers needed sandbox escalation for Docker, for Git writes in linked worktrees, and for validator dependency installation. Application checks stayed in Docker mode throughout.
+
+**Cleanup.**
+- Panes closed: `w2G:p21` (`p04-impl`), `p22` (`p05-impl`), `p23` (`p05-review`), `p24` (`p06-impl`), `p25` (`p04-review`) and `p26` (`p06-review`). Every launch reported `temporary_directory: null`.
+- Worktrees removed: `/opt/dev/tehom-brainlab-p04`, `-p05` and `-p06`.
+- Branches `p04-formation-lab`, `p05-intent-semantics` and `p06-damage-and-fallen` are kept.
+- No push. No human playtest. Open optional items: P04 O1 and P03 O1–O3.
