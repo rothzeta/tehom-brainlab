@@ -87,7 +87,8 @@ try {
     }
     if(sha(await contents(roleFile))!==selected.roleHash)fail(2,'role_changed','Canonical role changed during preparation','role');
     phase='split';state='unknown';
-    const split=await run([herdr,'pane','split','--current','--direction',direction,'--cwd',cwd,'--no-focus','--env',`PATH=${process.env.PATH??''}`],cwd);
+    const paneEnvironment=['PATH','HOME','CODEX_HOME','CLAUDE_CONFIG_DIR'].filter(key=>process.env[key]!==undefined).flatMap(key=>['--env',`${key}=${process.env[key]}`]);
+    const split=await run([herdr,'pane','split','--current','--direction',direction,'--cwd',cwd,'--no-focus',...paneEnvironment],cwd);
     if(split.exit!==0||split.timedOut)fail(4,'split_uncertain','Pane split failed or timed out; inspect state before any new invocation','herdr');
     try{pane=JSON.parse(split.stdout).result?.pane?.pane_id;}catch{}
     if(typeof pane!=='string'||!pane)fail(4,'split_uncertain','Split response lacks a pane ID; inspect state','herdr');
