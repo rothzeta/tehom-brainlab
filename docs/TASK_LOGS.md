@@ -825,13 +825,22 @@ Recorded by the Coordinator from worker handoffs. User authorization: "use gh to
 **Global links.**
 - Before: the three exact paths `~/.agents/skills/ruach-handoff`, `ruach-harness-eval` and `ruach-herdr` each pointed to `/opt/dev/tehom-brainlab/.agents/skills/<name>`. This was confirmed by the parent and by `ruach-impl2`.
 - Each was repointed with `ln -sfn` to `/opt/dev/ruach/skills/<name>`, exit 0.
-- Post-change verification is **unverified**. The auto-mode classifier refused the verification batch without a stated reason, and the worker declined to split it into smaller steps around that refusal. The old targets are saved in the report and in `old-link-targets.txt` in the archive. Unrelated global skills were not listed or touched.
+- The worker's post-change verification was refused by the auto-mode classifier without a stated reason, and the worker declined to split it into smaller steps around that refusal. Its [report](mailbox/ruach-extraction/implementer-merge.md) therefore stays `blocked` as a historical record and is not rewritten.
+- The launching parent then verified with its own read-only tools, all exit 0 ([parent verification](mailbox/ruach-extraction/parent-verification.md), committed in `07cdb12`):
+  - all three targets and their `SKILL.md` identities match `/opt/dev/ruach/skills/<name>`;
+  - the validator through the global `ruach-handoff` link returns `ok: true`;
+  - offline Librarian resolution through the global `ruach-herdr` link succeeds, with no submission;
+  - `scope-check --help` through the global `ruach-harness-eval` link works;
+  - the GitHub API reports public `main` at `be77030`.
+- This resolves the worker's historical global-check blocker. The old targets remain recorded in the merge report. Unrelated global skills were not listed or touched.
 
 **Cleanup.**
 - Panes closed: `w2G:p1S` (`ruach-impl`), `p1T` (`ruach-libeval`), `p1V` (`ruach-review`), `p1W` (`ruach-impl2`), `p1X` (`ruach-libeval5`) and `p1Y` (`ruach-libeval6`).
 - Launch directories removed: `/tmp/ruach-herdr-9aTaYc`, `-837R0l`, `-I6DDnh`, `-zQaLB0` and `-5pXe5X`. `ruach-impl` reported none.
 - Eval packets and merge-check logs removed.
 - Worktree `/opt/dev/tehom-brainlab-ruach-extraction` removed. Branch `ruach-extraction` (`9090896`) and Ruach `extraction` are kept.
-- Retained: the draft archive `/tmp/ruach-extraction-drafts-BM3NMi`, until the link state is verified.
+- After parent verification, the Coordinator removed the draft archive `/tmp/ruach-extraction-drafts-BM3NMi`; its content is preserved in the committed patch and the merge report.
+- A correction Implementer `ruach-impl3` was launched (pane `w2G:p1Z`, `claude-opus-5.5-high`). The Coordinator's prompt to it was refused by native review as an auto-mode bypass, so it never received work. Its pane was closed and its launch directory `/tmp/ruach-herdr-EYc2Yh` removed. Its unused assignment was committed unchanged by the parent in `07cdb12`.
+- Nothing is retained apart from the branches listed above.
 
 **Limits.** No live model session, no account or harness acceptance, and no actual mailbox triage. The Coordinator ran no checks; the results come from the cited reports.
