@@ -5,6 +5,7 @@ import { abilityLegality, applyAbility } from '../src/core/abilities';
 import type { AbilityRequest, AbilityRules, TurnDirection } from '../src/core/abilities';
 import type { CommandResult, ErrorCode } from '../src/core/commands';
 import type { Formation, Orientation } from '../src/core/formation';
+import { applyAttack } from '../src/core/damage';
 import { expireShelters } from '../src/core/lifecycle';
 import { createInitialState } from '../src/core/state';
 import type { CombatState } from '../src/core/state';
@@ -157,9 +158,9 @@ test.each([false, true])('AC3: Shelter checks Close at later impact; expanded=%s
   const sheltered = accepted(applyAbility(fixture(), request('shelter'), rules)).state;
   const current = expand ? accepted(applyCommand(sheltered,
     { kind: 'maneuver', expectedRevision: 1, maneuver: 'expand' })).state : sheltered;
-  const hit = accepted(applyCommand(freeze(current), { kind: 'attack', eventId: 'enemy-hit',
+  const hit = accepted(applyAttack(freeze(current), { kind: 'attack', eventId: 'enemy-hit',
     expectedRevision: current.revision, sourceId: 'censer', recipientIds: ['girtablilu'],
-    rawDamage: 5, bypassProtection: false }));
+    rawDamage: 5, bypassProtection: false }, rules.damageRules));
   expect(hp(hit.state, 'girtablilu')).toBe(expand ? 5 : 7);
   expect(hit.state.shelters).toEqual([]);
   expect(hit.state.actedIds).toEqual(['ugallu']);
@@ -170,8 +171,8 @@ test('AC3: installed Shelter delegates same-blast death and expiry to P06', () =
   const base = fixture();
   const state = fixture({ brood: base.brood.map((entity) => entity.id === 'ugallu' ? { ...entity, hp: 2 } : entity) });
   const sheltered = accepted(dispatch(state, request('shelter'))).state;
-  const hit = accepted(applyCommand(sheltered, { kind: 'attack', expectedRevision: 1, eventId: 'blast',
-    sourceId: 'censer', recipientIds: ['ugallu', 'girtablilu', 'pazuzu'], rawDamage: 3, bypassProtection: false }));
+  const hit = accepted(applyAttack(sheltered, { kind: 'attack', expectedRevision: 1, eventId: 'blast',
+    sourceId: 'censer', recipientIds: ['ugallu', 'girtablilu', 'pazuzu'], rawDamage: 3, bypassProtection: false }, rules.damageRules));
   expect(hp(hit.state, 'ugallu')).toBe(0);
   expect(hp(hit.state, 'girtablilu')).toBe(9);
   expect(hp(hit.state, 'pazuzu')).toBe(7);
@@ -179,6 +180,44 @@ test('AC3: installed Shelter delegates same-blast death and expiry to P06', () =
   const expired = expireShelters(sheltered);
   expect(expired.state.shelters).toEqual([]);
   expect(expireShelters(expired.state).state).toBe(expired.state);
+});
+
+// Dispatcher behavior uses relative outcomes, so positive default mitigation can be tuned.
+test.each([false, true])('AC3 dispatcher: Shelter mitigation requires Close at impact; expanded=%s', (expand) => {
+  const sheltered = accepted(dispatch(fixture(), request('shelter'))).state;
+  const current = freeze(expand ? accepted(applyCommand(sheltered,
+    { kind: 'maneuver', expectedRevision: 1, maneuver: 'expand' })).state : sheltered);
+  const before = structuredClone(current);
+  const attack = freeze({ kind: 'attack', expectedRevision: current.revision, eventId: 'dispatch-hit',
+    sourceId: 'censer', recipientIds: ['girtablilu'], rawDamage: 5, bypassProtection: false } as const);
+  const unshielded = accepted(applyCommand(freeze({ ...current, shelters: [] }), attack));
+  const hit = accepted(applyCommand(current, attack));
+  if (expand) expect(hp(hit.state, 'girtablilu')).toBe(hp(unshielded.state, 'girtablilu'));
+  else expect(hp(hit.state, 'girtablilu')).toBeGreaterThan(hp(unshielded.state, 'girtablilu'));
+  expect(hit.state.shelters).toEqual([]);
+  expect(hit.state.actedIds).toEqual(current.actedIds);
+  expect(hit.state.maneuverUsed).toBe(current.maneuverUsed);
+  expect(hit.state.revision).toBe(current.revision + 1);
+  expect(hit.events.filter((event) => event.type === 'shelter-consumed')).toMatchObject([{ eligible: !expand }]);
+  expect(current).toEqual(before);
+});
+
+test('AC3 dispatcher: Shelter mitigates the blast that fells its source and is consumed', () => {
+  const base = fixture();
+  const wounded = fixture({ brood: base.brood.map((entity) => entity.id === 'ugallu' ? { ...entity, hp: 2 } : entity) });
+  const sheltered = freeze(accepted(dispatch(wounded, request('shelter'))).state);
+  const attack = freeze({ kind: 'attack', expectedRevision: sheltered.revision, eventId: 'dispatch-blast',
+    sourceId: 'censer', recipientIds: ['ugallu', 'girtablilu', 'pazuzu'], rawDamage: 3, bypassProtection: false } as const);
+  const unshielded = accepted(applyCommand(freeze({ ...sheltered, shelters: [] }), attack));
+  const hit = accepted(applyCommand(sheltered, attack));
+  expect(hp(hit.state, 'ugallu')).toBe(0);
+  expect(hp(hit.state, 'girtablilu')).toBeGreaterThan(hp(unshielded.state, 'girtablilu'));
+  expect(hp(hit.state, 'pazuzu')).toBe(hp(unshielded.state, 'pazuzu'));
+  expect(hit.state.shelters).toEqual([]);
+  expect(hit.state.actedIds).toEqual(['ugallu']);
+  expect(hit.state.maneuverUsed).toBe(false);
+  expect(hit.state.revision).toBe(sheltered.revision + 1);
+  expect(hit.events.filter((event) => event.type === 'shelter-consumed')).toMatchObject([{ eligible: true }]);
 });
 
 const area0 = [{ q: 2, r: 0 }, { q: 1, r: 1 }, { q: 1, r: 0 }];
