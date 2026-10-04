@@ -1,13 +1,13 @@
 import Phaser from 'phaser';
-import { FormationLab } from './view/FormationLab';
 import './style.css';
+import { FormationLab, createLabShell } from './view/FormationLab';
 
+createLabShell(document.querySelector<HTMLElement>('#app')!);
 new Phaser.Game({
   type: Phaser.CANVAS,
-  parent: 'app',
-  width: 960,
-  height: 600,
-  backgroundColor: '#121820',
-  scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
+  parent: 'board-canvas',
+  width: 760,
+  height: 610,
+  backgroundColor: '#16212b',
   scene: FormationLab,
 });

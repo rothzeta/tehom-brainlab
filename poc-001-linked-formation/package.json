@@ -8,10 +8,10 @@
     "bun": "1.4.2"
   },
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --strictPort",
+    "dev": "bun scripts/prepare-assets.mjs && vite --host 0.0.0.0 --strictPort",
     "typecheck": "tsc --noEmit",
     "test:unit": "vitest run",
-    "build": "vite build",
+    "build": "bun scripts/prepare-assets.mjs && vite build",
     "preview": "vite preview --host 0.0.0.0 --strictPort"
   },
   "dependencies": {
