@@ -1,6 +1,6 @@
 # Configuration and results (schema_version 1)
 
-JSON only; unknown fields, duplicate IDs, wrong types, unsupported versions, and unknown options are errors. JSON object keys should be unique (the JSON parser uses the final duplicate value). All filesystem paths in configuration are relative to the configuration file unless absolute. CLI paths are relative to the invocation cwd. Git refs must resolve to commits; option-like refs are rejected. Files are read from supplied worktrees, never from an implicit checkout.
+JSON only; unknown fields, duplicate IDs, wrong types, unsupported versions, and unknown options are errors. JSON object keys should be unique (the JSON parser uses the final duplicate value). All filesystem paths in configuration are relative to the configuration file unless absolute. CLI paths are relative to the invocation cwd. Git refs must resolve to commits; option-like refs are rejected. Files are read from supplied worktrees, never from an implicit checkout. Internal Git probes remove inherited `GIT_*` environment variables, then set `GIT_OPTIONAL_LOCKS=0`; repository-selection, index/object/discovery overrides, and environment-injected Git configuration cannot redirect them. The resolved worktree must contain the explicitly requested directory (subdirectories and symlink aliases are supported). Output protection uses that verified worktree and its actual Git metadata. Acceptance check processes retain their inherited/configured environment, including intentional Git variables, separately from these private probes.
 
 ## Acceptance
 

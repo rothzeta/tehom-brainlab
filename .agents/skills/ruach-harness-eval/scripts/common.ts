@@ -64,14 +64,21 @@ export function executable(command: string, cwd: string, env: Record<string, any
 export function git(repo: string, argv: string[], allowFailure = false): { exit: number; stdout: Buffer } {
   const command = executable('git', process.cwd(), process.env);
   if (!command) throw new SetupError('git_error', 'repo', 'Git is unavailable on PATH');
-  const child = spawnSync(command, ['-C', repo, ...argv], { env: { ...process.env, GIT_OPTIONAL_LOCKS: '0' }, maxBuffer: 32 * 1024 * 1024 });
+  // Git's -C does not override repository/config selection from the environment.
+  // Keep these private probes independent of acceptance checks' intentional env.
+  const env = Object.fromEntries(Object.entries(process.env).filter(([name]) => !name.toUpperCase().startsWith('GIT_')));
+  env.GIT_OPTIONAL_LOCKS = '0';
+  const child = spawnSync(command, ['-C', repo, ...argv], { env, maxBuffer: 32 * 1024 * 1024 });
   if (child.error || (!allowFailure && child.status !== 0)) throw new SetupError('git_error', 'repo', 'Git probe failed; check repository and Git availability');
   return { exit: child.status ?? 2, stdout: child.stdout ?? Buffer.alloc(0) };
 }
 export function root(path: string) {
-  const result = git(resolve(path), ['rev-parse', '--show-toplevel']).stdout.toString().replace(/\n$/, '');
+  const requested = realpathSync(resolve(path));
+  const result = git(requested, ['rev-parse', '--show-toplevel']).stdout.toString().replace(/\n$/, '');
   if (!result) throw new SetupError('invalid_repository', 'repo', 'A working tree is required');
-  return realpathSync(result);
+  const selected = realpathSync(result), location = relative(selected, requested);
+  if (location === '..' || location.startsWith('../') || location.startsWith('..\\') || isAbsolute(location)) throw new SetupError('invalid_repository', 'repo', 'Resolved worktree must contain the explicitly requested directory');
+  return selected;
 }
 export function revision(repo: string, ref: string, field: string) {
   string(ref, field);
