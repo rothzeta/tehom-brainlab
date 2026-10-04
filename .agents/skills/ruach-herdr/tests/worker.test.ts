@@ -57,6 +57,7 @@ beforeEach(async()=>{
   wss.on('connection',ws=>ws.on('message',bytes=>{
     const request=JSON.parse(bytes.toString());rpcCalls.push(request);
     if(!('id'in request))return;
+    if(behavior.daemonRpcError){ws.send(JSON.stringify({id:request.id,error:{code:-1,message:secret}}));return;}
     let result:any={};
     if(request.method==='config/read')result={config:{developer_instructions:secret,skills:{config:[{path:join(repo,'unrelated'),enabled:false},{path:join(repo,'.agents','skills','workflow','SKILL.md'),enabled:true}]}}};
     if(request.method==='skills/list')result={data:[{cwd:request.params.cwds[0],errors:[],skills:[{name:'ruach-workflow-feature',path:join(repo,'.agents','skills','workflow','SKILL.md'),enabled:true},{name:'ruach-workflow-external',path:join(home,'external','SKILL.md'),enabled:true}]}]};
@@ -96,7 +97,7 @@ test('duplicate launcher options are rejected before any mutation',async()=>{
 });
 async function asRole(role:string,command='start',extra:string[]=[]) {
   await save();
-  const p=Bun.spawn([process.execPath,worker,command,'--name','routed-worker','--role',role,'--cwd',repo,'--repo',repo,'--temp-dir',temporary,...extra],{cwd:root,env:{...process.env,HOME:home,CLAUDE_CONFIG_DIR:join(home,'.claude'),PATH:bin,FIXTURE_ROOT:root,HERDR_ENV:'1',HERDR_PANE_ID:'w1:p1'},stdout:'pipe',stderr:'pipe'});
+  const p=Bun.spawn([process.execPath,worker,command,'--name','routed-worker','--role',role,'--cwd',repo,'--repo',repo,'--temp-dir',temporary,...extra],{cwd:root,env:{...process.env,HOME:home,CODEX_HOME:join(home,'.codex'),CLAUDE_CONFIG_DIR:join(home,'.claude'),PATH:bin,FIXTURE_ROOT:root,HERDR_ENV:'1',HERDR_PANE_ID:'w1:p1'},stdout:'pipe',stderr:'pipe'});
   const [stdout,stderr,exit]=await Promise.all([new Response(p.stdout).text(),new Response(p.stderr).text(),p.exited]);return {exit,stdout,stderr,result:JSON.parse(stdout)};
 }
 test('routed start and route override launch the data-selected native profile',async()=>{
@@ -123,7 +124,7 @@ for(const [name,file,content] of [
 for(const kind of ['pi','opencode','dsh','agy','omp'])test(`${kind} absent or unverified adapter fails accurately without mutation`,async()=>{const r=await launch('start',['--kind',kind,'--model','test-model','--temp-dir',temporary]);expect(r.exit).toBe(3);await noMutation();});
 test('unsupported Herdr kind fails even when the harness executable exists',async()=>{await cp(join(bin,'codex'),join(bin,'dsh'));const r=await launch('start',['--kind','dsh','--model','test-model','--temp-dir',temporary]);expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('unsupported_herdr_kind');await noMutation();});
 for(const env of [{HERDR_ENV:'0'},{HERDR_PANE_ID:''}])test('absent caller context fails without mutation',async()=>{const r=await launch('start',[...explicit,'--temp-dir',temporary],env);expect(r.exit).toBe(3);await noMutation();});
-test('unreachable Herdr and missing daemon fail before any write',async()=>{behavior.unreachable=true;let r=await launch('start',[...explicit,'--temp-dir',temporary]);expect(r.exit).toBe(3);await noMutation();behavior.unreachable=false;behavior.daemonMissing=true;r=await launch('start',[...explicit,'--temp-dir',temporary]);expect(r.exit).toBe(3);await noMutation();});
+test('unreachable Herdr and both unavailable Codex readers fail before launch mutation',async()=>{behavior.unreachable=true;let r=await launch('start',[...explicit,'--temp-dir',temporary]);expect(r.exit).toBe(3);await noMutation();behavior.unreachable=false;behavior.daemonMissing=true;behavior.stdioUnavailable=true;r=await launch('start',[...explicit,'--temp-dir',temporary]);expect(r.exit).toBe(3);await noMutation();});
 test('missing Herdr executable fails without mutation',async()=>{await rm(join(bin,'herdr'));let r=await launch('start',[...explicit,'--temp-dir',temporary]);expect(r.exit).toBe(3);await noMutation();});
 test('invalid native catalog never replaces user configuration',async()=>{behavior.badCatalog=true;const r=await launch('start',[...explicit,'--temp-dir',temporary]);expect(r.exit).toBe(3);await noMutation();});
 test('narrow caller pane splits down and startup failure reports uncertain state without retry or leaked native output',async()=>{behavior.width=80;behavior.startFailure=true;behavior.leak=secret;const r=await launch('start',[...explicit,'--temp-dir',temporary]);expect(r.exit).toBe(4);expect(r.result.submission_state).toBe('unknown');expect(r.result.pane).toBe('w1:p2');const mutations=await lines('mutations.jsonl');expect(mutations.filter(x=>x.action==='start')).toHaveLength(1);expect(mutations[0].args[mutations[0].args.indexOf('--direction')+1]).toBe('down');expect(r.stdout+r.stderr).not.toContain(secret);});
@@ -234,3 +235,76 @@ test('Claude linked-worktree fallback does not block canonical worker instructio
   await writeFile(join(bin,'git'),`#!${process.execPath}\nconsole.log('../main/.git');\n`);await chmod(join(bin,'git'),0o700);
   const r=await asRole('architect','resolve');expect(r.exit).toBe(0);expect(r.result.argv).toContain(join(repo,'.agents','agents','architect.md'));await noMutation();
 });
+
+async function readersStopped() {
+  const readers=await lines('stdio-processes.jsonl');expect(readers.length).toBeGreaterThan(0);
+  for(const reader of readers){let code;try{process.kill(reader.pid,0);}catch(error){code=(error as NodeJS.ErrnoException).code;}expect(code).toBe('ESRCH');}
+}
+test('matching existing Codex daemon is preferred over stdio',async()=>{
+  const r=await launch('resolve',explicit);expect(r.exit).toBe(0);expect(r.result.config_reader).toBe('daemon');expect(await lines('stdio-processes.jsonl')).toEqual([]);await noMutation();
+});
+test('no-daemon Codex resolve, dry-run and start preserve layered native config and terminate their readers',async()=>{
+  behavior.daemonMissing=true;const configHome=join(home,'.codex');await mkdir(configHome);await mkdir(join(repo,'.codex'));
+  const layered='project layered developer secret $() `literal`';
+  const user=join(configHome,'config.toml'),project=join(repo,'.codex','config.toml');
+  await writeFile(user,`developer_instructions = "global developer"\n[skills]\nconfig = [{path = ${JSON.stringify(join(repo,'unrelated'))}, enabled = false}, {path = ${JSON.stringify(join(repo,'.agents','skills','workflow','SKILL.md'))}, enabled = true}]\n`);
+  await writeFile(project,`developer_instructions = ${JSON.stringify(layered)}\n`);
+  const protectedFiles=[user,project,join(configHome,'AGENTS.md'),join(configHome,'profile.config.toml'),join(configHome,'auth.json'),join(repo,'.agents','skills','technical','SKILL.md')];
+  for(const file of protectedFiles.slice(2,5))await writeFile(file,'untouched user fixture');
+  const before=await Promise.all(protectedFiles.map(f=>readFile(f)));
+  for(const [command,extra] of [['resolve',[]],['start',['--dry-run']]] as const){
+    const r=await launch(command,[...explicit,...extra]);expect(r.exit).toBe(0);expect(r.result.config_reader).toBe('stdio');expect(r.result.hidden_workflows).toContain('ruach-workflow-feature');expect(r.stdout+r.stderr).not.toContain(layered);await noMutation();await readersStopped();
+  }
+  const r=await launch('start',[...explicit,'--permissions','auto-review']);expect(r.exit).toBe(0);expect(r.result.config_reader).toBe('stdio');
+  const native=(await lines('native-launches.jsonl'))[0];expect(Bun.TOML.parse(native.args.find((a:string)=>a.startsWith('developer_instructions='))).developer_instructions).toBe(layered+'\n\n'+roleText);
+  const skills=(Bun.TOML.parse(native.args.find((a:string)=>a.startsWith('skills.config='))).skills as any).config;
+  expect(skills.find((e:any)=>e.path===join(repo,'unrelated')).enabled).toBe(false);expect(skills.filter((e:any)=>e.path.includes('workflow')).every((e:any)=>!e.enabled)).toBe(true);
+  expect(native.args).toContain('--approve-for-me');expect(await Promise.all(protectedFiles.map(f=>readFile(f)))).toEqual(before);await readersStopped();
+  const requests=await lines('stdio-requests.jsonl');expect(requests.every(r=>['initialize','initialized','config/read','skills/list'].includes(r.method))).toBe(true);
+  expect(requests.filter(r=>r.method==='config/read').every(r=>r.params.cwd===repo&&r.params.includeLayers===false)).toBe(true);
+  expect(requests.filter(r=>r.method==='skills/list').every(r=>r.params.cwds.length===1&&r.params.cwds[0]===repo&&r.params.forceReload===false)).toBe(true);
+  expect((await lines('stdio-closed.jsonl')).length).toBe(3);
+});
+for(const cause of ['daemonMismatch','daemonRpcError'])test(`Codex ${cause} falls back to short-lived native inspection`,async()=>{
+  behavior[cause]=true;const r=await launch('resolve',explicit);expect(r.exit).toBe(0);expect(r.result.config_reader).toBe('stdio');expect(r.stdout+r.stderr).not.toContain(secret);await readersStopped();await noMutation();
+});
+test('Codex reader is forcibly terminated when it lingers after stdin EOF',async()=>{
+  behavior.daemonMissing=true;behavior.stdioStayAlive=true;const r=await launch('resolve',explicit);expect(r.exit).toBe(0);await readersStopped();await noMutation();
+});
+test('unavailable daemon and malformed stdio protocol fail without leaking output or leaving a reader',async()=>{
+  behavior.daemonMissing=true;behavior.stdioMalformed=true;const r=await launch('resolve',explicit);expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('codex_config_unavailable');expect(r.stdout+r.stderr).not.toContain('invalid private output');await readersStopped();await noMutation();
+});
+for(const kind of ['claude','codex'])test(`${kind} default and explicit inherit policy add no native permission override`,async()=>{
+  for(const extra of [[],['--permissions','inherit']]){const r=await launch('resolve',['--kind',kind,'--model','test-model',...extra]);expect(r.exit).toBe(0);expect(r.result.permissions).toBe('inherit');expect(r.result.selection.permissions).toBe('inherit');expect(r.result.argv).not.toContain('--approve-for-me');expect(r.result.argv).not.toContain('--permission-mode');await noMutation();}
+});
+for(const kind of ['claude','codex'])test(`${kind} auto-review policy is adapter-owned in preparation and startup`,async()=>{
+  const extra=['--kind',kind,'--model','test-model','--permissions','auto-review'];
+  for(const [command,flags] of [['resolve',[]],['start',['--dry-run']]] as const){const r=await launch(command,[...extra,...flags]);expect(r.exit).toBe(0);expect(r.result.permissions).toBe('auto-review');if(kind==='codex')expect(r.result.argv).toContain('--approve-for-me');else expect(r.result.argv.slice(r.result.argv.indexOf('--permission-mode'),r.result.argv.indexOf('--permission-mode')+2)).toEqual(['--permission-mode','auto']);await noMutation();}
+  const r=await launch('start',extra);expect(r.exit).toBe(0);const args=(await lines('native-launches.jsonl'))[0].args;
+  if(kind==='codex')expect(args.filter((a:string)=>a==='--approve-for-me')).toHaveLength(1);else expect(args.slice(args.indexOf('--permission-mode'),args.indexOf('--permission-mode')+2)).toEqual(['--permission-mode','auto']);
+  for(const flag of ['--dangerously-bypass-approvals-and-sandbox','--dangerously-skip-permissions','bypassPermissions','--full-auto'])expect(args).not.toContain(flag);
+});
+for(const kind of ['pi','opencode','dsh','omp','agy'])test(`${kind} without verified auto-review mapping fails before mutation`,async()=>{
+  behavior.kinds='claude, codex, pi, opencode, dsh, omp, agy';await cp(join(bin,'codex'),join(bin,kind));const r=await launch('start',['--kind',kind,'--model','test-model','--permissions','auto-review']);expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('unsupported_permissions');await noMutation();
+});
+for(const [kind,args] of [['claude',['--permission-mode','auto']],['claude',['--permission-mode=bypassPermissions']],['codex',['--ask-for-approval','never']],['codex',['-a','on-request']],['codex',['--sandbox=workspace-write']],['codex',['-s','danger-full-access']],['codex',['--approve-for-me']]] as const)test(`${kind} conflicting native permission argv is rejected before config inspection`,async()=>{
+  behavior.daemonMissing=true;const r=await launch('start',['--kind',kind,'--model','test-model','--permissions','auto-review','--',...args]);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe('conflicting_native_argument');expect(rpcCalls).toEqual([]);expect(await lines('stdio-processes.jsonl')).toEqual([]);await noMutation();
+});
+for(const kind of ['claude','codex'])test(`${kind} auto-review requires installed help support`,async()=>{
+  behavior.noAutoReview=true;const r=await launch('start',['--kind',kind,'--model','test-model','--permissions','auto-review']);expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('unsupported_cli');expect(rpcCalls).toEqual([]);await noMutation();
+});
+test('invalid and duplicate portable permission policies fail before mutation',async()=>{
+  for(const args of [['--permissions','bypass'],['--permissions','auto-review','--permissions','inherit']]){const r=await launch('start',[...explicit,...args]);expect(r.exit).toBe(2);await noMutation();}
+});
+test('offline auto-review selection is write-free and never starts config inspection',async()=>{
+  behavior.daemonMissing=true;const r=await launch('resolve',[...explicit,'--offline','--permissions','auto-review']);expect(r.exit).toBe(0);expect(r.result.permissions).toBe('auto-review');expect(r.result.launchable).toBe(false);expect(await lines('stdio-processes.jsonl')).toEqual([]);expect(rpcCalls).toEqual([]);await noMutation();
+});
+
+test('Codex no-daemon coordinator retains enabled workflows and unrelated skill configuration',async()=>{
+  behavior.daemonMissing=true;const r=await asRole('coordinator','start',[...explicit,'--permissions','auto-review']);expect(r.exit).toBe(0);expect(r.result.hidden_workflows).toEqual([]);expect(r.result.config_reader).toBe('stdio');
+  const native=(await lines('native-launches.jsonl'))[0];const skills=(Bun.TOML.parse(native.args.find((a:string)=>a.startsWith('skills.config='))).skills as any).config;
+  expect(skills.find((e:any)=>e.path.endsWith('workflow/SKILL.md')).enabled).toBe(true);expect(skills.find((e:any)=>e.path.endsWith('unrelated')).enabled).toBe(false);await readersStopped();
+});
+test('Codex unresponsive stdio reader hits its deadline and leaves no child or launch mutation',async()=>{
+  behavior.daemonMissing=true;behavior.stdioNoReply=true;const r=await launch('resolve',explicit);expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('codex_config_unavailable');await readersStopped();await noMutation();
+},20000);

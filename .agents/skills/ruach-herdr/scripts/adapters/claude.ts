@@ -9,11 +9,12 @@ async function settings(path:string) {
   try {const v=JSON.parse(body);if(!v||typeof v!=='object'||Array.isArray(v))throw Error();return v;}
   catch{return fail(2,'invalid_settings','Invalid Claude settings JSON',path);}
 }
+export const autoReview=['--permission-mode','auto'];
 export function validateEffort(effort?:string) {
   if(effort && !['low','medium','high','xhigh','max'].includes(effort))fail(2,'unsupported_effort','Effort is not a verified Claude value','effort');
 }
 export async function prepare(s:Selection,pass:string[]):Promise<Plan> {
-  const {version}=await help('claude',s.cwd,['--model','--effort','--settings','--add-dir']);
+  const {version}=await help('claude',s.cwd,['--model','--effort','--settings','--add-dir',...(s.permissions==='auto-review'?['--permission-mode']:[])]);
   // Installed help omits the documented hidden append-file flag; verified version gate.
   const [major,minor,patch]=version.split('.').map(Number);
   if(major!==2 || minor!==1 || patch<260)fail(3,'unsupported_cli','Claude requires verified append-file and skillOverrides support','claude');
@@ -37,6 +38,7 @@ export async function prepare(s:Selection,pass:string[]):Promise<Plan> {
   const hidden=s.role==='coordinator'?[]:[...discovered].sort();
   const visible=canonical.filter(x=>s.role==='coordinator'||!x.workflow);
   const base=['--model',s.model,'--append-system-prompt-file',s.roleFile];
+  if(s.permissions==='auto-review')base.push(...autoReview);
   if(s.effort)base.push('--effort',s.effort);
   const argv=[...base,'--settings','<private-temp>/settings.json','--add-dir','<private-temp>',...pass];
   return {argv,redactedArgv:argv,coverage:'live-capable',version,hiddenWorkflows:hidden,operations:['private settings.json with workflow visibility overlay','canonical skill symlinks in private .claude/skills'],materialize:async(temp)=>{

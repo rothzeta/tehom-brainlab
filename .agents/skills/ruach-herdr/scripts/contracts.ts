@@ -28,12 +28,14 @@ export async function directory(path: string, field: string) {
 export async function contents(path: string): Promise<string> {
   try { return await readFile(path,'utf8'); } catch { return fail(2,'unreadable_file','Required file is unreadable',path); }
 }
+export type Permissions = 'inherit' | 'auto-review';
 export interface Selection {
   name: string; role: string; roleFile: string; roleHash: string; repo: string; cwd: string;
-  kind: Kind; model: string; effort?: string; route?: string; provenance: string;
+  kind: Kind; model: string; permissions: Permissions; effort?: string; route?: string; provenance: string;
 }
 export interface Plan {
   argv: string[]; redactedArgv: string[]; coverage: 'live-capable' | 'fixture/failure-only';
   version: string; hiddenWorkflows: string[]; operations: string[];
+  configReader?: 'daemon' | 'stdio';
   materialize?: (temp: string) => Promise<string[]>;
 }

@@ -28,6 +28,7 @@ export function validatePass(s:Selection,pass:string[]) {
   const map=allowed[s.kind]??{};
   for(let i=0;i<pass.length;i++) {
     const flag=pass[i].split('=')[0];
+    if(s.permissions==='auto-review' && ['--permission-mode','--sandbox','-s','--ask-for-approval','-a','--approve-for-me'].includes(flag))fail(2,'conflicting_native_argument','Native permission flags conflict with the adapter-owned auto-review policy','native argv');
     if(!Object.hasOwn(map,flag))fail(2,'conflicting_native_argument','Native argument is conflicting, unsafe or outside the documented pass-through surface','native argv');
     if(pass[i].includes('\0'))fail(2,'invalid_argument','NUL bytes are unsupported','native argv');
     if(map[flag]===0 && pass[i].includes('='))fail(2,'invalid_argument','Boolean native flag cannot have a value','native argv');
@@ -47,6 +48,7 @@ export function redactPass(pass:string[]) {
 }
 export async function prepare(s:Selection,pass:string[]) {
   validatePass(s,pass);
+  if(s.permissions==='auto-review' && !('autoReview' in adapters[s.kind]))fail(3,'unsupported_permissions','Selected adapter has no verified auto-review permission mapping','permissions');
   if(pass.length) {
     const h=await run([executable(s.kind),'--help'],s.cwd);
     if(h.exit!==0||h.timedOut||pass.filter(p=>p.startsWith('-')).some(p=>!h.stdout.includes(p.split('=')[0])))fail(3,'unsupported_cli','Native pass-through flag is not verified by installed help','native argv');
