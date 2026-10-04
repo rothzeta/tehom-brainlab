@@ -30,7 +30,7 @@ just poc-001-test tests/smoke.test.ts -t 'declared literal'
 just poc-001-build --outDir 'dist alternative'
 ```
 
-Arguments are forwarded unchanged; file filters are relative to this prototype. Use `POC001_PORT` rather than a separate `--port` in Docker mode. Nonzero tool exits propagate through the executable and just (just itself reports child failures as exit 1).
+Arguments are forwarded unchanged; file filters are relative to this prototype. Use `POC001_PORT` rather than a separate `--port` in Docker mode. Nonzero tool exits propagate unchanged through the executable and just.
 
 An explicit host mode is available if Bun **1.4.2** is on PATH:
 
