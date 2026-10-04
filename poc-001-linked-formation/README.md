@@ -1,8 +1,8 @@
 # POC 001 — Linked formation
 
-**Status: P01 browser shell implemented, independently verified/reviewed, and accepted. Not a playable patrol.**
+**Status: P01 browser shell implemented, independently verified/reviewed, and accepted. P02 formation algebra implemented as a candidate; verification, independent review, and delivery pending. Not a playable patrol.**
 
-Test whether rotating, expanding, and contracting three linked Brood creates interesting ordinary combat decisions. The [design brief](../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../docs/adr/0004-repository-and-poc-direction.md) describe the experiment. P01 supplies only a named Phaser scene, labelled placeholder, and pure readiness fixture. Formation rules and combat remain later work.
+Test whether rotating, expanding, and contracting three linked Brood creates interesting ordinary combat decisions. The [design brief](../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../docs/adr/0004-repository-and-poc-direction.md) describe the experiment. P01 supplies a named Phaser scene, labelled placeholder, and pure readiness fixture. P02 adds pure geometry without changing the browser placeholder. Combat remains later work.
 
 ## Run the shell
 
@@ -49,6 +49,34 @@ Exact direct dependencies: Bun 1.4.2, Phaser 4.2.1, Vite 8.3.2, Vitest 5.0.3, Ty
 `src/main.ts` alone initializes the game. `src/view/` owns presentation. `src/core/smoke.ts` has no imports and returns the contractual literal `formation-lab-ready`; it accesses no browser globals or game initialization. The Vitest test checks that literal with throwing browser-global guards, plus the actual unit-process Bun version. Strict TypeScript checks source, tests, and configuration.
 
 Dependencies, configuration, scripts, and lockfile stay local. `node_modules/` and `dist/` are ignored. There is no root package/workspace or another-prototype dependency. The root recipes delegate to `bin/run` → `scripts/run.sh` → `scripts/toolchain.sh`.
+
+## Formation algebra (P02)
+
+[The P02 plan](../docs/plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md) owns the coordinate fixture and reversible mapping. Import typed, browser-independent exports directly from `src/core/hex.ts` and `src/core/formation.ts`:
+
+- `Hex`, `validateHex`, `hexDistance`, `boardCells`, `OUTER_RING`: integer axial coordinates, validation, distance, the fixed 37-cell board, and the exact clockwise 18-cell ring R. Board enumeration order is unspecified; ring indices are contractual.
+- `Brood`, `Shape`, `Orientation`, `Formation`, `Position`, `Link`, `ROSTER`, `CLOSE_THRESHOLD`: readonly types and the fixture constants.
+- `validateFormation`, `formations`, `formationPositions`, `formationLinks`, `rotateClockwise`, `rotateAnticlockwise`, `expandFormation`, `contractFormation`: validation, twelve labelled states, derived positions/links, and pure transitions.
+
+Use `{ shape: 'compact' | 'spread', orientation: 0 | 1 | 2 | 3 | 4 | 5 }`. Every caller supplies an explicit formation; this module chooses no default initial state. Positions are `{brood, cell: {q,r}}` in `[ugallu, girtablilu, pazuzu]` order. For orientation `o`, Compact uses R indices `3o+[0,1,2]`, Spread `3o+[0,6,12]`, modulo 18. Spread states with the same unlabelled occupied-cell set retain their different labelled assignments. Clockwise adds one orientation modulo six; anticlockwise subtracts one. Expansion and contraction preserve orientation and identity; applying either to its destination shape keeps that shape.
+
+The experimental convention uses downward-positive screen vertical coordinates. A compatible projection is `(q + r/2, sqrt(3)*r/2)`; `(-r,q+r)` is one clockwise 60-degree turn. Pixel scale and origin belong to the future renderer. Distance is `max(abs(dq),abs(dr),abs(dq+dr))`. The fixed centre is `(0,0)`, radius three, with no translation or independent movement (plan Fixture and Settled choices; brief Formation rules).
+
+Links return `from`/`to` labelled positions, integer `distance`, and `state: 'close' | 'stretched'`, in roster-pair order `(0,1), (0,2), (1,2)`. `formationLinks(formation, closeThreshold)` accepts an explicit nonnegative safe integer threshold, defaulting to `CLOSE_THRESHOLD = 2`. Close means distance <= threshold; Compact distances are `[1,2,1]`, Spread `[6,6,6]`. Threshold two and the coordinate presets are experimental/provisional, from the plan and brief's Links section; they are not balanced gameplay findings.
+
+Public validation throws `RangeError` synchronously and never clamps, rounds, coerces, or normalizes invalid inputs. Error messages are:
+
+| Invalid input | Message |
+| --- | --- |
+| Malformed coordinate, fractional/nonfinite/nonnumeric or unsafe `q`/`r` | `Hex coordinates must be safe integers` |
+| Distance cannot be represented as a safe integer | `Hex distance must be a safe integer` |
+| Malformed formation or shape outside lowercase `compact`/`spread` | `Formation shape must be compact or spread` |
+| Missing/nonnumeric/fractional/nonfinite orientation or outside 0..5 | `Formation orientation must be an integer from 0 through 5` |
+| Negative/fractional/nonfinite/nonnumeric or unsafe Close threshold | `Close threshold must be a nonnegative safe integer` |
+
+`RangeError`, lowercase shape names, safe integer boundaries, and inclusive nonnegative integer threshold validation are P02 implementation choices resolving the plan's public-error contract. Orientation bounds and shape mapping come from the plan. Inputs remain unchanged, including deeply frozen inputs. Exported ring cells and roster are frozen; results use readonly types, without promising that every returned object is frozen. Link health/eligibility and action accounting are outside P02.
+
+Run the focused contracts from the repository root with `just poc-001-test tests/formation.test.ts`. The suite reports its actual assertion count and uses explicit thresholds for classification so provisional tuning can evolve.
 
 ## Evidence and limitations
 
