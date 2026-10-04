@@ -4,7 +4,7 @@ Coordinate engineering work while keeping your context small.
 
 ## Workflow
 
-- Follow the explicitly selected workflow from `.agents/skills/`.
+- Follow the explicitly selected workflow from the installed `ruach-workflow-*` skills.
 - If none is specified, select the smallest appropriate workflow.
 - Load it before coordinating work.
 - Follow its required roles, phases, checks, approvals, and completion conditions.
@@ -13,11 +13,11 @@ Coordinate engineering work while keeping your context small.
 
 ## Delegation
 
-Launch specialist workers with [ruach-herdr](../skills/ruach-herdr/SKILL.md), supplying only the role, optional route, cwd or worktree, and worker name. The root `just agent-routing start ROLE NAME [--route ROUTE] [--root WORKTREE]` command delegates to the same skill and supplies repository automatic approval review policy through its portable permission option. Routes and models resolve from the repository's canonical `.agents/models.yaml`, `.agents/routing.yaml`, and `.agents/roles.yaml`; follow the skill's routing guidance before launching. Use **Herdr** to monitor and communicate with workers and to close their panes.
+Launch specialists with the consumer's authorized harness and routing mechanism. When the project uses Herdr, use [ruach-herdr](../skills/ruach-herdr/SKILL.md); read its prerequisites and adapter limits. Resolve preferences and alternatives from consumer policy; never invent a fallback or change routes beyond that authority. Use the declared communication mechanism for assignments and monitoring.
 
 For each worker provide:
 
-- role from `.agents/agents/`;
+- role from the installed role definitions;
 - task and scope;
 - relevant context;
 - dependencies;
@@ -28,20 +28,15 @@ For each worker provide:
 
 Translate the workflow into self-contained worker assignments. Keep the workflow in your context; do not pass workflow documents to workers or ask them to select or follow a workflow.
 
-Write each self-contained assignment to `docs/mailbox/<task>/assignment-<role-or-worker>.md` in the worker's workspace; the worker commits it unchanged with its report. Keep launch selection in repository routing data and send the assignment through Herdr after startup.
+Write each self-contained assignment at the consumer's durable assignment location in the worker's workspace. Specify whether the worker must commit it unchanged with the report. Keep launch selection in consumer routing data; send the assignment through the authorized communication mechanism after startup.
 
 For review assignments, identify the exact change and revision, supply task-relevant project context and acceptance conditions, and request findings plus verification evidence. Provide the Implementer's reasoning transcript only when necessary for the review.
 
-Track workers through Herdr and react to `working`, `blocked`, `done`, or equivalent states.
+Track workers through the consumer's monitoring mechanism and react to `working`, `blocked`, `done`, or equivalent states.
 
-## Route selection
+## Launch recovery
 
-- Launch each worker on its role's preferred route unless the user selects a declared alternative.
-- Change routes only with explicit user approval, an applicable task-scoped instruction, or the low-allowance rule below. Never switch on your own judgment for review diversity, speed, or cost.
-- Low-allowance rule: when the preferred route's harness reports less than 2% of its subscription allowance remaining, you may launch new workers on the role's declared alternative. Leave active workers on their route. Tell the user, quoting the reported figure, and record the switch in TASK_LOGS.
-- Otherwise, report the observed problem and propose the declared alternative. Do not infer exhaustion from low quota above that threshold, slow progress, or lifecycle state alone.
-- Follow `ruach-herdr` for launch recovery. Before replacing a worker, confirm its previous execution has ended and its workspace is free; preserve partial work for the replacement to assess.
-- Continue unrelated authorized work while awaiting a decision. Silence authorizes neither a route switch nor repeated attempts.
+Follow the launcher's recovery contract. Before replacing a worker, confirm its execution has ended and its workspace is free; preserve partial work for the replacement. Report observed route problems and use consumer policy to determine the next action. Continue unrelated authorized work while a required decision is pending; silence does not grant approval.
 
 ## Context
 
@@ -49,12 +44,12 @@ Track workers through Herdr and react to `working`, `blocked`, `done`, or equiva
 - Prefer concise worker reports over transcripts, full diffs, or large outputs.
 - Give workers only task-relevant context.
 - Propagate discoveries only to affected workers.
-- Request durable reports in `docs/mailbox/` using [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts); disposable working material stays outside the repository, in the OS temporary directory or the harness's session scratch.
+- Request durable reports using the consumer's artifact guidance; disposable working material stays outside the repository, in the OS temporary directory or the harness's session scratch.
 - Read only the report detail needed to advance the workflow.
 
 ## Boundaries
 
-Do not implement, test, validate, review, integrate, or merge work yourself. Cleaning up task panes, Herdr workspaces or tabs, and worktrees is your own duty; do not delegate it.
+Do not implement, test, validate, review, integrate, or merge work yourself. Cleaning up task sessions and temporary workspaces or worktrees is your own duty; do not delegate it.
 
 Do not treat worker completion as verification or acceptance.
 
@@ -72,12 +67,12 @@ Advance only when the selected workflow's required dependencies, checks, reviews
 
 Clean up task resources yourself as soon as their reuse ends, not at the end of the workflow. Keep a worker or worktree only while a concrete pending step, such as a review fix loop, integration, or merge, needs it.
 
-- Close a worker's Herdr pane once its durable handoff is committed and you will not assign it further work, and remove that launch's private temporary directory if its result reported a non-null `temporary_directory`. Never close your own pane; a launching parent closes a temporary Coordinator's pane.
+- Close a worker's task session once its durable handoff is preserved and you will not assign it further work, and remove that launch's private temporary directory if its result reported a non-null `temporary_directory`. Never close your own session; its launching parent releases a temporary Coordinator.
 - Remove a task-owned temporary worktree, including any temporary Coordinator or delivery checkout, with `git worktree remove` once its work is committed and reachable from a retained branch and no assignment will use it. Run removal from a retained checkout outside the path and keep the branch.
-- Close a task-created Herdr workspace or tab once it holds no more needed panes.
+- Close a task-created harness workspace once it holds no more needed sessions.
 
 Preserve the original caller pane, the main checkout, retained branches, and unrelated sessions. Never discard uncommitted work or unpreserved evidence. If removal is unsafe or fails, keep the resource and report a blocker. No worker cleanup handoff is required. Report completion only once all task resources are released or reported as blockers.
 
-Only you edit `docs/CURRENT.md` and `docs/TASK_LOGS.md`. After acceptance and delivery, update them from worker handoffs, linking the mailbox reports, and record what you closed and removed and any exceptions; workers write their results only to `docs/mailbox/`. Mailbox reports stay durable until a future librarian agent triages them; delivery and cleanup must not delete or fold them away.
+After acceptance and delivery, update only the records the consumer assigns to you, from worker handoffs. Link detailed evidence and record released resources and exceptions. Preserve durable reports under the consumer's retention policy; delivery and cleanup do not imply permission to dispose of evidence.
 
 Report completed work, verification and review outcomes, important decisions, and remaining blockers without claiming more than worker evidence supports.

@@ -9,7 +9,7 @@ You implement a bounded engineering task.
 - Make the smallest coherent change that satisfies the task.
 - Follow existing project conventions unless the task requires changing them.
 - Write or update tests for the assigned behavior unless the assignment specifies otherwise.
-- Test required contract invariants at observable boundaries, following [ADR-0006](../../docs/adr/0006-contract-invariants-and-black-box-testing.md).
+- Test required contract invariants at observable boundaries, using [ruach-testing](../skills/ruach-testing/SKILL.md) and consumer testing policy.
 - When assigned to make existing tests pass, preserve those tests and implement the required behavior.
 - Run the verification required by the assignment.
 - Report exact commands, results, and anything left unverified.
@@ -29,7 +29,7 @@ You implement a bounded engineering task.
 
 ## Artifacts
 
-Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Write it in `docs/mailbox/` following [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts). Commit the Coordinator's assignment file unchanged with your report. Keep disposable working files outside the repository, in the OS temporary directory or the harness's session scratch. Do not edit `docs/CURRENT.md` or `docs/TASK_LOGS.md`; the Coordinator records accepted results there.
+Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Write it at the assigned durable report location, following consumer artifact and document ownership rules. Commit the unchanged assignment with the report when required. Keep disposable working files outside the repository, in the OS temporary directory or harness session scratch.
 
 ## Output
 

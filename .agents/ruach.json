@@ -1,0 +1,347 @@
+{
+  "files": {
+    "agents/architect.md": {
+      "mode": 420,
+      "sha256": "110b8e8b3fb4a2846f77848c7d2b1068e94d90d0006ea495394f78014ed6987c"
+    },
+    "agents/coordinator.md": {
+      "mode": 420,
+      "sha256": "8f42253cefe69a1cde826bf6c8b57a95c3191bfc1c55b2462737797c6f9b640d"
+    },
+    "agents/implementer.md": {
+      "mode": 420,
+      "sha256": "04689d3b8b34fe505ef043810eeec4b7400171ded274cc2d9b38183f511d81e4"
+    },
+    "agents/librarian.md": {
+      "mode": 420,
+      "sha256": "1d2d937b326d84ea8f32e938fa525e181ad36c0d733a7bf994bcb3ae07ddc03b"
+    },
+    "agents/reviewer.md": {
+      "mode": 420,
+      "sha256": "be2829c07b62158dd3a04b712c96557b82dfb2990f218a57a2944c868e056366"
+    },
+    "agents/scout.md": {
+      "mode": 420,
+      "sha256": "fb62d448975979533b8212e73d1dc648c56952112f6678607e84cb568c080f99"
+    },
+    "ruach-install.py": {
+      "mode": 420,
+      "sha256": "6fe2e0a5c3f7cefa14bfe79fd7d83778fd5a4a4155e1d377a10da5d7dd66a654"
+    },
+    "ruach/LICENSE": {
+      "mode": 420,
+      "sha256": "aa2ccec297ca553a287ccccb3260c4518770f027f5ac729b633364a6ef6b005f"
+    },
+    "ruach/PROVENANCE.md": {
+      "mode": 420,
+      "sha256": "a4be69d11721e729394319c2b2ee870b72ce92f17f1cfe07fbcb0a76e8e126b7"
+    },
+    "skills/ruach-handoff/SKILL.md": {
+      "mode": 420,
+      "sha256": "120522efb7731a63de222071a5a91cf0828b54ec3196c39a1b2c18abe27087aa"
+    },
+    "skills/ruach-handoff/bun.lock": {
+      "mode": 420,
+      "sha256": "d078e8adc0c94c4c9dd457aa6c227fde092d4f587802885a19fdb55ac5d987d0"
+    },
+    "skills/ruach-handoff/handoff.schema.json": {
+      "mode": 420,
+      "sha256": "30905709f0715c5f399c13a2e79e8f73f969a3e2068e01cea3711f0eae303874"
+    },
+    "skills/ruach-handoff/package.json": {
+      "mode": 420,
+      "sha256": "2a8d74b5382dc15387d9ac42af407d0e624904ccb59b90b169ea98baecacfcc9"
+    },
+    "skills/ruach-handoff/scripts/validate.ts": {
+      "mode": 420,
+      "sha256": "6c7221ab1d7f2a09604d4c6b1e5db1d347fa694ee9ac0a12595e7aa1ab2994be"
+    },
+    "skills/ruach-handoff/tests/validate.test.ts": {
+      "mode": 420,
+      "sha256": "d2880bbdbe72856abcb767e188234a77a93c3cf3d764f8cf2e18de8768eb5525"
+    },
+    "skills/ruach-harness-eval/SKILL.md": {
+      "mode": 420,
+      "sha256": "d473bd9883f76ba1bfc645cc4139613fe6e5c01deb554d3f0f1754011f461467"
+    },
+    "skills/ruach-harness-eval/agents/openai.yaml": {
+      "mode": 420,
+      "sha256": "a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94"
+    },
+    "skills/ruach-harness-eval/package.json": {
+      "mode": 420,
+      "sha256": "6493d43215064b128358e083fce8b3dff93d0a2890e27d71fe6b4c1fa258758e"
+    },
+    "skills/ruach-harness-eval/references/config.md": {
+      "mode": 420,
+      "sha256": "126503d33dbb11eb7208859b6269994a71f622e977acc8cbc686822cce88239c"
+    },
+    "skills/ruach-harness-eval/scripts/acceptance.ts": {
+      "mode": 420,
+      "sha256": "76c26e6027eae99e6df1dbda2543da9d5248a92390e0bbf565975c17c4969025"
+    },
+    "skills/ruach-harness-eval/scripts/common.ts": {
+      "mode": 420,
+      "sha256": "8c7dfa95cdccca1a94aec1e673d9990d4ad72de5e2b648e8de25e150c5caf3f5"
+    },
+    "skills/ruach-harness-eval/scripts/scope-check.ts": {
+      "mode": 420,
+      "sha256": "4f949eda3d45a5fbf6b077fcafa1b1c6b833638d97aed2b23cd285677f244523"
+    },
+    "skills/ruach-harness-eval/tests/eval.test.ts": {
+      "mode": 420,
+      "sha256": "9697fcc151e13592020796440a41e673b73c13a0c3b1922e0a4f92736fef4c4e"
+    },
+    "skills/ruach-harness-eval/tests/fixtures/assignment.md": {
+      "mode": 420,
+      "sha256": "b8bd9824895df0734c121ea280986759737d787a2dd2d1fe577de09f112fb5c0"
+    },
+    "skills/ruach-harness-eval/tests/fixtures/task.ts": {
+      "mode": 420,
+      "sha256": "42c23855a6ce2d702c9527bcd575d9dbfa4c4efe25d2f6b26b9af80ee37d3aeb"
+    },
+    "skills/ruach-herdr/SKILL.md": {
+      "mode": 420,
+      "sha256": "c2d98e2ce93598d9c3efd566bb6ec417566d3297738b6a8f0347979e360f75bf"
+    },
+    "skills/ruach-herdr/bun.lock": {
+      "mode": 420,
+      "sha256": "194ee92d19da44502af28b75644d3fe5bf5351ff6287497f3a07990694349c88"
+    },
+    "skills/ruach-herdr/package.json": {
+      "mode": 420,
+      "sha256": "9938a58bf919866726fadae9129d8116f4c0078f69494bc7d2c64e7cfe1d4227"
+    },
+    "skills/ruach-herdr/references/adapters.md": {
+      "mode": 420,
+      "sha256": "106e9b287615f93ad6f81d2856ce084897dbc8a18be873723cb1de2bad5b9411"
+    },
+    "skills/ruach-herdr/references/routing.md": {
+      "mode": 420,
+      "sha256": "290d18e99bb71d1cfdc750b62c7148159fcdaef529947d96719694287ab34fb3"
+    },
+    "skills/ruach-herdr/scripts/adapters/agy.ts": {
+      "mode": 420,
+      "sha256": "497380f84220f89d9df55ebc2153ff43212ee13ab8831a981772ca5cf601d1e0"
+    },
+    "skills/ruach-herdr/scripts/adapters/claude.ts": {
+      "mode": 420,
+      "sha256": "c912ae11c30510dc820352db9aa462b2c5803e1e43e4234384f458bfe6c49745"
+    },
+    "skills/ruach-herdr/scripts/adapters/codex.ts": {
+      "mode": 420,
+      "sha256": "c58b6e134a25af8bf1dc8a059dbd2a871f355609b66bfc5967ea1802e9aae5d4"
+    },
+    "skills/ruach-herdr/scripts/adapters/dsh.ts": {
+      "mode": 420,
+      "sha256": "ee68d5ee1cbcb9f38dc38e90ee1ae35c0e1be02a81485e46f5f1afd19d8b88a7"
+    },
+    "skills/ruach-herdr/scripts/adapters/index.ts": {
+      "mode": 420,
+      "sha256": "189f0edd9d0b23484e6b1d5e47b3c3667a9b68a45459040eb65f67c3e1f25b35"
+    },
+    "skills/ruach-herdr/scripts/adapters/omp.ts": {
+      "mode": 420,
+      "sha256": "a008e27c8d07722e5141f4641bb00a696bc3d053f2674d629260c6ea723d608a"
+    },
+    "skills/ruach-herdr/scripts/adapters/opencode.ts": {
+      "mode": 420,
+      "sha256": "f475ba1bebb0f29bf6c5b86d887fd4a8ac11e778682afe3310366ed6887a5d8b"
+    },
+    "skills/ruach-herdr/scripts/adapters/pi.ts": {
+      "mode": 420,
+      "sha256": "37b29fdb8006125fa6efa2126dd09c080e5b4d255608309f44c09e77a9ff361e"
+    },
+    "skills/ruach-herdr/scripts/contracts.ts": {
+      "mode": 420,
+      "sha256": "29e1fe62f88853f4167de2359c240a38eef64a742450f9dfd040212671b6a5e2"
+    },
+    "skills/ruach-herdr/scripts/native-codex.ts": {
+      "mode": 420,
+      "sha256": "b1a31733432b530e33341218afc3a1737b339aeaad52c735be564d19731d4b3d"
+    },
+    "skills/ruach-herdr/scripts/process.ts": {
+      "mode": 420,
+      "sha256": "bb047f0673307abc4f9ecf3bcc7e909ca8d33a1ab938b7a9c31f997fb91fe12e"
+    },
+    "skills/ruach-herdr/scripts/routing.ts": {
+      "mode": 420,
+      "sha256": "6c960675a8db2afe2be65b7ee1c1ef03a3ba90930a6610e3d4aabba21534677b"
+    },
+    "skills/ruach-herdr/scripts/skills.ts": {
+      "mode": 420,
+      "sha256": "f9c1cc14f9f505c71070638526dba5fbbfe668a6df9b4a9a9b7118bfbd7f10b9"
+    },
+    "skills/ruach-herdr/scripts/worker.ts": {
+      "mode": 420,
+      "sha256": "de1e6933f2dfed8d42d5e17e6d9337828d1ea51ccf2204eb614dbcf359cdebb1"
+    },
+    "skills/ruach-herdr/tests/fixtures/fake-cli.ts": {
+      "mode": 420,
+      "sha256": "cbae00c38fe87abe4a36fca53428449769e54d3480d0915b4a0d59ba8ab3fc62"
+    },
+    "skills/ruach-herdr/tests/fixtures/portable-routing/models.yaml": {
+      "mode": 420,
+      "sha256": "24741bd491a059ca239d2ef3fe4b594e7bbed068069d779d821c28018a8126b3"
+    },
+    "skills/ruach-herdr/tests/fixtures/portable-routing/roles.yaml": {
+      "mode": 420,
+      "sha256": "6589ade3d85f892b2b8b0b4fb20c7d1819e03db248fc28df266d23062e06122d"
+    },
+    "skills/ruach-herdr/tests/fixtures/portable-routing/routing.yaml": {
+      "mode": 420,
+      "sha256": "4ff6bb936a1d59f5e83290025e1359441c308d1ff2488bd242ea67ff6ba94365"
+    },
+    "skills/ruach-herdr/tests/fixtures/routing/models.yaml": {
+      "mode": 420,
+      "sha256": "b520a998340f87c2c7944904271c71dae7f0cbd339b4edd73bdebba6107638ab"
+    },
+    "skills/ruach-herdr/tests/fixtures/routing/roles.yaml": {
+      "mode": 420,
+      "sha256": "21c942e3a2b4067291ce883168edbc09a63607fc8f842a0b89c52e14f2928527"
+    },
+    "skills/ruach-herdr/tests/fixtures/routing/routing.yaml": {
+      "mode": 420,
+      "sha256": "afd0d76c83ea64f5b53bd04c0ada9edda72d538d56938ec447c632a9e35ed690"
+    },
+    "skills/ruach-herdr/tests/worker.test.ts": {
+      "mode": 420,
+      "sha256": "876ea50761a49f39025c1a515b9b8c0f5c3847c654a8beca411219a825c30933"
+    },
+    "skills/ruach-librarian/SKILL.md": {
+      "mode": 420,
+      "sha256": "1ae5a7cd8c8657c1c0c04c6b3ed24af34a2131ddea64f29dfb1aeb8102b32d52"
+    },
+    "skills/ruach-librarian/evals/README.md": {
+      "mode": 420,
+      "sha256": "2140cf95097ca173f1a1d5e840c41b93c729ae7d6fabb01f84ff262149afc16c"
+    },
+    "skills/ruach-librarian/evals/cases/01-authority/corpus/GUIDANCE.md": {
+      "mode": 420,
+      "sha256": "2871205171a4d388e46713b61f3fc6f1cf0c87637579f5a910de8c7285be37f1"
+    },
+    "skills/ruach-librarian/evals/cases/01-authority/corpus/index.md": {
+      "mode": 420,
+      "sha256": "c8fc49a2c01729f8ba610a1303448d71a7bc745788b6a2b84dddc9ca60a4e927"
+    },
+    "skills/ruach-librarian/evals/cases/01-authority/corpus/knowledge/storage.md": {
+      "mode": 420,
+      "sha256": "9e5eb4e1ddeb9d9c368d74711927d9576ccfdf0402bd9c1cc7b3b95b34eacea0"
+    },
+    "skills/ruach-librarian/evals/cases/01-authority/corpus/sources/decision.md": {
+      "mode": 420,
+      "sha256": "95a76681403b0e9054275b16905d915747378d89e71bb7a1c8e343725003f35a"
+    },
+    "skills/ruach-librarian/evals/cases/01-authority/corpus/sources/proposal.md": {
+      "mode": 420,
+      "sha256": "9dd4c58e516e901c358c359d4a5bf580fa063190bdc38f32c67b9ca61cf6bba1"
+    },
+    "skills/ruach-librarian/evals/cases/01-authority/task.md": {
+      "mode": 420,
+      "sha256": "41099cf03628b00dc380ae22cfdfadd06ef88dfe719dfc7f9d90131fc416a9ff"
+    },
+    "skills/ruach-librarian/evals/cases/02-revisions/corpus/GUIDANCE.md": {
+      "mode": 420,
+      "sha256": "2871205171a4d388e46713b61f3fc6f1cf0c87637579f5a910de8c7285be37f1"
+    },
+    "skills/ruach-librarian/evals/cases/02-revisions/corpus/STATUS.md": {
+      "mode": 420,
+      "sha256": "bd3a98dc3b329c4a176269aa48e095c26af790d1a805174b176a0c1d4781c374"
+    },
+    "skills/ruach-librarian/evals/cases/02-revisions/corpus/index.md": {
+      "mode": 420,
+      "sha256": "39d46363f1ded8552821ba8a101bc372a16af71beca272f3642bc35a1f782029"
+    },
+    "skills/ruach-librarian/evals/cases/02-revisions/corpus/knowledge/search.md": {
+      "mode": 420,
+      "sha256": "216c7b79f0f8590fc5e08fcfdea0afc8270150a2f2e1081f7987285d07f5c278"
+    },
+    "skills/ruach-librarian/evals/cases/02-revisions/corpus/sources/change-report.md": {
+      "mode": 420,
+      "sha256": "f7d784ead8b01311a330b797ab41a90f41d6fd0a30ded69dfbbd5b3a79389d6a"
+    },
+    "skills/ruach-librarian/evals/cases/02-revisions/corpus/sources/test-report.md": {
+      "mode": 420,
+      "sha256": "9fffd7363c1c16d72b341bac9d1482bf9aaa2c5a7768fdceee68e2ad03c19515"
+    },
+    "skills/ruach-librarian/evals/cases/02-revisions/task.md": {
+      "mode": 420,
+      "sha256": "49cb982cf5154f284d1c738012a2e6743f34cf867d4d7940b665fcbc7f6e31a7"
+    },
+    "skills/ruach-librarian/evals/cases/03-conflicts/corpus/GUIDANCE.md": {
+      "mode": 420,
+      "sha256": "2871205171a4d388e46713b61f3fc6f1cf0c87637579f5a910de8c7285be37f1"
+    },
+    "skills/ruach-librarian/evals/cases/03-conflicts/corpus/index.md": {
+      "mode": 420,
+      "sha256": "dac0221c095e3eae06c6ccad8f5a744ff0817c24d40d97e8d5d631d90ad713c9"
+    },
+    "skills/ruach-librarian/evals/cases/03-conflicts/corpus/knowledge/offline.md": {
+      "mode": 420,
+      "sha256": "7087d67320880f914656ae1d07292278ed12eff137b2fac4c577b5e014eb7622"
+    },
+    "skills/ruach-librarian/evals/cases/03-conflicts/corpus/sources/network-a.md": {
+      "mode": 420,
+      "sha256": "7dbc74fe261bd9f33c9c0ac810e49de67b5c1725bc15def1710003acc9c394ef"
+    },
+    "skills/ruach-librarian/evals/cases/03-conflicts/corpus/sources/network-b.md": {
+      "mode": 420,
+      "sha256": "0dd166011d70e074645491eeabb5156d29688befc9ff622378f3dd302a572681"
+    },
+    "skills/ruach-librarian/evals/cases/03-conflicts/task.md": {
+      "mode": 420,
+      "sha256": "9aa5af17a95d98c3690f14d9d11e768488333459046be98883751c8670f6a8c2"
+    },
+    "skills/ruach-librarian/evals/cases/04-evidence/corpus/GUIDANCE.md": {
+      "mode": 420,
+      "sha256": "2871205171a4d388e46713b61f3fc6f1cf0c87637579f5a910de8c7285be37f1"
+    },
+    "skills/ruach-librarian/evals/cases/04-evidence/corpus/index.md": {
+      "mode": 420,
+      "sha256": "cbc5d89fce23d7d8bf485c4d20e3f45964a51d226f0a1d724998e4d21fb68a47"
+    },
+    "skills/ruach-librarian/evals/cases/04-evidence/corpus/knowledge/operations.md": {
+      "mode": 420,
+      "sha256": "ba6e6809a84dff9ed1466fab4391ffff45b5073c651dc8cccee28e11318a7b66"
+    },
+    "skills/ruach-librarian/evals/cases/04-evidence/corpus/knowledge/startup.md": {
+      "mode": 420,
+      "sha256": "84bd9dba9963e1f54dab9a63a126510a2fef227f01beb6096bcabd4fd1dc86fe"
+    },
+    "skills/ruach-librarian/evals/cases/04-evidence/corpus/sources/details.md": {
+      "mode": 420,
+      "sha256": "3433ccf61ee208765096ebd96727eb4cc50fd37bdca41f75b7fdf8b409067db8"
+    },
+    "skills/ruach-librarian/evals/cases/04-evidence/corpus/sources/summary.md": {
+      "mode": 420,
+      "sha256": "369b09c661f36b463d7a7946d897257084ab4bf677da87337c81250dfe364140"
+    },
+    "skills/ruach-librarian/evals/cases/04-evidence/task.md": {
+      "mode": 420,
+      "sha256": "a7c325fcf0eb9d26a893d209ab5abcc2b4db922849fc16889bff4e8b065c486d"
+    },
+    "skills/ruach-librarian/evals/expected/rubric.md": {
+      "mode": 420,
+      "sha256": "e7d61662f1c2b20820c2af9f474d36e47667174acd6552effeb74d8288c1cd1c"
+    },
+    "skills/ruach-simplification/SKILL.md": {
+      "mode": 420,
+      "sha256": "a49b90afcfaf8eb8d5bd30363d3d8054500a6f353ce2ac2c0737a9e16396d02a"
+    },
+    "skills/ruach-testing/SKILL.md": {
+      "mode": 420,
+      "sha256": "e071082ff86501f45654175830474dc7e797b5c47c83dc609f12b75e6c3d59b0"
+    },
+    "skills/ruach-workflow-feature/SKILL.md": {
+      "mode": 420,
+      "sha256": "9890c8df6cc3f45a96c456a231e993f670581905d2697e9ba6dc22c31d31c7e9"
+    },
+    "skills/ruach-workflow-knowledge/SKILL.md": {
+      "mode": 420,
+      "sha256": "d5eb8f144d4a6d4c1cf7314a0718ead1239644e2a22f4cc7d403dfd4d3a8f4a0"
+    }
+  },
+  "origin": "https://github.com/rothzeta/ruach.git",
+  "revision": "25186fe958450c92067d1e67224c0dc83373be9e",
+  "schema_version": 1
+}

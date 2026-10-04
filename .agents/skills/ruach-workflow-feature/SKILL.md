@@ -7,7 +7,7 @@ description: Coordinate a bounded feature through optional investigation and des
 
 This is the generic feature workflow. Use a more specific workflow when one is assigned; keep this procedure sufficient for ordinary feature delivery.
 
-Only the Coordinator loads and executes this workflow. It instantiates specialist workers with self-contained assignments; workers receive their role, task context, and instructions without receiving the workflow. Require [ruach-handoff](../ruach-handoff/SKILL.md) for every worker result, including integration and merging; give workers its canonical path and their owned report path. Write each worker assignment to `docs/mailbox/<task>/assignment-<role-or-worker>.md` in the worker's workspace; the worker commits it unchanged with its report. Workers write durable reports in `docs/mailbox/` using [SCHEMA](../../../docs/SCHEMA.md#agent-work-artifacts), keep disposable working files outside the repository (OS temporary directory or harness session scratch), and never edit `docs/CURRENT.md` or `docs/TASK_LOGS.md`. Canonical designs and plans stay in `docs/`. Launch workers with [ruach-herdr](../ruach-herdr/SKILL.md). Each responsible worker must run ruach-handoff's `scripts/validate.ts` on its own report before handoff; the Coordinator collects that evidence without running checks itself.
+Only the Coordinator loads and executes this workflow. Translate it into self-contained specialist assignments; workers receive their role, context and bounded instructions without workflow bodies. Require [ruach-handoff](../ruach-handoff/SKILL.md) for every worker result, including integration and merging. Specify the consumer's durable assignment/report locations, protected-document owners, commit requirements and evidence-retention rules. Workers keep disposable material outside the repository. Each responsible worker runs the handoff validator before returning; this is separate from technical verification and acceptance. Use the consumer's authorized launch and communication mechanisms; for Herdr see [ruach-herdr](../ruach-herdr/SKILL.md).
 
 ## 1. Understand
 
@@ -31,7 +31,7 @@ Use existing plans and concise specialist handoffs to identify bounded implement
 
 Choose an Implementer to own integration and merging; the same worker may implement the feature. Specify the changes to combine, destination, and required checks.
 
-Track task-created panes, Herdr workspaces or tabs, and task-created or task-assigned temporary worktrees, including any temporary Coordinator or delivery checkout, and identify a retained checkout from which worktree removal can run. Note which pending step, if any, still needs each worker and worktree so they can be released as described in Clean up.
+Track task-created sessions and harness workspaces, and task-created or task-assigned temporary worktrees, including any temporary Coordinator or delivery checkout, and identify a retained checkout from which worktree removal can run. Note which pending step, if any, still needs each worker and worktree so they can be released as described in Clean up.
 
 Run independent tasks concurrently when useful, with explicit file ownership and isolated workspaces or worktrees where needed to prevent conflicting edits.
 
@@ -103,16 +103,16 @@ Preserve the delivery summary and required durable reports in commits reachable 
 - remaining issues;
 - durable report and canonical artifact references.
 
-After acceptance and delivery, the Coordinator updates `docs/CURRENT.md` and `docs/TASK_LOGS.md` from the worker handoffs, linking the mailbox reports rather than duplicating them. It also records the panes, Herdr workspaces or tabs, and worktrees it closed or removed, any retained resources with the reasons, and any cleanup blockers.
+After acceptance and delivery, the Coordinator updates the records assigned by consumer policy from worker handoffs, linking durable reports rather than duplicating them. It also records the sessions and harness workspaces, and worktrees it closed or removed, any retained resources with the reasons, and any cleanup blockers.
 
 ## 10. Clean up
 
 The Coordinator performs cleanup itself, as soon as each resource's reuse ends, rather than deferring it to the end of the workflow. Decide reuse deliberately: keep a worker or worktree only while a concrete pending step, such as a review fix loop, integration, or merge, needs it. The natural release points are after each committed handoff, after review acceptance, and after merge.
 
-- **Workers.** Once a worker's durable handoff is committed and no further assignment, such as a fix or re-review, will go to it, close its Herdr pane and remove the private temporary directory its launch result reported (`temporary_directory`), if non-null. A worker never closes its own pane; the launching parent closes a temporary Coordinator's pane after its final report.
-- **Worktrees.** Once a task-owned temporary worktree's work is committed and reachable from a retained branch, and no further assignment will use it, close any pane still using it and remove it with `git worktree remove`, running from a retained checkout outside the path. Keep the branch.
-- **Herdr workspaces and tabs.** Close a task-created workspace or tab once it holds no more needed panes.
+- **Workers.** Once a worker's durable handoff is committed and no further assignment, such as a fix or re-review, will go to it, close its task session and remove the private temporary directory its launch result reported (`temporary_directory`), if non-null. A worker never closes its own session; the launching parent closes a temporary Coordinator's session after its final report.
+- **Worktrees.** Once a task-owned temporary worktree's work is committed and reachable from a retained branch, and no further assignment will use it, close any session still using it and remove it with `git worktree remove`, running from a retained checkout outside the path. Keep the branch.
+- **Harness workspaces.** Close a task-created workspace or tab once it holds no more needed sessions.
 
-Preserve the original caller pane, the main checkout, the retained destination checkout, branches containing delivered changes or evidence, unrelated worktrees, and unrelated sessions. Preserve useful working evidence in durable reports first; disposable working files and installed dependencies may then be discarded. Never delete or fold away mailbox reports; they remain until a future librarian agent triages them. Do not discard uncommitted work or unpreserved evidence to satisfy cleanup. If removal is unsafe or fails, keep the resource and report a cleanup blocker.
+Preserve the original caller session, the main checkout, the retained destination checkout, branches containing delivered changes or evidence, unrelated worktrees, and unrelated sessions. Preserve useful working evidence in durable reports first; disposable working files and installed dependencies may then be discarded. Respect consumer retention and disposition permissions; delivery and resource cleanup do not authorize removal of durable evidence. Do not discard uncommitted work or unpreserved evidence to satisfy cleanup. If removal is unsafe or fails, keep the resource and report a cleanup blocker.
 
-No worker cleanup handoff is required. The Coordinator's CURRENT and TASK_LOGS record lists what it closed and removed and any exceptions; report any resource released after that record is committed, such as the checkout holding it, in the completion response. The workflow completes once all task resources are released or reported as blockers; a successful merge alone does not complete the workflow.
+No worker cleanup handoff is required. The Coordinator's delivery record lists what it closed and removed and any exceptions; report any resource released after that record is committed, such as the checkout holding it, in the completion response. The workflow completes once all task resources are released or reported as blockers; a successful merge alone does not complete the workflow.

@@ -11,7 +11,7 @@ Design changes when architectural judgment is required.
 - Distinguish verified facts from assumptions.
 - Surface consequential alternatives and unresolved decisions.
 - Provide enough guidance for implementation without unnecessarily dictating implementation details.
-- Write and maintain assigned design documents and implementation plans in their established `docs/` locations.
+- Write and maintain assigned design documents and implementation plans in their established project locations.
 - Record settled decisions, assumptions, acceptance conditions, and unresolved questions in those artifacts.
 
 ## Boundaries
@@ -24,7 +24,7 @@ Design changes when architectural judgment is required.
 
 ## Output
 
-Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Write it in `docs/mailbox/` following [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts). Commit the Coordinator's assignment file unchanged with your report. Keep disposable working files outside the repository, in the OS temporary directory or the harness's session scratch. Do not edit `docs/CURRENT.md` or `docs/TASK_LOGS.md`; the Coordinator records accepted results there. Detailed design belongs in the assigned documents; summarize:
+Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Write it at the assigned durable report location, following consumer artifact and document ownership rules. Commit the unchanged assignment with the report when required. Keep disposable working files outside the repository, in the OS temporary directory or harness session scratch. Detailed design belongs in the assigned documents; summarize:
 
 - proposed design and rationale;
 - affected components;

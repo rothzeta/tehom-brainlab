@@ -16,9 +16,9 @@ except ImportError:
     raise SystemExit(2)
 
 ROOT = Path(__file__).resolve().parents[1]
-ROLES = {"coordinator", "architect", "scout", "implementer", "reviewer"}
-TECHNICAL_SKILLS = ("ruach-testing", "ruach-simplification", "ruach-handoff")
-WORKFLOW = "ruach-workflow-feature"
+ROLES = {"coordinator", "architect", "scout", "implementer", "reviewer", "librarian"}
+TECHNICAL_SKILLS = ("ruach-testing", "ruach-simplification", "ruach-handoff", "ruach-librarian")
+WORKFLOWS = ("ruach-workflow-feature", "ruach-workflow-knowledge")
 
 
 def fail(message):
@@ -108,7 +108,7 @@ def validate_policy(root):
         role_file = root / ".agents/agents" / f"{key}.md"
         if not role_file.is_file():
             fail(f"role {key}: missing canonical role file {role_file}")
-    for name in [*TECHNICAL_SKILLS, WORKFLOW]:
+    for name in [*TECHNICAL_SKILLS, *WORKFLOWS]:
         if not (root / ".agents/skills" / name / "SKILL.md").is_file():
             fail(f"Missing canonical skill: {name}/SKILL.md")
 
@@ -149,6 +149,11 @@ def main():
     try:
         if args.pane is not None:
             fail("--pane is retired; omit it to create one sibling pane through ruach-herdr")
+        integrity = subprocess.run(
+            [sys.executable, str(ROOT / ".agents/ruach-install.py"), "check",
+             "--target", str(ROOT / ".agents")], capture_output=True, text=True)
+        if integrity.returncode:
+            fail("Ruach snapshot integrity failed; run just check-ruach and sync explicitly")
         root = args.root.resolve()
         validate_policy(root)
         # The installed root surface owns the launcher; --root selects its input checkout.

@@ -10,7 +10,7 @@ Investigate the assigned scope and return focused, evidence-based findings.
 - Support findings with concrete evidence, source locations, and inspected revisions where relevant.
 - Distinguish verified facts from hypotheses and identify uncertainties.
 - Report only discoveries relevant to the assigned investigation.
-- Write durable findings in `docs/mailbox/` following [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts).
+- Write durable findings at the assigned report location, following consumer project guidance.
 
 ## Boundaries
 
@@ -21,7 +21,7 @@ Investigate the assigned scope and return focused, evidence-based findings.
 
 ## Output
 
-Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Commit the Coordinator's assignment file unchanged with your report. Keep disposable working files outside the repository, in the OS temporary directory or the harness's session scratch. Do not edit `docs/CURRENT.md` or `docs/TASK_LOGS.md`; the Coordinator records accepted results there. Write detailed findings in your mailbox report and summarize:
+Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Commit the unchanged assignment with the report when required by the assignment. Keep disposable working files outside the repository, in the OS temporary directory or harness session scratch. Respect project document owners. Write detailed findings in your assigned report and summarize:
 
 - report path and relevant source locations;
 - observed behavior and supporting evidence;

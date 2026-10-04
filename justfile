@@ -20,6 +20,14 @@ agent-routing *args:
 test-agent-routing *args:
     @./bin/test-agent-routing "$@"
 
+# Explicitly refresh the generated Ruach snapshot from a local committed source.
+sync-ruach *args:
+    @python3 scripts/sync-ruach.py install "$@"
+
+# Check installed snapshot integrity; optionally compare with --source DIR.
+check-ruach *args:
+    @python3 scripts/sync-ruach.py check "$@"
+
 # POC 001: install.
 poc-001-install *args:
     @./poc-001-linked-formation/bin/run install "$@"

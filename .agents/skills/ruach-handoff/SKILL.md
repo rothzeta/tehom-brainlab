@@ -15,8 +15,8 @@ Install within this skill directory: `bun install --frozen-lockfile` (the commit
 install; no repository runtime packages or global installation are needed.
 
 ```sh
-bun <skill>/scripts/validate.ts docs/mailbox/foo/implementer.md
-bun <skill>/scripts/validate.ts docs/mailbox/foo/implementer.md --repo <repository>
+bun <skill>/scripts/validate.ts reports/task/implementer.md
+bun <skill>/scripts/validate.ts reports/task/implementer.md --repo <repository>
 bun <skill>/scripts/validate.ts --help
 ```
 
@@ -70,13 +70,7 @@ mappings with a nonempty string key and value (e.g. `- Build: exit 0`). `artifac
 contains strings only. Task/outcome and all narrative/artifact strings must contain
 non-whitespace text; empty lists remain valid.
 
-The intentional historical boundary is a leading structured block. In this
-repository, the six `docs/mailbox/p01-browser-harness/*.md` reports and the versioned
-skills Architect report follow it, including legacy narrative mappings. Earlier
-architect-injection and orchestrator experiment summaries, assignments, observer
-notes, and the mailbox README start with Markdown headings and fail
-`HEADER_INVALID`. Leave those historical documents intact; they are not malformed
-new handoffs. Record any corpus validation results in the assigned report.
+The leading structured block is the contract boundary. Older reports without it may be historical evidence rather than current handoffs; do not rewrite a consumer's historical corpus merely to make it validate. Record validation scope and results in the assigned report.
 
 ## Required fields
 

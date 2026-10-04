@@ -39,7 +39,8 @@ class RoutingContracts(unittest.TestCase):
             shutil.copyfile(ROOT / ".agents" / name, agents / name)
         shutil.copytree(ROOT / ".agents/agents", agents / "agents")
         # Fixtures provide skill identity only: workers do not read workflow bodies.
-        for name in ("ruach-testing", "ruach-simplification", "ruach-handoff", "ruach-workflow-feature"):
+        for name in ("ruach-testing", "ruach-simplification", "ruach-handoff", "ruach-librarian",
+                     "ruach-workflow-feature", "ruach-workflow-knowledge"):
             directory = agents / "skills" / name
             directory.mkdir(parents=True)
             (directory / "SKILL.md").write_text("---\nname: " + name + "\n---\n")
@@ -80,7 +81,7 @@ class RoutingContracts(unittest.TestCase):
         path.write_text(yaml.safe_dump(doc))
 
     def test_preferred_resolution_all_roles_without_side_effects(self):
-        for role in ("coordinator", "architect", "scout", "implementer", "reviewer"):
+        for role in ("coordinator", "architect", "scout", "implementer", "reviewer", "librarian"):
             with self.subTest(role=role):
                 result = self.run_cli("resolve", role)
                 claude = role in ("coordinator", "architect")
@@ -93,7 +94,7 @@ class RoutingContracts(unittest.TestCase):
         self.assertFalse((self.root / ".agents/scratch").exists())
 
     def test_explicit_alternatives_and_preferred_overrides(self):
-        for role in ("architect", "scout", "implementer", "reviewer"):
+        for role in ("architect", "scout", "implementer", "reviewer", "librarian"):
             for route in (GPT, CLAUDE):
                 with self.subTest(role=role, route=route):
                     self.assertEqual(self.run_cli("resolve", role, "--route", route)["selection"]["route"], route)
@@ -126,6 +127,7 @@ class RoutingContracts(unittest.TestCase):
             ("roles.yaml", lambda d: d["roles"]["scout"].update(alternatives=GPT), "must be a list"),
             ("roles.yaml", lambda d: d["roles"].update(unknown={"preferred": GPT}), "unknown roles"),
             ("roles.yaml", lambda d: d["roles"].pop("reviewer"), "missing roles"),
+            ("roles.yaml", lambda d: d["roles"].pop("librarian"), "missing roles"),
             ("roles.yaml", lambda d: d["roles"]["coordinator"].update(alternatives=[GPT]), "only Claude"),
         ]
         originals = {name: (self.root / ".agents" / name).read_bytes() for name, _, _ in cases}
@@ -163,6 +165,24 @@ class RoutingContracts(unittest.TestCase):
             str(ROOT / ".agents/skills/ruach-herdr/scripts/worker.ts"), "start",
             "--role", "architect", "--name", "worker-a", "--repo", str(self.root),
             "--cwd", str(self.root), "--permissions", "auto-review", "--route", GPT], "cwd": str(self.root)}])
+
+    def test_snapshot_drift_blocks_launch_before_delegate(self):
+        checkout = self.base / "installed checkout"
+        shutil.copytree(ROOT / ".agents", checkout / ".agents",
+                        ignore=shutil.ignore_patterns("node_modules", "__pycache__"))
+        for directory in ("bin", "scripts"):
+            (checkout / directory).mkdir()
+        shutil.copyfile(ENTRY, checkout / "bin/agent-routing")
+        (checkout / "bin/agent-routing").chmod(0o755)
+        shutil.copyfile(ROOT / "scripts/agent-routing.py", checkout / "scripts/agent-routing.py")
+        (checkout / ".agents/skills/ruach-herdr/scripts/worker.ts").write_text("local drift\n")
+        result = subprocess.run([str(checkout / "bin/agent-routing"), "start", "librarian", "worker"],
+                                cwd=self.base, env={**self.env, "BUN_BIN": str(self.stub)},
+                                text=True, capture_output=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("snapshot integrity failed", result.stderr)
+        self.assertEqual(result.stdout, "")
+        self.assertEqual(self.recorded(), [])
 
     def test_delegate_streams_and_exit_status_are_preserved_without_retry(self):
         self.env["BUN_BIN"] = str(self.stub)

@@ -4,7 +4,7 @@ Write Coordinator assignments, durable investigation findings, review reports, a
 
 Use `<task-id>/<role>.md`, adding a worker identifier when several workers share a role on the task. Each worker owns its report. The Coordinator writes each worker assignment as `<task-id>/assignment-<role-or-worker>.md` in the worker's workspace; the worker commits it unchanged with its report. Return a concise handoff with the report path to the requesting agent.
 
-Commit only content meant to be read later: no raw dumps, secrets, or credentials. Reports are durable until a future librarian agent triages them; delivery and cleanup must not delete or fold them away.
+Commit only content meant to be read later: no raw dumps, secrets, or credentials. Reports are durable until an assigned Librarian triages them under explicit source-disposition permissions, preserving unique evidence and inbound references; delivery and cleanup must not delete or fold them away.
 
 Follow [SCHEMA](../SCHEMA.md#agent-work-artifacts) for artifact conventions and [ruach-handoff](../../.agents/skills/ruach-handoff/SKILL.md) for the canonical reporting protocol. Link canonical designs and plans in `docs/`. Workers do not edit [CURRENT](../CURRENT.md) or [TASK_LOGS](../TASK_LOGS.md); the Coordinator updates them from these reports after acceptance and delivery.
 
