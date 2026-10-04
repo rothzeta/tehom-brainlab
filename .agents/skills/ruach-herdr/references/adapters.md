@@ -20,6 +20,18 @@ Claude keeps normal user/project/native instructions and settings discovery. `--
 
 All temporary files remain private, reference canonical skill/role sources, and are never committed. Real Codex/Claude checks exercise resolution and effective argv preparation only. Fakes inspect generated settings and native argv; they do not emulate the entire native prompt or skill loader.
 
+## Claude worker customization gates
+
+Inspection of installed Claude 2.1.289 found an account-synced cache containing 13 skill names, none prefixed `ruach-workflow-`. Local managed locations, personal legacy commands and the installed-plugin registry were absent; no enabled plugins appeared in inspected user/project settings. The source diagnostic now identifies account-synced skills and its cache path rather than conflating managed and synced customizations. Linked-worktree fallback remains a separate unverified source.
+
+The [primary skills documentation](https://code.claude.com/docs/en/skills#where-synced-skills-load) describes background account updates and cached skill loading. Its [visibility section](https://code.claude.com/docs/en/skills#override-skill-visibility-from-settings) establishes exact-name `skillOverrides` and excludes plugin skills; it does not establish a wildcard filter for future synced workflow names. A currently workflow-free cache therefore cannot prove exclusion for the session.
+
+Installed help and the [CLI reference](https://code.claude.com/docs/en/cli-reference) confirm `--settings`, `--setting-sources`, `--disable-slash-commands`, `--safe-mode` and `--bare`. Disabling every skill/customization or omitting user sources does not preserve other skills/instructions. The [settings precedence documentation](https://code.claude.com/docs/en/settings#exceptions-to-managed-settings-precedence) permits a per-launch false `syncClaudeAiSkills`; documented cache removal also moves synced files, so it fails this task's non-mutating/preservation contract. No such setting or broad suppression flag is emitted.
+
+No verified mechanism meeting all constraints was established. Keep the gate even for empty or non-workflow synced caches; do not interpret that as finding a workflow in the current cache. Managed sources remain gated where native effective policy is unavailable. Legacy commands and uninspectable/workflow-bearing plugins remain gated with their source category and remedy.
+
+Choose a repository-declared alternative using another supported harness with `--route ROUTE_ID`, or use a separately prepared environment whose workflow visibility is independently verified. `resolve --offline` is selection-only, with no native argv or launch authorization. Do not modify or disable personal/managed customizations as part of this launcher. The Coordinator retains its existing visibility behavior; no paid/native acceptance check was run.
+
 ## Lifecycle and failure
 
 Read-only preflight verifies executables, installed help, Herdr kind support, explicit caller context, caller layout and unique live name. Right split at caller width >=120, otherwise down. The new pane uses `--cwd`, `--no-focus`, and verified `--env` for the caller’s PATH, HOME and already-set CODEX_HOME/CLAUDE_CONFIG_DIR so executable/config resolution agrees with preflight. These values are forwarded unchanged; the skill never selects a replacement config home. No permission-policy default is injected. Help probes use `agent start --help`; they are distinct from the single mutating startup submission.

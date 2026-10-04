@@ -198,3 +198,26 @@ for(const kind of ['pi','opencode','dsh','omp','agy'])test(`known gated routed $
 for(const [command,extra] of [['resolve',[]],['start',['--dry-run']]] as const)test(`${command} preparation requires live Herdr context`,async()=>{
   const r=await launch(command,[...explicit,...extra],{HERDR_ENV:'0',HERDR_PANE_ID:''});expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('missing_herdr_context');await noMutation();
 });
+
+for(const cache of ['empty','technical'])test(`Claude ${cache} synced cache retains the actionable fail-closed gate`,async()=>{
+  const synced=join(home,'.claude','skills','synced');await mkdir(synced,{recursive:true});
+  if(cache==='technical')await skill(join(synced,'download'),'ruach-technical-synced');
+  const settingsBefore=await readFile(join(home,'.claude','settings.json'),'utf8');
+  for(const [command,extra] of [['resolve',[]],['start',['--dry-run']]] as const){
+    const r=await launch(command,['--kind','claude','--model','test-model',...extra]);expect(r.exit).toBe(3);
+    const diagnostic=r.result.diagnostics[0];expect(diagnostic.code).toBe('unverified_workflow_source');expect(diagnostic.field).toBe(synced);
+    expect(diagnostic.message).toContain('account-synced skills');expect(diagnostic.message).toContain('local cache');expect(diagnostic.message).toContain('--route ROUTE_ID');expect(diagnostic.message).toContain('resolve --offline');
+    await noMutation();
+  }
+  expect(await readFile(join(home,'.claude','settings.json'),'utf8')).toBe(settingsBefore);
+  if(cache==='technical')expect((await readFile(join(synced,'download','SKILL.md'),'utf8'))).toContain('ruach-technical-synced');
+});
+test('synced-cache gate permits an explicit declared native alternative without changing user customizations',async()=>{
+  const synced=join(home,'.claude','skills','synced');await skill(join(synced,'download'),'ruach-workflow-synced');
+  const before=await readFile(join(synced,'download','SKILL.md'),'utf8');const r=await asRole('implementer','resolve',['--route','build.v1']);
+  expect(r.exit).toBe(0);expect(r.result.selection.kind).toBe('codex');expect(await readFile(join(synced,'download','SKILL.md'),'utf8')).toBe(before);await noMutation();
+});
+test('legacy command diagnostic identifies its category and directory without copying private instructions',async()=>{
+  const commands=join(repo,'.claude','commands');await mkdir(commands,{recursive:true});await writeFile(join(commands,'ruach-workflow-secret.md'),secret);
+  const r=await launch('start',['--kind','claude','--model','test-model']);expect(r.exit).toBe(3);const diagnostic=r.result.diagnostics[0];expect(diagnostic.field).toBe(commands);expect(diagnostic.message).toContain('legacy workflow commands');expect(diagnostic.message).toContain('--route ROUTE_ID');expect(r.stdout+r.stderr).not.toContain(secret);await noMutation();
+});
