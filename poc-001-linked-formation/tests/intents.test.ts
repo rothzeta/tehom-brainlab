@@ -11,22 +11,20 @@ import type { IntentContext, Intention, ProtectionRelation } from '../src/core/i
 import { frontMask, sectorCells } from '../src/core/sectors';
 
 // Independent P02/P05 fixtures; expected masks never call the selector/transform.
-const ring: readonly Hex[] = [
-  [3, 0], [2, 1], [1, 2], [0, 3], [-1, 3], [-2, 3],
-  [-3, 3], [-3, 2], [-3, 1], [-3, 0], [-2, -1], [-1, -2],
-  [0, -3], [1, -3], [2, -3], [3, -3], [3, -2], [3, -1],
-].map(([q, r]) => ({ q: q!, r: r! }));
 const ringTwo: readonly Hex[] = [
   [2, 0], [1, 1], [0, 2], [-1, 2], [-2, 2], [-2, 1],
   [-2, 0], [-1, -1], [0, -2], [1, -2], [2, -2], [2, -1],
 ].map(([q, r]) => ({ q: q!, r: r! }));
+const ringOne: readonly Hex[] = [
+  [1, 0], [0, 1], [-1, 1], [-1, 0], [0, -1], [1, -1],
+].map(([q, r]) => ({ q: q!, r: r! }));
 const sectors: readonly (readonly Hex[])[] = [
-  [ring[0]!, ring[1]!, ring[2]!, ringTwo[0]!, ringTwo[1]!],
-  [ring[3]!, ring[4]!, ring[5]!, ringTwo[2]!, ringTwo[3]!],
-  [ring[6]!, ring[7]!, ring[8]!, ringTwo[4]!, ringTwo[5]!],
-  [ring[9]!, ring[10]!, ring[11]!, ringTwo[6]!, ringTwo[7]!],
-  [ring[12]!, ring[13]!, ring[14]!, ringTwo[8]!, ringTwo[9]!],
-  [ring[15]!, ring[16]!, ring[17]!, ringTwo[10]!, ringTwo[11]!],
+  [ringTwo[0]!, ringTwo[1]!, ringOne[0]!],
+  [ringTwo[2]!, ringTwo[3]!, ringOne[1]!],
+  [ringTwo[4]!, ringTwo[5]!, ringOne[2]!],
+  [ringTwo[6]!, ringTwo[7]!, ringOne[3]!],
+  [ringTwo[8]!, ringTwo[9]!, ringOne[4]!],
+  [ringTwo[10]!, ringTwo[11]!, ringOne[5]!],
 ];
 const fronts = [
   [...sectors[0]!, ...sectors[1]!], [...sectors[1]!, ...sectors[2]!],
@@ -35,12 +33,12 @@ const fronts = [
 ];
 const slots = {
   compact: [
-    [[2, 1], [1, 2], [1, 1]], [[-1, 3], [-2, 3], [-1, 2]],
-    [[-3, 2], [-3, 1], [-2, 1]], [[-2, -1], [-1, -2], [-1, -1]],
-    [[1, -3], [2, -3], [1, -2]], [[3, -2], [3, -1], [2, -1]],
+    [[2, 0], [1, 1], [1, 0]], [[0, 2], [-1, 2], [0, 1]],
+    [[-2, 2], [-2, 1], [-1, 1]], [[-2, 0], [-1, -1], [-1, 0]],
+    [[0, -2], [1, -2], [0, -1]], [[2, -2], [2, -1], [1, -1]],
   ].map((cells) => cells.map(([q, r]) => ({ q: q!, r: r! }))),
-  spread: [[0, 6, 12], [3, 9, 15], [6, 12, 0], [9, 15, 3], [12, 0, 6], [15, 3, 9]]
-    .map((indices) => indices.map((i) => ring[i]!)),
+  spread: [[0, 4, 8], [2, 6, 10], [4, 8, 0], [6, 10, 2], [8, 0, 4], [10, 2, 6]]
+    .map((indices) => indices.map((i) => ringTwo[i]!)),
 };
 const ids = ['ugallu', 'girtablilu', 'pazuzu'];
 const areaRecipients = {
@@ -169,12 +167,13 @@ test.each([0, 1, 2, 3, 4, 5] as const)('AC4: clockwise turn from %i, wrap 5 to 0
   expect({ enemy, declarations }).toEqual(before);
 });
 
-test('CT/AC1: sectors disjointly partition the thirty radius-two/three cells', () => {
+test('CT/AC1: sectors disjointly partition the eighteen radius-one/two cells', () => {
   const actual = ([0, 1, 2, 3, 4, 5] as const).flatMap((sector) => sectorCells(sector));
   const key = ({ q, r }: Hex) => `${q},${r}`;
-  expect(actual).toHaveLength(30);
-  expect(new Set(actual.map(key)).size).toBe(30);
-  expect(new Set(actual.map(key))).toEqual(new Set([...ring, ...ringTwo].map(key)));
+  expect(actual).toHaveLength(18);
+  expect(new Set(actual.map(key)).size).toBe(18);
+  expect(new Set(actual.map(key))).toEqual(new Set([...ringTwo, ...ringOne].map(key)));
+  expect(actual).not.toContainEqual({ q: 0, r: 0 });
 });
 
 test('CT: inward Pazuzu is protection-eligible and a fixed-area recipient', () => {
@@ -182,9 +181,9 @@ test('CT: inward Pazuzu is protection-eligible and a fixed-area recipient', () =
   expect(selectProtection(input, { actorId: 'pazuzu', targetId: 'censer', bypassProtection: false }, relations))
     .toEqual({ protected: true, sourceIds: ['warder'], reason: 'protected',
       checks: [{ sourceId: 'warder', reason: 'protected' }] });
-  const inwardArea: Intention = freeze({ ...area, cells: [{ q: 1, r: 1 }] });
+  const inwardArea: Intention = freeze({ ...area, cells: [{ q: 1, r: 0 }] });
   expect(selectRecipients(input, inwardArea))
-    .toEqual({ reason: 'resolved', recipientIds: ['pazuzu'], cells: [{ q: 1, r: 1 }] });
+    .toEqual({ reason: 'resolved', recipientIds: ['pazuzu'], cells: [{ q: 1, r: 0 }] });
 });
 
 test('AC5: each fallen source cancels; marked target fizzle cancels the whole splash without retargeting', () => {

@@ -1,4 +1,4 @@
-import { hexDistance, OUTER_RING, RING_TWO } from './hex';
+import { hexDistance, RING_ONE, RING_TWO } from './hex';
 import type { Hex } from './hex';
 
 export const ROSTER = Object.freeze(['ugallu', 'girtablilu', 'pazuzu'] as const);
@@ -50,20 +50,20 @@ export function formations(): readonly Formation[] {
   return states;
 }
 
-/** Stable roster order. Compact: R[3o+1], R[3o+2], T[2o+1]; Spread unchanged. */
+/** Stable roster order. Compact: T[2o], T[2o+1], S[o]; Spread: T[2o+{0,4,8}]. */
 export function formationPositions(formation: Formation): readonly Position[] {
   validateFormation(formation);
   const o = formation.orientation;
   const cells = formation.shape === 'compact'
-    ? [OUTER_RING[3 * o + 1]!, OUTER_RING[3 * o + 2]!, RING_TWO[2 * o + 1]!]
-    : [OUTER_RING[3 * o]!, OUTER_RING[(3 * o + 6) % 18]!, OUTER_RING[(3 * o + 12) % 18]!];
+    ? [RING_TWO[2 * o]!, RING_TWO[2 * o + 1]!, RING_ONE[o]!]
+    : [RING_TWO[2 * o]!, RING_TWO[(2 * o + 4) % 12]!, RING_TWO[(2 * o + 8) % 12]!];
   return ROSTER.map((brood, index) => ({
     brood,
     cell: cells[index]!,
   }));
 }
 
-/** Advance three ring indices (one clockwise 60-degree step in hex.ts convention). */
+/** Advance two T indices / one S index (one clockwise 60-degree step in hex.ts convention). */
 export function rotateClockwise(formation: Formation): Formation {
   validateFormation(formation);
   return { shape: formation.shape, orientation: ((formation.orientation + 1) % 6) as Orientation };

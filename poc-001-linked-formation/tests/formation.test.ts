@@ -1,5 +1,5 @@
 import { afterAll, afterEach, describe, expect, test } from 'vitest';
-import { boardCells, hexDistance, OUTER_RING, RING_TWO, validateHex } from '../src/core/hex';
+import { boardCells, hexDistance, RING_ONE, RING_TWO, validateHex } from '../src/core/hex';
 import type { Hex } from '../src/core/hex';
 import {
   contractFormation, expandFormation, formationLinks, formationPositions, formations,
@@ -8,19 +8,17 @@ import {
 import type { Formation, Orientation } from '../src/core/formation';
 
 // Independent fixture transcribed from P02, rather than copied from module output.
-const ring = [
-  [3, 0], [2, 1], [1, 2], [0, 3], [-1, 3], [-2, 3],
-  [-3, 3], [-3, 2], [-3, 1], [-3, 0], [-2, -1], [-1, -2],
-  [0, -3], [1, -3], [2, -3], [3, -3], [3, -2], [3, -1],
+const ringOne = [
+  [1, 0], [0, 1], [-1, 1], [-1, 0], [0, -1], [1, -1],
 ].map(([q, r]) => ({ q: q!, r: r! }));
 const ringTwo = [
   [2, 0], [1, 1], [0, 2], [-1, 2], [-2, 2], [-2, 1],
   [-2, 0], [-1, -1], [0, -2], [1, -2], [2, -2], [2, -1],
 ].map(([q, r]) => ({ q: q!, r: r! }));
 const compactCells = [
-  [[2, 1], [1, 2], [1, 1]], [[-1, 3], [-2, 3], [-1, 2]],
-  [[-3, 2], [-3, 1], [-2, 1]], [[-2, -1], [-1, -2], [-1, -1]],
-  [[1, -3], [2, -3], [1, -2]], [[3, -2], [3, -1], [2, -1]],
+  [[2, 0], [1, 1], [1, 0]], [[0, 2], [-1, 2], [0, 1]],
+  [[-2, 2], [-2, 1], [-1, 1]], [[-2, 0], [-1, -1], [-1, 0]],
+  [[0, -2], [1, -2], [0, -1]], [[2, -2], [2, -1], [1, -1]],
 ].map((cells) => cells.map(([q, r]) => ({ q: q!, r: r! })));
 const roster = ['ugallu', 'girtablilu', 'pazuzu'];
 const states: Formation[] = (['compact', 'spread'] as const).flatMap((shape) =>
@@ -33,26 +31,31 @@ let assertions = 0;
 afterEach(() => { assertions += expect.getState().assertionCalls; });
 afterAll(() => { console.info(`P02 formation assertions executed: ${assertions}`); });
 
-test('C1: board is exactly the 37 unique integer cells within radius three', () => {
-  expect.assertions(4);
+test('C1: board is exactly the 19 unique integer cells within radius two', () => {
+  expect.assertions(6);
   const cells = boardCells();
-  expect(cells).toHaveLength(37);
-  expect(new Set(cells.map(cellKey)).size).toBe(37);
+  expect(cells).toHaveLength(19);
+  expect(new Set(cells.map(cellKey)).size).toBe(19);
   expect(cells.every(({ q, r }) => Number.isInteger(q) && Number.isInteger(r)
-    && Math.max(Math.abs(q), Math.abs(r), Math.abs(q + r)) <= 3)).toBe(true);
-  expect(new Set(cells.filter((cell) => hexDistance(cell, { q: 0, r: 0 }) === 3).map(cellKey)))
-    .toEqual(new Set(ring.map(cellKey)));
+    && Math.max(Math.abs(q), Math.abs(r), Math.abs(q + r)) <= 2)).toBe(true);
+  expect(new Set(cells.filter((cell) => hexDistance(cell, { q: 0, r: 0 }) === 2).map(cellKey)))
+    .toEqual(new Set(ringTwo.map(cellKey)));
+  expect(new Set(cells.filter((cell) => hexDistance(cell, { q: 0, r: 0 }) === 1).map(cellKey)))
+    .toEqual(new Set(ringOne.map(cellKey)));
+  expect(cells).toContainEqual({ q: 0, r: 0 });
 });
 
-test('C1/C4: all 18 ring indices match R and the downward-screen clockwise convention', () => {
-  expect.assertions(21);
-  expect(OUTER_RING).toEqual(ring);
-  expect(OUTER_RING).toHaveLength(18);
-  expect(new Set(OUTER_RING.map(cellKey)).size).toBe(18);
-  for (let index = 0; index < 18; index += 1) {
-    const { q, r } = OUTER_RING[index]!;
+test('C1/C4: all 6 ring indices match S and the downward-screen clockwise convention', () => {
+  expect.assertions(11);
+  expect(RING_ONE).toEqual(ringOne);
+  expect(RING_ONE).toHaveLength(6);
+  expect(new Set(RING_ONE.map(cellKey)).size).toBe(6);
+  expect(RING_ONE.every((cell) => hexDistance(cell, { q: 0, r: 0 }) === 1)).toBe(true);
+  expect(Object.isFrozen(RING_ONE) && RING_ONE.every(Object.isFrozen)).toBe(true);
+  for (let index = 0; index < 6; index += 1) {
+    const { q, r } = RING_ONE[index]!;
     // Signed zero is the same axial coordinate; arithmetic may produce -0.
-    expect(OUTER_RING[(index + 3) % 18]).toEqual({ q: -r + 0, r: q + r });
+    expect(RING_ONE[(index + 1) % 6]).toEqual({ q: -r + 0, r: q + r });
   }
 });
 
@@ -78,7 +81,7 @@ test('CT: every Compact pair is adjacent in all six orientations', () => {
 });
 
 test('axial distance matches cube distance for every ordered board-cell pair', () => {
-  expect.assertions(37 * 37 * 2);
+  expect.assertions(19 * 19 * 2);
   for (const a of boardCells()) {
     for (const b of boardCells()) {
       const dq = a.q - b.q;
@@ -111,14 +114,14 @@ for (const state of states) {
       expect.assertions(4);
       const positions = formationPositions(state);
       const cells = state.shape === 'compact' ? compactCells[state.orientation]!
-        : [0, 6, 12].map((offset) => ring[(3 * state.orientation + offset) % 18]!);
+        : [0, 4, 8].map((offset) => ringTwo[(2 * state.orientation + offset) % 12]!);
       expect(positions).toEqual(roster.map((brood, index) => ({
         brood, cell: cells[index],
       })));
       expect(positions.map(({ brood }) => brood)).toEqual(roster);
       expect(new Set(positions.map(({ cell }) => cellKey(cell))).size).toBe(3);
       expect(positions.map(({ cell }) => hexDistance(cell, { q: 0, r: 0 })))
-        .toEqual(state.shape === 'compact' ? [3, 3, 2] : [3, 3, 3]);
+        .toEqual(state.shape === 'compact' ? [2, 2, 1] : [2, 2, 2]);
     });
 
     test('C3: both inverse rotations and six turns restore serialized positions, including wraparound', () => {
@@ -166,7 +169,7 @@ for (const state of states) {
       expect(links.map(({ from, to }) => [from, to])).toEqual([
         [positions[0], positions[1]], [positions[0], positions[2]], [positions[1], positions[2]],
       ]);
-      expect(links.map(({ distance }) => distance)).toEqual(state.shape === 'compact' ? [1, 1, 1] : [6, 6, 6]);
+      expect(links.map(({ distance }) => distance)).toEqual(state.shape === 'compact' ? [1, 1, 1] : [4, 4, 4]);
       expect(links.every(({ distance }) => Number.isInteger(distance))).toBe(true);
       expect(links.map(({ state: linkState }) => linkState)).toEqual(
         Array(3).fill(state.shape === 'compact' ? 'close' : 'stretched'));
@@ -191,9 +194,9 @@ test('Close uses an inclusive configurable threshold without changing geometry',
   const compact: Formation = { shape: 'compact', orientation: 0 };
   expect(formationLinks(compact, 1).map(({ state }) => state)).toEqual(['close', 'close', 'close']);
   expect(formationLinks(compact, 0).map(({ state }) => state)).toEqual(['stretched', 'stretched', 'stretched']);
-  expect(formationLinks({ shape: 'spread', orientation: 0 }, 5).map(({ state }) => state))
+  expect(formationLinks({ shape: 'spread', orientation: 0 }, 3).map(({ state }) => state))
     .toEqual(['stretched', 'stretched', 'stretched']);
-  expect(formationLinks({ shape: 'spread', orientation: 0 }, 6).map(({ state }) => state))
+  expect(formationLinks({ shape: 'spread', orientation: 0 }, 4).map(({ state }) => state))
     .toEqual(['close', 'close', 'close']);
 });
 

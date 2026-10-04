@@ -6,7 +6,7 @@ import { LabSession, MANEUVERS, MANEUVER_LABELS } from './lab-state';
 import { projectHex } from './projection';
 import './lab.css';
 
-const PROJECTION = { x: 380, y: 295, spacing: 85 };
+const PROJECTION = { x: 380, y: 295, spacing: 120 };
 const COLORS = { ugallu: 0xffc775, girtablilu: 0x81d5c5, pazuzu: 0xb7b0ff };
 const assetUrl = (path: string) => `${import.meta.env.BASE_URL}tehom/${path}`;
 const title = (value: string) => value[0]!.toUpperCase() + value.slice(1);
@@ -18,7 +18,7 @@ export function createLabShell(parent: HTMLElement): void {
       <div class="lab-columns">
         <section aria-label="Formation board" class="board-panel">
           <div id="board-stage"><div id="board-canvas"></div><div id="ghosts" aria-hidden="true"></div><div id="tokens"></div></div>
-          <p class="legend">37 cells · <span>━ Close</span><span>┄ Stretched</span><span>◌ Pending destination</span> · Fixed centre; no individual movement.</p>
+          <p class="legend">${boardCells().length} cells · <span>━ Close</span><span>┄ Stretched</span><span>◌ Pending destination</span> · Fixed centre; no individual movement.</p>
         </section>
         <aside aria-label="Lab controls">
           <h2>Live formation</h2><p id="live-readout" aria-live="polite"></p>

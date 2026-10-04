@@ -1,4 +1,4 @@
-import { OUTER_RING, RING_TWO, validateHex } from './hex';
+import { RING_ONE, RING_TWO, validateHex } from './hex';
 import type { Hex } from './hex';
 import type { Orientation } from './formation';
 
@@ -8,11 +8,10 @@ export function validateFacing(facing: number): asserts facing is Orientation {
   }
 }
 
-/** Encounter-centred sector s is R[3s..3s+2], then T[2s..2s+1]. */
+/** Encounter-centred sector s is T[2s], T[2s+1], then S[s]. */
 export function sectorCells(sector: Orientation): readonly Hex[] {
   validateFacing(sector);
-  return [...OUTER_RING.slice(3 * sector, 3 * sector + 3),
-    ...RING_TWO.slice(2 * sector, 2 * sector + 2)];
+  return [RING_TWO[2 * sector]!, RING_TWO[2 * sector + 1]!, RING_ONE[sector]!];
 }
 
 /** Start at facing f, then wrap clockwise: sectors f and (f+1) mod six. */

@@ -79,7 +79,8 @@ try {
   await waitFor(`[...document.querySelectorAll('.emblem')].every(e=>e.dataset.art==='loaded')`);
   equal(await evaluate(`document.querySelectorAll('#patrol-emblems img').length`), 6, 'all six patrol emblems available');
   equal(await evaluate(`document.querySelectorAll('#fixture option').length`), 12, 'twelve direct test fixtures');
-  equal(await evaluate(`Number(document.querySelector('#board-stage').dataset.cells)`), 37, 'board cell count');
+  equal(await evaluate(`Number(document.querySelector('#board-stage').dataset.cells)`), 19, 'board cell count');
+  check(await evaluate(`document.querySelector('.legend').textContent.includes('19 cells')`), 'visible legend reports board cell count');
   check(await evaluate(`document.documentElement.scrollWidth<=1280&&document.documentElement.scrollHeight<=800`),'default layout fits viewport');
   check(await evaluate(`['header p','.hint','#allowance','#selection','#preview-readout','#link-readout'].every(s=>{const r=document.querySelector(s).getBoundingClientRect();return r.width>0&&r.height>0&&r.top>=0&&r.bottom<=800})`),'instructions and readouts visible');
   await capture('normal.png');
@@ -119,7 +120,7 @@ try {
   const beforeContract = await snapshot();
   await hover('[data-maneuver="contract"]'); const contractionPreview = await snapshot();
   equal(contractionPreview.positions, beforeContract.positions, 'contraction preview leaves live anchors unchanged');
-  equal(contractionPreview.ghosts, formationPositions({shape:'compact',orientation:0}), 'exact contraction destinations include ring-two Pazuzu');
+  equal(contractionPreview.ghosts, formationPositions({shape:'compact',orientation:0}), 'exact contraction destinations include ring-one Pazuzu');
   await click('[data-maneuver="contract"]'); const contraction = await snapshot();
   equal(contraction.positions, contractionPreview.ghosts, 'contraction committed anchors match preview');
   equal(contraction.revision, 1, 'contraction committed once');
