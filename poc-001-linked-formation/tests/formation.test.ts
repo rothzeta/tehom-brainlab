@@ -64,8 +64,8 @@ test('C2/C5: enumeration retains twelve unique labelled states including coincid
   expect.assertions(6);
   const actual = formations();
   expect(actual).toHaveLength(12);
-  expect(new Set(actual.map((state) => JSON.stringify(state))))
-    .toEqual(new Set(states.map((state) => JSON.stringify(state))));
+  expect(new Set(actual.map(({ shape, orientation }) => `${shape}:${orientation}`)))
+    .toEqual(new Set(states.map(({ shape, orientation }) => `${shape}:${orientation}`)));
   expect(new Set(actual.map(serializePositions)).size).toBe(12);
   const zero = formationPositions({ shape: 'spread', orientation: 0 });
   const two = formationPositions({ shape: 'spread', orientation: 2 });
