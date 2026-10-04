@@ -8,6 +8,8 @@ Brainlab contains independent prototype folders, the POC 001 design brief, share
 
 The root justfile exposes repository tooling inspection and the optional token exporter. Six P01 install/dev/typecheck/test/build/preview recipes now delegate to prototype-local wrappers. Docker with pinned official Bun is the default; explicit host mode enforces the same runtime pin. The [asset import record](exploitation/asset-import-001.md) retains its original scope and verification provenance; that verification was not rerun during this vault change.
 
+The `routing-setup` candidate adds portable model, route, and role catalogs plus `just agent-routing resolve/start` and stub launch tests. Model IDs come from `models.yaml`, routes carry high effort, and roles select preferred/explicit alternative profiles with Claude-only coordination. The launcher injects canonical roles, preserves user Codex instructions, hides the repository workflow from workers, and creates Claude adapters in ignored scratch storage. See [commands and schema](exploitation/agent-routing.md) and the [routing task record](TASK_LOGS.md#2026-10-04-agent-model-routing-candidate). Stub verification does not establish live model availability or harness discovery; independent review, live launches, and merge remain pending.
+
 ## Direction and planned work
 
 [ADR-0004](adr/0004-repository-and-poc-direction.md) preserves agreed repository and experiment constraints. Bun is the default JavaScript/TypeScript runtime and package manager; POC 001 retains TypeScript, Phaser, Vite, and Vitest. Prefer Docker where useful and expose CLI work through thin just recipes.

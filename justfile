@@ -12,6 +12,14 @@ doctor:
 export-tokens *args:
     @./bin/export-token-pngs "$@"
 
+# Resolve or launch a portable role with an explicit model route.
+agent-routing *args:
+    @./bin/agent-routing "$@"
+
+# Test routing and launch boundaries with stub executables.
+test-agent-routing *args:
+    @./bin/test-agent-routing "$@"
+
 # POC 001: install.
 poc-001-install *args:
     @./poc-001-linked-formation/bin/run install "$@"

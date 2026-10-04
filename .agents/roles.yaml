@@ -1,0 +1,17 @@
+# Instructions always come from .agents/agents/<role>.md; never duplicate them here.
+# Alternatives are explicit operator choices via --route, never error fallbacks.
+roles:
+  coordinator:
+    preferred: claude-opus-5.5-high
+  architect:
+    preferred: claude-opus-5.5-high
+    alternatives: [gpt-6.1-sol-high]
+  scout:
+    preferred: gpt-6.1-sol-high
+    alternatives: [claude-opus-5.5-high]
+  implementer:
+    preferred: gpt-6.1-sol-high
+    alternatives: [claude-opus-5.5-high]
+  reviewer:
+    preferred: gpt-6.1-sol-high
+    alternatives: [claude-opus-5.5-high]
