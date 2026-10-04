@@ -78,6 +78,16 @@ Public validation throws `RangeError` synchronously and never clamps, rounds, co
 
 Run the focused contracts from the repository root with `just poc-001-test tests/formation.test.ts`. The suite reports its actual assertion count and uses explicit thresholds for classification so provisional tuning can evolve.
 
+## Command boundary (P03)
+
+P03 is implemented and verified by Implementer; independent review pending. [Plan](../docs/plans/2026-10-02-2dfffcd3-poc-001-command-boundary.md), [handoff](../docs/mailbox/p03-command-boundary/implementer.md), and [execution record](../docs/TASK_LOGS.md#2026-10-04-p03-command-boundary) describe its contracts and defaults. The browser remains the P01 placeholder.
+
+`createInitialState()` in `src/core/state.ts` returns fresh serializable snapshots: revision zero, round one, player phase, Compact orientation zero, three player-owned living Brood with stable roster IDs, and empty statuses/intentions/acted IDs. HP/max HP of one are artificial alive-fixture values, not combat balance. Phases are `player`, `enemy`, `victory`, and `defeat`.
+
+`applyCommand(state, command)` in `src/core/transition.ts` accepts `{kind:'maneuver', expectedRevision, maneuver:'clockwise'|'anticlockwise'|'expand'|'contract'}` through P02 geometry. Success changes formation, spends the shared allowance, increments revision once, and returns `{ok:true,state,events}`. Rejection returns `{ok:false,state,error:{code},events:[]}` with unchanged state/budgets. Errors include `stale-revision`, `wrong-phase`, `maneuver-used`, and `same-shape`. `useAbility` (with actor/ability/target IDs) and `endPhase` always return `unsupported-command`; abilities and budget resets await P07/P08.
+
+`applyActorAction(state, action, rules)` supplies the reusable accounting seam: revision/phase, actor identity/ownership/living status/action budget, then caller-supplied ability/target validation, then a pure entity effect and one action/revision. Hooks cannot return replacement budgets or phase. No ability is registered and the seam is not a player-command alternative. See the handoff for its typed contract, full errors, event fields, and precedence. Run `just poc-001-test tests/commands.test.ts tests/formation.test.ts`; the full suite passes 129 tests, including 37 P03 cases with 253 actual assertions.
+
 ## Evidence and limitations
 
 P02 candidate/tested revision is `3570610406886f18ca08c51effc79b3e8f3ddd34` on local branch `p02-formation-algebra`. The [P02 Implementer handoff](../docs/mailbox/p02-formation-algebra/implementer.md) records all six acceptance criteria, exact ring indices, defaults, and actual orientation-zero outputs; [verification](../docs/mailbox/p02-formation-algebra/verification.md) records command output. Focused tests pass 90 tests/3,349 assertions; full regression passes 92 tests including unchanged P01 coverage. Typecheck/build pass. Browser rendering remains the P01 placeholder; no P02 browser or human playtest was run. Review, Coordinator acceptance, and master delivery are pending.

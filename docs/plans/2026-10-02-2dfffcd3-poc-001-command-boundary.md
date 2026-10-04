@@ -2,13 +2,13 @@
 
 ## Status and authority
 
-**P03. Draft; not implemented or verified.** Depends on [P01](2026-10-02-a87b131a-poc-001-browser-harness.md) and [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
+**P03. Implemented and verified by Implementer; independent review pending.** [Execution evidence](../TASK_LOGS.md#2026-10-04-p03-command-boundary) and [handoff](../mailbox/p03-command-boundary/implementer.md) identify candidate `b2d25339149b76f7a994da798f5f688449b3668c`, acceptance evidence, and resolved defaults. Depends on [P01](2026-10-02-a87b131a-poc-001-browser-harness.md) and [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md). Original planning baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`; implementation BASE: `ab37525587b7739e3cf28b738f5bad5bece7965a`.
 
 Authority: [prototype architecture](../../poc-001-linked-formation/README.md) and the [brief's Round structure](../../docs/prototypes/poc-001-linked-formation.md). Atomic rejection and revision checking are proposed engineering contracts for this plan; they are not claimed as previously approved game design. Formatting authority is linked below and in the [index](README.md).
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
-Task `P03` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
+Task `P03` implementation owner: `P03-impl` Implementer; integration remains unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Actual execution is recorded in [TASK_LOGS](../TASK_LOGS.md#2026-10-04-p03-command-boundary).
 
 ## Smallest useful outcome
 
@@ -60,7 +60,7 @@ Only the P08 round driver may reset budgets. Until that driver exists, unsupport
 
 ## Verification and hand-back
 
-Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below now pass at the candidate recorded above; the assignment also required the full suite and build.
 
 Run `just poc-001-test tests/commands.test.ts tests/formation.test.ts` and `just poc-001-typecheck`. Return the public command/result contracts, error examples, and passing/rejected fixture traces. State which command kinds are actually supported at this milestone. Tests must exercise the production boundary, not an independent test-only rules implementation.
 
