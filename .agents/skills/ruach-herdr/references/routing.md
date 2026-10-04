@@ -51,6 +51,7 @@ The root exposes neither direct selection nor offline/dry-run/native arguments. 
 
 Other differences to preserve or resolve at integration:
 
+- Root `resolve` needs no Herdr or harness executable; normal worker `resolve` performs launch preflight and needs both plus caller Herdr context. Worker `resolve --offline` omits native argv and cannot substitute the existing root response without an explicit compatibility decision.
 - Both append the canonical role. Root Codex reads only user config TOML; worker composes effective layered config via an already-running matching-version daemon and passes explicit cwd. Worker fails before mutation when that read-only capability is unavailable.
 - Root workers disable only the repository's feature workflow. Worker disables every discovered workflow, including external names and native file/folder aliases, and fails for sources it cannot safely exclude. Root Claude adapters expose three fixed technical skills; worker scans canonical skills and prepares a private minimal settings overlay. Coordinator native visibility settings remain preserved.
 - Root Claude uses `--permission-mode auto` and root Codex `--approve-for-me`. Worker inherits permissions by default; an integration wrapper can deliberately supply supported native flags after `--` (`--permission-mode auto`, or verified Codex approval/sandbox flags). It cannot forward `--approve-for-me` under the current bounded native argument contract.
