@@ -1,0 +1,9 @@
+models:
+  coordination:
+    kind: claude
+    model: claude-opus-4-6
+    efforts: [high]
+  implementation:
+    kind: codex
+    model: gpt-6.1-sol
+    efforts: [high]
