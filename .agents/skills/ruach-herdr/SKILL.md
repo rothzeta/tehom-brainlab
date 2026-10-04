@@ -39,6 +39,8 @@ bun scripts/worker.ts start --name task-worker --role implementer --cwd /path/to
 
 Claude and Codex have launch preparation enabled. Codex requires an already-running matching-version local daemon for read-only effective config discovery; this skill never starts a daemon. Pi, OpenCode, DSH, OMP, and Agy currently fail before mutation for missing or unverified capabilities. Read [adapter evidence and limits](references/adapters.md) before selecting a harness. A prepared argv does not establish account access, model availability, native acceptance, or a successful paid session.
 
+Claude worker preparation can be gated by account-synced skills, managed customizations, linked-worktree fallback, legacy commands or plugins whose workflow visibility is unverified. Diagnostics name the source and offer an explicit allowed alternative via `--route ROUTE_ID`; no fallback is automatic. A synced cache without workflow names is still insufficient because its account inventory can change during the session. See [the customization gate investigation](references/adapters.md#claude-worker-customization-gates).
+
 `resolve --offline` reads selection and canonical role only; it returns `launchable: false` and no native argv. It cannot authorize a start.
 
 One versioned JSON result goes to stdout; concise diagnostics go to stderr. Exit codes: `0` resolved/prepared/started; `2` usage or invalid data/config; `3` unavailable executable, Herdr context/kind, or native capability; `4` preparation failure or uncertain post-mutation state. Developer text and native pass-through values are redacted in results. Never treat a failed startup as proof that submission did not occur: inspect the reported pane before launching again.

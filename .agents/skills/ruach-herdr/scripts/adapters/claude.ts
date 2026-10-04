@@ -9,6 +9,13 @@ async function settings(path:string) {
   try {const v=JSON.parse(body);if(!v||typeof v!=='object'||Array.isArray(v))throw Error();return v;}
   catch{return fail(2,'invalid_settings','Invalid Claude settings JSON',path);}
 }
+const routeRemedy='Explicitly select an allowed route using another supported harness with --route ROUTE_ID, or use an environment with independently verified workflow visibility. resolve --offline inspects selection only and cannot authorize startup.';
+function workflowSource(category:string,path:string,reason:string):never {
+  return fail(3,'unverified_workflow_source',`Claude worker workflow visibility is unverified for ${category}: ${reason}. ${routeRemedy}`,path);
+}
+function workflowPlugin(reason:string):never {
+  return fail(3,'unfilterable_workflow_plugin',`Claude worker workflow visibility is unverified for an enabled plugin: ${reason}. ${routeRemedy}`,'enabledPlugins');
+}
 export function validateEffort(effort?:string) {
   if(effort && !['low','medium','high','xhigh','max'].includes(effort))fail(2,'unsupported_effort','Effort is not a verified Claude value','effort');
 }
@@ -20,14 +27,19 @@ export async function prepare(s:Selection,pass:string[]):Promise<Plan> {
   validateEffort(s.effort);
   if(s.role!=='coordinator') {
     const managed=process.platform==='darwin' ? '/Library/Application Support/ClaudeCode' : process.platform==='win32' ? 'C:\\Program Files\\ClaudeCode' : '/etc/claude-code';
-    for(const path of [join(managed,'managed-settings.json'),join(managed,'managed-settings.d'),join(managed,'.claude','skills'),join(claudeHome(s.cwd),'skills','synced')]) {
-      if(await stat(path).catch(()=>null))fail(3,'unverified_workflow_source','Managed or account-synced Claude customizations require native effective visibility verification','claude');
+    for(const [category,path,reason] of [
+      ['managed settings file',join(managed,'managed-settings.json'),'effective managed skill policy cannot be verified read-only'],
+      ['managed settings fragments',join(managed,'managed-settings.d'),'effective managed skill policy cannot be verified read-only'],
+      ['enterprise skills',join(managed,'.claude','skills'),'native enterprise skill visibility cannot be verified read-only'],
+      ['account-synced skills',join(claudeHome(s.cwd),'skills','synced'),'the local cache cannot establish skills fetched or refreshed during the session, and selective synced-skill hiding is not verified'],
+    ]) {
+      if(await stat(path).catch(()=>null))workflowSource(category,path,reason);
     }
     // A linked worktree can inherit main-checkout skills outside these local roots.
     if(Bun.which('git') && !(await stat(join(s.repo,'.claude','skills')).catch(()=>null))) {
       const {run}=await import('../process');
       const common=await run(['git','-C',s.cwd,'rev-parse','--git-common-dir'],s.cwd);
-      if(common.exit===0 && resolve(s.cwd,common.stdout.trim())!==join(s.repo,'.git'))fail(3,'unverified_workflow_source','Claude main-checkout skill fallback requires native catalog verification','claude');
+      if(common.exit===0 && resolve(s.cwd,common.stdout.trim())!==join(s.repo,'.git'))workflowSource('linked-worktree skill fallback','claude.worktree_skill_fallback','native main-checkout skill discovery has not been verified');
     }
   }
   const extraDirectories:string[]=[];
@@ -42,7 +54,9 @@ export async function prepare(s:Selection,pass:string[]):Promise<Plan> {
   const discovered=new Set(all.filter(x=>x.workflow).map(x=>x.name));
   if(s.role!=='coordinator') {
     const commandRoots=[join(claudeHome(s.cwd),'commands'),...ancestors(s.cwd).map(p=>join(p,'.claude','commands')),...extraDirectories.map(p=>join(p,'.claude','commands')),...nested.filter(p=>p.endsWith('commands'))];
-    if((await Promise.all(commandRoots.map(legacyWorkflows))).some(names=>names.length))fail(3,'unverified_workflow_source','Legacy Claude workflow command visibility is unverified; convert these to native skills first','claude');
+    const legacy=await Promise.all(commandRoots.map(legacyWorkflows));
+    const legacyIndex=legacy.findIndex(names=>names.length);
+    if(legacyIndex!==-1)workflowSource('legacy workflow commands',commandRoots[legacyIndex],'selective native command hiding is unverified; converting commands to inspectable native skills requires separate configuration work');
   }
   const settingsPaths=[join(claudeHome(s.cwd),'settings.json'),...ancestors(s.cwd).reverse().flatMap(p=>[join(p,'.claude','settings.json'),join(p,'.claude','settings.local.json')])];
   let enabledPlugins:Record<string,boolean>={};
@@ -56,11 +70,11 @@ export async function prepare(s:Selection,pass:string[]):Promise<Plan> {
     for(const [id,enabled] of Object.entries(enabledPlugins)) {
       if(!enabled)continue;
       const installs=registry.plugins?.[id];
-      if(!Array.isArray(installs)||!installs.length)fail(3,'unfilterable_workflow_plugin','Cannot verify skill visibility for an enabled Claude plugin','enabledPlugins');
+      if(!Array.isArray(installs)||!installs.length)workflowPlugin('the enabled installation cannot be inspected');
       for(const entry of installs) {
-        if(typeof entry.installPath!=='string')fail(3,'unfilterable_workflow_plugin','Plugin installation path is unavailable','enabledPlugins');
+        if(typeof entry.installPath!=='string')workflowPlugin('its installation path is unavailable');
         const pluginSkills=await scan(resolve(s.cwd,entry.installPath));
-        if(pluginSkills.some(x=>x.workflow))fail(3,'unfilterable_workflow_plugin','Claude skillOverrides cannot hide plugin workflow skills','enabledPlugins');
+        if(pluginSkills.some(x=>x.workflow))workflowPlugin('it contains workflow skills that skillOverrides does not filter');
       }
     }
   }
