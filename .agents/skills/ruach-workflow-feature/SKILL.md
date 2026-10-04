@@ -7,7 +7,7 @@ description: Coordinate a bounded feature through optional investigation and des
 
 This is the generic feature workflow. Use a more specific workflow when one is assigned; keep this procedure sufficient for ordinary feature delivery.
 
-Only the Coordinator loads and executes this workflow. It instantiates specialist workers with self-contained assignments; workers receive their role, task context, and instructions without receiving the workflow. Require [ruach-handoff](../ruach-handoff/SKILL.md) for every worker result, including integration and merging; give workers its canonical path and their owned report path. Workers write durable reports in `docs/mailbox/` using [SCHEMA](../../../docs/SCHEMA.md#agent-work-artifacts) and keep intermediate files in `.agents/scratch/`. Canonical designs and plans stay in `docs/`. Launch workers with [ruach-herdr](../ruach-herdr/SKILL.md). Each responsible worker must run ruach-handoff's `scripts/validate.ts` on its own report before handoff; the Coordinator collects that evidence without running checks itself.
+Only the Coordinator loads and executes this workflow. It instantiates specialist workers with self-contained assignments; workers receive their role, task context, and instructions without receiving the workflow. Require [ruach-handoff](../ruach-handoff/SKILL.md) for every worker result, including integration and merging; give workers its canonical path and their owned report path. Write each worker assignment to `docs/mailbox/<task>/assignment-<role-or-worker>.md` in the worker's workspace; the worker commits it unchanged with its report. Workers write durable reports in `docs/mailbox/` using [SCHEMA](../../../docs/SCHEMA.md#agent-work-artifacts), keep disposable working files outside the repository (OS temporary directory or harness session scratch), and never edit `docs/CURRENT.md` or `docs/TASK_LOGS.md`. Canonical designs and plans stay in `docs/`. Launch workers with [ruach-herdr](../ruach-herdr/SKILL.md). Each responsible worker must run ruach-handoff's `scripts/validate.ts` on its own report before handoff; the Coordinator collects that evidence without running checks itself.
 
 ## 1. Understand
 
@@ -103,12 +103,14 @@ Preserve the delivery summary and required durable reports in commits reachable 
 - remaining issues;
 - durable report and canonical artifact references.
 
+After acceptance and delivery, the Coordinator updates `docs/CURRENT.md` and `docs/TASK_LOGS.md` from the worker handoffs, linking the mailbox reports rather than duplicating them.
+
 ## 10. Clean up
 
 Cleanup is the final required step before reporting the workflow complete. Assign the integration Implementer to remove every completed task-owned temporary worktree with `git worktree remove`, including temporary Coordinator and delivery worktrees. Preserve the main checkout, retained destination checkout, unrelated worktrees, and branches containing delivered changes or evidence.
 
 Close task-created worker and temporary Coordinator panes through Herdr after their final durable handoffs are committed, before removing the worktrees they use. Preserve the original caller pane and unrelated sessions. Arrange for the launching parent to close the cleanup worker's pane and any remaining temporary Coordinator pane after the final handoff; an agent must not close itself before returning that handoff.
 
-Run worktree cleanup from the retained checkout outside the paths being removed. Preserve useful scratch evidence in durable reports first; disposable task scratch and installed dependencies may then be discarded. Do not discard uncommitted work or unresolved evidence to satisfy cleanup. Preserve affected worktrees and report a cleanup blocker if removal is unsafe or fails.
+Run worktree cleanup from the retained checkout outside the paths being removed. Preserve useful working evidence in durable reports first; disposable working files and installed dependencies may then be discarded. Never delete or fold away mailbox reports; they remain until a future librarian agent triages them. Do not discard uncommitted work or unresolved evidence to satisfy cleanup. Preserve affected worktrees and report a cleanup blocker if removal is unsafe or fails.
 
 Require a cleanup handoff listing closed and retained panes, removed and retained worktrees, reasons for any exceptions or parent-owned final closures, and preserved delivery/report revisions. Store its durable report in the retained checkout, validate it through ruach-handoff, and commit it before returning. Base the final completion response on that handoff and the parent's final pane closures; a successful merge alone does not complete the workflow.

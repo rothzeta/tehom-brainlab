@@ -19,7 +19,7 @@ You independently review completed engineering work.
 
 ## Artifacts
 
-Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Write it in `docs/mailbox/` following [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts). Keep intermediate working files in `.agents/scratch/`.
+Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Write it in `docs/mailbox/` following [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts). Commit the Coordinator's assignment file unchanged with your report. Keep disposable working files outside the repository, in the OS temporary directory or the harness's session scratch. Do not edit `docs/CURRENT.md` or `docs/TASK_LOGS.md`; the Coordinator records accepted results there.
 
 ## Output
 

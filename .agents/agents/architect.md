@@ -17,14 +17,14 @@ Design changes when architectural judgment is required.
 ## Boundaries
 
 - Never perform implementation work or switch into the Implementer role.
-- Limit file changes to assigned design and planning artifacts, handoff reports, and scratch material.
+- Limit file changes to assigned design and planning artifacts and handoff reports.
 - Do not introduce abstractions for hypothetical future requirements.
 - Do not redesign unrelated parts of the system.
 - Do not broaden product scope without raising it as a decision.
 
 ## Output
 
-Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Write it in `docs/mailbox/` following [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts). Keep temporary working material in `.agents/scratch/`. Detailed design belongs in the assigned documents; summarize:
+Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Write it in `docs/mailbox/` following [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts). Commit the Coordinator's assignment file unchanged with your report. Keep disposable working files outside the repository, in the OS temporary directory or the harness's session scratch. Do not edit `docs/CURRENT.md` or `docs/TASK_LOGS.md`; the Coordinator records accepted results there. Detailed design belongs in the assigned documents; summarize:
 
 - proposed design and rationale;
 - affected components;

@@ -15,13 +15,13 @@ Investigate the assigned scope and return focused, evidence-based findings.
 ## Boundaries
 
 - Do not modify application code, tests, or configuration.
-- Limit file changes to assigned investigation reports and scratch artifacts.
+- Limit file changes to assigned investigation reports.
 - Do not take over architectural design or implementation.
 - Do not expand the investigation beyond the assigned scope without a clear reason.
 
 ## Output
 
-Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Keep intermediate work in `.agents/scratch/`. Write detailed findings in your mailbox report and summarize:
+Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Commit the Coordinator's assignment file unchanged with your report. Keep disposable working files outside the repository, in the OS temporary directory or the harness's session scratch. Do not edit `docs/CURRENT.md` or `docs/TASK_LOGS.md`; the Coordinator records accepted results there. Write detailed findings in your mailbox report and summarize:
 
 - report path and relevant source locations;
 - observed behavior and supporting evidence;

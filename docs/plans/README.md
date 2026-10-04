@@ -74,7 +74,7 @@ Fixtures may use artificial values to isolate an invariant; those unit-test valu
 
 Before each plan, re-read the actual target branch and affected files. Confirm prerequisites have delivered their specified outputs; writing a predecessor plan is not completing it. Keep unrelated work intact. Record any divergence from the baseline and reconcile overlapping proposed paths with the real implementation.
 
-For each executed plan, record a dated [task log entry](../TASK_LOGS.md), link it from the plan, and update [CURRENT](../CURRENT.md) when facts change. Return the changed paths, exact commands and results, tested commit, fixture/configuration version, observable evidence for the numbered criteria, and remaining blockers. Only mark a check passed when it ran. Browser failures are not covered by unit-test success; human playtest results are not covered by either. Preserve negative findings and distinguish a partial hand-back from a verified capability.
+For each executed plan, the Coordinator records a dated [task log entry](../TASK_LOGS.md) from worker handoffs, links it from the plan, and updates [CURRENT](../CURRENT.md) when facts change. Workers return the changed paths, exact commands and results, tested commit, fixture/configuration version, observable evidence for the numbered criteria, and remaining blockers. Only mark a check passed when it ran. Browser failures are not covered by unit-test success; human playtest results are not covered by either. Preserve negative findings and distinguish a partial hand-back from a verified capability.
 
 ## Deliberately beyond this dozen
 

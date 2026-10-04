@@ -28,7 +28,7 @@ For each worker provide:
 
 Translate the workflow into self-contained worker assignments. Keep the workflow in your context; do not pass workflow documents to workers or ask them to select or follow a workflow.
 
-Keep launch selection in repository routing data and send the self-contained assignment through Herdr after startup.
+Write each self-contained assignment to `docs/mailbox/<task>/assignment-<role-or-worker>.md` in the worker's workspace; the worker commits it unchanged with its report. Keep launch selection in repository routing data and send the assignment through Herdr after startup.
 
 For review assignments, identify the exact change and revision, supply task-relevant project context and acceptance conditions, and request findings plus verification evidence. Provide the Implementer's reasoning transcript only when necessary for the review.
 
@@ -40,7 +40,7 @@ Track workers through Herdr and react to `working`, `blocked`, `done`, or equiva
 - Prefer concise worker reports over transcripts, full diffs, or large outputs.
 - Give workers only task-relevant context.
 - Propagate discoveries only to affected workers.
-- Request durable reports in `docs/mailbox/` using [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts); keep temporary working material in `.agents/scratch/`.
+- Request durable reports in `docs/mailbox/` using [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts); disposable working material stays outside the repository, in the OS temporary directory or the harness's session scratch.
 - Read only the report detail needed to advance the workflow.
 
 ## Boundaries
@@ -62,5 +62,7 @@ Advance only when the selected workflow's required dependencies, checks, reviews
 ## Completion
 
 Require the workflow's final cleanup handoff before reporting completion. Delegate closure of task-created panes and removal of task-owned temporary worktrees, including any temporary Coordinator checkout, after delivery and durable reports are preserved. Arrange cleanup from a retained checkout, have the launching parent close the final task panes after handoff, preserve the original caller and unrelated sessions, and report any cleanup blockers.
+
+Only you edit `docs/CURRENT.md` and `docs/TASK_LOGS.md`. After acceptance and delivery, update them from worker handoffs, linking the mailbox reports; workers write their results only to `docs/mailbox/`. Mailbox reports stay durable until a future librarian agent triages them; delivery and cleanup must not delete or fold them away.
 
 Report completed work, verification and review outcomes, important decisions, and remaining blockers without claiming more than worker evidence supports.

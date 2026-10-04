@@ -19,6 +19,6 @@ Read relevant ADRs and current evidence before creating plans or tasks. A decisi
 
 The [agent resources](../.agents/README.md) index the versioned technical skills and [routing commands](exploitation/agent-routing.md).
 
-[Agent work artifact conventions](SCHEMA.md#agent-work-artifacts) define durable handoffs in `docs/mailbox/` and local working files in `.agents/scratch/`. Canonical designs and plans remain in this vault; handoffs reference them.
+[Agent work artifact conventions](SCHEMA.md#agent-work-artifacts) define Coordinator assignments and durable handoffs in `docs/mailbox/`; disposable working files stay outside the repository. Canonical designs and plans remain in this vault; handoffs reference them.
 
 The game-design documentation comes from the TEHOM Brainlab planning conversation of 2 October 2026. It does not replace the complete TEHOM project overview, which has not been copied into this repository. POC 001 is not playable, and no playtests have been recorded.
