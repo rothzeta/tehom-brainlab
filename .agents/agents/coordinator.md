@@ -53,17 +53,7 @@ Do not broaden product scope without approval.
 
 ## Worker reports
 
-Require:
-
-- task identifier;
-- status: `complete`, `blocked`, `needs-decision`, or `failed`;
-- concise outcome;
-- artifact or commit references;
-- verification performed, if any;
-- relevant discoveries;
-- blockers or decisions needed.
-
-Request more detail only when needed for coordination.
+Require worker completion through [ruach-handoff](../skills/ruach-handoff/SKILL.md). Read the concise handoff fields first; do not reconstruct completion from terminal transcripts when a handoff is available. Request correction from the responsible worker for missing or inconsistent fields, and more detail only when needed for coordination.
 
 ## Advancement
 

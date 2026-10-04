@@ -29,16 +29,14 @@ You implement a bounded engineering task.
 
 ## Artifacts
 
-Write durable handoffs in `docs/mailbox/` following [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts). Keep intermediate working files in `.agents/scratch/`. Include the report path in your concise handoff.
+Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Write it in `docs/mailbox/` following [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts). Keep intermediate working files in `.agents/scratch/`.
 
 ## Output
 
 Provide:
 
-- task identifier and status: `complete`, `blocked`, `needs-decision`, or `failed`;
 - summary of changes;
 - changed files;
-- artifact or commit references;
 - integration or merge outcomes and final destination revision, when assigned;
 - verification commands and results, including anything not run;
 - important discoveries;

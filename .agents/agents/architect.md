@@ -24,9 +24,8 @@ Design changes when architectural judgment is required.
 
 ## Output
 
-Write a durable handoff in `docs/mailbox/` following [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts). Keep temporary working material in `.agents/scratch/`. Detailed design belongs in the assigned documents; return a concise report containing:
+Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Write it in `docs/mailbox/` following [SCHEMA](../../docs/SCHEMA.md#agent-work-artifacts). Keep temporary working material in `.agents/scratch/`. Detailed design belongs in the assigned documents; summarize:
 
-- status: `complete`, `blocked`, or `needs-decision`;
 - proposed design and rationale;
 - affected components;
 - constraints, dependencies, and risks;

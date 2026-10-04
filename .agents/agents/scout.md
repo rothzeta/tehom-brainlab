@@ -21,9 +21,8 @@ Investigate the assigned scope and return focused, evidence-based findings.
 
 ## Output
 
-Keep intermediate work in `.agents/scratch/`. Write the detailed findings in your mailbox report and return a concise handoff containing:
+Produce the required handoff using [ruach-handoff](../skills/ruach-handoff/SKILL.md). Keep intermediate work in `.agents/scratch/`. Write detailed findings in your mailbox report and summarize:
 
-- task identifier and status: `complete`, `blocked`, `needs-decision`, or `failed`;
 - report path and relevant source locations;
 - observed behavior and supporting evidence;
 - important dependencies;

@@ -435,3 +435,24 @@ At the user's request, removed the six temporary worktrees from the two-harness 
 | Inline Python assertions using `git worktree list --porcelain`, filesystem existence, `git rev-parse <delivery-branch>`, and `git cat-file -e <branch>:<report>` | Passed: only main remains; all six directories absent; exact delivery branch tips and twelve owned worker reports preserved. |
 | Filtered `herdr agent list` assertions | Passed: no agents remain in the six removed workspaces. |
 | `git diff --check` | Exit 0; cleanup documentation whitespace clean. |
+
+## 2026-10-04 Shared handoff skill
+
+Scope: add the agreed portable reporting protocol after the four-harness trial. Inspected revision: `05af251`. The main checkout was clean before this change.
+
+Added `.agents/skills/ruach-handoff/SKILL.md` with required named fields, optional revision fields, actual verification evidence, durable reporting before completion, and worker-owned correction. Handoff fields begin the report so consumers can read a bounded summary. Revisions must already exist; reports need not identify the commit that creates them. The skill has no repository-file dependency.
+
+All five roles reference the skill; Coordinator's duplicated field list was removed while specialist output requirements remain. The generic feature workflow supplies the canonical skill path and owned report path for every worker, including integration and merging, without giving workers the workflow. Updated `.agents/README.md`, SCHEMA, mailbox navigation, and CURRENT. Existing experiment reports retain their historical evidence and contracts.
+
+Executed checks:
+
+| Command | Actual result |
+| --- | --- |
+| `python3 /home/metatron/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/ruach-handoff` | Exit 0; skill valid. |
+| `python3 /home/metatron/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/ruach-workflow-feature` | Exit 0; updated workflow valid. |
+| `python3 /tmp/check-brainlab-handoff.py` | Exit 0; existing audit adapted for four skills: 10 vault entry points, 5 ADR identities, 12 plan contracts, 50 stable checkpoints, 374 local links/fragments, 59 Markdown whitespace checks, five roles/four matching skill identities, unchanged Claude shim, scratch ignore cases, and mailbox conventions passed. |
+| `git diff --check` | Exit 0; tracked whitespace clean. |
+
+Read the new skill and changed role/workflow definitions directly. The temporary audit remains outside the repository.
+
+No JSON schema, persistent harness adapter, Herdr lifecycle integration, dependency installation, application change, or live agent experiment was added. Skill-format and documentation checks do not establish live harness discovery or reporting compliance. Commit and push outcomes are reported in the session after execution.
