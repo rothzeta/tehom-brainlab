@@ -1,18 +1,23 @@
-task: CLEAN-impl
+task: CLEAN-impl-r1
 status: complete
 outcome: "Current guidance now has the Coordinator release each pane, Herdr workspace or tab, and worktree as soon as no pending step needs it. Cleanup is no longer a final step delegated to the integration Implementer, and no worker cleanup handoff is required."
 role: implementer
 source_baseline: 06c181a
-candidate_revision: 261265215838cec900c96af78b84d448a24e5f4a
-tested_revision: 261265215838cec900c96af78b84d448a24e5f4a
+candidate_revision: f2aa62c3792171268b67a33e0565de54deceee2d
+tested_revision: f2aa62c3792171268b67a33e0565de54deceee2d
+previous_candidate_revision: 261265215838cec900c96af78b84d448a24e5f4a
 artifacts:
   - docs/mailbox/workflow-prompt-cleanup/implementer.md
   - docs/mailbox/workflow-prompt-cleanup/assignment-implementer.md
+  - docs/mailbox/workflow-prompt-cleanup/assignment-implementer-r1.md
   - .agents/skills/ruach-workflow-feature/SKILL.md
   - .agents/agents/coordinator.md
   - docs/SCHEMA.md
   - "branch workflow-prompt-cleanup"
 verification:
+  - "R1 at f2aa62c: quick_validate.py .agents/skills/ruach-workflow-feature: exit 0, Skill is valid!"
+  - "R1: git diff --check 06c181a..f2aa62c: exit 0, no output."
+  - "R1: Markdown-only change (git diff --name-only 2612652..f2aa62c lists only .md files: the two guidance files, the R1 assignment, and the round 1 report and assignment from d9a12ec); suites not rerun, as permitted. The results below are from round 1 at 2612652."
   - "Repo-wide git grep (cleanup, clean up, worktree remove, close/closing/closure, cleanup worker/handoff, launching parent, final handoff/cleanup, delegate closure) outside docs/mailbox/*/*, CURRENT and TASK_LOGS: no current guidance delegates cleanup to a worker or defers all cleanup to the end. Remaining non-cleanup matches are listed in the report body."
   - "python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/ruach-workflow-feature: exit 0, Skill is valid!"
   - "just test-agent-routing: Ran 13 tests, OK (after bun install --frozen-lockfile in ruach-handoff and ruach-herdr, both exit 0)."
@@ -22,13 +27,13 @@ verification:
   - "bun .agents/skills/ruach-handoff/scripts/validate.ts on this report with --repo .: exit 0, ok true, revisions resolved, no diagnostics."
 discoveries:
   - "No code, test, schema, or validator encodes a worker cleanup handoff. ruach-handoff (SKILL.md, handoff.schema.json, validate.ts) has no cleanup fields, so it needed no change."
-  - "ruach-herdr SKILL.md:48 and references/adapters.md:43 say the caller removes a started worker's private temporary directory after the session ends. The Coordinator is that caller, so closing a worker's pane is also the point to remove that directory. The workflow does not mention this; consider adding it if wanted."
+  - "ruach-herdr SKILL.md:48 and references/adapters.md:43 say the caller removes a started worker's private temporary directory after the session ends. Accepted by the Coordinator and addressed in R1."
   - "Delivered plan docs/plans/2026-10-02-2dfffcd3-poc-001-command-boundary.md:11 names a local integration/cleanup Implementer owner. It is a delivered (historical) plan and was left unchanged; draft plans P04-P12 contain no cleanup ownership."
 blockers: []
 
 # Prompt Coordinator cleanup — Implementer handoff
 
-Author: Implementer (task `CLEAN-impl`). Date: 2026-10-04. Worktree `/opt/dev/tehom-brainlab-cleanup`, branch `workflow-prompt-cleanup`, BASE `06c181a`. Candidate `2612652` contains all guidance changes. The later commit that adds this report and the [assignment](assignment-implementer.md) records evidence only.
+Author: Implementer (task `CLEAN-impl`). Date: 2026-10-04. Worktree `/opt/dev/tehom-brainlab-cleanup`, branch `workflow-prompt-cleanup`, BASE `06c181a`. Round 1 candidate `2612652` contains the original guidance changes, and `f2aa62c` adds [R1](#r1). The later commit that adds this report and the [assignment](assignment-implementer.md) records evidence only.
 
 ## Changes
 
@@ -54,3 +59,14 @@ Historical only:
 
 - `docs/CURRENT.md:83`, `docs/TASK_LOGS.md` (for example 426–437 and 704), and the delivered P03 plan line 11.
 - 39 historical files under `docs/mailbox/*/*`, including `agent-artifact-conventions/cleanup.md` and `p03-command-boundary/cleanup.md`, plus this task's own assignment.
+
+## R1
+
+The R1 [assignment](assignment-implementer-r1.md) accepted the ruach-herdr discovery. The candidate is `f2aa62c`.
+
+| File | Change |
+| --- | --- |
+| `.agents/skills/ruach-workflow-feature/SKILL.md` | Step 10 worker rule: closing a worker's pane also removes the private temporary directory reported by its launch result (`temporary_directory`), if non-null. |
+| `.agents/agents/coordinator.md` | Completion worker rule: the same clause. |
+
+There are no other changes.
