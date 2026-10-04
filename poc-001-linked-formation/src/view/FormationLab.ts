@@ -5,6 +5,8 @@ import type { Brood } from '../core/formation';
 import { LabSession, MANEUVERS, MANEUVER_LABELS } from './lab-state';
 import { projectHex } from './projection';
 import './lab.css';
+import { createPatrol } from '../content/patrol';
+import { createInitialState } from '../core/state';
 
 const PROJECTION = { x: 380, y: 295, spacing: 120 };
 const COLORS = { ugallu: 0xffc775, girtablilu: 0x81d5c5, pazuzu: 0xb7b0ff };
@@ -32,6 +34,7 @@ export function createLabShell(parent: HTMLElement): void {
           <label class="placeholder"><input id="placeholder" type="checkbox"> Placeholder mode — labels only</label>
         </aside>
       </div>
+      <section id="combat-preview" aria-label="Patrol preview fixture" hidden></section>
       <footer><details id="credits"><summary>Emblem credits &amp; patrol reference</summary>
         <p>Icons made by <a href="http://lorcblog.blogspot.com/">Lorc</a>. Available at <a href="https://game-icons.net">Game-icons.net</a>. Licensed under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Backgrounds removed; dimensions and attribution metadata added. Symbolic POC emblems.</p>
         <div id="patrol-emblems"></div><p><a id="credits-file">Bundled credits</a> · <a id="license-file">Bundled license</a></p>
@@ -41,7 +44,8 @@ export function createLabShell(parent: HTMLElement): void {
 
 /** Generated canvas board with native keyboard-accessible inspection and controls. */
 export class FormationLab extends Phaser.Scene {
-  private readonly lab = new LabSession();
+  private readonly lab = new LabSession(() => new URLSearchParams(location.search).get('preview') === 'patrol'
+    ? createPatrol() : createInitialState());
   private root!: HTMLElement;
   private graphics!: Phaser.GameObjects.Graphics;
   private linkLabels: Phaser.GameObjects.Text[] = [];
@@ -142,6 +146,28 @@ export class FormationLab extends Phaser.Scene {
       const li = document.createElement('li'); li.textContent = `${title(link.from.brood)} ↔ ${title(link.to.brood)}: ${title(link.state)} (${link.distance})`; li.dataset.state = link.state; return li;
     }));
     const pending = this.lab.preview;
+    const combatPanel = this.element('combat-preview');
+    combatPanel.hidden = !('enemies' in state);
+    if (!combatPanel.hidden) {
+      const hp = (snapshot: typeof state) => snapshot.brood.map((entity) => `${title(entity.brood)} ${entity.hp}/${entity.maxHp}`).join(' · ');
+      const preview = pending?.projection;
+      const lines = [`Patrol preview fixture — maneuvers only. Live: ${hp(state)}.`];
+      if (preview?.ok) {
+        const facts = preview.projection.after;
+        lines.push(`Immediate: ${hp(preview.state)} · ${preview.state.phase}.`);
+        lines.push(`Destination links: ${facts.links.map((link) => `${link.from.brood} ↔ ${link.to.brood} ${link.state}`).join('; ')}.`);
+        lines.push(`Protection gained: ${preview.projection.protectionGained.map((entry) => `${entry.actorId} → ${entry.targetId}`).join(', ') || 'none'}; lost: ${preview.projection.protectionLost.map((entry) => `${entry.actorId} → ${entry.targetId}`).join(', ') || 'none'}.`);
+        lines.push(`Threats: ${facts.threats.map((entry) => `${entry.intention.kind === 'fixed-area' ? 'Area' : 'Mark'} ${entry.intention.id} at ${entry.cells.map((cell) => `(${cell.q},${cell.r})`).join(', ')} → ${entry.recipientIds.join(', ') || entry.reason}`).join('; ')}.`);
+        const abilityNames = (entries: typeof facts.abilities) => [...new Set(entries.map((entry) => title(entry.request.abilityId)))].join(', ') || 'none';
+        lines.push(`Abilities enabled: ${abilityNames(preview.projection.abilitiesEnabled)}; disabled: ${abilityNames(preview.projection.abilitiesDisabled)}.`);
+        const forecast = preview.forecast;
+        lines.push(forecast.kind === 'transition' ? forecast.ok
+          ? `${forecast.condition}: ${hp(forecast.state)} · ${forecast.state.phase}. Remaining player choices are excluded.`
+          : `${forecast.condition}: unavailable (${forecast.error.code}).`
+          : `${forecast.condition}: ${forecast.kind === 'terminal' ? 'combat ended; no enemy damage' : 'unavailable'}.`);
+      } else lines.push('Hover or focus a maneuver to preview its immediate result and conditional enemy phase.');
+      combatPanel.replaceChildren(...lines.map((line) => Object.assign(document.createElement('p'), { textContent: line })));
+    }
     this.element('preview-readout').textContent = pending ? `Preview: ${MANEUVER_LABELS[pending.maneuver]} → ${title(pending.state.formation.shape)} / ${pending.state.formation.orientation}. Live state unchanged.` : 'No pending maneuver.';
     this.element('ghosts').replaceChildren(...(pending ? formationPositions(pending.state.formation).map((position) => {
       const pixel = projectHex(position.cell, PROJECTION); const ghost = document.createElement('span');

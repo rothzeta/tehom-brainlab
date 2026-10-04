@@ -192,3 +192,48 @@ Enable **Placeholder mode — labels only**, or open `?placeholder=1`, to skip e
 The prototype-local `scripts/prepare-assets.mjs` runs before dev/build (explicitly chained in the scripts so both entry points enforce it). It validates SHA-256 against root `assets/manifest.json` and copies only seven allowlisted SVGs into generated, ignored `public/tehom/tokens/`, plus `public/tehom/CREDITS.md` and `public/tehom/licenses/game-icons-license.txt`. Missing or corrupt sources fail before replacing generated output. Root masters are never written. Builds serve the copies at relative `tehom/` URLs; no external image server is used. Preview serves the already-prepared build.
 
 The 19-cell board uses a 120 px pitch about stage origin `(380,295)` in the 760×610 stage. The initial layout targets 1280×800 desktop. Mobile layout, animation, final art, combat and human playtest conclusions remain outside P04. View/session/projection contracts are covered by `tests/view.test.ts`; asset output and negative preparation cases by `tests/asset-copy.test.ts`. Browser evidence and the acceptance mapping belong to [the P04 Implementer handoff](../docs/mailbox/p04-formation-lab/implementer.md). Existing historical P01/P02 evidence below refers to those earlier revisions.
+
+## Preview equivalence (P09)
+
+`src/core/preview.ts` exports `previewCommand(snapshot, command, sessionGeneration)`.
+It clones the plain snapshot and command, invokes the real `applyCommand`, and
+recursively freezes the returned projection. Success exposes the exact immediate
+`state` and `events`, before/after selector facts (destination positions, living
+links, protection, Shelter eligibility, distinct area/mark recipients, and each
+ability/target/direction's legality), HP/status deltas, protection gained/lost,
+enabled/disabled abilities and the actual events as change explanations.
+Rejections expose the same error and empty events, with no projection or forecast.
+No preview spends live budgets or delivers events to a live event/audio consumer.
+
+The provisional P09 projection choice is an isolated real transition plus existing
+P02/P05/P07 selectors, as proposed by the P09 plan; there is no parallel damage
+calculator. The conditional forecast is labelled **If end phase now** and runs
+P08's real `endPhase` on another copy of the immediate candidate. Its `state` and
+`events` are the complete real result; `enemyEvents` excludes next-round
+announcements and round start. Unchosen player actions are excluded. A terminal
+candidate has `kind:'terminal'` and no forecast events; formation-only and plain
+combat snapshots have `kind:'unavailable'`. An end-phase rejection remains an
+explicit rejected forecast rather than successful enemy consequences.
+
+The P09 stale-session choice is a monotonically increasing UI generation on reset
+or fresh fixture, together with the command's original expected revision.
+`previewValidity` and `LabSession.confirmPreview` reject a previous generation
+(`stale-session`) or changed revision (`stale-revision`) before confirmation.
+Confirmation submits the stored original command against live state. Every
+accepted command clears the pending maneuver; cancellation clears only ephemeral
+selection of a maneuver. These choices follow P09's proposed implementation and
+prevent cached candidate assignment or same-revision reuse after reset.
+
+The default P04 formation lab still supports its original twelve fixtures. Open
+`/?preview=patrol` for a bounded P09 patrol preview fixture with the same maneuver
+controls, immediate HP, links/protection/recipient changes, ability changes and
+conditional HP forecast. It supports an actual maneuver preview/commit pair;
+full combat controls and the playable patrol remain P10. The public model supports
+all P03/P08 commands, including all six abilities and rejected commands.
+
+Run `just poc-001-test tests/preview.test.ts tests/patrol.test.ts tests/intents.test.ts`.
+The additive `tests/browser-preview.mjs` probe checks the patrol preview fixture;
+run it with Bun, Chrome path and a temporary output directory, like the unchanged
+P04 `tests/browser-lab.mjs` probe. See the
+[P09 handoff](../docs/mailbox/p09-preview-equivalence/implementer.md) for executed
+verification, decision sources and criterion evidence. No human playtest is claimed.

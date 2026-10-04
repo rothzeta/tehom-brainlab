@@ -2,8 +2,10 @@ import { formationLinks, formationPositions, validateFormation } from '../core/f
 import type { Brood, Formation } from '../core/formation';
 import { createInitialState } from '../core/state';
 import type { GameState } from '../core/state';
-import type { CommandResult, Maneuver } from '../core/commands';
+import type { Command, CommandResult, Maneuver } from '../core/commands';
 import { applyCommand } from '../core/transition';
+import { previewCommand, previewValidity } from '../core/preview';
+import type { CommandPreview } from '../core/preview';
 
 export const MANEUVERS: readonly Maneuver[] = ['clockwise', 'anticlockwise', 'expand', 'contract'];
 export const MANEUVER_LABELS: Record<Maneuver, string> = {
@@ -12,8 +14,13 @@ export const MANEUVER_LABELS: Record<Maneuver, string> = {
 
 /** Presentation session only. All maneuver outcomes and availability come from P03. */
 export class LabSession {
-  private live = createInitialState();
-  private pending: { readonly maneuver: Maneuver; readonly state: GameState } | undefined;
+  private live: GameState;
+  private generation = 0;
+
+  constructor(private readonly factory: () => GameState = createInitialState) {
+    this.live = factory();
+  }
+  private pending: { readonly maneuver: Maneuver; readonly state: GameState; readonly projection: CommandPreview } | undefined;
   private selection: Brood | undefined;
 
   get state(): GameState { return this.live; }
@@ -26,21 +33,44 @@ export class LabSession {
     return applyCommand(this.live, { kind: 'maneuver', expectedRevision: this.live.revision, maneuver });
   }
 
-  previewManeuver(maneuver: Maneuver): void {
-    const result = this.outcome(maneuver);
-    this.pending = result.ok ? { maneuver, state: result.state } : undefined;
+  previewCommand(command: Command): CommandPreview {
+    return previewCommand(this.live, command, this.generation);
   }
 
-  commit(maneuver: Maneuver): CommandResult {
-    const result = this.outcome(maneuver);
+  previewManeuver(maneuver: Maneuver): void {
+    const result = this.previewCommand({ kind: 'maneuver', expectedRevision: this.live.revision, maneuver });
+    this.pending = result.ok ? { maneuver, state: result.state, projection: result } : undefined;
+  }
+
+  confirmPreview(preview: CommandPreview): CommandResult | {
+    readonly ok: false; readonly state: GameState; readonly events: readonly [];
+    readonly error: { readonly code: 'stale-session' | 'stale-revision' };
+  } {
+    const stale = previewValidity(this.live, this.generation, preview);
+    if (stale) { this.cancel(); return { ok: false, state: this.live, events: [], error: { code: stale } }; }
+    return this.submit(preview.command);
+  }
+
+  submit(command: Command): CommandResult {
+    const result = applyCommand(this.live, command);
     if (result.ok) this.live = result.state;
     this.cancel();
     return result;
   }
 
+  commit(maneuver: Maneuver): CommandResult {
+    const pending = this.pending;
+    if (pending && previewValidity(this.live, this.generation, pending.projection)) {
+      this.cancel();
+      return { ok: false, state: this.live, events: [], error: { code: 'stale-revision' } };
+    }
+    return this.submit(pending?.maneuver === maneuver ? pending.projection.command
+      : { kind: 'maneuver', expectedRevision: this.live.revision, maneuver });
+  }
+
   cancel(): void { this.pending = undefined; }
   select(brood: Brood): void { this.selection = brood; }
-  reset(): void { this.live = createInitialState(); this.selection = undefined; this.cancel(); }
+  reset(): void { this.generation += 1; this.live = this.factory(); this.selection = undefined; this.cancel(); }
 
   /** Explicit test setup, never a player command or a round reset. */
   selectFixture(formation: Formation): void {
