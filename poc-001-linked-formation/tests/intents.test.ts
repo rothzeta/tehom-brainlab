@@ -16,13 +16,31 @@ const ring: readonly Hex[] = [
   [-3, 3], [-3, 2], [-3, 1], [-3, 0], [-2, -1], [-1, -2],
   [0, -3], [1, -3], [2, -3], [3, -3], [3, -2], [3, -1],
 ].map(([q, r]) => ({ q: q!, r: r! }));
+const ringTwo: readonly Hex[] = [
+  [2, 0], [1, 1], [0, 2], [-1, 2], [-2, 2], [-2, 1],
+  [-2, 0], [-1, -1], [0, -2], [1, -2], [2, -2], [2, -1],
+].map(([q, r]) => ({ q: q!, r: r! }));
+const sectors: readonly (readonly Hex[])[] = [
+  [ring[0]!, ring[1]!, ring[2]!, ringTwo[0]!, ringTwo[1]!],
+  [ring[3]!, ring[4]!, ring[5]!, ringTwo[2]!, ringTwo[3]!],
+  [ring[6]!, ring[7]!, ring[8]!, ringTwo[4]!, ringTwo[5]!],
+  [ring[9]!, ring[10]!, ring[11]!, ringTwo[6]!, ringTwo[7]!],
+  [ring[12]!, ring[13]!, ring[14]!, ringTwo[8]!, ringTwo[9]!],
+  [ring[15]!, ring[16]!, ring[17]!, ringTwo[10]!, ringTwo[11]!],
+];
 const fronts = [
-  [0, 1, 2, 3, 4, 5], [3, 4, 5, 6, 7, 8], [6, 7, 8, 9, 10, 11],
-  [9, 10, 11, 12, 13, 14], [12, 13, 14, 15, 16, 17], [15, 16, 17, 0, 1, 2],
+  [...sectors[0]!, ...sectors[1]!], [...sectors[1]!, ...sectors[2]!],
+  [...sectors[2]!, ...sectors[3]!], [...sectors[3]!, ...sectors[4]!],
+  [...sectors[4]!, ...sectors[5]!], [...sectors[5]!, ...sectors[0]!],
 ];
 const slots = {
-  compact: [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11], [12, 13, 14], [15, 16, 17]],
-  spread: [[0, 6, 12], [3, 9, 15], [6, 12, 0], [9, 15, 3], [12, 0, 6], [15, 3, 9]],
+  compact: [
+    [[2, 1], [1, 2], [1, 1]], [[-1, 3], [-2, 3], [-1, 2]],
+    [[-3, 2], [-3, 1], [-2, 1]], [[-2, -1], [-1, -2], [-1, -1]],
+    [[1, -3], [2, -3], [1, -2]], [[3, -2], [3, -1], [2, -1]],
+  ].map((cells) => cells.map(([q, r]) => ({ q: q!, r: r! }))),
+  spread: [[0, 6, 12], [3, 9, 15], [6, 12, 0], [9, 15, 3], [12, 0, 6], [15, 3, 9]]
+    .map((indices) => indices.map((i) => ring[i]!)),
 };
 const ids = ['ugallu', 'girtablilu', 'pazuzu'];
 const areaRecipients = {
@@ -53,7 +71,7 @@ function context(formation: Formation, fallenId?: string): IntentContext {
   });
 }
 const area: Intention = freeze({ id: 'sweep', sourceId: 'warder', kind: 'fixed-area',
-  cells: fronts[0]!.map((i) => ring[i]!), turnable: true });
+  cells: fronts[0]!, turnable: true });
 const hit: Intention = freeze({ id: 'hit', sourceId: 'censer', kind: 'marked-hit', targetId: 'girtablilu' });
 const splash: Intention = freeze({ ...hit, id: 'splash', kind: 'marked-splash' });
 const relations: readonly ProtectionRelation[] = freeze([{ sourceId: 'warder', targetId: 'censer' }]);
@@ -63,8 +81,8 @@ afterEach(() => { assertions += expect.getState().assertionCalls; });
 afterAll(() => { console.info(`P05 intent assertions executed: ${assertions}`); });
 
 test.each([0, 1, 2, 3, 4, 5] as const)('AC1: sector and ordered front at facing %i', (facing) => {
-  expect(sectorCells(facing)).toEqual(fronts[facing]!.slice(0, 3).map((i) => ring[i]!));
-  expect(frontMask(facing)).toEqual(fronts[facing]!.map((i) => ring[i]!));
+  expect(sectorCells(facing)).toEqual(sectors[facing]!);
+  expect(frontMask(facing)).toEqual(fronts[facing]!);
 });
 
 describe.each(states)('$shape orientation $orientation', (formation) => {
@@ -83,10 +101,10 @@ describe.each(states)('$shape orientation $orientation', (formation) => {
       const next = freeze({ ...input, formation: result.state.formation });
       const { shape, orientation } = next.formation;
       const fixed = selectRecipients(next, area);
-      expect(fixed.cells).toEqual(fronts[0]!.map((i) => ring[i]!));
+      expect(fixed.cells).toEqual(fronts[0]!);
       expect(fixed.recipientIds).toEqual(areaRecipients[shape][orientation]);
       expect(selectRecipients(next, hit)).toEqual({ reason: 'resolved', recipientIds: ['girtablilu'],
-        cells: [ring[slots[shape][orientation]![1]!]!] });
+        cells: [slots[shape][orientation]![1]!] });
       expect(selectRecipients(next, splash, 2).recipientIds).toEqual(shape === 'compact' ? ids : ['girtablilu']);
     }
     // Repeated previews/selection of an unrelated mark cannot rewrite declarations.
@@ -102,12 +120,12 @@ describe.each(states)('$shape orientation $orientation', (formation) => {
     const result = turnEnemyClockwise(input.enemies[0]!, declarations);
     expect(result.ok).toBe(true);
     expect(result.enemy.facing).toBe(1);
-    expect(result.intentions[0]).toEqual({ ...area, cells: fronts[1]!.map((i) => ring[i]!) });
+    expect(result.intentions[0]).toEqual({ ...area, cells: fronts[1]! });
     expect(result.intentions.slice(1)).toEqual(declarations.slice(1));
     expect(result.events).toEqual([
       { type: 'facing-changed', sourceId: 'warder', before: 0, after: 1 },
       { type: 'intention-turned', sourceId: 'warder', intentionId: 'sweep',
-        beforeCells: fronts[0]!.map((i) => ring[i]!), afterCells: fronts[1]!.map((i) => ring[i]!) },
+        beforeCells: fronts[0]!, afterCells: fronts[1]! },
     ]);
     expect(selectRecipients(input, result.intentions[0]!).recipientIds)
       .toEqual(turnedRecipients[formation.shape][formation.orientation]);
@@ -140,15 +158,33 @@ describe.each(states)('$shape orientation $orientation', (formation) => {
 
 test.each([0, 1, 2, 3, 4, 5] as const)('AC4: clockwise turn from %i, wrap 5 to 0', (facing) => {
   const enemy = freeze({ id: 'warder', hp: 10, facing });
-  const declaration: Intention = freeze({ ...area, cells: fronts[facing]!.map((i) => ring[i]!) });
+  const declaration: Intention = freeze({ ...area, cells: fronts[facing]! });
   const declarations = freeze([declaration, { ...hit, sourceId: 'warder' }, { ...splash, sourceId: 'warder' }]);
   const before = structuredClone({ enemy, declarations });
   const nextFacing = ([1, 2, 3, 4, 5, 0] as const)[facing];
   const result = turnEnemyClockwise(enemy, declarations);
   expect(result.enemy.facing).toBe(nextFacing);
-  expect(result.intentions[0]).toEqual({ ...declaration, cells: fronts[nextFacing]!.map((i) => ring[i]!) });
+  expect(result.intentions[0]).toEqual({ ...declaration, cells: fronts[nextFacing]! });
   expect(result.intentions.slice(1)).toEqual(declarations.slice(1));
   expect({ enemy, declarations }).toEqual(before);
+});
+
+test('CT/AC1: sectors disjointly partition the thirty radius-two/three cells', () => {
+  const actual = ([0, 1, 2, 3, 4, 5] as const).flatMap((sector) => sectorCells(sector));
+  const key = ({ q, r }: Hex) => `${q},${r}`;
+  expect(actual).toHaveLength(30);
+  expect(new Set(actual.map(key)).size).toBe(30);
+  expect(new Set(actual.map(key))).toEqual(new Set([...ring, ...ringTwo].map(key)));
+});
+
+test('CT: inward Pazuzu is protection-eligible and a fixed-area recipient', () => {
+  const input = context({ shape: 'compact', orientation: 0 });
+  expect(selectProtection(input, { actorId: 'pazuzu', targetId: 'censer', bypassProtection: false }, relations))
+    .toEqual({ protected: true, sourceIds: ['warder'], reason: 'protected',
+      checks: [{ sourceId: 'warder', reason: 'protected' }] });
+  const inwardArea: Intention = freeze({ ...area, cells: [{ q: 1, r: 1 }] });
+  expect(selectRecipients(input, inwardArea))
+    .toEqual({ reason: 'resolved', recipientIds: ['pazuzu'], cells: [{ q: 1, r: 1 }] });
 });
 
 test('AC5: each fallen source cancels; marked target fizzle cancels the whole splash without retargeting', () => {
@@ -183,10 +219,11 @@ test('AC6: lone survivor is isolated; fallen Brood cannot be isolated or maintai
 test('Close and splash boundaries use explicit tunable thresholds inclusively', () => {
   const input = context({ shape: 'compact', orientation: 0 });
   expect(selectRecipients(input, { ...splash, targetId: 'ugallu' } as Intention, 2).recipientIds).toEqual(ids);
-  expect(selectRecipients(input, { ...splash, targetId: 'ugallu' } as Intention, 1).recipientIds).toEqual(['ugallu', 'girtablilu']);
+  expect(selectRecipients(input, { ...splash, targetId: 'ugallu' } as Intention, 1).recipientIds).toEqual(ids);
   expect(selectRecipients(input, splash, 0).recipientIds).toEqual(['girtablilu']);
   expect(isCloseLinked(input, 'ugallu', 'pazuzu', 2)).toBe(true);
-  expect(isCloseLinked(input, 'ugallu', 'pazuzu', 1)).toBe(false);
+  expect(isCloseLinked(input, 'ugallu', 'pazuzu', 1)).toBe(true);
+  expect(isCloseLinked(input, 'ugallu', 'pazuzu', 0)).toBe(false);
   expect(isCloseLinked(input, 'pazuzu', 'ugallu', 2)).toBe(true);
   expect(isIsolated(input, 'girtablilu', 0)).toBe(true);
   expect(activeLinks(context({ shape: 'spread', orientation: 0 }), 6).every(({ state }) => state === 'close')).toBe(true);

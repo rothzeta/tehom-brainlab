@@ -1,5 +1,5 @@
 import { afterAll, afterEach, describe, expect, test } from 'vitest';
-import { boardCells, hexDistance, OUTER_RING, validateHex } from '../src/core/hex';
+import { boardCells, hexDistance, OUTER_RING, RING_TWO, validateHex } from '../src/core/hex';
 import type { Hex } from '../src/core/hex';
 import {
   contractFormation, expandFormation, formationLinks, formationPositions, formations,
@@ -13,6 +13,15 @@ const ring = [
   [-3, 3], [-3, 2], [-3, 1], [-3, 0], [-2, -1], [-1, -2],
   [0, -3], [1, -3], [2, -3], [3, -3], [3, -2], [3, -1],
 ].map(([q, r]) => ({ q: q!, r: r! }));
+const ringTwo = [
+  [2, 0], [1, 1], [0, 2], [-1, 2], [-2, 2], [-2, 1],
+  [-2, 0], [-1, -1], [0, -2], [1, -2], [2, -2], [2, -1],
+].map(([q, r]) => ({ q: q!, r: r! }));
+const compactCells = [
+  [[2, 1], [1, 2], [1, 1]], [[-1, 3], [-2, 3], [-1, 2]],
+  [[-3, 2], [-3, 1], [-2, 1]], [[-2, -1], [-1, -2], [-1, -1]],
+  [[1, -3], [2, -3], [1, -2]], [[3, -2], [3, -1], [2, -1]],
+].map((cells) => cells.map(([q, r]) => ({ q: q!, r: r! })));
 const roster = ['ugallu', 'girtablilu', 'pazuzu'];
 const states: Formation[] = (['compact', 'spread'] as const).flatMap((shape) =>
   [0, 1, 2, 3, 4, 5].map((orientation) => ({ shape, orientation: orientation as Orientation })));
@@ -47,6 +56,27 @@ test('C1/C4: all 18 ring indices match R and the downward-screen clockwise conve
   }
 });
 
+test('CT: T contains twelve frozen radius-two cells in clockwise order', () => {
+  expect(RING_TWO).toEqual(ringTwo);
+  expect(RING_TWO).toHaveLength(12);
+  expect(new Set(RING_TWO.map(cellKey)).size).toBe(12);
+  expect(RING_TWO.every((cell) => hexDistance(cell, { q: 0, r: 0 }) === 2)).toBe(true);
+  expect(Object.isFrozen(RING_TWO) && RING_TWO.every(Object.isFrozen)).toBe(true);
+  for (let index = 0; index < 12; index += 1) {
+    const { q, r } = RING_TWO[index]!;
+    expect(RING_TWO[(index + 2) % 12]).toEqual({ q: -r + 0, r: q + r });
+  }
+});
+
+test('CT: every Compact pair is adjacent in all six orientations', () => {
+  for (const orientation of [0, 1, 2, 3, 4, 5] as const) {
+    const cells = formationPositions({ shape: 'compact', orientation }).map(({ cell }) => cell);
+    for (const [a, b] of [[0, 1], [0, 2], [1, 2]] as const) {
+      expect(hexDistance(cells[a]!, cells[b]!)).toBe(1);
+    }
+  }
+});
+
 test('axial distance matches cube distance for every ordered board-cell pair', () => {
   expect.assertions(37 * 37 * 2);
   for (const a of boardCells()) {
@@ -77,16 +107,18 @@ test('C2/C5: enumeration retains twelve unique labelled states including coincid
 
 for (const state of states) {
   describe(`${state.shape} orientation ${state.orientation}`, () => {
-    test('C2: positions match the labelled mapping without overlaps and remain on the ring', () => {
+    test('C2: positions match the labelled mapping without overlaps on the declared rings', () => {
       expect.assertions(4);
       const positions = formationPositions(state);
-      const offsets = state.shape === 'compact' ? [0, 1, 2] : [0, 6, 12];
+      const cells = state.shape === 'compact' ? compactCells[state.orientation]!
+        : [0, 6, 12].map((offset) => ring[(3 * state.orientation + offset) % 18]!);
       expect(positions).toEqual(roster.map((brood, index) => ({
-        brood, cell: ring[(3 * state.orientation + offsets[index]!) % 18],
+        brood, cell: cells[index],
       })));
       expect(positions.map(({ brood }) => brood)).toEqual(roster);
       expect(new Set(positions.map(({ cell }) => cellKey(cell))).size).toBe(3);
-      expect(positions.every(({ cell }) => hexDistance(cell, { q: 0, r: 0 }) === 3)).toBe(true);
+      expect(positions.map(({ cell }) => hexDistance(cell, { q: 0, r: 0 })))
+        .toEqual(state.shape === 'compact' ? [3, 3, 2] : [3, 3, 3]);
     });
 
     test('C3: both inverse rotations and six turns restore serialized positions, including wraparound', () => {
@@ -134,7 +166,7 @@ for (const state of states) {
       expect(links.map(({ from, to }) => [from, to])).toEqual([
         [positions[0], positions[1]], [positions[0], positions[2]], [positions[1], positions[2]],
       ]);
-      expect(links.map(({ distance }) => distance)).toEqual(state.shape === 'compact' ? [1, 2, 1] : [6, 6, 6]);
+      expect(links.map(({ distance }) => distance)).toEqual(state.shape === 'compact' ? [1, 1, 1] : [6, 6, 6]);
       expect(links.every(({ distance }) => Number.isInteger(distance))).toBe(true);
       expect(links.map(({ state: linkState }) => linkState)).toEqual(
         Array(3).fill(state.shape === 'compact' ? 'close' : 'stretched'));
@@ -155,10 +187,12 @@ for (const state of states) {
 }
 
 test('Close uses an inclusive configurable threshold without changing geometry', () => {
-  expect.assertions(3);
+  expect.assertions(4);
   const compact: Formation = { shape: 'compact', orientation: 0 };
-  expect(formationLinks(compact, 1).map(({ state }) => state)).toEqual(['close', 'stretched', 'close']);
+  expect(formationLinks(compact, 1).map(({ state }) => state)).toEqual(['close', 'close', 'close']);
   expect(formationLinks(compact, 0).map(({ state }) => state)).toEqual(['stretched', 'stretched', 'stretched']);
+  expect(formationLinks({ shape: 'spread', orientation: 0 }, 5).map(({ state }) => state))
+    .toEqual(['stretched', 'stretched', 'stretched']);
   expect(formationLinks({ shape: 'spread', orientation: 0 }, 6).map(({ state }) => state))
     .toEqual(['close', 'close', 'close']);
 });

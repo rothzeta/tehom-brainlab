@@ -51,3 +51,11 @@ export const OUTER_RING: readonly Hex[] = Object.freeze([
   { q: 0, r: -3 }, { q: 1, r: -3 }, { q: 2, r: -3 },
   { q: 3, r: -3 }, { q: 3, r: -2 }, { q: 3, r: -1 },
 ].map((cell) => Object.freeze(cell)));
+
+/** P02 ring T: clockwise radius-two cells, starting at (2, 0). */
+export const RING_TWO: readonly Hex[] = Object.freeze([
+  { q: 2, r: 0 }, { q: 1, r: 1 }, { q: 0, r: 2 },
+  { q: -1, r: 2 }, { q: -2, r: 2 }, { q: -2, r: 1 },
+  { q: -2, r: 0 }, { q: -1, r: -1 }, { q: 0, r: -2 },
+  { q: 1, r: -2 }, { q: 2, r: -2 }, { q: 2, r: -1 },
+].map((cell) => Object.freeze(cell)));

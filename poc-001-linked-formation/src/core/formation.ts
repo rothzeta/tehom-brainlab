@@ -1,4 +1,4 @@
-import { hexDistance, OUTER_RING } from './hex';
+import { hexDistance, OUTER_RING, RING_TWO } from './hex';
 import type { Hex } from './hex';
 
 export const ROSTER = Object.freeze(['ugallu', 'girtablilu', 'pazuzu'] as const);
@@ -50,13 +50,16 @@ export function formations(): readonly Formation[] {
   return states;
 }
 
-/** Roster order is stable. Compact: 3o+[0,1,2]; Spread: 3o+[0,6,12], mod 18. */
+/** Stable roster order. Compact: R[3o+1], R[3o+2], T[2o+1]; Spread unchanged. */
 export function formationPositions(formation: Formation): readonly Position[] {
   validateFormation(formation);
-  const stride = formation.shape === 'compact' ? 1 : 6;
+  const o = formation.orientation;
+  const cells = formation.shape === 'compact'
+    ? [OUTER_RING[3 * o + 1]!, OUTER_RING[3 * o + 2]!, RING_TWO[2 * o + 1]!]
+    : [OUTER_RING[3 * o]!, OUTER_RING[(3 * o + 6) % 18]!, OUTER_RING[(3 * o + 12) % 18]!];
   return ROSTER.map((brood, index) => ({
     brood,
-    cell: OUTER_RING[(3 * formation.orientation + stride * index) % 18]!,
+    cell: cells[index]!,
   }));
 }
 

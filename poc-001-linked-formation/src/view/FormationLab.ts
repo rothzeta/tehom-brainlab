@@ -167,7 +167,7 @@ export class FormationLab extends Phaser.Scene {
     }
     this.element('board-stage').dataset.cells = String(boardCells().length);
     graphics.lineStyle(1, 0x8fa2b0, 1); graphics.strokeCircle(PROJECTION.x, PROJECTION.y, 8);
-    this.lab.links.forEach((link, index) => {
+    this.lab.links.forEach((link) => {
       const a = projectHex(link.from.cell, PROJECTION), b = projectHex(link.to.cell, PROJECTION);
       graphics.lineStyle(3, link.state === 'close' ? 0xb7c8d3 : 0xe2b681, 1);
       if (link.state === 'close') graphics.lineBetween(a.x, a.y, b.x, b.y);
@@ -179,7 +179,14 @@ export class FormationLab extends Phaser.Scene {
         }
       }
       const dx = b.x-a.x, dy = b.y-a.y, length = Math.hypot(dx,dy);
-      const offset = this.lab.state.formation.shape === 'compact' ? (index === 1 ? 118 : 72) : 24;
+      let offset = 24;
+      if (this.lab.state.formation.shape === 'compact') {
+        const third = this.lab.positions.find(({ brood }) => brood !== link.from.brood && brood !== link.to.brood)!;
+        const c = projectHex(third.cell, PROJECTION);
+        // Choose the perpendicular pointing away from the triangle's third vertex.
+        const towardThird = -dy * (c.x - (a.x + b.x) / 2) + dx * (c.y - (a.y + b.y) / 2);
+        offset = towardThird > 0 ? -60 : 60;
+      }
       this.linkLabels.push(this.add.text((a.x+b.x)/2 - dy/length*offset, (a.y+b.y)/2 + dx/length*offset, title(link.state), {
         fontFamily: 'sans-serif', fontSize: '14px', color: '#f0eee6', backgroundColor: '#121820', padding: { x: 4, y: 3 },
       }).setOrigin(0.5));

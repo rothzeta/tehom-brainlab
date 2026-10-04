@@ -92,6 +92,9 @@ try {
     equal(actual.revision, 0, 'fresh revision'); check(!actual.used, 'fresh allowance');
     equal(await evaluate(`[...document.querySelectorAll('#maneuvers button')].map(e=>({maneuver:e.dataset.maneuver,disabled:e.disabled}))`), ['clockwise','anticlockwise','expand','contract'].map((maneuver) => ({maneuver,disabled:!applyCommand({...createInitialState(),formation},{kind:'maneuver',expectedRevision:0,maneuver}).ok})), 'availability matches core');
     check(await evaluate(`[...document.querySelectorAll('.brood-token')].every(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=1280&&r.top>=0&&r.bottom<=800&&getComputedStyle(e.querySelector('img')).transform==='none'})`), 'tokens/labels on screen, images upright');
+    for (const brood of ['ugallu', 'girtablilu', 'pazuzu']) {
+      check(await evaluate(`(()=>{const e=document.querySelector('.brood-token[data-brood="${brood}"]');const r=e.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('.brood-token')===e;})()`), `${formation.shape} ${formation.orientation}: ${brood} pointer-selectable at centre`);
+    }
     await capture(`fixture-${index}.png`);
     fixtureTrace.push({ formation, ...actual });
   }
@@ -112,6 +115,15 @@ try {
   await hover('[data-maneuver="expand"]'); const expansionPreview = await snapshot(); await click('[data-maneuver="expand"]');
   const expansion = await snapshot(); equal(expansion.positions, expansionPreview.ghosts,'expansion committed anchors match preview'); equal(expansion.revision,1,'expansion committed once');
   await capture('spread.png');
+  await evaluate(`(()=>{const e=document.querySelector('#fixture');e.value='6';e.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  const beforeContract = await snapshot();
+  await hover('[data-maneuver="contract"]'); const contractionPreview = await snapshot();
+  equal(contractionPreview.positions, beforeContract.positions, 'contraction preview leaves live anchors unchanged');
+  equal(contractionPreview.ghosts, formationPositions({shape:'compact',orientation:0}), 'exact contraction destinations include ring-two Pazuzu');
+  await click('[data-maneuver="contract"]'); const contraction = await snapshot();
+  equal(contraction.positions, contractionPreview.ghosts, 'contraction committed anchors match preview');
+  equal(contraction.revision, 1, 'contraction committed once');
+
   await click('#reset'); await hover('[data-maneuver="expand"]'); await click('#cancel'); equal((await snapshot()).ghosts,[],'Cancel control clears preview');
   await hover('[data-maneuver="expand"]'); await click('#reset'); equal((await snapshot()).ghosts,[],'reset clears pending ghosts');
   const beforeDrag = await snapshot();
@@ -129,7 +141,7 @@ try {
   await evaluate(`document.querySelector('#patrol-emblems').scrollIntoView({block:'end'})`);
   check(await evaluate(`[...document.querySelectorAll('#patrol-emblems .emblem')].every(e=>e.dataset.art==='loaded')`),'six patrol reference emblems loaded');
   await capture('credits.png');
-  trace.push({ mode:'normal',initial,preview,rotation,expansion,afterDrag,fixtures:fixtureTrace });
+  trace.push({ mode:'normal',initial,preview,rotation,expansion,contractionPreview,contraction,afterDrag,fixtures:fixtureTrace });
 
   async function repeatSequence(mode) {
     const initial = await snapshot();
