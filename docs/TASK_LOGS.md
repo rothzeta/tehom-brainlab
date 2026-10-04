@@ -422,3 +422,16 @@ Final main-checkout evidence verification:
 | `python3 /tmp/check-brainlab-ruach-skills.py` | Exit 0; 10 vault entry points, 5 ADR identities, 12 plan contracts, 50 checkpoints, 361 local links/fragments, 58 Markdown whitespace checks, five roles/three skills, shim, scratch ignore rules, and mailbox conventions passed. |
 | `python3 /tmp/brainlab-orchestrator2-evidence-check.py` | Exit 0; main changes exactly four documentation notes and six owned evidence artifacts; all four recorded acceptances match actual final delivery destinations and scope; canonical digests unchanged. Source preserved in observer-source.md. |
 | `git diff --check` | Exit 0; tracked whitespace clean. |
+
+## 2026-10-04 — Coordinator trial worktree cleanup
+
+At the user's request, removed the six temporary worktrees from the two-harness and four-harness Coordinator trials, along with their owned Herdr workspaces and agent panes. All six worktrees were clean before removal; ignored files were only experiment scratch artifacts. Used normal removal without force. Main is the only remaining repository checkout. Delivery branches, their exact accepted revisions, and all twelve committed worker reports remain available in Git; permanent experiment evidence is unchanged.
+
+| Executed command or check | Actual result |
+| --- | --- |
+| `git worktree list --porcelain`; `git status --porcelain` and `git ls-files --others --ignored --exclude-standard` in each named trial worktree | Six linked trial worktrees found, all clean; ignored files limited to owned experiment scratch. |
+| `herdr worktree list --cwd /opt/dev/tehom-brainlab`; `herdr agent list` | Confirmed owned workspace mappings and settled trial agents. |
+| `herdr worktree remove --workspace <id>` sequentially for `w6P`, `w6Q`, `w6R`, `w6S`, `w6T`, `w6V` | All exit 0, `forced: false`; removed `/tmp/brainlab-orch-{claude,codex}` and `/tmp/brainlab-orch2-{claude,codex,omp,agy}` plus associated workspaces. |
+| Inline Python assertions using `git worktree list --porcelain`, filesystem existence, `git rev-parse <delivery-branch>`, and `git cat-file -e <branch>:<report>` | Passed: only main remains; all six directories absent; exact delivery branch tips and twelve owned worker reports preserved. |
+| Filtered `herdr agent list` assertions | Passed: no agents remain in the six removed workspaces. |
+| `git diff --check` | Exit 0; cleanup documentation whitespace clean. |
