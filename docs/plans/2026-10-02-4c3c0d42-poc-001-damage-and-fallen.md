@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**P06. Draft; not implemented or verified.** Depends on [P03](2026-10-02-2dfffcd3-poc-001-command-boundary.md) and [P05](2026-10-02-d66a7452-poc-001-intent-semantics.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
+**P06. Implemented, independently reviewed (blocking R1 fixed and re-reviewed; no remaining findings), accepted, locally delivered.** [Implementation](../mailbox/p06-damage-and-fallen/implementer.md), [integration](../mailbox/p06-damage-and-fallen/integration.md), [R1 fix](../mailbox/p06-damage-and-fallen/fix-r1.md), and [review](../mailbox/p06-damage-and-fallen/reviewer.md). Depends on [P03](2026-10-02-2dfffcd3-poc-001-command-boundary.md) and [P05](2026-10-02-d66a7452-poc-001-intent-semantics.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 Authority: the [brief's deterministic combat requirement, Shelter description, and Open decisions](../../docs/prototypes/poc-001-linked-formation.md). Fallen-slot behavior, simultaneous-hit ordering, and terminal precedence are unresolved there; this plan proposes explicit local defaults. See the [index](README.md) for draft/ADR authority.
 
