@@ -19,7 +19,7 @@ function commit(repo: string) { git(repo, 'add', '-A'); git(repo, 'commit', '-qm
 function fixture() {
   const base = area(), repo = join(base, 'candidate checkout with spaces'); mkdirSync(repo);
   git(repo, 'init', '-q'); git(repo, 'config', 'core.filemode', 'true');
-  copyFileSync(join(skill, 'tests/fixtures/task.ts'), join(repo, 'task.ts'));
+  copyFileSync(join(skill, 'tests/fixtures/task.ts'), join(repo, 'task.ts')); chmodSync(join(repo, 'task.ts'), 0o644);
   write(join(repo, 'protected'), 'stable\n'); write(join(repo, '.gitignore'), 'ignored/\n');
   const baseline = commit(repo), assignment = join(base, 'assignment.md'); copyFileSync(join(skill, 'tests/fixtures/assignment.md'), assignment);
   return { base, repo, baseline, assignment };
@@ -60,6 +60,7 @@ function snapshot(repo: string): any {
 
 test('same assignment and acceptance yield identical fingerprints for two harness/model declarations and candidate roots', () => {
   const f = fixture(), second = join(f.base, 'second checkout'); git(f.base, 'clone', '-q', f.repo, second);
+  chmodSync(join(f.repo, 'task.ts'), 0o644); chmodSync(join(second, 'task.ts'), 0o644);
   const config = acceptance(f); config.runs[1].repo = second;
   const one = accept(f, config), two = accept(f, config, 'two');
   expect(one.exit).toBe(0); expect(two.exit).toBe(0); expect(one.value.ok).toBe(true); expect(two.value.ok).toBe(true);
@@ -303,4 +304,88 @@ test('configured PATH and executable permissions are honored without fallback', 
   const helpers = join(f.base, 'helper executables'); mkdirSync(helpers); write(join(helpers, 'probe'), '#!/bin/sh\nprintf "configured"\n'); chmodSync(join(helpers, 'probe'), 0o755);
   const config = acceptance(f, [check(['probe'], { exit: 0, stdout: 'configured' }, { env: { PATH: helpers } })]); config.runs[0].candidate = revision;
   expect(accept(f, config).exit).toBe(0);
+});
+
+const inheritedGitOverrides = [
+  ['repository-selection', (requested: any, other: any) => ({ GIT_DIR: join(other.repo, '.git'), GIT_WORK_TREE: other.repo })],
+  ['index', (requested: any, other: any) => ({ GIT_INDEX_FILE: join(other.repo, '.git', 'index') })],
+  ['common-directory', (requested: any, other: any) => ({ GIT_COMMON_DIR: join(other.repo, '.git') })],
+  ['object-storage', (requested: any, other: any) => ({ GIT_OBJECT_DIRECTORY: join(other.repo, '.git', 'objects'), GIT_ALTERNATE_OBJECT_DIRECTORIES: join(other.base, 'absent-objects') })],
+  ['discovery', (requested: any, other: any) => ({ GIT_CEILING_DIRECTORIES: requested.repo, GIT_DISCOVERY_ACROSS_FILESYSTEM: 'invalid' })],
+  ['config-worktree', (requested: any, other: any) => ({ GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'core.worktree', GIT_CONFIG_VALUE_0: other.repo })]
+] as const;
+for (const [name, overrides] of inheritedGitOverrides) test(`scope isolates inherited Git ${name} overrides and never writes to the selected checkout`, () => {
+  const requested = fixture(), other = fixture(); write(join(other.repo, 'protected'), 'other repository'); other.baseline = commit(other.repo);
+  write(join(requested.repo, 'protected'), 'staged content'); git(requested.repo, 'add', 'protected'); write(join(requested.repo, 'protected'), 'unstaged content'); write(join(requested.repo, 'unexpected'), 'untracked content');
+  const allow = write(join(requested.base, 'allow.json'), { schema_version: 1 });
+  const args = ['--repo', requested.repo, '--baseline', 'HEAD', '--candidate', 'HEAD', '--allow', allow];
+  const env = { ...process.env, ...overrides(requested, other) };
+  const beforeRequested = snapshot(requested.repo), beforeOther = snapshot(other.repo);
+  const observed = cli('scope-check', args, '/', env);
+  expect(observed.exit).toBe(1); expect(observed.value.ok).toBe(false);
+  expect(observed.value.baseline_revision).toBe(requested.baseline); expect(observed.value.candidate_revision).toBe(requested.baseline); expect(observed.value.worktree_head).toBe(requested.baseline);
+  expect(observed.value.clean).toBe(false); expect(new Set(observed.value.unexpected_paths)).toEqual(new Set(['protected', 'unexpected']));
+  expect(observed.value.dirty.some((d: any) => d.paths.includes('protected') && d.staged && d.unstaged)).toBe(true);
+  expect(observed.value.dirty.some((d: any) => d.paths.includes('unexpected') && d.untracked)).toBe(true);
+  expect(observed.value.diagnostics.some((d: any) => d.code === 'dirty_worktree')).toBe(true);
+  const forbidden = join(requested.repo, 'forbidden-evidence.json');
+  const rejected = cli('scope-check', [...args, '--output', forbidden], '/', env);
+  expect(rejected.exit).toBe(2); expect(rejected.value.diagnostics.some((d: any) => d.code === 'invalid_output')).toBe(true);
+  expect(existsSync(forbidden)).toBe(false); expect(snapshot(requested.repo)).toEqual(beforeRequested); expect(snapshot(other.repo)).toEqual(beforeOther);
+});
+
+test('acceptance selects the requested repository while preserving configured check Git environment', () => {
+  const requested = fixture(), other = fixture(); write(join(other.repo, 'protected'), 'other repository'); other.baseline = commit(other.repo);
+  const overrides = { GIT_DIR: join(other.repo, '.git'), GIT_WORK_TREE: other.repo, GIT_INDEX_FILE: join(other.repo, '.git', 'index') };
+  const config = acceptance(requested, [check(['git', 'rev-parse', 'HEAD'], { exit: 0, stdout: other.baseline + '\n' }, { env: overrides })]); config.runs[0].candidate = 'HEAD';
+  const configFile = write(join(requested.base, 'config.json'), config), args = ['--config', configFile, '--run', 'one'];
+  const env = { ...process.env, GIT_DIR: join(other.base, 'missing-git-dir'), GIT_WORK_TREE: other.repo };
+  const beforeRequested = snapshot(requested.repo), beforeOther = snapshot(other.repo);
+  const clean = cli('acceptance', args, '/', env);
+  expect(clean.exit).toBe(0); expect(clean.value.candidate_revision).toBe(requested.baseline); expect(clean.value.head_before).toBe(requested.baseline); expect(clean.value.head_after).toBe(requested.baseline);
+  expect(clean.value.checks[0].cwd).toBe(requested.repo); expect(clean.value.checks[0].status).toBe('passed'); expect(clean.value.checks[0].stdout).toBe(other.baseline + '\n');
+  expect(snapshot(requested.repo)).toEqual(beforeRequested); expect(snapshot(other.repo)).toEqual(beforeOther);
+});
+
+test('acceptance records dirty requested checkout under inherited Git overrides and rejects evidence inside it', () => {
+  const requested = fixture(), other = fixture(); write(join(other.repo, 'protected'), 'other repository'); other.baseline = commit(other.repo);
+  write(join(requested.repo, 'unexpected'), 'untracked content');
+  const config = acceptance(requested, [check([bun, '-e', 'process.stdout.write(process.cwd() + "\\n" + process.env.GIT_DIR)'], { exit: 0, stdout: requested.repo + '\n' + join(other.repo, '.git') })]); config.runs[0].candidate = 'HEAD';
+  const configFile = write(join(requested.base, 'config.json'), config), args = ['--config', configFile, '--run', 'one'];
+  const env = { ...process.env, GIT_DIR: join(other.repo, '.git'), GIT_WORK_TREE: other.repo };
+  const beforeRequested = snapshot(requested.repo), beforeOther = snapshot(other.repo);
+  const observed = cli('acceptance', args, '/', env);
+  expect(observed.exit).toBe(1); expect(observed.value.candidate_revision).toBe(requested.baseline);
+  for (const state of ['dirty_before', 'dirty_after']) expect(observed.value[state].some((d: any) => d.paths.includes('unexpected') && d.untracked)).toBe(true);
+  expect(observed.value.checks[0].status).toBe('passed'); expect(observed.value.diagnostics.some((d: any) => d.code === 'dirty_candidate')).toBe(true);
+  const forbidden = join(requested.repo, 'forbidden-acceptance.json'), rejected = cli('acceptance', [...args, '--output', forbidden], '/', env);
+  expect(rejected.exit).toBe(2); expect(rejected.value.diagnostics.some((d: any) => d.code === 'invalid_output')).toBe(true);
+  expect(existsSync(forbidden)).toBe(false); expect(snapshot(requested.repo)).toEqual(beforeRequested); expect(snapshot(other.repo)).toEqual(beforeOther);
+});
+
+test('fixture permission differences change hashes and fingerprints without changing assignment or acceptance', () => {
+  const f = fixture(); chmodSync(join(f.repo, 'task.ts'), 0o644); const readable = accept(f);
+  chmodSync(join(f.repo, 'task.ts'), 0o600); const restricted = accept(f);
+  expect(readable.exit).toBe(0); expect(restricted.exit).toBe(0);
+  expect(readable.value.assignment_sha256).toBe(restricted.value.assignment_sha256); expect(readable.value.acceptance_sha256).toBe(restricted.value.acceptance_sha256);
+  expect(readable.value.fixture_sha256).not.toBe(restricted.value.fixture_sha256);
+  for (let i = 0; i < readable.value.checks.length; i++) expect(readable.value.checks[i].fingerprint).not.toBe(restricted.value.checks[i].fingerprint);
+});
+
+test('repository identity permits selected subdirectories and aliases but rejects a redirected worktree', () => {
+  const requested = fixture(), other = fixture(), nested = join(requested.repo, 'nested'); mkdirSync(nested);
+  const alias = join(requested.base, 'checkout alias'); symlinkSync(requested.repo, alias);
+  const allow = write(join(requested.base, 'allow.json'), { schema_version: 1 });
+  for (const selected of [nested, alias]) {
+    const observed = cli('scope-check', ['--repo', selected, '--baseline', 'HEAD', '--candidate', 'HEAD', '--allow', allow]);
+    expect(observed.exit).toBe(0); expect(observed.value.worktree_head).toBe(requested.baseline);
+    const rejected = cli('scope-check', ['--repo', selected, '--baseline', 'HEAD', '--candidate', 'HEAD', '--allow', allow, '--output', join(requested.repo, 'forbidden-evidence.json')]);
+    expect(rejected.exit).toBe(2); expect(existsSync(join(requested.repo, 'forbidden-evidence.json'))).toBe(false);
+  }
+  git(requested.repo, 'config', 'core.worktree', other.repo);
+  const beforeRequested = snapshot(requested.repo), beforeOther = snapshot(other.repo);
+  const redirected = scope(requested);
+  expect(redirected.exit).toBe(2); expect(redirected.value.diagnostics.some((d: any) => d.code === 'invalid_repository')).toBe(true);
+  const rejectedAcceptance = accept(requested); expect(rejectedAcceptance.exit).toBe(2); expect(rejectedAcceptance.value.diagnostics.some((d: any) => d.code === 'invalid_repository')).toBe(true);
+  expect(snapshot(requested.repo)).toEqual(beforeRequested); expect(snapshot(other.repo)).toEqual(beforeOther);
 });
