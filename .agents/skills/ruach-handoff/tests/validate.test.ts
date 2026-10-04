@@ -8,6 +8,8 @@ const skill = resolve(import.meta.dir, "..");
 const cli = join(skill, "scripts/validate.ts");
 const base = mkdtempSync(join(tmpdir(), "ruach-handoff-tests-"));
 let serial = 0;
+// Grouped cases budget 2s per validator probe for CPU contention; single-probe
+// cases retain Bun's default timeout. These tests assert behavior, not latency.
 afterAll(() => rmSync(base, { recursive: true, force: true }));
 function dir() {
   const path = join(base, `fixture ${serial++}`);
@@ -83,7 +85,7 @@ describe("leading block and schema through the CLI", () => {
     invalid(minimal.replace("blockers: []", "blockers: null"), "FIELD_TYPE", "/blockers");
     invalid(minimal.replace("outcome: Reported result", 'outcome: "  "'), "FIELD_INVALID", "/outcome");
     invalid(minimal + "\ntested_revision: [HEAD]", "FIELD_TYPE", "/tested_revision");
-  });
+  }, 2_000 * 8);
   test("malformed and missing headers, syntax, duplicate keys, tags", () => {
     for (const text of ["", "# Historical\n" + minimal, "```yaml\n" + minimal + "\n```", "\n" + minimal, "---\n" + minimal]) invalid(text, "HEADER_INVALID", "/header");
     invalid(minimal.replace("artifacts: []", "artifacts: ["), "YAML_INVALID", "/header");
@@ -94,7 +96,7 @@ describe("leading block and schema through the CLI", () => {
     const result = run([file(minimal + "\nstatus: failed")]);
     expect(result.json.diagnostics[0].line).toBeGreaterThan(1);
     expect(result.json.diagnostics[0].column).toBeGreaterThan(0);
-  });
+  }, 2_000 * 11);
   test("the shipped schema is the structural oracle, including role metadata", () => {
     const schema = JSON.parse(readFileSync(join(skill, "handoff.schema.json"), "utf8"));
     const validate = new Ajv({ strict: true }).compile(schema);
@@ -109,7 +111,7 @@ describe("leading block and schema through the CLI", () => {
       const result = run([file(`---\n${JSON.stringify(data)}\n---`)]);
       expect(result.exit).toBe(valid ? 0 : 1);
     }
-  });
+  }, 2_000 * 13);
   test("the documented starting template has neutral verification and review", () => {
     const doc = readFileSync(join(skill, "SKILL.md"), "utf8");
     const template = doc.match(/```yaml\n([\s\S]*?)\n```/)![1];
@@ -156,7 +158,7 @@ describe("repository and revision contract", () => {
     expect(result.exit).toBe(2);
     expect(result.json.diagnostics[0].code).toBe("REPO_UNAVAILABLE");
     expect(run([report, "--repo", "missing"], base).exit).toBe(2);
-  });
+  }, 2_000 * 4);
   test("missing commits, noncommit objects and all revision roles fail with field paths", () => {
     const repo = repository();
     for (const field of ["candidate_revision", "tested_revision", "reviewed_revision", "delivered_revision", "evidence_revision", "source_baseline", "destination_before", "revision", "baseline"]) {
@@ -167,7 +169,7 @@ describe("repository and revision contract", () => {
     const tree = git(repo, "rev-parse", "HEAD^{tree}");
     expect(run([file(minimal + `\ntested_revision: ${tree}`, repo)]).exit).toBe(1);
     expect(run([file(minimal + "\ntested_revision: --help", repo)]).exit).toBe(1);
-  });
+  }, 2_000 * 11);
   test("evidence-only successor and report written before its creating commit", () => {
     const repo = repository();
     const tested = git(repo, "rev-parse", "HEAD");
@@ -200,7 +202,7 @@ describe("portable setup and usage diagnostics", () => {
     const result = run([file(minimal + "\ntested_revision: HEAD")], base, cli, { PATH: base });
     expect(result.exit).toBe(2);
     expect(result.json.diagnostics[0].code).toBe("GIT_UNAVAILABLE");
-  });
+  }, 2_000 * 8);
   test("copied skill without dependencies fails clearly", () => {
     const copy = dir();
     cpSync(join(skill, "scripts"), join(copy, "scripts"), { recursive: true });
