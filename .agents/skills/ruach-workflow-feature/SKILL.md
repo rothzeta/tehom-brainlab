@@ -109,7 +109,7 @@ After acceptance and delivery, the Coordinator updates `docs/CURRENT.md` and `do
 
 The Coordinator performs cleanup itself, as soon as each resource's reuse ends, rather than deferring it to the end of the workflow. Decide reuse deliberately: keep a worker or worktree only while a concrete pending step, such as a review fix loop, integration, or merge, needs it. The natural release points are after each committed handoff, after review acceptance, and after merge.
 
-- **Workers.** Once a worker's durable handoff is committed and no further assignment, such as a fix or re-review, will go to it, close its Herdr pane. A worker never closes its own pane; the launching parent closes a temporary Coordinator's pane after its final report.
+- **Workers.** Once a worker's durable handoff is committed and no further assignment, such as a fix or re-review, will go to it, close its Herdr pane and remove the private temporary directory its launch result reported (`temporary_directory`), if non-null. A worker never closes its own pane; the launching parent closes a temporary Coordinator's pane after its final report.
 - **Worktrees.** Once a task-owned temporary worktree's work is committed and reachable from a retained branch, and no further assignment will use it, close any pane still using it and remove it with `git worktree remove`, running from a retained checkout outside the path. Keep the branch.
 - **Herdr workspaces and tabs.** Close a task-created workspace or tab once it holds no more needed panes.
 

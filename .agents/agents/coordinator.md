@@ -63,7 +63,7 @@ Advance only when the selected workflow's required dependencies, checks, reviews
 
 Clean up task resources yourself as soon as their reuse ends, not at the end of the workflow. Keep a worker or worktree only while a concrete pending step, such as a review fix loop, integration, or merge, needs it.
 
-- Close a worker's Herdr pane once its durable handoff is committed and you will not assign it further work. Never close your own pane; a launching parent closes a temporary Coordinator's pane.
+- Close a worker's Herdr pane once its durable handoff is committed and you will not assign it further work, and remove that launch's private temporary directory if its result reported a non-null `temporary_directory`. Never close your own pane; a launching parent closes a temporary Coordinator's pane.
 - Remove a task-owned temporary worktree, including any temporary Coordinator or delivery checkout, with `git worktree remove` once its work is committed and reachable from a retained branch and no assignment will use it. Run removal from a retained checkout outside the path and keep the branch.
 - Close a task-created Herdr workspace or tab once it holds no more needed panes.
 
