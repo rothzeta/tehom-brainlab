@@ -723,3 +723,15 @@ All four assigned checks ran from `/opt/dev/tehom-brainlab` at this delivered re
 The master recording successor adds [delivery handoff](mailbox/p03-command-boundary/delivery.md), this executed-check evidence, and CURRENT's delivered revision/evidence link. It contains no source/test/runtime changes and does not predict its own SHA. Prior Implementer/Reviewer reports remain unchanged. O1–O3 stay open optional; no unresolved blocker. No push, browser session, human playtest, mutation probe, routing suite, or host-mode application run. Cleanup follows only after this report is committed.
 
 Delivery handoff validation: `/home/metatron/.bun/bin/bun .agents/skills/ruach-handoff/scripts/validate.ts docs/mailbox/p03-command-boundary/delivery.md --repo /opt/dev/tehom-brainlab` exited 0, `ok:true`, seven revision references resolved, empty diagnostics.
+
+## 2026-10-04 Agent artifact conventions and scratch retirement
+
+Recorded by the Coordinator from worker handoffs. User decisions: retire `.agents/scratch/`; make Coordinator assignments durable mailbox files; make CURRENT/TASK_LOGS Coordinator-only; keep mailbox reports until a future librarian triages them.
+
+- **Conventions change** (`CONV-impl`, R1): candidate `ef06976` from BASE `ec32b59` changed 29 Markdown files and `.gitignore`, including the amended ADR-0003/0005 and the draft P04–P12 hand-back lines. The [Implementer report](mailbox/agent-artifact-conventions/implementer.md) records routing (13), handoff (24) and Herdr (107) suites passing. The [independent review](mailbox/agent-artifact-conventions/reviewer.md) at `a9a52e6` passed all seven conditions with zero findings and reran those suites. Fast-forwarded to local master at `ab0e5bb`; routing tests pass there ([delivery](mailbox/agent-artifact-conventions/delivery.md)).
+- **Legacy scratch triage** (`CONV-triage`, R1): all 49 files classified ([manifest](mailbox/agent-artifact-conventions/scratch-triage.md)). Fourteen kept: 33 Coordinator assignments copied verbatim to `docs/mailbox/routing-p02/` and `docs/mailbox/versioned-agent-skills/` (SHA-256 equal to their sources), and a curated cleanup report with nine `skills-*` session IDs. Thirty-five are trash: duplicates or transient. The [independent review and re-review](mailbox/agent-artifact-conventions/triage-reviewer.md) found no blocking findings. Optional findings O1 and O3 were accepted and fixed in R1; O2 and O4 are recorded here. Delivered at `b80747d`.
+- **O2:** local-only branches `task/repo-root-command` (`a2b23ae`), `evidence/repo-root-20261004` (`6e448cb`) and `experiment/repo-root-20261004` hold the only copies of the repo-root discovery evidence. They are not on master or origin. Retain them; do not prune them as stale.
+- **O4:** committed historical reports and earlier TASK_LOGS entries cite `.agents/scratch/...` paths. After cleanup those citations dangle by design; the kept content's mailbox locations are mapped in the triage manifest. Historical reports are not edited.
+
+Limits: this was a documentation change with no live model session. The Coordinator did not run checks; the results above come from the cited worker reports.
+
