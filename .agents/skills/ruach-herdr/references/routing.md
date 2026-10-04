@@ -1,49 +1,53 @@
-# Provisional routing v1
+# Portable repository routing
 
-This is an explicitly **provisional** minimal schema. The repository's models/routing/roles files are being authored independently; no committed authoritative schema was available at implementation. Routed `resolve` and `start` are enabled against this documented shape by assignment. Only `scripts/routing.ts` knows that shape. Test YAML is confined to `tests/fixtures/routing`; this skill does not install repository-root YAML.
-
-Three files are read from the selected repository root:
+Routed selection consumes the catalog shape delivered at `97752643b31cdcf8c8ec9f09204382c6766b1573`, without copying that repository's launch policies. Each selected repository owns three catalogs under `.agents/`:
 
 ```yaml
-# models.yaml
+# .agents/models.yaml
 models:
-  model-id:
-    kind: codex
-    model: native-model-id
-    efforts: [high]
-# routing.yaml
+  model.id:
+    harness: codex
+    native_model: native-model-id
+# .agents/routing.yaml
 routes:
-  route-id:
-    model: model-id
-    effort: high
-# roles.yaml
+  route.id:
+    model: model.id
+    effort: medium
+# .agents/roles.yaml
 roles:
-  implementer:
-    preferred_route: route-id
+  builder:
+    preferred: route.id
+    alternatives: []
 ```
 
-Each root has exactly its named mapping. Identifiers use `[a-z][a-z0-9_-]*`. Models require kind, nonempty native model string and a unique efforts array. Known kinds: claude, codex, pi, opencode, dsh, omp, agy. Provisional effort vocabulary: off, none, minimal, low, medium, high, xhigh, max, auto. The selected native adapter validates its narrower verified vocabulary as a second check.
+Catalogs must be nonempty mappings with exactly their named root field. Models require a registered `harness` and nonempty `native_model`. Routes require a model reference and a nonempty string `effort`; the selected adapter validates its verified effort vocabulary. Known gated adapters remain declared selections and fail preparation accurately with exit 3 when unavailable or unsupported; they are never substituted. Roles are the entries declared in `roles.yaml`, each with `preferred` and optional list `alternatives`. Only the selected role requires a readable `.agents/agents/<role>.md` source. Other role entries still undergo complete structure/reference validation. Direct mode retains its independently verified adapter capabilities and does not load the catalogs.
 
-Routes reference a model identifier and supply a compatible effort. Omit effort only when that model's efforts list is empty. Roles reference preferred routes and require corresponding `.agents/agents/<role>.md` sources. Validate the entire graph, including unselected entries, before any launch mutation. Reject malformed YAML, duplicate keys, aliases, missing fields/references, invalid kinds/efforts and unknown keys. Diagnostics identify the file/key without copying input values or YAML parser snippets.
+The repository root validator at the inspected revision additionally requires five particular roles, Claude/Codex harnesses, high effort and Claude coordinator routes. Those are repository policies: its validator/tests must retain them at integration. This portable skill does not duplicate them. A coordinator's routed harness comes from preference data, while the worker/coordinator workflow visibility contract remains enforced by native adapters.
 
-Without explicit kind/model, selection uses the named role's preferred route; `--route` replaces that preference with another declared route. Coordinator selection has no code-specific harness/model rule: the fixture assigns it a Claude route, and repository data owns actual policy. Routed effort is never overridden by a CLI default. No inheritance, fallback, priority or remote model selection is implemented. Direct mode validates the canonical role and native capability but does not read routing YAML.
+Selection uses the requested role's preference unless `--route` names its preference or one of its alternatives. Other declared routes are rejected. No retries, inheritance or fallback occur. Validate the complete graph before native preparation or launch mutations, including unselected entries. Mapping/reference IDs are nonempty strings, including dotted IDs; role names retain the CLI's safe identifier rule. Reject missing/unknown fields, duplicate keys, malformed YAML, invalid values and references. The worker additionally rejects YAML aliases and multiline strings, and redacts configuration values in diagnostics. The root command permits aliases and multiline strings; these are deliberate stricter worker boundaries.
 
-`--repo` wins and is anchored to invocation cwd. Otherwise Git resolves the requested cwd's worktree root. The result records `git_root` separately: an explicit canonical repository can accompany an external cwd; a non-Git fixture requires `--repo`. Native and Herdr commands run in the requested cwd, including paths with spaces. Relative native pass-through paths retain their native meaning from that cwd.
+`--repo` wins and is anchored to invocation cwd. Otherwise Git resolves the requested cwd's worktree root. JSON records `git_root` separately. Canonical sources may accompany an external cwd, while native/Herdr commands run in the requested cwd. Relative native pass-through paths retain their meaning from that cwd. JSON has `schema_version: 1`.
 
-## Integration checkpoints
+## Root command delegation seam
 
-Before treating routed launch as integrated with the eventual repository schema, confirm:
+At the inspected revision, `just agent-routing ...` invokes `bin/agent-routing`, which executes `scripts/agent-routing.py`. This is an independent Python launcher; it does not currently delegate to this skill. Integration can replace that implementation with an argv-based invocation of `<root>/.agents/skills/ruach-herdr/scripts/worker.ts` using Bun, preserving stdout, stderr and exit status without shell interpolation or retries:
 
-1. YAML locations, version markers, mapping/list shapes and key names.
-2. Model identifier versus native identifier; which object owns kind/provider/effort.
-3. Role preferences and explicit route semantics, including any required overrides, inheritance or fallbacks.
-4. Effort vocabulary and model capability metadata.
-5. Canonical role paths and relative-path anchors.
-6. Unknown-key, duplicate-key, alias and full-graph reference policy.
-7. Root launch argv, JSON/exit contract, caller environment and Herdr context.
+| Existing root CLI | Worker CLI mapping |
+| --- | --- |
+| `resolve ROLE [--name NAME]` | `resolve --role ROLE --name NAME --repo ROOT --cwd ROOT`; current root name default is `resolved-agent` |
+| `start ROLE NAME` | `start --role ROLE --name NAME --repo ROOT --cwd ROOT` |
+| `--root DIR` | Resolve DIR as the root command does, then pass that absolute directory as both `--repo` and `--cwd`; root command default is its checkout |
+| `--route ID` | Forward `--route ID` unchanged; do not flatten to direct kind/model or bypass role constraints |
+| `--pane ID` | No current worker equivalent; extending the worker contract or deliberately retiring this option requires integration work |
 
-Adapt `routing.ts` and captured fixture YAML together to the committed schema, recording its revision. Schema mismatch fails clearly; it never silently substitutes a profile. The skill-local package version/Git identify implementation; JSON has `schema_version: 1`.
+The root exposes neither direct selection nor offline/dry-run/native arguments. Their addition is an integration API decision. Worker JSON/exit codes differ from the existing root response (selection object versus flattened fields/native_model/harness; failure categories 2/3/4 versus root 1), so compatibility needs an explicit wrapper if consumers rely on the old contract.
 
-## Thin root launcher seam
+Other differences to preserve or resolve at integration:
 
-A repository root command may locate its versioned `scripts/worker.ts` and Bun, delegate `resolve`/`start` plus selection/cwd/native args as an argv array, and forward stdout/stderr/exit status. It must leave route resolution, role/config preparation, pane creation and the single startup submission to this script, without retries. Creating that root command is outside this skill's scope.
+- Root `resolve` needs no Herdr or harness executable; normal worker `resolve` performs launch preflight and needs both plus caller Herdr context. Worker `resolve --offline` omits native argv and cannot substitute the existing root response without an explicit compatibility decision.
+- Both append the canonical role. Root Codex reads only user config TOML; worker composes effective layered config via an already-running matching-version daemon and passes explicit cwd. Worker fails before mutation when that read-only capability is unavailable.
+- Root workers disable only the repository's feature workflow. Worker disables every discovered workflow, including external names and native file/folder aliases, and fails for sources it cannot safely exclude. Root Claude adapters expose three fixed technical skills; worker scans canonical skills and prepares a private minimal settings overlay. Coordinator native visibility settings remain preserved.
+- Root Claude uses `--permission-mode auto` and root Codex `--approve-for-me`. Worker inherits permissions by default; an integration wrapper can deliberately supply supported native flags after `--` (`--permission-mode auto`, or verified Codex approval/sandbox flags). It cannot forward `--approve-for-me` under the current bounded native argument contract.
+- Committed repository profiles select high effort, while the portable worker accepts the selected adapter's verified efforts; neither launcher performs implicit fallback. Worker probes native capabilities, Herdr supported kinds and live names before writes; it forwards caller PATH/config roots when creating its sibling pane. Root optionally accepts an existing pane. Worker reports uncertain post-mutation state and private material for inspection without retry.
+
+No root launcher edits or live paid launches are part of this adaptation. Prepared argv does not establish native role/skill acceptance or account/model availability.

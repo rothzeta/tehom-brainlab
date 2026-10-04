@@ -1,4 +1,4 @@
-import { fail, type Selection } from '../contracts';
+import { fail, string, type Kind, type Selection } from '../contracts';
 import { run, executable } from '../process';
 import * as claude from './claude';
 import * as codex from './codex';
@@ -8,6 +8,16 @@ import * as dsh from './dsh';
 import * as omp from './omp';
 import * as agy from './agy';
 const adapters={claude,codex,pi,opencode,dsh,omp,agy};
+export function validateKind(value:unknown,field:string):Kind {
+  const kind=string(value,field);
+  if(!Object.hasOwn(adapters,kind))fail(2,'invalid_kind','Unknown adapter kind',field);
+  return kind as Kind;
+}
+export function validateEffort(kind:Kind,effort?:string) {
+  const adapter=adapters[kind];
+  if('validateEffort' in adapter)adapter.validateEffort(effort);
+  // Gated adapters have no verified effort contract; preparation reports exit 3.
+}
 // A small documented native pass-through surface prevents prompts, resume and
 // configuration flags from bypassing the preparation contract. Never shell-split.
 const allowed:Record<string,Record<string,number>>={
