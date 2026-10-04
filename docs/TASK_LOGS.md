@@ -949,3 +949,19 @@ This task was part of the user's request to "implement up to p11". The Coordinat
 **Delivery.** Master was not advanced during the work. It fast-forwarded `08dc630` → `8f641d6e` (delivered and tested: 365 tests, typecheck and build exit 0; application equals `90e96d3`) → `7aecadca` (delivery report). See the [delivery report](mailbox/p07-brood-abilities/delivery.md).
 
 **Cleanup.** Panes `w2G:p2E` and `p2F` are closed, and worktree `/opt/dev/tehom-brainlab-p07` is removed. Branch `p07-brood-abilities` is kept. No push.
+
+## 2026-10-04 P08 patrol round loop
+
+This task was part of the request to "implement up to p11". The Coordinator ran `ruach-workflow-feature` in worktree `/opt/dev/tehom-brainlab-p08`, branch `p08-patrol-round-loop`, from BASE `9976e9a`. The Coordinator ran no checks itself, and every handoff passed the validator.
+
+**Implementation.** `p08-impl` (`gpt-6.1-sol-high`, pane `w2G:p2G`) produced candidate `864e3d0b`, with the transcripts and report in `ac8d0a2`.
+- It added `src/content/patrol.ts`, `src/core/rounds.ts` and `tests/patrol.test.ts` (48 tests, 492 assertions).
+- It registered `endPhase` for patrol state only, and added an additive `RoundEvent` type and a `PatrolState` overload.
+- No existing tests were edited.
+- Results: 413 tests passed, plus typecheck and build. Four executed transcripts (48 commands) replay identically. See the [implementer report](mailbox/p08-patrol-round-loop/implementer.md).
+
+**Review.** `p08-review` (pane `w2G:p2H`) approved `864e3d0` with 0 blocking and 0 optional findings. It independently ran the checks, default-override probes and a transcript replay. See the [review](mailbox/p08-patrol-round-loop/reviewer.md) (`eb4ec1c`).
+
+**Delivery.** Master fast-forwarded `9976e9a` → `16d38000` (delivered and tested: 413 tests, typecheck and build exit 0) → `4a26279` (delivery report). See the [delivery record](mailbox/p08-patrol-round-loop/delivery.md).
+
+**Cleanup.** Panes `w2G:p2G` and `p2H` are closed and worktree `/opt/dev/tehom-brainlab-p08` is removed. Branch `p08-patrol-round-loop` is kept. No push.
