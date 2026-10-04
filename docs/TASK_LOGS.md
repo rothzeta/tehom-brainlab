@@ -777,3 +777,61 @@ Recorded by the Coordinator from worker handoffs.
 
 **Limits.** Documentation and guidance only, with no live quota or recovery behavior exercised. The Coordinator ran no checks; the results come from the cited reports.
 
+
+## 2026-10-04 Ruach extraction and Librarian
+
+Recorded by the Coordinator from worker handoffs. User authorization: "use gh to create the public repo in /opt/dev and do what we agreed to".
+
+**Implementation.**
+- `ruach-impl` (Implementer, preferred `gpt-6.1-sol-high`) built Ruach `extraction` `25186fe` and Brainlab `ruach-extraction` `10d7b96`. The source suites passed: handoff 24, Herdr 107 and harness-eval 59. Installer, standalone-copy, fresh-clone, routing and offline Librarian checks also passed ([report](mailbox/ruach-extraction/implementer.md)).
+- `ruach-impl2` (Implementer, Claude alternative) did the user-requested pre-publication follow-up, Ruach `be77030` and Brainlab `b02b3c6` ([report](mailbox/ruach-extraction/implementer-followup.md)):
+  - evals moved to a top-level `evals/` that is not installed, with the exclusion enforced;
+  - strengthened cases 05 and 06 added;
+  - the adapter sentence repaired and the consumer docs tidied;
+  - the snapshot re-pinned. Runtime suites were reused because only Markdown changed in those skills.
+- The superseded `assignment-implementer-fixes.md` was never executed.
+
+**Evaluation.**
+- Blind Librarian sessions received only `SKILL.md`, the case task and a raw corpus copy:
+  - one session ran basic cases 01–04 ([outputs](mailbox/ruach-extraction/librarian-eval.md));
+  - separate fresh sessions ran cases 05 and 06 ([05](mailbox/ruach-extraction/ruach-libeval5.md), [06](mailbox/ruach-extraction/ruach-libeval6.md)).
+- All evaluators ran on `claude-opus-5.5-high`; the basic-run handoff did not record this.
+- The Reviewer graded basic cases 4/4 and strengthened cases 2/2 as passing.
+- Limits:
+  - single runs on small synthetic fixtures;
+  - only the alternative route was evaluated;
+  - the subjects, the follow-up implementer and the reviewer were the same model family;
+  - the basic fixtures carry explicit cues.
+
+**Review.**
+- `ruach-review` (Reviewer, Claude alternative) accepted `25186fe`/`10d7b96` with 0 blocking and 5 optional findings ([review](mailbox/ruach-extraction/reviewer.md)), then accepted the `be77030`/`b02b3c6` delta with 0 blocking findings ([delta review](mailbox/ruach-extraction/reviewer-delta.md)).
+- Open optional findings:
+  - the installer leaves emptied directories after pruning;
+  - the eval-placement guard matches names, not content;
+  - behavior was evaluated only on the alternative route.
+- The reviewer recorded actual exit statuses after the Coordinator asked it to stop relying on piped status.
+
+**Routes.**
+- The parent first saw `ruach-impl`'s footer at "weekly limit: only 3% left" and kept the route.
+- It later read "weekly limit: only 1% left", which the Coordinator confirmed in the pane at about 16:14. Under the less-than-2% rule, the newly launched workers `ruach-libeval`, `ruach-review`, `ruach-impl2`, `ruach-libeval5` and `ruach-libeval6` used `claude-opus-5.5-high`.
+- `ruach-impl` stayed on its route. The user then directed the follow-up to an alternative-route worker, so `ruach-impl` was interrupted before making any edits (both trees clean) and released.
+
+**Delivery and publication.**
+- Ruach `main` was created at reviewed `be77030`. The launching parent pushed it to public `rothzeta/ruach`.
+- Brainlab `master` fast-forwarded from `255ed68` to `9090896`; its source equals `b02b3c6`. The merge handoff was committed at `13653d7` ([report](mailbox/ruach-extraction/implementer-merge.md)).
+- Post-merge checks all exited 0: `check-ruach` with and without `--source`, 14 routing tests, and Librarian resolution.
+- Native review refused deleting the untracked drafts, so delivery used a non-destructive retry. The original drafts are preserved in [librarian-drafts.patch](mailbox/ruach-extraction/librarian-drafts.patch), committed in `9137038` and verified byte-for-byte, and are archived in `/tmp/ruach-extraction-drafts-BM3NMi`.
+
+**Global links.**
+- Before: the three exact paths `~/.agents/skills/ruach-handoff`, `ruach-harness-eval` and `ruach-herdr` each pointed to `/opt/dev/tehom-brainlab/.agents/skills/<name>`. This was confirmed by the parent and by `ruach-impl2`.
+- Each was repointed with `ln -sfn` to `/opt/dev/ruach/skills/<name>`, exit 0.
+- Post-change verification is **unverified**. The auto-mode classifier refused the verification batch without a stated reason, and the worker declined to split it into smaller steps around that refusal. The old targets are saved in the report and in `old-link-targets.txt` in the archive. Unrelated global skills were not listed or touched.
+
+**Cleanup.**
+- Panes closed: `w2G:p1S` (`ruach-impl`), `p1T` (`ruach-libeval`), `p1V` (`ruach-review`), `p1W` (`ruach-impl2`), `p1X` (`ruach-libeval5`) and `p1Y` (`ruach-libeval6`).
+- Launch directories removed: `/tmp/ruach-herdr-9aTaYc`, `-837R0l`, `-I6DDnh`, `-zQaLB0` and `-5pXe5X`. `ruach-impl` reported none.
+- Eval packets and merge-check logs removed.
+- Worktree `/opt/dev/tehom-brainlab-ruach-extraction` removed. Branch `ruach-extraction` (`9090896`) and Ruach `extraction` are kept.
+- Retained: the draft archive `/tmp/ruach-extraction-drafts-BM3NMi`, until the link state is verified.
+
+**Limits.** No live model session, no account or harness acceptance, and no actual mailbox triage. The Coordinator ran no checks; the results come from the cited reports.
