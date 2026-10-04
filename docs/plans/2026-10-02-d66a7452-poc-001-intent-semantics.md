@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**P05. Draft; not implemented or verified.** Depends on [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md) and [P03](2026-10-02-2dfffcd3-poc-001-command-boundary.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
+**P05. Implemented, independently reviewed (no findings), accepted, locally delivered.** [Implementation evidence](../mailbox/p05-intent-semantics/implementer.md) and [independent review](../mailbox/p05-intent-semantics/reviewer.md). Depends on [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md) and [P03](2026-10-02-2dfffcd3-poc-001-command-boundary.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 Authority: [brief Round structure, Test abilities, and encounter descriptions](../../docs/prototypes/poc-001-linked-formation.md). Exact sector masks and cancellation rules are explicitly open in that source; the choices below are proposals, not recovered requirements. Formatting authority is recorded in the [index](README.md).
 
