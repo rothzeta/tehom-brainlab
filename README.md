@@ -27,13 +27,13 @@ Each prototype lives directly under the repository root, named `poc-NNN-short-na
 
 | Prototype | Question | Status |
 |---|---|---|
-| [001 — Linked formation](poc-001-linked-formation/README.md) | Do rotation and expansion create interesting combat decisions without useless character turns? | Brief and folders only; not playable |
+| [001 — Linked formation](poc-001-linked-formation/README.md) | Do rotation and expansion create interesting combat decisions without useless character turns? | P01 browser shell; review pending; not playable |
 
-The initial implementation target for POC 001 is TypeScript + Phaser + Vite + Vitest. This does not commit other prototypes, or the production game, to that stack. No dependency versions have been selected or installed yet.
+The initial implementation target for POC 001 is TypeScript + Phaser + Vite + Vitest. This does not commit other prototypes, or the production game, to that stack. P01 pins and verifies a prototype-local toolchain; see its README for exact versions and evidence.
 
 Use Bun by default for JavaScript/TypeScript runtime and dependency management, with a local `bun.lock` per prototype. Prefer Docker for dependency isolation and reproducible tooling where useful. Keep prototype-specific container configuration, scripts, and executables inside that prototype.
 
-Run `just` to list repository commands and `just doctor` to inspect available tooling. The root justfile delegates to implementations in `scripts/` through executable entry points in `bin/`. `just export-tokens` runs the existing optional PNG exporter; see the [asset instructions](assets/README.md). Prototype install, run, test, and build recipes will be added with P01's scaffold.
+Run `just` to list repository commands and `just doctor` to inspect available tooling. The root justfile delegates to implementations in `scripts/` through executable entry points in `bin/`. `just export-tokens` runs the existing optional PNG exporter; see the [asset instructions](assets/README.md). Six `just poc-001-*` recipes install, develop, typecheck, test, build, and preview the P01 shell; see the [prototype run instructions](poc-001-linked-formation/README.md).
 
 The root `.agents/`, `bin/`, and `scripts/` folders are mandatory. [ADR-0005](docs/adr/0005-repository-management-and-tooling.md) defines their roles and just's repository management and tooling aggregation contract.
 
@@ -54,6 +54,6 @@ Open [`docs/`](docs/README.md) as an Obsidian vault. Its [schema](docs/SCHEMA.md
 
 Read the [POC 001 brief](docs/prototypes/poc-001-linked-formation.md), the [direction ADR](docs/adr/0004-repository-and-poc-direction.md), and the [asset register](assets/manifest.json).
 
-There is no runnable application yet. The repository contains structure, design documentation, CLI tooling, and portable agent resources.
+POC 001 contains a runnable browser shell. Formation rules and combat remain unimplemented; automated browser evidence does not constitute a human playtest.
 
 The follow-up [four-harness Coordinator trial](docs/mailbox/orchestrator-four-harness/results.md) compares Claude, Codex, OMP with Sonnet 5, and Agy with Gemini 3.8 Flash using the same canonical workflow and a durable worker-handoff contract. Its report separates delivery acceptance from role-boundary and lifecycle findings.

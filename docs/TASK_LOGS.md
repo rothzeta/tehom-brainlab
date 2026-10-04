@@ -456,3 +456,11 @@ Executed checks:
 Read the new skill and changed role/workflow definitions directly. The temporary audit remains outside the repository.
 
 No JSON schema, persistent harness adapter, Herdr lifecycle integration, dependency installation, application change, or live agent experiment was added. Skill-format and documentation checks do not establish live harness discovery or reporting compliance. Commit and push outcomes are reported in the session after execution.
+
+## 2026-10-04 P01 browser harness
+
+Scope: [P01](plans/2026-10-02-a87b131a-poc-001-browser-harness.md), implementation and combined verification; no merge or publication. Inspected master baseline `656dd6a76d0bb4fedf74a96e9fcdce412becbd51`; only the uncommitted [Scout report](mailbox/p01-browser-harness/scout.md) was present and is preserved unchanged. Candidate branch: `candidate/p01-browser-harness-20261004-impl`.
+
+Added prototype-local exact package/runtime pins, lockfile, strict TypeScript, minimal Phaser scene, Vite/Vitest configuration, pure literal fixture/test, Docker/explicit-host scripts and executable, six thin just recipes, and scoped run documentation. No formation/combat/backend or root workspace. Initial compatibility checks succeeded: official Bun 1.4.2 Docker install (43 packages), root typecheck/test/build exit 0; Vitest 5.0.3 passed two tests, Vite 8.3.2 built static assets with a large Phaser chunk warning. These initial checks preceded the combined application commit and are not final acceptance evidence.
+
+Official registry metadata and Bun runtime/Docker documentation confirmed pins; the selected official image is `oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895`. Its `node` name is a symlink to Bun, not a separate Node runtime. Caller UID/GID 1000:1000 owns the generated lock/dependencies/dist. Full committed-revision verification follows in the [verification record](mailbox/p01-browser-harness/verification.md); final outcome belongs in the [Implementer handoff](mailbox/p01-browser-harness/implementer.md).

@@ -1,6 +1,6 @@
 # POC 001 — bounded implementation plan index
 
-Twelve draft plans for the linked-formation prototype, written on 2 October 2026 against repository baseline `79f9498051df0281e6e9d3c904e9eee32f014873`.
+Twelve plans for the linked-formation prototype (P01 implemented candidate; verification/review pending, P02–P12 draft), written on 2 October 2026 against repository baseline `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 **This is a navigation and authority note, not a thirteenth implementation plan.** Adding these documents does not implement the prototype, approve new game rules, or constitute a playtest. No package installation, application build, unit test suite, or browser combat test was run as part of drafting.
 

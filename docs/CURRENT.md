@@ -4,9 +4,9 @@ As of 2026-10-04. The revised portable baseline is committed as `384e26233a41d99
 
 ## Delivered repository
 
-Brainlab contains independent prototype folders, the POC 001 design brief, shared assets and provenance, repository CLI tooling, and twelve draft implementation plans. POC 001 has no package manifest, dependency lockfile, runnable application, or executable test suite. Dependencies and versions have not been selected.
+Brainlab contains independent prototype folders, the POC 001 design brief, shared assets and provenance, repository CLI tooling, and twelve draft implementation plans. POC 001 now contains a P01 browser shell, a local package manifest and frozen Bun lockfile, a pure fixture with Vitest coverage, strict TypeScript configuration, and a static Vite build. Exact pins and run instructions are in the [prototype README](../poc-001-linked-formation/README.md). Combined committed-revision acceptance verification and independent review are pending. Formation rules and combat remain unimplemented.
 
-The root justfile exposes repository tooling inspection and the optional token exporter. Prototype application recipes are planned under P01 and later slices; they are not available yet. The [asset import record](exploitation/asset-import-001.md) retains its original scope and verification provenance; that verification was not rerun during this vault change.
+The root justfile exposes repository tooling inspection and the optional token exporter. Six P01 install/dev/typecheck/test/build/preview recipes now delegate to prototype-local wrappers. Docker with pinned official Bun is the default; explicit host mode enforces the same runtime pin. The [asset import record](exploitation/asset-import-001.md) retains its original scope and verification provenance; that verification was not rerun during this vault change.
 
 ## Direction and planned work
 

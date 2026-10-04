@@ -2,13 +2,13 @@
 
 ## Status and authority
 
-**P01. Draft; not implemented or verified.** No prerequisites. Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
+**P01. Implemented candidate; committed-revision verification and independent review pending.** No prerequisites. Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 Authority: [AGENTS](../../AGENTS.md), [prototype README](../../poc-001-linked-formation/README.md), and the [technology decision](../adr/0004-repository-and-poc-direction.md). The local naming and format ADRs linked below govern this document.
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
-Task `P01` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
+Task `P01` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); see the [P01 implementation entry](../TASK_LOGS.md#2026-10-04-p01-browser-harness). Starting-source and proposed-path descriptions below preserve the planning baseline.
 
 ## Smallest useful outcome
 
