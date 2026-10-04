@@ -697,3 +697,12 @@ Supplementary `/home/metatron/.bun/bin/bun --eval` production trace exited 0 wit
 `/home/metatron/.bun/bin/bun .agents/skills/ruach-handoff/scripts/validate.ts docs/mailbox/p03-command-boundary/implementer.md --repo /opt/dev/tehom-brainlab-p03` exited 0: `schema_version:1`, `ok:true`, three existing revisions resolved, empty diagnostics. Mechanical validation does not establish independent review. The report includes the exact inline trace command.
 
 No unresolved blocker. No independent review, merge, push/publication, browser session, human playtest, application host-mode run, routing regression, or mutation probe. Ability/damage/round/reset/fallen-formation behavior remains future work. The evidence-only successor adds six Markdown files/edits without changing tested code/tests; final report-creating SHA and clean status are returned in the session handoff.
+
+
+## 2026-10-04 P03 local delivery
+
+Assignment `P03-merge`/`P03-cleanup` accepts P03 after [independent review](mailbox/p03-command-boundary/reviewer.md) of `ab37525..6e0f797`: all six criteria pass, no blocking findings. Reviewed/tested revision is `6e0f797b31b0e89830ed2e7579ce40eb6feb82c5`; technical candidate is `b2d25339149b76f7a994da798f5f688449b3668c`; review report was committed at `8ff0fc9ba7e09d9c79a61d82c064bcedae16c948`. O1 effect-hook entity preservation, O2 malformed-payload error precedence, and O3 redundant fixture assertion remain open optional follow-ups. No source/test fixes are authorized or included.
+
+Pre-delivery checks (`git -C /opt/dev/tehom-brainlab status --porcelain --untracked-files=all`, `branch --show-current`, `rev-parse HEAD`) confirm the main checkout is clean on master at required BASE `ab37525587b7739e3cf28b738f5bad5bece7965a`. The P03 worktree is clean at `8ff0fc9`; only the review report follows reviewed `6e0f797`. `git diff --exit-code b2d25339149b76f7a994da798f5f688449b3668c HEAD -- . ':(exclude)docs' ':(exclude)poc-001-linked-formation/README.md'` exits 0. Reviewer blob hash is `5054c172767efdc7fb898dfbd744eee646f0dba7` and is preserved.
+
+The source-side integration commit updates only CURRENT, plans index, P03 plan, prototype README P03 section, and this delivery entry. It records acceptance/local-delivery status without predicting its own SHA. The authorized fast-forward and delivered-master focused/full/typecheck/build results will be recorded in the documentation-only master successor and delivery handoff after execution. No remote action; unrelated worktrees, branches, panes, and historical reports are preserved.

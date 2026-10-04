@@ -80,7 +80,7 @@ Run the focused contracts from the repository root with `just poc-001-test tests
 
 ## Command boundary (P03)
 
-P03 is implemented and verified by Implementer; independent review pending. [Plan](../docs/plans/2026-10-02-2dfffcd3-poc-001-command-boundary.md), [handoff](../docs/mailbox/p03-command-boundary/implementer.md), and [execution record](../docs/TASK_LOGS.md#2026-10-04-p03-command-boundary) describe its contracts and defaults. The browser remains the P01 placeholder.
+P03 is independently reviewed (no blocking findings), accepted, locally delivered. [Independent review](../docs/mailbox/p03-command-boundary/reviewer.md) passes all six criteria; optional O1 effect-hook entity preservation, O2 malformed-payload error precedence, and O3 redundant fixture assertion remain open follow-ups, with no fixes in this delivery. [Plan](../docs/plans/2026-10-02-2dfffcd3-poc-001-command-boundary.md), [handoff](../docs/mailbox/p03-command-boundary/implementer.md), [implementation record](../docs/TASK_LOGS.md#2026-10-04-p03-command-boundary), and [delivery record](../docs/TASK_LOGS.md#2026-10-04-p03-local-delivery) describe its contracts, defaults, and evidence. The browser remains the P01 placeholder.
 
 `createInitialState()` in `src/core/state.ts` returns fresh serializable snapshots: revision zero, round one, player phase, Compact orientation zero, three player-owned living Brood with stable roster IDs, and empty statuses/intentions/acted IDs. HP/max HP of one are artificial alive-fixture values, not combat balance. Phases are `player`, `enemy`, `victory`, and `defeat`.
 

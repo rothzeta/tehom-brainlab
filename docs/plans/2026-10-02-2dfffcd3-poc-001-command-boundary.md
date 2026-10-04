@@ -2,13 +2,13 @@
 
 ## Status and authority
 
-**P03. Implemented and verified by Implementer; independent review pending.** [Execution evidence](../TASK_LOGS.md#2026-10-04-p03-command-boundary) and [handoff](../mailbox/p03-command-boundary/implementer.md) identify candidate `b2d25339149b76f7a994da798f5f688449b3668c`, acceptance evidence, and resolved defaults. Depends on [P01](2026-10-02-a87b131a-poc-001-browser-harness.md) and [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md). Original planning baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`; implementation BASE: `ab37525587b7739e3cf28b738f5bad5bece7965a`.
+**P03. Independently reviewed (no blocking findings), accepted, locally delivered.** [Independent review](../mailbox/p03-command-boundary/reviewer.md) passes criteria 1–6 at `6e0f797b31b0e89830ed2e7579ce40eb6feb82c5`; optional O1–O3 remain open follow-ups without source/test changes. [Implementation evidence](../TASK_LOGS.md#2026-10-04-p03-command-boundary), [delivery record](../TASK_LOGS.md#2026-10-04-p03-local-delivery), and [handoff](../mailbox/p03-command-boundary/implementer.md) identify technical candidate `b2d25339149b76f7a994da798f5f688449b3668c`, acceptance evidence, and resolved defaults. Depends on [P01](2026-10-02-a87b131a-poc-001-browser-harness.md) and [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md). Original planning baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`; implementation BASE: `ab37525587b7739e3cf28b738f5bad5bece7965a`.
 
 Authority: [prototype architecture](../../poc-001-linked-formation/README.md) and the [brief's Round structure](../../docs/prototypes/poc-001-linked-formation.md). Atomic rejection and revision checking are proposed engineering contracts for this plan; they are not claimed as previously approved game design. Formatting authority is linked below and in the [index](README.md).
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
-Task `P03` implementation owner: `P03-impl` Implementer; integration remains unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Actual execution is recorded in [TASK_LOGS](../TASK_LOGS.md#2026-10-04-p03-command-boundary).
+Task `P03` implementation owner: `P03-impl` Implementer; local integration/cleanup owner: Implementer, tasks `P03-merge`/`P03-cleanup`. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Actual execution is recorded in [TASK_LOGS](../TASK_LOGS.md#2026-10-04-p03-command-boundary).
 
 ## Smallest useful outcome
 
