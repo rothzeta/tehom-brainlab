@@ -1,10 +1,10 @@
 # POC 001 — Linked formation
 
-**Status: P01 browser shell implemented, independently verified/reviewed, and accepted. P02 formation algebra implemented and verified at `3570610406886f18ca08c51effc79b3e8f3ddd34`; independent review and delivery pending. Not a playable patrol.**
+**Status: P01–P03 accepted and locally delivered. P04 formation lab implemented, independently reviewed (no blocking findings; optional O1 open), accepted and locally delivered. [Evidence](../docs/mailbox/p04-formation-lab/implementer.md), [integration](../docs/mailbox/p04-formation-lab/integration.md), [review](../docs/mailbox/p04-formation-lab/reviewer.md). Not a playable patrol.**
 
-Test whether rotating, expanding, and contracting three linked Brood creates interesting ordinary combat decisions. The [design brief](../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../docs/adr/0004-repository-and-poc-direction.md) describe the experiment. P01 supplies a named Phaser scene, labelled placeholder, and pure readiness fixture. P02 adds pure geometry without changing the browser placeholder. Combat remains later work.
+Test whether rotating, expanding, and contracting three linked Brood creates interesting ordinary combat decisions. The [design brief](../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../docs/adr/0004-repository-and-poc-direction.md) describe the experiment. P01 supplies the browser harness, P02 the pure geometry, and P03 the command boundary. P04 renders the inspection and maneuver lab. Combat remains later work.
 
-## Run the shell
+## Run the lab
 
 Prerequisites: POSIX shell, just, and Docker CLI with an accessible daemon. Run from the repository root:
 
@@ -17,9 +17,9 @@ just poc-001-build
 just poc-001-preview
 ```
 
-Development serves <http://localhost:5173>; built preview serves <http://localhost:4173>. Stop a server with Ctrl-C. Build before preview. Both render `TEHOM — Formation Lab` and `Formation placeholder` in an actual canvas. There is no backend, credentials, or external runtime asset service. Generated asset URLs use `base: './'` for static subdirectory hosting.
+Development serves <http://localhost:5173>; built preview serves <http://localhost:4173>. Stop a server with Ctrl-C. Build before preview. Both render `TEHOM — Formation Lab`, a 37-cell Phaser canvas board, and native inspection/maneuver controls. There is no backend, credentials, or external runtime asset service. Generated asset URLs use `base: './'` for static subdirectory hosting.
 
-The default `POC001_MODE=docker` runs the official `oven/bun:1.4.2` image pinned by digest in [runtime.env](runtime.env). Only this prototype is mounted, with caller UID/GID, temporary writable home/cache, and localhost port publication. Vite binds `0.0.0.0` inside the container. No Docker build or root application is needed. Image downloads and dependency installs require network access; the container cache is temporary. Install explicitly requires the committed `bun.lock` and uses `bun install --frozen-lockfile`.
+The default `POC001_MODE=docker` runs the official `oven/bun:1.4.2` image pinned by digest in [runtime.env](runtime.env). This prototype is mounted writable and root `assets/` read-only for the bounded preparation step, with caller UID/GID, temporary writable home/cache, and localhost port publication. Vite binds `0.0.0.0` inside the container. No Docker build or root application is needed. Image downloads and dependency installs require network access; the container cache is temporary. Install explicitly requires the committed `bun.lock` and uses `bun install --frozen-lockfile`.
 
 For another server port, select it through `POC001_PORT` so container publication and Vite agree:
 
@@ -80,7 +80,7 @@ Run the focused contracts from the repository root with `just poc-001-test tests
 
 ## Command boundary (P03)
 
-P03 is independently reviewed (no blocking findings), accepted, locally delivered. [Independent review](../docs/mailbox/p03-command-boundary/reviewer.md) passes all six criteria; optional O1 effect-hook entity preservation, O2 malformed-payload error precedence, and O3 redundant fixture assertion remain open follow-ups, with no fixes in this delivery. [Plan](../docs/plans/2026-10-02-2dfffcd3-poc-001-command-boundary.md), [handoff](../docs/mailbox/p03-command-boundary/implementer.md), [implementation record](../docs/TASK_LOGS.md#2026-10-04-p03-command-boundary), and [delivery record](../docs/TASK_LOGS.md#2026-10-04-p03-local-delivery) describe its contracts, defaults, and evidence. The browser remains the P01 placeholder.
+P03 is independently reviewed (no blocking findings), accepted, locally delivered. [Independent review](../docs/mailbox/p03-command-boundary/reviewer.md) passes all six criteria; optional O1 effect-hook entity preservation, O2 malformed-payload error precedence, and O3 redundant fixture assertion remain open follow-ups, with no fixes in this delivery. [Plan](../docs/plans/2026-10-02-2dfffcd3-poc-001-command-boundary.md), [handoff](../docs/mailbox/p03-command-boundary/implementer.md), [implementation record](../docs/TASK_LOGS.md#2026-10-04-p03-command-boundary), and [delivery record](../docs/TASK_LOGS.md#2026-10-04-p03-local-delivery) describe its contracts, defaults, and evidence. P04 consumes this boundary for browser maneuvers.
 
 `createInitialState()` in `src/core/state.ts` returns fresh serializable snapshots: revision zero, round one, player phase, Compact orientation zero, three player-owned living Brood with stable roster IDs, and empty statuses/intentions/acted IDs. HP/max HP of one are artificial alive-fixture values, not combat balance. Phases are `player`, `enemy`, `victory`, and `defeat`.
 
@@ -135,3 +135,15 @@ Ordered events are `attack-settled` (identity/source/new revision), `damage-appl
 P02 candidate/tested revision is `3570610406886f18ca08c51effc79b3e8f3ddd34` on local branch `p02-formation-algebra`. The [P02 Implementer handoff](../docs/mailbox/p02-formation-algebra/implementer.md) records all six acceptance criteria, exact ring indices, defaults, and actual orientation-zero outputs; [verification](../docs/mailbox/p02-formation-algebra/verification.md) records command output. Focused tests pass 90 tests/3,349 assertions; full regression passes 92 tests including unchanged P01 coverage. Typecheck/build pass. Browser rendering remains the P01 placeholder; no P02 browser or human playtest was run. Review, Coordinator acceptance, and master delivery are pending.
 
 See the [Implementer handoff](../docs/mailbox/p01-browser-harness/implementer.md) and [verification record](../docs/mailbox/p01-browser-harness/verification.md) for the exact committed revision, clean reinstall, deliberate test failure, wrapper probes, and actual automated browser captures. These checks are not human playtests or combat acceptance. Vite reports the expected large Phaser bundle warning; no optimization or gameplay was added. The [independent review](../docs/mailbox/p01-browser-harness/reviewer.md) found no issues; the Coordinator accepted P01 criteria 1–7. Local delivery is recorded in [TASK_LOGS](../docs/TASK_LOGS.md#2026-10-04-p01-local-delivery).
+
+## Formation lab (P04)
+
+The initial lab setup is P03's fresh Compact orientation-zero snapshot. Hover or keyboard-focus a maneuver to see labelled destination ghosts; click or press Enter to commit through the same core transition. Escape or Cancel preview clears ghosts. A committed maneuver spends the one shared allowance, disabling all maneuver buttons with a visible explanation. Reset lab restores the original fixture, clearing previews and selection. The **Test setup — fresh lab fixture** selector offers all twelve labelled formations and creates a fresh setup with an unused allowance; it is a laboratory action, not an in-game action or round reset.
+
+Click or keyboard-select a Brood token to inspect its coordinates, shape and orientation. Solid links are Close, dashed links are Stretched; their labels and exact distances also appear in the Live links readout. Images stay upright as anchors change. Dragging tokens and clicking empty cells provide no movement. No attack, combat preview, phase advance, enemy action, translation, or independent Brood movement is exposed.
+
+Enable **Placeholder mode — labels only**, or open `?placeholder=1`, to skip emblem image requests and use labelled geometric tokens. A failed runtime image request falls back to the same identifiable token; inspection and maneuvers remain available. The six patrol emblems can be inspected under **Emblem credits & patrol reference**; they are a reference gallery, not spawned enemies. Credits, source/license links and bundled copies accompany the emblems.
+
+The prototype-local `scripts/prepare-assets.mjs` runs before dev/build (explicitly chained in the scripts so both entry points enforce it). It validates SHA-256 against root `assets/manifest.json` and copies only seven allowlisted SVGs into generated, ignored `public/tehom/tokens/`, plus `public/tehom/CREDITS.md` and `public/tehom/licenses/game-icons-license.txt`. Missing or corrupt sources fail before replacing generated output. Root masters are never written. Builds serve the copies at relative `tehom/` URLs; no external image server is used. Preview serves the already-prepared build.
+
+The initial layout targets 1280×800 desktop. Mobile layout, animation, final art, combat and human playtest conclusions remain outside P04. View/session/projection contracts are covered by `tests/view.test.ts`; asset output and negative preparation cases by `tests/asset-copy.test.ts`. Browser evidence and the acceptance mapping belong to [the P04 Implementer handoff](../docs/mailbox/p04-formation-lab/implementer.md). Existing historical P01/P02 evidence below refers to those earlier revisions.

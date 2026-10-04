@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**P04. Draft; not implemented or verified.** Depends on [P01](2026-10-02-a87b131a-poc-001-browser-harness.md), [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md), and [P03](2026-10-02-2dfffcd3-poc-001-command-boundary.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
+**P04. Implemented, independently reviewed (no blocking findings; optional O1 open), accepted, locally delivered.** [Implementation evidence](../mailbox/p04-formation-lab/implementer.md), [integration](../mailbox/p04-formation-lab/integration.md), [independent review](../mailbox/p04-formation-lab/reviewer.md). Depends on [P01](2026-10-02-a87b131a-poc-001-browser-harness.md), [P02](2026-10-02-2e228a2b-poc-001-formation-algebra.md), and [P03](2026-10-02-2dfffcd3-poc-001-command-boundary.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 Authority: [prototype First implementation slice](../../poc-001-linked-formation/README.md), [brief Presentation requirements](../../docs/prototypes/poc-001-linked-formation.md), [asset manifest](../../assets/manifest.json), and [credits](../../assets/CREDITS.md). See the [index](README.md) and local ADRs below for formatting authority. Full combat previews belong to P09, not this slice.
 

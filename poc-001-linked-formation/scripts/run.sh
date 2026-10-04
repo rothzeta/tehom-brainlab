@@ -45,7 +45,8 @@ case "${POC001_MODE:-docker}" in
     fi
     exec docker run --rm --init --user "$(id -u):$(id -g)" \
       --env HOME=/tmp --env BUN_INSTALL_CACHE_DIR=/tmp/bun-cache \
-      --env "POC001_PORT=$port" --volume "$prototype_root:/app" --workdir /app "$@"
+      --env "POC001_PORT=$port" --volume "$prototype_root:/app" \
+      --volume "$prototype_root/../assets:/assets:ro" --workdir /app "$@"
     ;;
   *) printf '%s\n' 'P01: POC001_MODE must be docker or host' >&2; exit 2 ;;
 esac
