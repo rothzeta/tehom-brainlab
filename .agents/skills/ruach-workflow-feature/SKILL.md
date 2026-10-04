@@ -1,6 +1,6 @@
 ---
 name: ruach-workflow-feature
-description: Coordinate a bounded feature through optional investigation and design, implementation, integration, verification, independent review, and merging. Use as the generic feature workflow when no more specific workflow is assigned.
+description: Coordinate a bounded feature through optional investigation and design, implementation, integration, verification, independent review, merging, and final worktree cleanup. Use as the generic feature workflow when no more specific workflow is assigned.
 ---
 
 # Feature workflow
@@ -30,6 +30,8 @@ Do not repeat existing specification or design work when it is already adequate.
 Use existing plans and concise specialist handoffs to identify bounded implementation tasks, dependencies, and ownership. Assign required technical design or plan writing to an Architect.
 
 Choose an Implementer to own integration and merging; the same worker may implement the feature. Specify the changes to combine, destination, and required checks.
+
+Track task-created or task-assigned temporary worktrees, including any temporary Coordinator or delivery checkout, and identify a retained checkout from which final cleanup can run.
 
 Run independent tasks concurrently when useful, with explicit file ownership and isolated workspaces or worktrees where needed to prevent conflicting edits.
 
@@ -89,9 +91,9 @@ Have the worker confirm the destination has not advanced since the candidate was
 
 Require a merge handoff identifying the reviewed candidate, destination branch, final revision, and merge outcome. The worker confirms the delivered result contains the accepted changes and reports its relation to the verified candidate. Reuse verification evidence when the delivered content is unchanged; rerun relevant checks and re-review material changes. Coordinator does not perform the merge or validate its result. Remote push, publication, and deployment require an explicit assignment.
 
-## 9. Complete
+## 9. Record delivery
 
-Report:
+Preserve the delivery summary and required durable reports in commits reachable from retained branches before removing any worktree. Record:
 
 - implemented work;
 - integration and merge outcome, destination, and final revision;
@@ -100,3 +102,11 @@ Report:
 - important discoveries or decisions;
 - remaining issues;
 - durable report and canonical artifact references.
+
+## 10. Clean up
+
+Cleanup is the final required step before reporting the workflow complete. Assign the integration Implementer to remove every completed task-owned temporary worktree with `git worktree remove`, including temporary Coordinator and delivery worktrees. Preserve the main checkout, retained destination checkout, unrelated worktrees, and branches containing delivered changes or evidence.
+
+Stop or relocate sessions using the temporary worktrees, and run cleanup from the retained checkout outside the paths being removed. Preserve useful scratch evidence in durable reports first; disposable task scratch and installed dependencies may then be discarded. Do not discard uncommitted work or unresolved evidence to satisfy cleanup. Preserve affected worktrees and report a cleanup blocker if removal is unsafe or fails.
+
+Require a cleanup handoff listing removed and retained worktrees, reasons for any exceptions, and preserved delivery/report revisions. Store its durable report in the retained checkout, validate it through ruach-handoff, and commit it before returning. Base the final completion response on that handoff; a successful merge alone does not complete the workflow.

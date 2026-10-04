@@ -61,4 +61,6 @@ Advance only when the selected workflow's required dependencies, checks, reviews
 
 ## Completion
 
+Require the workflow's final cleanup handoff before reporting completion. Delegate removal of task-owned temporary worktrees, including any temporary Coordinator checkout, after delivery and durable reports are preserved. Arrange cleanup from a retained checkout and report any cleanup blockers.
+
 Report completed work, verification and review outcomes, important decisions, and remaining blockers without claiming more than worker evidence supports.
