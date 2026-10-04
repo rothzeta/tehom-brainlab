@@ -2,13 +2,13 @@
 
 ## Status and authority
 
-**P02. Implemented and verified at `3570610406886f18ca08c51effc79b3e8f3ddd34`; independent review and delivery pending.** Depends on delivered [P01](2026-10-02-a87b131a-poc-001-browser-harness.md) for the unit-test harness. Original planning baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`; implementation BASE: `e3f60372a5fef279f92ed14caead48271247405f`. See [execution](../TASK_LOGS.md#2026-10-04-p02-formation-algebra-candidate) and [Implementer evidence](../mailbox/p02-formation-algebra/implementer.md).
+**P02. Implemented, verified, and independently reviewed at `803da5df5f34b387be3bb5ccce3cd7cbd733f90b` after the R1 fix; accepted by the Coordinator. Local delivery authorized; fast-forward pending.** Depends on delivered [P01](2026-10-02-a87b131a-poc-001-browser-harness.md) for the unit-test harness. Original planning baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`; implementation BASE: `e3f60372a5fef279f92ed14caead48271247405f`. See [execution](../TASK_LOGS.md#2026-10-04-p02-formation-algebra-candidate), [Implementer evidence](../mailbox/p02-formation-algebra/implementer.md), [independent re-review](../mailbox/p02-formation-algebra/reviewer.md#re-review-of-r1-at-803da5d), and [local delivery record](../TASK_LOGS.md#2026-10-04-p02-local-delivery).
 
 Authority: the [brief's Formation rules and Initial tests](../../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../adr/0004-repository-and-poc-direction.md). The exact coordinate mapping below is now implemented as the experimental fixture under assignment B-impl; verification does not establish balanced gameplay. The [index](README.md) and local ADRs below establish formatting authority.
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
-Task `P02` implementation and combined-verification owner: assignment B-impl Implementer. Integration is a later assignment. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Actual execution is recorded in [TASK_LOGS](../TASK_LOGS.md#2026-10-04-p02-formation-algebra-candidate).
+Task `P02` implementation and combined-verification owner: assignment B-impl Implementer; local integration/delivery owner: assignment B-merge Implementer. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Actual execution is recorded in [TASK_LOGS](../TASK_LOGS.md#2026-10-04-p02-formation-algebra-candidate).
 
 ## Smallest useful outcome
 
@@ -66,7 +66,7 @@ Return link endpoints, integer distance, and `close`/`stretched` in stable roste
 
 ## Verification and hand-back
 
-Executed on the committed candidate above: focused formation suite (90 tests, 3,349 actual assertions), strict typecheck, full suite (92 tests), P01 build, and `git diff --check`, all exit 0. P01 prerequisites passed at implementation BASE. [Verification evidence](../mailbox/p02-formation-algebra/verification.md) records commands/output; [public exports and errors](../../poc-001-linked-formation/README.md#formation-algebra-p02) resolve P02.C4 and validation choices. No default initial formation is selected; Close threshold two remains provisional and configurable. Readonly safe-integer axial inputs and synchronous `RangeError` are explicit implementation choices. Review, acceptance, and delivery remain pending.
+Executed on the corrected candidate `29d9616f2ebdb69c83d12f66089495bca6f7f723` and independently rerun at reviewed `803da5df5f34b387be3bb5ccce3cd7cbd733f90b`: focused formation suite (90 tests, 3,349 actual assertions), strict typecheck, full suite (92 tests), P01 build, and whitespace checks, all exit 0. P01 prerequisites passed at implementation BASE. [Verification evidence](../mailbox/p02-formation-algebra/verification.md) records commands/output; [public exports and errors](../../poc-001-linked-formation/README.md#formation-algebra-p02) resolve P02.C4 and validation choices. No default initial formation is selected; Close threshold two remains provisional and configurable. Readonly safe-integer axial inputs and synchronous `RangeError` are explicit implementation choices. Independent re-review resolves R1 and passes all ten criteria; the Coordinator accepts P02. Local delivery results will be recorded after execution.
 
 Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. Delivered P01 supplies the required commands below.
 
