@@ -40,3 +40,23 @@ export async function localSkills(repo:string,cwd:string) {
   const roots=[join(repo,'.agents','skills'),join(homedir(),'.agents','skills'),join(claudeHome(cwd),'skills'),...ancestors(cwd).flatMap(p=>[join(p,'.agents','skills'),join(p,'.claude','skills')])];
   return (await Promise.all([...new Set(roots)].map(scan))).flat();
 }
+// Claude discovers nested project skills on later file access. Collect existing
+// roots now so their workflow names can be excluded for the whole session.
+export async function nestedClaudeRoots(repo:string) {
+  const roots:string[]=[];
+  const glob=new Bun.Glob('**/.claude/{skills,commands}');
+  for await(const path of glob.scan({cwd:repo,dot:true,onlyFiles:false,followSymlinks:false})) {
+    if(path.split(/[\\/]/).some(p=>['node_modules','.git','.agents'].includes(p)))continue;
+    roots.push(join(repo,path));
+  }
+  return roots;
+}
+export async function legacyWorkflows(root:string) {
+  const workflows:string[]=[];
+  if(!(await stat(root).catch(()=>null))?.isDirectory())return workflows;
+  for await(const file of new Bun.Glob('**/*.md').scan({cwd:root,dot:true,followSymlinks:true})) {
+    const name=file.replace(/\.md$/,'').split(/[\\/]/).join(':');
+    if(name.startsWith('ruach-workflow-'))workflows.push(name);
+  }
+  return workflows;
+}

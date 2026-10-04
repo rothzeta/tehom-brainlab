@@ -38,6 +38,7 @@ let state:'not-submitted'|'started'|'unknown'='not-submitted';
 let phase='preflight',temp:string|undefined,pane:string|undefined,selected:Selection|undefined;
 try {
   const o=options(process.argv.slice(2)),v=o.values;
+  if(!await Bun.file(new URL('../node_modules/yaml/package.json',import.meta.url)).exists())fail(2,'dependencies_missing','Run bun install --frozen-lockfile in the skill directory','yaml');
   try{await import('yaml');}catch{fail(2,'dependencies_missing','Run bun install --frozen-lockfile in the skill directory','yaml');}
   const cwd=resolve(v.cwd);await directory(cwd,'cwd');
   let gitRoot:string|undefined;

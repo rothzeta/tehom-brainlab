@@ -2,7 +2,7 @@ import { join, resolve } from 'node:path';
 import { readFile, mkdir, symlink, writeFile, stat } from 'node:fs/promises';
 import { fail, type Plan, type Selection } from '../contracts';
 import { help } from '../process';
-import { ancestors, claudeHome, localSkills, scan } from '../skills';
+import { ancestors, claudeHome, localSkills, scan, nestedClaudeRoots, legacyWorkflows } from '../skills';
 async function settings(path:string) {
   const body=await readFile(path,'utf8').catch((e)=>{if(e.code==='ENOENT')return null;return fail(2,'unreadable_settings','Cannot read Claude settings',path);});
   if(body===null)return {};
@@ -32,10 +32,15 @@ export async function prepare(s:Selection,pass:string[]):Promise<Plan> {
     if(pass[i]==='--add-dir')extraDirectories.push(resolve(s.cwd,pass[++i]));
     else if(pass[i].startsWith('--add-dir='))extraDirectories.push(resolve(s.cwd,pass[i].slice('--add-dir='.length)));
   }
-  const all=[...await localSkills(s.repo,s.cwd),...(await Promise.all(extraDirectories.flatMap(p=>[join(p,'.claude','skills'),join(p,'.agents','skills')]).map(scan))).flat()];
+  const nested=await nestedClaudeRoots(s.repo);
+  const all=[...await localSkills(s.repo,s.cwd),...(await Promise.all(nested.filter(p=>p.endsWith('skills')).map(scan))).flat(),...(await Promise.all(extraDirectories.flatMap(p=>[join(p,'.claude','skills'),join(p,'.agents','skills')]).map(scan))).flat()];
   const canonical=await scan(join(s.repo,'.agents','skills'));
   if(new Set(canonical.map(x=>x.name)).size!==canonical.length)fail(2,'duplicate_skill','Canonical skill names must be unique','skills');
   const discovered=new Set(all.filter(x=>x.workflow).map(x=>x.name));
+  if(s.role!=='coordinator') {
+    const commandRoots=[join(claudeHome(s.cwd),'commands'),...ancestors(s.cwd).map(p=>join(p,'.claude','commands')),...extraDirectories.map(p=>join(p,'.claude','commands')),...nested.filter(p=>p.endsWith('commands'))];
+    if((await Promise.all(commandRoots.map(legacyWorkflows))).some(names=>names.length))fail(3,'unverified_workflow_source','Legacy Claude workflow command visibility is unverified; convert these to native skills first','claude');
+  }
   const settingsPaths=[join(claudeHome(s.cwd),'settings.json'),...ancestors(s.cwd).reverse().flatMap(p=>[join(p,'.claude','settings.json'),join(p,'.claude','settings.local.json')])];
   let enabledPlugins:Record<string,boolean>={};
   for(const path of settingsPaths) {

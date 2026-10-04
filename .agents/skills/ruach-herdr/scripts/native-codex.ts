@@ -6,6 +6,7 @@ export async function codexRead(exe: string, cwd: string) {
   if(version.exit!==0 || version.timedOut) fail(3,'codex_config_unavailable','A running local Codex daemon is required for read-only effective configuration','codex');
   const info=json(version.stdout,'codex daemon version');
   if(info.status!=='running' || typeof info.socketPath!=='string' || !info.socketPath.startsWith('/') || info.appServerVersion!==info.cliVersion) fail(3,'codex_config_unavailable','Expected a running matching-version daemon and an absolute local control socket','codex');
+  if(!await Bun.file(new URL('../node_modules/ws/package.json',import.meta.url)).exists())fail(2,'dependencies_missing','Run bun install --frozen-lockfile in the skill directory','ws');
   let WebSocket;
   try { ({default:WebSocket}=await import('ws')); }
   catch { return fail(2,'dependencies_missing','Run bun install --frozen-lockfile in the skill directory','ws'); }
