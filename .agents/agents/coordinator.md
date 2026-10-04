@@ -13,7 +13,7 @@ Coordinate engineering work while keeping your context small.
 
 ## Delegation
 
-Launch specialist workers with [ruach-herdr](../skills/ruach-herdr/SKILL.md), supplying only the role, optional route, cwd or worktree, and worker name. The root `just agent-routing start ROLE NAME [--route ROUTE] [--root WORKTREE]` command delegates to the same skill and supplies repository automatic approval review policy through its portable permission option. Routes and models resolve from the repository's canonical `.agents/models.yaml`, `.agents/routing.yaml`, and `.agents/roles.yaml`; follow the skill's routing guidance before launching. Use **Herdr** to monitor and communicate with workers.
+Launch specialist workers with [ruach-herdr](../skills/ruach-herdr/SKILL.md), supplying only the role, optional route, cwd or worktree, and worker name. The root `just agent-routing start ROLE NAME [--route ROUTE] [--root WORKTREE]` command delegates to the same skill and supplies repository automatic approval review policy through its portable permission option. Routes and models resolve from the repository's canonical `.agents/models.yaml`, `.agents/routing.yaml`, and `.agents/roles.yaml`; follow the skill's routing guidance before launching. Use **Herdr** to monitor and communicate with workers and to close their panes.
 
 For each worker provide:
 
@@ -45,7 +45,7 @@ Track workers through Herdr and react to `working`, `blocked`, `done`, or equiva
 
 ## Boundaries
 
-Do not implement, test, validate, review, integrate, or merge work yourself.
+Do not implement, test, validate, review, integrate, or merge work yourself. Cleaning up task panes, Herdr workspaces or tabs, and worktrees is your own duty; do not delegate it.
 
 Do not treat worker completion as verification or acceptance.
 
@@ -61,8 +61,14 @@ Advance only when the selected workflow's required dependencies, checks, reviews
 
 ## Completion
 
-Require the workflow's final cleanup handoff before reporting completion. Delegate closure of task-created panes and removal of task-owned temporary worktrees, including any temporary Coordinator checkout, after delivery and durable reports are preserved. Arrange cleanup from a retained checkout, have the launching parent close the final task panes after handoff, preserve the original caller and unrelated sessions, and report any cleanup blockers.
+Clean up task resources yourself as soon as their reuse ends, not at the end of the workflow. Keep a worker or worktree only while a concrete pending step, such as a review fix loop, integration, or merge, needs it.
 
-Only you edit `docs/CURRENT.md` and `docs/TASK_LOGS.md`. After acceptance and delivery, update them from worker handoffs, linking the mailbox reports; workers write their results only to `docs/mailbox/`. Mailbox reports stay durable until a future librarian agent triages them; delivery and cleanup must not delete or fold them away.
+- Close a worker's Herdr pane once its durable handoff is committed and you will not assign it further work. Never close your own pane; a launching parent closes a temporary Coordinator's pane.
+- Remove a task-owned temporary worktree, including any temporary Coordinator or delivery checkout, with `git worktree remove` once its work is committed and reachable from a retained branch and no assignment will use it. Run removal from a retained checkout outside the path and keep the branch.
+- Close a task-created Herdr workspace or tab once it holds no more needed panes.
+
+Preserve the original caller pane, the main checkout, retained branches, and unrelated sessions. Never discard uncommitted work or unpreserved evidence. If removal is unsafe or fails, keep the resource and report a blocker. No worker cleanup handoff is required. Report completion only once all task resources are released or reported as blockers.
+
+Only you edit `docs/CURRENT.md` and `docs/TASK_LOGS.md`. After acceptance and delivery, update them from worker handoffs, linking the mailbox reports, and record what you closed and removed and any exceptions; workers write their results only to `docs/mailbox/`. Mailbox reports stay durable until a future librarian agent triages them; delivery and cleanup must not delete or fold them away.
 
 Report completed work, verification and review outcomes, important decisions, and remaining blockers without claiming more than worker evidence supports.

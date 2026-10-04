@@ -1,6 +1,6 @@
 ---
 name: ruach-workflow-feature
-description: Coordinate a bounded feature through optional investigation and design, implementation, integration, verification, independent review, merging, and final worktree cleanup. Use as the generic feature workflow when no more specific workflow is assigned.
+description: Coordinate a bounded feature through optional investigation and design, implementation, integration, verification, independent review, merging, and prompt Coordinator cleanup of task resources. Use as the generic feature workflow when no more specific workflow is assigned.
 ---
 
 # Feature workflow
@@ -31,7 +31,7 @@ Use existing plans and concise specialist handoffs to identify bounded implement
 
 Choose an Implementer to own integration and merging; the same worker may implement the feature. Specify the changes to combine, destination, and required checks.
 
-Track task-created panes and task-created or task-assigned temporary worktrees, including any temporary Coordinator or delivery checkout, and identify a retained checkout from which final cleanup can run.
+Track task-created panes, Herdr workspaces or tabs, and task-created or task-assigned temporary worktrees, including any temporary Coordinator or delivery checkout, and identify a retained checkout from which worktree removal can run. Note which pending step, if any, still needs each worker and worktree so they can be released as described in Clean up.
 
 Run independent tasks concurrently when useful, with explicit file ownership and isolated workspaces or worktrees where needed to prevent conflicting edits.
 
@@ -49,7 +49,7 @@ Each worker must receive:
 - verification instructions and restrictions, including any exception to default test ownership;
 - expected handoff and durable report path.
 
-Record discoveries that affect other work.
+Record discoveries that affect other work. Release each worker once its durable handoff is committed and no further assignment will go to it.
 
 ## 4. Adapt
 
@@ -81,7 +81,7 @@ After required checks on the combined revision succeed, assign an independent Re
 2. Collect the review summary, blocking and optional findings, verification results, and durable report reference. Missing findings do not establish that verification passed.
 3. Return blocking findings to the responsible Implementer as bounded fixes. Require relevant verification results and the updated revision in the handoff. Route fixes through the integration and combined-verification steps before re-review.
 4. Assign re-review of blocking fixes and materially changed behavior, contracts, or tests on the updated revision. Repeat while resolvable blocking findings remain; report a blocker when resolution needs a decision or exceeds the assignment.
-5. Advance only when the Reviewer reports no outstanding blocking findings and the required checks have reported successful results for the reviewed revision. Optional improvements do not block completion unless required by the acceptance conditions.
+5. Advance only when the Reviewer reports no outstanding blocking findings and the required checks have reported successful results for the reviewed revision. Optional improvements do not block completion unless required by the acceptance conditions. Then release the Reviewer and any worker or worktree that no pending step needs.
 
 ## 8. Merge
 
@@ -89,11 +89,11 @@ Once required verification and review are satisfied, assign the integration Impl
 
 Have the worker confirm the destination has not advanced since the candidate was prepared. If it has advanced, or merging requires conflict resolution or other changes to the candidate, refresh integration and repeat relevant verification and review before delivery.
 
-Require a merge handoff identifying the reviewed candidate, destination branch, final revision, and merge outcome. The worker confirms the delivered result contains the accepted changes and reports its relation to the verified candidate. Reuse verification evidence when the delivered content is unchanged; rerun relevant checks and re-review material changes. Coordinator does not perform the merge or validate its result. Remote push, publication, and deployment require an explicit assignment.
+Require a merge handoff identifying the reviewed candidate, destination branch, final revision, and merge outcome. The worker confirms the delivered result contains the accepted changes and reports its relation to the verified candidate. Reuse verification evidence when the delivered content is unchanged; rerun relevant checks and re-review material changes. Coordinator does not perform the merge or validate its result. Remote push, publication, and deployment require an explicit assignment. After the merge handoff is committed, release the integration Implementer and every worktree that recording delivery does not need.
 
 ## 9. Record delivery
 
-Preserve the delivery summary and required durable reports in commits reachable from retained branches before removing any worktree. Record:
+Preserve the delivery summary and required durable reports in commits reachable from retained branches before removing the worktrees that hold them. Record:
 
 - implemented work;
 - integration and merge outcome, destination, and final revision;
@@ -103,14 +103,16 @@ Preserve the delivery summary and required durable reports in commits reachable 
 - remaining issues;
 - durable report and canonical artifact references.
 
-After acceptance and delivery, the Coordinator updates `docs/CURRENT.md` and `docs/TASK_LOGS.md` from the worker handoffs, linking the mailbox reports rather than duplicating them.
+After acceptance and delivery, the Coordinator updates `docs/CURRENT.md` and `docs/TASK_LOGS.md` from the worker handoffs, linking the mailbox reports rather than duplicating them. It also records the panes, Herdr workspaces or tabs, and worktrees it closed or removed, any retained resources with the reasons, and any cleanup blockers.
 
 ## 10. Clean up
 
-Cleanup is the final required step before reporting the workflow complete. Assign the integration Implementer to remove every completed task-owned temporary worktree with `git worktree remove`, including temporary Coordinator and delivery worktrees. Preserve the main checkout, retained destination checkout, unrelated worktrees, and branches containing delivered changes or evidence.
+The Coordinator performs cleanup itself, as soon as each resource's reuse ends, rather than deferring it to the end of the workflow. Decide reuse deliberately: keep a worker or worktree only while a concrete pending step, such as a review fix loop, integration, or merge, needs it. The natural release points are after each committed handoff, after review acceptance, and after merge.
 
-Close task-created worker and temporary Coordinator panes through Herdr after their final durable handoffs are committed, before removing the worktrees they use. Preserve the original caller pane and unrelated sessions. Arrange for the launching parent to close the cleanup worker's pane and any remaining temporary Coordinator pane after the final handoff; an agent must not close itself before returning that handoff.
+- **Workers.** Once a worker's durable handoff is committed and no further assignment, such as a fix or re-review, will go to it, close its Herdr pane. A worker never closes its own pane; the launching parent closes a temporary Coordinator's pane after its final report.
+- **Worktrees.** Once a task-owned temporary worktree's work is committed and reachable from a retained branch, and no further assignment will use it, close any pane still using it and remove it with `git worktree remove`, running from a retained checkout outside the path. Keep the branch.
+- **Herdr workspaces and tabs.** Close a task-created workspace or tab once it holds no more needed panes.
 
-Run worktree cleanup from the retained checkout outside the paths being removed. Preserve useful working evidence in durable reports first; disposable working files and installed dependencies may then be discarded. Never delete or fold away mailbox reports; they remain until a future librarian agent triages them. Do not discard uncommitted work or unresolved evidence to satisfy cleanup. Preserve affected worktrees and report a cleanup blocker if removal is unsafe or fails.
+Preserve the original caller pane, the main checkout, the retained destination checkout, branches containing delivered changes or evidence, unrelated worktrees, and unrelated sessions. Preserve useful working evidence in durable reports first; disposable working files and installed dependencies may then be discarded. Never delete or fold away mailbox reports; they remain until a future librarian agent triages them. Do not discard uncommitted work or unpreserved evidence to satisfy cleanup. If removal is unsafe or fails, keep the resource and report a cleanup blocker.
 
-Require a cleanup handoff listing closed and retained panes, removed and retained worktrees, reasons for any exceptions or parent-owned final closures, and preserved delivery/report revisions. Store its durable report in the retained checkout, validate it through ruach-handoff, and commit it before returning. Base the final completion response on that handoff and the parent's final pane closures; a successful merge alone does not complete the workflow.
+No worker cleanup handoff is required. The Coordinator's CURRENT and TASK_LOGS record lists what it closed and removed and any exceptions; report any resource released after that record is committed, such as the checkout holding it, in the completion response. The workflow completes once all task resources are released or reported as blockers; a successful merge alone does not complete the workflow.
