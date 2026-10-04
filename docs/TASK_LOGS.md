@@ -749,3 +749,31 @@ Recorded by the Coordinator from worker handoffs. User decision: the Coordinator
 
 Limits: Markdown-only change, with no live model session. The Coordinator did not run checks; the results come from the cited worker reports.
 
+## 2026-10-04 Route selection policy
+
+Recorded by the Coordinator from worker handoffs.
+
+**Trigger.** The user found that the Coordinator had switched 5 of 9 workers to the Claude alternative on its own judgment. The user asked for a council of Opus 5.5-high, gpt-6.1-sol-high and Gemini 3.8 Flash high.
+
+**Council.**
+- Opus and Sol, both Architects, independently recommended user-confirmed fallback with a guidance-only change ([opus](mailbox/council-fallback-policy/architect-opus.md), [sol](mailbox/council-fallback-policy/architect-sol.md)).
+- Gemini could not be seated. The launcher marks Agy unsupported, and a manual Agy start was refused by the permission system. The user then approved the policy without it.
+
+**User corrections.**
+- Exit 3 can be a fixable prerequisite, so it is not proof that the model is unavailable.
+- A run-specific reviewer route needs only `--route`, not a `roles.yaml` edit.
+- The user added the <2% low-allowance rule.
+
+**Change.**
+- `ROUTE-impl`: candidate `905f545` from BASE `0b5acdf` on the preferred Sol route. It adds the "Route selection" section to `.agents/agents/coordinator.md`, a launch-recovery paragraph to `ruach-herdr` SKILL.md, and the `roles.yaml` header comment.
+- The [Implementer report](mailbox/council-fallback-policy/implementer.md) records routing (13), Herdr (107) and handoff (24) tests passing, plus the skill format check.
+- The [independent review](mailbox/council-fallback-policy/reviewer.md) on the preferred Sol route passed all five conditions with no findings.
+- The change is delivered to master by fast-forward and pushed to origin by the integration Implementer; see the [delivery report](mailbox/council-fallback-policy/delivery.md) for revisions.
+
+**Cleanup.**
+- Panes: Coordinator closed council panes `w2G:p1J` and `w2G:p1K` after their reports, and the Reviewer `w2G:p1P` after review. The Gemini pane `w2G:p1M` was already gone. The Implementer pane `w2G:p1N` is closed after delivery.
+- Temporary files: the Opus launch directory `/tmp/ruach-herdr-K6Dosf` was removed after its pane closed. The Codex launches reported none.
+- Worktree: `/opt/dev/tehom-brainlab-council` is removed after delivery, and branch `council-fallback-policy` is kept.
+
+**Limits.** Documentation and guidance only, with no live quota or recovery behavior exercised. The Coordinator ran no checks; the results come from the cited reports.
+
