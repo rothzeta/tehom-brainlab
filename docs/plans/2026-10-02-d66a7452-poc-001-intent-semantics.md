@@ -6,9 +6,37 @@
 
 Authority: [brief Round structure, Test abilities, and encounter descriptions](../../docs/prototypes/poc-001-linked-formation.md). Exact sector masks and cancellation rules are explicitly open in that source; the choices below are proposals, not recovered requirements. Formatting authority is recorded in the [index](README.md).
 
+**Amended 2026-10-04:** sectors extend to ring 2 for the Compact triangle; see [Amendment CT](#amendment-ct-2026-10-04--compact-triangle). Not yet implemented.
+
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P05` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
+
+## Amendment CT (2026-10-04) — Compact triangle
+
+**Status: accepted design amendment, not yet implemented.** Trigger: the user decision of 2026-10-04 ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)) places Compact Pazuzu on ring 2, using the mapping in the [P02 amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle). Execution: [Compact triangle task](2026-10-04-fb4bf201-poc-001-compact-triangle.md). This supersedes the outer-ring-only sector and eligibility statements below, which describe delivered `f3a0e233`.
+
+**Problem.** Delivered sectors contain outer-ring cells only, so an inward Brood could never be inside a protection front or a sector-built area. Compact Pazuzu would always ignore Warder protection, and a frontal sweep could never hit it. Neither outcome was chosen as a mechanic.
+
+**Proposed default (provisional; P05 owns masks).** Sectors become encounter-centred wedges over the two Brood-occupiable rings. With `R` the outer ring and `T` the P02 ring-2 table:
+
+- `sectorCells(s)` = `R[3s], R[3s+1], R[3s+2], T[2s], T[2s+1]`: outer cells clockwise, then ring-2 cells clockwise.
+- `frontMask(f)` = `sectorCells(f)` followed by `sectorCells((f+1) mod 6)`: ten cells. Facing zero is `R[0..5]` plus `T[0..3]`, in the order `R0,R1,R2,T0,T1,R3,R4,R5,T2,T3`. Facing five is `R15,R16,R17,T10,T11,R0,R1,R2,T0,T1`.
+- The six sectors partition rings 2 and 3 (30 cells). Rings 0–1 remain enemy visual anchors, outside every mask.
+- `turnCellsClockwise(frontMask(f))` equals `frontMask((f+1) mod 6)` element by element. This holds because the turn advances `R` by 3 and `T` by 2, so Crosswind turns keep their order.
+
+**Consequences (no other selector semantics change):**
+
+- Fixed areas keep their stored cells. A Brood is a recipient exactly when its current cell, on either ring, is listed. Areas built from a front mask now include ring-2 cells.
+- Compact orientation `o` lies wholly in sector `o`. Every hand-written recipient and protection table for the fixture area (facing-zero front) and turned area keeps its value. Compact is `[all, all, -, -, -, -]` for the area and `[-, all, all, -, -, -]` turned. Spread is unchanged.
+- Marks follow their target's current cell. A Compact mark on Girtablilu now anchors at `R[3o+2]`, not `R[3o+1]`.
+- Splash radius 2 still reaches all three Compact Brood. With every Compact pair at distance 1, radius 1 now does too.
+- Protection checks the attacker's current cell, on either ring, against the ten-cell front.
+- Isolation and active links are unchanged. With two or more living Brood, Compact has no isolated Brood.
+
+**Amended acceptance criterion 1:** a facing-zero front mask contains exactly `R[0..5]` and `T[0..3]` in the declared order. A facing-five mask contains `R[15],R[16],R[17],T[10],T[11],R[0],R[1],R[2],T[0],T[1]`. The six sectors are disjoint and their union is exactly the 30 cells at radius 2 or 3. Criteria 2–6 are unchanged and are evaluated with the amended P02 mapping.
+
+**Open for user confirmation; provisional default applied:** the inward Brood is exposed to sector-based areas and protection fronts exactly like the outer cells of its sector. The alternative would treat ring 2 as sheltered, giving Compact a slot that sweeps and protection fronts never reach. That would be a new mechanic, so it is not adopted without a user decision.
 
 ## Smallest useful outcome
 

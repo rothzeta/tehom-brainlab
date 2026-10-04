@@ -6,9 +6,22 @@
 
 Authority: [prototype First implementation slice](../../poc-001-linked-formation/README.md), [brief Presentation requirements](../../docs/prototypes/poc-001-linked-formation.md), [asset manifest](../../assets/manifest.json), and [credits](../../assets/CREDITS.md). See the [index](README.md) and local ADRs below for formatting authority. Full combat previews belong to P09, not this slice.
 
+**Amended 2026-10-04:** the lab must render the Compact triangle; see [Amendment CT](#amendment-ct-2026-10-04--compact-triangle). Not yet implemented.
+
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P04` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
+
+## Amendment CT (2026-10-04) — Compact triangle
+
+**Status: accepted design amendment, not yet implemented.** Trigger: the user decision of 2026-10-04 ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)) and the [P02 mapping amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle). Execution: [Compact triangle task](2026-10-04-fb4bf201-poc-001-compact-triangle.md).
+
+The lab contracts are unchanged. Positions, links, ghosts and availability already come from core selectors, and `projectHex` projects any axial cell, including ring 2. The delivered view (`ad394558`) has one geometry assumption: Compact link-label offsets in `FormationLab.drawBoard` assume the long middle link of the old 1, 2, 1 line (a larger offset for link index 1). The view needs these changes:
+
+- Place each Compact link label beside its link, on the side away from the triangle's third Brood, so no label sits inside the triangle or over a token. Spread placement is unchanged.
+- Keep all three Compact tokens individually selectable. The tokens are 112 px wide on an 85 px cell pitch, and Pazuzu is rendered last. If its button covers a neighbour's centre, fix the presentation (size, stacking or label offset), not the test.
+
+**Additional acceptance evidence (applies to criteria 1 and 4):** for every one of the twelve fixtures, a pointer hit-test at each token's centre resolves to that token. Updated screenshots of every Compact orientation show readable link labels that do not cover tokens. Expansion and contraction ghosts in the browser check still equal the core destinations, now including the ring-2 cell.
 
 ## Smallest useful outcome
 

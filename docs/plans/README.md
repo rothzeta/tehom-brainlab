@@ -51,14 +51,15 @@ The user's 3 October tooling preference supersedes the original npm proposal: us
 | P10 | [Playable patrol](2026-10-02-e7c77542-poc-001-playable-patrol.md) | Play all three patrol starts through the real browser interface. | P04, P08, P09 |
 | P11 | [Reproducible playtests](2026-10-02-825a6700-poc-001-reproducible-playtests.md) | Replay actual attempts and record an explicit boss gate. | P10 |
 | P12 | [Directional boss](2026-10-02-a18d7fe6-poc-001-directional-boss.md) | Test one boss using the same combat contracts. | P10, P11 with open gate |
+| CT | [Compact triangle](2026-10-04-fb4bf201-poc-001-compact-triangle.md) | Amendment task (2026-10-04, user decision): Compact becomes a true triangle (two outer-ring Brood, Pazuzu on ring 2, all links distance 1) across P02 mapping, P05 sectors and the P04 lab. Proposed; not implemented. Amends P02/P04/P05 and assesses P06 (no change). | P02, P04, P05, P06 |
 
-P01–P04 produce the first interactive formation lab. P05–P09 complete the headless patrol rules and full preview invariant. P10 makes the patrol playable. P11 supplies actual evidence. P12 remains conditionally blocked until the recorded patrol review opens its gate. Completing documentation, compiling code, or passing unit tests does not automatically open that gate.
+Task CT is an amendment of delivered P02/P04/P05 rather than a new capability; executing it before P07 is recommended so later plans build on the triangle geometry. P01–P04 produce the first interactive formation lab. P05–P09 complete the headless patrol rules and full preview invariant. P10 makes the patrol playable. P11 supplies actual evidence. P12 remains conditionally blocked until the recorded patrol review opens its gate. Completing documentation, compiling code, or passing unit tests does not automatically open that gate.
 
 ## Ownership of provisional defaults
 
 | Decision family | Single owning plan |
 |---|---|
-| Axial convention, ring table, labelled shape mapping, Close threshold | P02 |
+| Axial convention, ring tables (outer ring and, since Amendment CT, ring 2), labelled shape mapping, Close threshold | P02 |
 | Public command shape, revision checks, rejection semantics, action accounting | P03 |
 | Sector masks, marks, cancellation, active-link/isolation selectors | P05 |
 | Hit batching, mitigation, Shelter consumption, Fallen slots, terminal precedence | P06 |

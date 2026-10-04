@@ -26,20 +26,20 @@ The experiment tests whether three Brood attacking individually but moving as a 
 
 ## Formation rules
 
-Brood occupy the outer ring. Enemies occupy the central engagement area. The encounter centre is fixed and does not change when a target is selected or defeated.
+Brood occupy the outer ring (radius 3), except that Compact places one Brood on ring 2 just inside the other two. Enemies occupy the central engagement area. The encounter centre is fixed and does not change when a target is selected or defeated.
 
-- **Compact:** three consecutive outer-ring cells.
+- **Compact:** a true triangle of three mutually adjacent cells: two Brood on the outer ring and one on ring 2, just inside them. All three links are distance 1. Ugallu and Girtablilu hold the outer cells; Pazuzu is the inward Brood. *(Accepted user decision, 2026-10-04; replaces "three consecutive outer-ring cells". See [Decision record](#decision-record).)*
 - **Spread:** three outer-ring positions approximately 120 degrees apart.
 - **Rotate:** turn the entire formation one 60-degree step clockwise or anticlockwise.
-- **Expand / contract:** change shape while preserving the Brood's clockwise order and the formation's orientation.
+- **Expand / contract:** change shape while preserving the Brood's clockwise order around the formation's own centre and the formation's orientation.
 
-Expansion separates the Brood around the encounter; it does not move them farther from its centre. There is no independent movement, squad translation, pursuit, pathfinding, collision resolution, opportunity attack, or damage from crossing a telegraph during a maneuver. Only destination states determine the initial rules.
+Expansion separates the Brood around the encounter. Ugallu and Girtablilu stay on the outer ring; Pazuzu steps out from ring 2 to the outer ring, and contraction steps it back in. No Brood ever leaves the outer two rings. There is no independent movement, squad translation, pursuit, pathfinding, collision resolution, opportunity attack, or damage from crossing a telegraph during a maneuver. Only destination states determine the initial rules.
 
-The exact experimental coordinate mapping and reversible shape transitions are now encoded in the [P02 implementation](../../poc-001-linked-formation/README.md#formation-algebra-p02) and tested against the [plan fixture](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md). All twelve labelled states are retained even when Spread occupied-cell sets coincide. Browser presentation remains the P01 placeholder; combat has not been added.
+The exact experimental coordinate mapping and reversible shape transitions are now encoded in the [P02 implementation](../../poc-001-linked-formation/README.md#formation-algebra-p02) and tested against the [plan fixture](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md). All twelve labelled states are retained even when Spread occupied-cell sets coincide. The delivered P02 Compact mapping is still the superseded collinear one; the triangle mapping is specified in the [P02 amendment](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle) and the [Compact triangle task](../plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md), and is not yet implemented. Browser presentation remains the P01 placeholder; combat has not been added.
 
 ### Links
 
-All three links remain visible. The initial test threshold is Close at two hex steps or less and Stretched beyond that. Compact should make all links Close; Spread should make them Stretched.
+All three links remain visible. The initial test threshold is Close at two hex steps or less and Stretched beyond that. Compact should make all links Close (each is distance 1); Spread should make them Stretched.
 
 This first version deliberately tests shared formation stances, not independently adjustable links or asymmetric formations. The threshold is provisional, not balanced.
 
@@ -134,7 +134,20 @@ The first six formation checks are implemented and pass in the P02 candidate (90
 
 ## Open decisions
 
-Numeric balance, sector masks, enemy intention tie-breaking, the definition of isolation, and how formation behaves after a Brood falls must be specified before calling the combat loop complete. P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
+Numeric balance, sector masks, enemy intention tie-breaking, the definition of isolation, and how formation behaves after a Brood falls must be specified before calling the combat loop complete. The Compact triangle (see [Decision record](#decision-record)) puts one Brood on ring 2; its exposure to sector-based areas and protection fronts is a provisional P05 default (covered like the outer cells of the same sector) pending user confirmation. P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
+
+## Decision record
+
+**2026-10-04 — Compact is a true triangle (accepted; source: user decision, 2026-10-04).** The user observed that the delivered Compact formation placed the three Brood collinearly along one outer-ring edge (link distances 1, 2, 1), so it was not a triangle. Decision: Compact becomes three mutually adjacent cells, two Brood on the outer ring and one on ring 2 just inside them, with all three links at distance 1. The user's sketch places Ugallu and Girtablilu on the outer ring and Pazuzu inward:
+
+```
+   outer ring
+  ⬡ U ⬡ G ⬡
+     ⬡ P ⬡     <- ring 2
+U-G 1, G-P 1, U-P 1
+```
+
+This is a settled design decision, not a provisional default. The exact cell mapping, sector coverage of the inward cell, and other consequences are experimental defaults owned by the plans: the [P02 amendment](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle) (mapping), the [P05 amendment](../plans/2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-ct-2026-10-04--compact-triangle) (sector masks), and the [Compact triangle task](../plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md). Under that mapping, "clockwise order" means the order around the formation's own centre: Ugallu → Girtablilu → Pazuzu in both shapes, so contraction never mirrors the formation. Seen from the encounter centre, Compact Pazuzu sits between Ugallu and Girtablilu.
 
 ## Explicit exclusions
 

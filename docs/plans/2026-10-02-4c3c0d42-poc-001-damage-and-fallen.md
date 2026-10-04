@@ -6,9 +6,24 @@
 
 Authority: the [brief's deterministic combat requirement, Shelter description, and Open decisions](../../docs/prototypes/poc-001-linked-formation.md). Fallen-slot behavior, simultaneous-hit ordering, and terminal precedence are unresolved there; this plan proposes explicit local defaults. See the [index](README.md) for draft/ADR authority.
 
+**Amended 2026-10-04:** reviewed against the Compact triangle; no rule change. See [Amendment CT](#amendment-ct-2026-10-04--compact-triangle).
+
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P06` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
+
+## Amendment CT (2026-10-04) — Compact triangle
+
+**Status: assessed, no contract change.** Trigger: the user decision of 2026-10-04 ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)), the [P02 mapping amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle) and the [P05 sector amendment](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-ct-2026-10-04--compact-triangle). Execution: [Compact triangle task](2026-10-04-fb4bf201-poc-001-compact-triangle.md).
+
+P06 reads geometry only through P05 selectors and P02 links. Hand-checking the delivered `tests/damage.test.ts` fixtures against the amended mapping and sectors gives the following:
+
+- Compact orientation zero still places every attacker in Warder's facing-zero front. Orientation two is still outside it.
+- Shelter pairs Ugallu→Girtablilu and Pazuzu→Girtablilu stay Close (distance 1), are Stretched after expansion, and are Stretched at threshold 0.
+- Splash radius 2 still covers all three Compact Brood.
+- Fallen Brood keep their labelled slots. For a fallen inward Pazuzu, that slot is the ring-2 cell.
+
+No P06 assertion is expected to change. The fixed-area fixture `[{q:3,r:0}]` asserts only declaration retention, not recipients. If a P06 test fails after the P02/P05 change, the task must report it as a finding with the exact assertion. It must not edit the test unless the assertion encodes the superseded Compact cells or distances.
 
 ## Smallest useful outcome
 

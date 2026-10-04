@@ -42,6 +42,8 @@ Show actor HP/actions, selected ability and target, maneuver availability, numbe
 
 The early lab-only configuration selector must be clearly separated from the playable patrol; it cannot change formation for free during a battle.
 
+*Amendment CT (2026-10-04):* Compact now places Pazuzu on ring 2 ([P02 amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle)). P08's proposed enemy anchors are ring-1 cells, for example Harrier `(1,0)`, which is adjacent to Compact orientation-zero Pazuzu `(1,1)`. Brood and enemy tokens must remain separately readable and selectable. Telegraphs over ring-2 cells must be visible, since P05 masks now include them.
+
 ## Implementation checkpoints
 
 1. **P10.C1** — Add playable-patrol mode and preset selection using the existing factories.
