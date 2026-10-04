@@ -31,7 +31,7 @@ Use existing plans and concise specialist handoffs to identify bounded implement
 
 Choose an Implementer to own integration and merging; the same worker may implement the feature. Specify the changes to combine, destination, and required checks.
 
-Track task-created or task-assigned temporary worktrees, including any temporary Coordinator or delivery checkout, and identify a retained checkout from which final cleanup can run.
+Track task-created panes and task-created or task-assigned temporary worktrees, including any temporary Coordinator or delivery checkout, and identify a retained checkout from which final cleanup can run.
 
 Run independent tasks concurrently when useful, with explicit file ownership and isolated workspaces or worktrees where needed to prevent conflicting edits.
 
@@ -107,6 +107,8 @@ Preserve the delivery summary and required durable reports in commits reachable 
 
 Cleanup is the final required step before reporting the workflow complete. Assign the integration Implementer to remove every completed task-owned temporary worktree with `git worktree remove`, including temporary Coordinator and delivery worktrees. Preserve the main checkout, retained destination checkout, unrelated worktrees, and branches containing delivered changes or evidence.
 
-Stop or relocate sessions using the temporary worktrees, and run cleanup from the retained checkout outside the paths being removed. Preserve useful scratch evidence in durable reports first; disposable task scratch and installed dependencies may then be discarded. Do not discard uncommitted work or unresolved evidence to satisfy cleanup. Preserve affected worktrees and report a cleanup blocker if removal is unsafe or fails.
+Close task-created worker and temporary Coordinator panes through Herdr after their final durable handoffs are committed, before removing the worktrees they use. Preserve the original caller pane and unrelated sessions. Arrange for the launching parent to close the cleanup worker's pane and any remaining temporary Coordinator pane after the final handoff; an agent must not close itself before returning that handoff.
 
-Require a cleanup handoff listing removed and retained worktrees, reasons for any exceptions, and preserved delivery/report revisions. Store its durable report in the retained checkout, validate it through ruach-handoff, and commit it before returning. Base the final completion response on that handoff; a successful merge alone does not complete the workflow.
+Run worktree cleanup from the retained checkout outside the paths being removed. Preserve useful scratch evidence in durable reports first; disposable task scratch and installed dependencies may then be discarded. Do not discard uncommitted work or unresolved evidence to satisfy cleanup. Preserve affected worktrees and report a cleanup blocker if removal is unsafe or fails.
+
+Require a cleanup handoff listing closed and retained panes, removed and retained worktrees, reasons for any exceptions or parent-owned final closures, and preserved delivery/report revisions. Store its durable report in the retained checkout, validate it through ruach-handoff, and commit it before returning. Base the final completion response on that handoff and the parent's final pane closures; a successful merge alone does not complete the workflow.
