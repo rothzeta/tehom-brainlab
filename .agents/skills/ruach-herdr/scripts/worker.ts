@@ -25,7 +25,7 @@ function options(args:string[]) {
   }
   for(const key of ['name','role','cwd'])if(!values[key])fail(2,'usage','Missing required launcher option',key);
   if(!/^[a-z][a-z0-9_-]{0,31}$/.test(values.name))fail(2,'invalid_name','Herdr name must match [a-z][a-z0-9_-]{0,31}','name');
-  identifier(values.role,'role');if(values.route)identifier(values.route,'route');
+  identifier(values.role,'role');if(values.route)string(values.route,'route');
   const direct=values.kind!==undefined || values.model!==undefined;
   if(direct && (!values.kind||!values.model||values.route))fail(2,'invalid_selection','Direct selection requires kind and model and excludes route','selection');
   if(!direct&&values.effort)fail(2,'invalid_selection','Routed effort comes only from YAML','effort');

@@ -19,7 +19,7 @@ bun scripts/worker.ts resolve --name task-worker --role implementer --cwd /path/
 bun scripts/worker.ts start --dry-run --name task-worker --role implementer --cwd /path/to/worktree
 ```
 
-For direct selection, supply `--kind KIND --model NATIVE_MODEL [--effort LEVEL]` instead of a route. Otherwise the role's preferred route comes from repository YAML; `--route ID` selects a named route. There are no model defaults or harness fallbacks. Supply `--repo DIR` if Git cannot infer the intended canonical repository from cwd. Relative launcher paths resolve from invocation cwd. See [provisional routing](references/routing.md) before integration with another repository's data.
+For direct selection, supply `--kind KIND --model NATIVE_MODEL [--effort LEVEL]` instead of a route. Otherwise the role's preferred route comes from `.agents/models.yaml`, `.agents/routing.yaml`, and `.agents/roles.yaml`; `--route ID` selects a declared alternative. There are no model defaults or harness fallbacks. Supply `--repo DIR` if Git cannot infer the intended canonical repository from cwd. Relative launcher paths resolve from invocation cwd. See [routing schema and root delegation](references/routing.md).
 
 Start only after authorization to create the named worker:
 
