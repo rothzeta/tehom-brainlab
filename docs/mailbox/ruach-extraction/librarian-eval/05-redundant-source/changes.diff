@@ -1,0 +1,105 @@
+diff -ruN /tmp/ruach-libeval-05-redundant-source-njJPMA.pristine/corpus/index.md /tmp/ruach-libeval-05-redundant-source-njJPMA/corpus/index.md
+--- /tmp/ruach-libeval-05-redundant-source-njJPMA.pristine/corpus/index.md	2026-10-04 16:41:00.671550184 +0000
++++ /tmp/ruach-libeval-05-redundant-source-njJPMA/corpus/index.md	2026-10-04 16:42:02.873858924 +0000
+@@ -6,5 +6,4 @@
+ ## Reports
+ 
+ - [Export run, slate-r5](sources/export-run.md)
+-- [Export digest](sources/export-digest.md)
+ - [Import check, slate-r5](sources/import-check.md)
+diff -ruN /tmp/ruach-libeval-05-redundant-source-njJPMA.pristine/corpus/knowledge/export.md /tmp/ruach-libeval-05-redundant-source-njJPMA/corpus/knowledge/export.md
+--- /tmp/ruach-libeval-05-redundant-source-njJPMA.pristine/corpus/knowledge/export.md	2026-10-04 16:41:00.671550184 +0000
++++ /tmp/ruach-libeval-05-redundant-source-njJPMA/corpus/knowledge/export.md	2026-10-04 16:42:02.869858776 +0000
+@@ -1,3 +1,5 @@
+ # Export
+ 
+-CSV export writes UTF-8 with a byte-order mark and a header row. Timestamps before 1970 export as empty cells; see the [export digest](../sources/export-digest.md).
++At revision slate-r5, CSV export writes UTF-8 with a byte-order mark and a header row: `python3 -m pytest tests/export -q` passed (48 tests), and a manual export of `fixtures/orders-small.json` wrote a header row and all 120 orders ([export run](../sources/export-run.md)).
++
++Open at slate-r5: orders with `created_at` before 1970-01-01 export an empty `created_at` cell (3 of 40 rows in `fixtures/orders-legacy.json`); the cause has not been investigated ([export run](../sources/export-run.md)).
+diff -ruN /tmp/ruach-libeval-05-redundant-source-njJPMA.pristine/corpus/knowledge/import.md /tmp/ruach-libeval-05-redundant-source-njJPMA/corpus/knowledge/import.md
+--- /tmp/ruach-libeval-05-redundant-source-njJPMA.pristine/corpus/knowledge/import.md	2026-10-04 16:41:00.671550184 +0000
++++ /tmp/ruach-libeval-05-redundant-source-njJPMA/corpus/knowledge/import.md	2026-10-04 16:42:02.873858924 +0000
+@@ -1,3 +1,5 @@
+ # Import
+ 
+-CSV files produced by export can be imported again ([digest](../sources/export-digest.md)).
++At revision slate-r5, CSV files produced by export can be imported again: `slate import` loaded all 120 orders from the [export run](../sources/export-run.md) output, both with and without the byte-order mark ([import check](../sources/import-check.md)).
++
++Semicolon-delimited files are not accepted at slate-r5: `slate import fixtures/orders-semicolon.csv` exited 2 with `expected ',' at line 1, column 9`. The check reported that no issue was filed ([import check](../sources/import-check.md)).
+diff -ruN /tmp/ruach-libeval-05-redundant-source-njJPMA.pristine/corpus/report.md /tmp/ruach-libeval-05-redundant-source-njJPMA/corpus/report.md
+--- /tmp/ruach-libeval-05-redundant-source-njJPMA.pristine/corpus/report.md	1970-01-01 00:00:00.000000000 +0000
++++ /tmp/ruach-libeval-05-redundant-source-njJPMA/corpus/report.md	2026-10-04 16:42:34.427030080 +0000
+@@ -0,0 +1,61 @@
++# Librarian report: 05-redundant-source
++
++Mode: ingest of the `sources/` batch, with source disposition authorized by the task. Corpus guidance: [GUIDANCE](GUIDANCE.md); entry point: [index](index.md).
++
++## Inspected sources
++
++| Source | Content | Disposition | Canonical destination |
++| --- | --- | --- | --- |
++| [export run](sources/export-run.md) (impl-2, 2026-09-10, slate-r5) | Test command and result, manual export run, pre-1970 `created_at` defect | Consolidate + Retain: it holds the exact commands, fixtures, counts and revision | [Export](knowledge/export.md); also cited from [Import](knowledge/import.md) as the origin of the imported file |
++| `sources/export-digest.md` (Coordinator digest, 2026-09-11) | Summary of the export run | Remove (see below) | None needed; every claim lives in the export run |
++| [import check](sources/import-check.md) (impl-4, 2026-09-12, slate-r5) | Round-trip import, BOM-stripped import, semicolon rejection | Consolidate + Retain: unique evidence and an unresolved finding | [Import](knowledge/import.md) |
++
++### Removal of the export digest
++
++Each digest line was compared against the [export run](sources/export-run.md):
++
++- "slate-r5: export tests passed (`python3 -m pytest tests/export -q`, 48 passed)" — the run records the same command, exit 0, 48 passed.
++- "CSV output is UTF-8 with a byte-order mark and a header row" — the run records this from the manual export.
++- "Orders with `created_at` before 1970 export an empty cell; still open" — the run records the defect as open, with its reproduction fixture.
++
++The digest added no command, revision, result or finding of its own. Its only distinct facts are its authorship (Coordinator) and date (2026-09-11), recorded here. Its "still open" restates the run's open status a day later; it does not record any new investigation. It had no unique evidence and three inbound links (`index.md`, `knowledge/export.md`, `knowledge/import.md`), all repaired in the same change. Its own outbound link pointed to the retained export run.
++
++## Knowledge changes
++
++- [Export](knowledge/export.md): now cites the export run instead of the digest. Claims are scoped to slate-r5. The pre-1970 defect was narrowed from "timestamps" to the `created_at` field, the only field the evidence covers, and marked open with the cause not investigated.
++- [Import](knowledge/import.md): the round-trip claim cited the digest, which says nothing about import. It now cites the [import check](sources/import-check.md), which is the evidence for it. Added the BOM-stripped result and the semicolon rejection from the same source, scoped to slate-r5.
++- [index](index.md): removed the digest entry; the remaining report entries are unchanged.
++
++## Unresolved findings
++
++- Pre-1970 `created_at` values export as empty cells at slate-r5. The cause has not been investigated, and no later source records a fix or a check at a later revision. Resolving it needs a technical investigation and a re-run with `fixtures/orders-legacy.json` at a named revision.
++- `slate import` rejects semicolon-delimited files at slate-r5; the import check says no issue was filed. No source says whether semicolon support is intended, so it is recorded as current behavior, not as a decision or a defect.
++- All export and import claims are evidence for slate-r5 only. The corpus does not say what the current revision is, so current behavior is unverified.
++
++## Proposed owner updates
++
++No protected notes were declared, and no correction was needed outside the editable pages. For the project owner or Coordinator:
++
++- Track the pre-1970 `created_at` export defect, which has an owner-less open status.
++- Decide whether semicolon-delimited import should be supported. If it should, file the issue that the import check says was not filed.
++
++## Verification
++
++Run from the corpus root after the edits:
++
++- Before this report was written, `grep -rn "export-digest" .` returned no matches (exit 1). After it was written, `grep -rln "export-digest" .` lists only `report.md`, which names the removed path as code, not as a link. No inbound link to the removed source remains.
++- Link check over every `*.md` file. It resolves each relative Markdown link target against the linking file's directory and requires an explicit `.md` extension. Result: `links 22 bad 0`.
++
++  ```sh
++  python3 -c 'import re,os,glob
++  b=n=0
++  for f in glob.glob("**/*.md",recursive=True):
++      for t in re.findall(r"\]\(([^)]+)\)",open(f).read()):
++          n+=1; p=os.path.normpath(os.path.join(os.path.dirname(f),t))
++          if not(os.path.exists(p) and t.endswith(".md")): b+=1; print("BAD",f,t)
++  print("links",n,"bad",b)'
++  ```
++
++- Each knowledge-page claim was re-read by hand against its cited source; every cited source is retained in `sources/`.
++
++Not checked: any slate behavior (no technical verification was in scope) and anything outside this corpus. Structural link checks do not establish that the claims are factually correct.
+diff -ruN /tmp/ruach-libeval-05-redundant-source-njJPMA.pristine/corpus/sources/export-digest.md /tmp/ruach-libeval-05-redundant-source-njJPMA/corpus/sources/export-digest.md
+--- /tmp/ruach-libeval-05-redundant-source-njJPMA.pristine/corpus/sources/export-digest.md	2026-10-04 16:41:00.671550184 +0000
++++ /tmp/ruach-libeval-05-redundant-source-njJPMA/corpus/sources/export-digest.md	1970-01-01 00:00:00.000000000 +0000
+@@ -1,7 +0,0 @@
+-# Export digest
+-
+-Coordinator digest of the [export run](export-run.md), 2026-09-11.
+-
+-- slate-r5: export tests passed (`python3 -m pytest tests/export -q`, 48 passed).
+-- CSV output is UTF-8 with a byte-order mark and a header row.
+-- Orders with `created_at` before 1970 export an empty cell; still open.
