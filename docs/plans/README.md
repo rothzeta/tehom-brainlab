@@ -1,6 +1,6 @@
 # POC 001 — bounded implementation plan index
 
-Twelve plans for the linked-formation prototype (P01 implemented, independently verified/reviewed and accepted; P02 implemented, independently verified/reviewed at `803da5df5f34b387be3bb5ccce3cd7cbd733f90b` after R1 resolution and accepted by the Coordinator, local delivery authorized; P03–P12 draft), written on 2 October 2026 against repository baseline `79f9498051df0281e6e9d3c904e9eee32f014873`.
+Twelve plans for the linked-formation prototype (P01 implemented, independently verified/reviewed and accepted; P02 implemented, independently verified/reviewed at `803da5df5f34b387be3bb5ccce3cd7cbd733f90b` after R1 resolution, accepted by the Coordinator, and locally delivered at `7e964c30a29abd1fb10613713bc205ef037b1f80`; P03–P12 draft), written on 2 October 2026 against repository baseline `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 **This is a navigation and authority note, not a thirteenth implementation plan.** Adding these documents does not implement the prototype, approve new game rules, or constitute a playtest. No package installation, application build, unit test suite, or browser combat test was run as part of drafting.
 
@@ -40,7 +40,7 @@ The user's 3 October tooling preference supersedes the original npm proposal: us
 | ID | Plan | Bounded outcome | Direct prerequisites |
 |---|---|---|---|
 | P01 | [Browser harness](2026-10-02-a87b131a-poc-001-browser-harness.md) | Independently install, run, test, and build one browser shell. Implemented, independently verified/reviewed and accepted. | None |
-| P02 | [Formation algebra](2026-10-02-2e228a2b-poc-001-formation-algebra.md) | Preserve twelve labelled, reversible formations on 37 cells. Implemented, independently verified/reviewed after R1 fix, accepted; local delivery authorized. | P01 |
+| P02 | [Formation algebra](2026-10-02-2e228a2b-poc-001-formation-algebra.md) | Preserve twelve labelled, reversible formations on 37 cells. Implemented, independently verified/reviewed after R1 fix, accepted, and locally delivered. | P01 |
 | P03 | [Command boundary](2026-10-02-2dfffcd3-poc-001-command-boundary.md) | Reject illegal/stale commands without spending resources or mutating state. | P01, P02 |
 | P04 | [Formation lab](2026-10-02-9d81c6df-poc-001-formation-lab.md) | Inspect, preview, commit, and reset formation-only interaction. | P01, P02, P03 |
 | P05 | [Intent semantics](2026-10-02-d66a7452-poc-001-intent-semantics.md) | Keep fixed areas, following marks, and explicit facing changes distinct. | P02, P03 |
