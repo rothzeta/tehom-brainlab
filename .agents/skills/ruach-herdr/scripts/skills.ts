@@ -3,9 +3,10 @@ import { dirname, join, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import { fail } from './contracts';
 export interface Skill {name:string; path:string; source:string; workflow:boolean}
-export async function scan(root:string):Promise<Skill[]> {
+export async function scan(root:string,excludedPath?:string):Promise<Skill[]> {
   const found:Skill[]=[];const seen=new Set<string>();
   async function visit(path:string,depth:number) {
+    if(path===excludedPath)return;
     const canonical=await realpath(path).catch(()=>null);
     if(!canonical || seen.has(canonical)) return;
     if(depth>20) fail(3,'skill_discovery_unavailable','Skill discovery exceeded traversal limit',root);
@@ -37,26 +38,19 @@ export function ancestors(cwd:string) {
 }
 export function claudeHome(cwd:string) {return process.env.CLAUDE_CONFIG_DIR ? resolve(cwd,process.env.CLAUDE_CONFIG_DIR) : join(homedir(),'.claude');}
 export async function localSkills(repo:string,cwd:string) {
-  const roots=[join(repo,'.agents','skills'),join(homedir(),'.agents','skills'),join(claudeHome(cwd),'skills'),...ancestors(cwd).flatMap(p=>[join(p,'.agents','skills'),join(p,'.claude','skills')])];
-  return (await Promise.all([...new Set(roots)].map(scan))).flat();
+  // Account-synced catalogs are native customizations, outside targeted local discovery.
+  const personal=join(claudeHome(cwd),'skills');
+  const roots=[join(repo,'.agents','skills'),join(homedir(),'.agents','skills'),personal,...ancestors(cwd).flatMap(p=>[join(p,'.agents','skills'),join(p,'.claude','skills')])];
+  return (await Promise.all([...new Set(roots)].map(p=>scan(p,join(personal,'synced'))))).flat();
 }
 // Claude discovers nested project skills on later file access. Collect existing
-// roots now so their workflow names can be excluded for the whole session.
+// roots now to suppress known workflow names at preparation time.
 export async function nestedClaudeRoots(repo:string) {
   const roots:string[]=[];
-  const glob=new Bun.Glob('**/.claude/{skills,commands}');
+  const glob=new Bun.Glob('**/.claude/skills');
   for await(const path of glob.scan({cwd:repo,dot:true,onlyFiles:false,followSymlinks:false})) {
     if(path.split(/[\\/]/).some(p=>['node_modules','.git','.agents'].includes(p)))continue;
     roots.push(join(repo,path));
   }
   return roots;
-}
-export async function legacyWorkflows(root:string) {
-  const workflows:string[]=[];
-  if(!(await stat(root).catch(()=>null))?.isDirectory())return workflows;
-  for await(const file of new Bun.Glob('**/*.md').scan({cwd:root,dot:true,followSymlinks:true})) {
-    const name=file.replace(/\.md$/,'').split(/[\\/]/).join(':');
-    if(name.startsWith('ruach-workflow-'))workflows.push(name);
-  }
-  return workflows;
 }

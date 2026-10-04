@@ -134,7 +134,6 @@ test('routed implementer uses its assigned Codex route',async()=>{const r=await 
 test('Codex coordinator preserves existing workflow and unrelated skill entries',async()=>{const r=await asRole('coordinator','start',explicit);expect(r.exit).toBe(0);expect(r.result.hidden_workflows).toEqual([]);const native=(await lines('native-launches.jsonl'))[0];const skills=Bun.TOML.parse(native.args.find((a:string)=>a.startsWith('skills.config='))).skills as any;expect(skills.config.find((e:any)=>e.path.endsWith('workflow/SKILL.md')).enabled).toBe(true);expect(skills.config.find((e:any)=>e.path.endsWith('unrelated')).enabled).toBe(false);});
 test('Claude dry-run does not create settings or skill links',async()=>{const r=await launch('start',['--kind','claude','--model','test-model','--temp-dir',temporary,'--dry-run']);expect(r.exit).toBe(0);await noMutation();});
 test('Claude additional directory workflow is hidden and native argv preserves whitespace and Unicode',async()=>{const extra=join(root,'external space ü $()');await skill(join(extra,'.claude','skills','alias'),'ruach-workflow-added');const pass=['--add-dir',extra,'--verbose'];const r=await launch('start',['--kind','claude','--model','test-model','--temp-dir',temporary,'--',...pass]);expect(r.exit).toBe(0);expect(r.result.hidden_workflows).toContain('ruach-workflow-added');expect((await lines('native-launches.jsonl'))[0].args.slice(-pass.length)).toEqual(pass);});
-test('Claude cannot start a worker when enabled plugin workflows cannot be hidden',async()=>{const plugin=join(root,'plugin');await skill(join(plugin,'skills','workflow'),'ruach-workflow-plugin');await writeFile(join(home,'.claude','settings.json'),JSON.stringify({enabledPlugins:{'example@market':true}}));await mkdir(join(home,'.claude','plugins'),{recursive:true});await writeFile(join(home,'.claude','plugins','installed_plugins.json'),JSON.stringify({plugins:{'example@market':[{installPath:plugin}]}}));const r=await launch('start',['--kind','claude','--model','test-model','--temp-dir',temporary]);expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('unfilterable_workflow_plugin');await noMutation();});
 test('entire routing graph is validated even when selected route is valid',async()=>{const file=join(repo,'.agents','routing.yaml');await writeFile(file,(await readFile(file,'utf8'))+'  broken.v1: {model: missing, effort: high}\n');const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe('missing_model');await noMutation();});
 test('missing selected role file fails before mutation',async()=>{await rm(join(repo,'.agents','agents','implementer.md'));const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(2);await noMutation();});
 test('a routed profile requires a nonempty string effort',async()=>{for(const effort of ['', ', effort: null', ', effort: 1']){await writeFile(join(repo,'.agents','routing.yaml'),`routes:\n  build.v1: {model: implementation.v1${effort}}\n`);const r=await launch('resolve',['--offline']);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe('invalid_string');await noMutation();}});
@@ -144,9 +143,7 @@ test('offline resolution reads routing without harness/Herdr prerequisites and n
 test('start refuses offline bypass',async()=>{const r=await launch('start',[...explicit,'--offline','--temp-dir',temporary]);expect(r.exit).toBe(2);await noMutation();});
 test('YAML aliases fail before mutation',async()=>{await writeFile(join(repo,'.agents','models.yaml'),'models:\n  implementation.v1: &x {harness: codex, native_model: test-model}\n  coordination.v1: *x\n');const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(2);await noMutation();});
 test('startup wall-clock timeout is uncertain and never resubmits',async()=>{behavior.startTimeout=true;const r=await launch('start',[...explicit,'--temp-dir',temporary]);expect(r.exit).toBe(4);expect(r.result.submission_state).toBe('unknown');expect(r.result.diagnostics[0].code).toBe('start_uncertain');expect((await lines('mutations.jsonl')).filter(x=>x.action==='start')).toHaveLength(1);expect(await lines('native-launches.jsonl')).toEqual([]);},45000);
-test('Claude fails before mutation for account-synced skill visibility that cannot be verified',async()=>{await skill(join(home,'.claude','skills','synced','download'),'ruach-workflow-synced');const r=await launch('start',['--kind','claude','--model','test-model','--temp-dir',temporary]);expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('unverified_workflow_source');await noMutation();});
 test('Claude hides existing nested project workflows before later native file discovery',async()=>{await skill(join(repo,'package','.claude','skills','nested'),'ruach-workflow-nested');const r=await launch('start',['--kind','claude','--model','test-model','--temp-dir',temporary]);expect(r.exit).toBe(0);expect(r.result.hidden_workflows).toContain('ruach-workflow-nested');expect((await lines('observed.jsonl'))[0].settings.skillOverrides['ruach-workflow-nested']).toBe('off');});
-test('legacy workflow commands fail before mutation when native exclusion cannot be verified',async()=>{const dir=join(repo,'.claude','commands');await mkdir(dir,{recursive:true});await writeFile(join(dir,'ruach-workflow-old.md'),'Legacy workflow instructions');const r=await launch('start',['--kind','claude','--model','test-model','--temp-dir',temporary]);expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('unverified_workflow_source');await noMutation();});
 test('standalone skill without installed dependencies fails clearly without implicit installation',async()=>{const copy=join(root,'uninstalled skill');await mkdir(copy);await cp(resolve(import.meta.dir,'../scripts'),join(copy,'scripts'),{recursive:true});await cp(resolve(import.meta.dir,'../package.json'),join(copy,'package.json'));const p=Bun.spawn([process.execPath,join(copy,'scripts','worker.ts'),'resolve','--offline','--name','portable-worker','--role','implementer','--cwd',repo,'--repo',repo],{cwd:copy,env:{...process.env,HOME:home,PATH:bin},stdout:'pipe',stderr:'pipe'});const stdout=await new Response(p.stdout).text();expect(await p.exited).toBe(2);expect(JSON.parse(stdout).diagnostics[0].code).toBe('dependencies_missing');expect(await readdir(copy)).toEqual(['package.json','scripts']);await noMutation();});
 test('split preserves caller executable and harness configuration roots as exact env argv values',async()=>{const r=await launch('start',[...explicit,'--temp-dir',temporary]);expect(r.exit).toBe(0);const args=(await lines('mutations.jsonl'))[0].args;for(const value of [`PATH=${bin}`,`HOME=${home}`,`CODEX_HOME=${join(home,'.codex')}`,`CLAUDE_CONFIG_DIR=${join(home,'.claude')}`]){const index=args.indexOf(value);expect(index).toBeGreaterThan(0);expect(args[index-1]).toBe('--env');}});
 
@@ -199,25 +196,41 @@ for(const [command,extra] of [['resolve',[]],['start',['--dry-run']]] as const)t
   const r=await launch(command,[...explicit,...extra],{HERDR_ENV:'0',HERDR_PANE_ID:''});expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('missing_herdr_context');await noMutation();
 });
 
-for(const cache of ['empty','technical'])test(`Claude ${cache} synced cache retains the actionable fail-closed gate`,async()=>{
+for(const cache of ['empty','technical','native-format'])test(`Claude ${cache} synced cache permits preferred worker preparation without writes`,async()=>{
   const synced=join(home,'.claude','skills','synced');await mkdir(synced,{recursive:true});
   if(cache==='technical')await skill(join(synced,'download'),'ruach-technical-synced');
-  const settingsBefore=await readFile(join(home,'.claude','settings.json'),'utf8');
+  if(cache==='native-format'){await mkdir(join(synced,'download'));await writeFile(join(synced,'download','SKILL.md'),'Native cache content outside local skill validation.');}
+  const before=await readFile(join(home,'.claude','settings.json'));
   for(const [command,extra] of [['resolve',[]],['start',['--dry-run']]] as const){
-    const r=await launch(command,['--kind','claude','--model','test-model',...extra]);expect(r.exit).toBe(3);
-    const diagnostic=r.result.diagnostics[0];expect(diagnostic.code).toBe('unverified_workflow_source');expect(diagnostic.field).toBe(synced);
-    expect(diagnostic.message).toContain('account-synced skills');expect(diagnostic.message).toContain('local cache');expect(diagnostic.message).toContain('--route ROUTE_ID');expect(diagnostic.message).toContain('resolve --offline');
-    await noMutation();
+    const r=await asRole('architect',command,[...extra,'--','--add-dir',home]);expect(r.exit).toBe(0);expect(r.result.selection.route).toBe('lead.v1');expect(r.result.selection.kind).toBe('claude');
+    expect(r.result.launchable).toBe(true);expect(r.result.submission_state).toBe('not-submitted');await noMutation();
   }
-  expect(await readFile(join(home,'.claude','settings.json'),'utf8')).toBe(settingsBefore);
-  if(cache==='technical')expect((await readFile(join(synced,'download','SKILL.md'),'utf8'))).toContain('ruach-technical-synced');
+  expect(await readFile(join(home,'.claude','settings.json'))).toEqual(before);
 });
-test('synced-cache gate permits an explicit declared native alternative without changing user customizations',async()=>{
-  const synced=join(home,'.claude','skills','synced');await skill(join(synced,'download'),'ruach-workflow-synced');
-  const before=await readFile(join(synced,'download','SKILL.md'),'utf8');const r=await asRole('implementer','resolve',['--route','build.v1']);
-  expect(r.exit).toBe(0);expect(r.result.selection.kind).toBe('codex');expect(await readFile(join(synced,'download','SKILL.md'),'utf8')).toBe(before);await noMutation();
+test('preferred Claude architect preserves synced/plugin/managed/legacy sources and supplies no workflow bodies',async()=>{
+  const workflowBody='PRIVATE WORKFLOW BODY $() `not worker instructions`';
+  const synced=join(home,'.claude','skills','synced','download','SKILL.md');
+  const plugin=join(root,'plugin','skills','workflow','SKILL.md');
+  const managed=join(root,'managed');behavior.managedRoot=managed;
+  const sources=[synced,plugin,join(managed,'managed-settings.json'),join(managed,'managed-settings.d','policy.json'),join(managed,'.claude','skills','workflow','SKILL.md'),join(repo,'.claude','commands','ruach-workflow-old.md')];
+  for(const file of sources){await mkdir(resolve(file,'..'),{recursive:true});await writeFile(file,file.endsWith('.json')?JSON.stringify({customization:workflowBody}):`---\nname: ruach-workflow-custom\ndescription: Workflow fixture.\n---\n${workflowBody}`);}
+  const user=join(home,'.claude','settings.json');await writeFile(user,JSON.stringify({permissions:{allow:['Read']},skillOverrides:{'ruach-technical':'off','ruach-workflow-feature':'on'},enabledPlugins:{'example@market':true,'uninspectable@market':true}}));
+  const registry=join(home,'.claude','plugins','installed_plugins.json');await mkdir(resolve(registry,'..'),{recursive:true});await writeFile(registry,JSON.stringify({plugins:{'example@market':[{installPath:join(root,'plugin')}]}}));
+  const known=join(repo,'.agents','skills','workflow','SKILL.md');await writeFile(known,`---\nname: ruach-workflow-feature\ndescription: Known workflow.\n---\n${workflowBody}`);
+  const files=[...sources,user,registry,known];const before=await Promise.all(files.map(f=>readFile(f)));
+  for(const [command,extra] of [['resolve',[]],['start',['--dry-run']]] as const){const r=await asRole('architect',command,[...extra]);expect(r.exit).toBe(0);expect(r.result.hidden_workflows).toContain('ruach-workflow-feature');expect(r.stdout+r.stderr).not.toContain(workflowBody);await noMutation();}
+  const r=await asRole('architect');expect(r.exit).toBe(0);expect(r.result.selection.route).toBe('lead.v1');
+  const native=(await lines('native-launches.jsonl'))[0];expect(native.args[native.args.indexOf('--append-system-prompt-file')+1]).toBe(join(repo,'.agents','agents','architect.md'));expect(native.args.join(' ')).not.toContain(workflowBody);
+  for(const flag of ['--bare','--safe-mode','--disable-slash-commands','--setting-sources'])expect(native.args).not.toContain(flag);
+  const observed=(await lines('observed.jsonl'))[0];expect(observed.settings).toEqual({skillOverrides:{'ruach-workflow-feature':'off','ruach-workflow-user':'off'}});
+  expect((await lines('customizations.jsonl'))[0].managedSourcesPresent).toBe(true);
+  const temp=r.result.temporary_directory;expect(await readdir(join(temp,'.claude','skills'))).toEqual(['ruach-technical']);
+  for await(const file of new Bun.Glob('**/*').scan({cwd:temp,dot:true,onlyFiles:true,followSymlinks:true}))expect(await readFile(join(temp,file),'utf8')).not.toContain(workflowBody);
+  expect(await Promise.all(files.map(f=>readFile(f)))).toEqual(before);
+  const lead=await asRole('coordinator');expect(lead.exit).toBe(0);expect(lead.result.hidden_workflows).toEqual([]);expect((await stat(join(lead.result.temporary_directory,'.claude','skills','ruach-workflow-feature'))).isDirectory()).toBe(true);
+  expect(await Promise.all(files.map(f=>readFile(f)))).toEqual(before);
 });
-test('legacy command diagnostic identifies its category and directory without copying private instructions',async()=>{
-  const commands=join(repo,'.claude','commands');await mkdir(commands,{recursive:true});await writeFile(join(commands,'ruach-workflow-secret.md'),secret);
-  const r=await launch('start',['--kind','claude','--model','test-model']);expect(r.exit).toBe(3);const diagnostic=r.result.diagnostics[0];expect(diagnostic.field).toBe(commands);expect(diagnostic.message).toContain('legacy workflow commands');expect(diagnostic.message).toContain('--route ROUTE_ID');expect(r.stdout+r.stderr).not.toContain(secret);await noMutation();
+test('Claude linked-worktree fallback does not block canonical worker instructions',async()=>{
+  await writeFile(join(bin,'git'),`#!${process.execPath}\nconsole.log('../main/.git');\n`);await chmod(join(bin,'git'),0o700);
+  const r=await asRole('architect','resolve');expect(r.exit).toBe(0);expect(r.result.argv).toContain(join(repo,'.agents','agents','architect.md'));await noMutation();
 });

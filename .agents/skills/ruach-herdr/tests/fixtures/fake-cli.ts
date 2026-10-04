@@ -1,6 +1,6 @@
 // Test executable: record the public argv/cwd and simulate native read boundaries.
 import { basename, join } from 'node:path';
-import { appendFileSync, readFileSync } from 'node:fs';
+import { appendFileSync, readFileSync, existsSync } from 'node:fs';
 const exe=basename(process.argv[1]),args=process.argv.slice(2);
 const root=process.env.FIXTURE_ROOT!;
 appendFileSync(join(root,'calls.jsonl'),JSON.stringify({exe,args,cwd:process.cwd()})+'\n');
@@ -39,5 +39,6 @@ else if(args.join(' ')==='app-server daemon version') {
   if(data.daemonMissing)process.exit(1);
   out({status:'running',socketPath:join(root,'native.sock'),cliVersion:'0.160.0',appServerVersion:'0.160.0'});
 } else {
+  if(exe==='claude'&&data.managedRoot)appendFileSync(join(root,'customizations.jsonl'),JSON.stringify({managedSourcesPresent:['managed-settings.json','managed-settings.d/policy.json','.claude/skills/workflow/SKILL.md'].every(p=>existsSync(join(data.managedRoot,p)))})+'\n');
   appendFileSync(join(root,'native-launches.jsonl'),JSON.stringify({exe,args,cwd:process.cwd()})+'\n');
 }
