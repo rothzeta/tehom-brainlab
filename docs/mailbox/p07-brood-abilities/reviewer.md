@@ -1,32 +1,37 @@
 task: P07-review
 status: complete
-outcome: Request changes for one blocking ADR-0006 test-contract finding; production behavior and required candidate checks pass.
+outcome: Approve at 90e96d3; R1 and R2 resolved, no remaining blocking or optional findings.
 role: reviewer
+review_task: P07-rereview
 source_baseline: 08dc6308649f124ee4a9d5897bcb8d92438dacec
-candidate_revision: 42deffc5aadeb5c1d8b77a2119a16aa6a408995c
-reviewed_revision: 42deffc5aadeb5c1d8b77a2119a16aa6a408995c
-tested_revision: 1b251bf1b1e5d38485874eb2fed5c1d5aae91f31
-evidence_revision: 1b251bf1b1e5d38485874eb2fed5c1d5aae91f31
+candidate_revision: 90e96d301bcbe7886755425b489123d87c455776
+reviewed_revision: 90e96d301bcbe7886755425b489123d87c455776
+tested_revision: 90e96d301bcbe7886755425b489123d87c455776
+evidence_revision: 9c39c01387980e21c4d6785a9af35bdab0e55400
+original_reviewed_revision: 42deffc5aadeb5c1d8b77a2119a16aa6a408995c
+original_tested_revision: 1b251bf1b1e5d38485874eb2fed5c1d5aae91f31
 artifacts:
   - docs/mailbox/p07-brood-abilities/assignment-reviewer.md
+  - docs/mailbox/p07-brood-abilities/assignment-rereview.md
   - docs/mailbox/p07-brood-abilities/reviewer.md
+  - docs/mailbox/p07-brood-abilities/fix.md
+  - docs/mailbox/p07-brood-abilities/traces.json
 verification:
-  - "Candidate/application equality: git diff --exit-code 42deffc 1b251bf -- poc-001-linked-formation; exit 0."
-  - "just poc-001-test: initial sandbox exit 1 for Docker access; escalated Docker retry exit 0, 362 tests in eight files, including 84 P07 tests and 1040 P07 assertions."
-  - "just poc-001-typecheck: escalated Docker execution, exit 0."
-  - "just poc-001-build: escalated Docker execution, exit 0; 20 modules, nine prepared asset files, existing bundle-size warning."
-  - "git diff --check 08dc630..42deffc: exit 0."
-  - "Existing-test preservation command specified by assignment: exit 0, all earlier tests unchanged."
-  - "Temporary Docker tuning probe: final exit 1 as expected, two assertion failures, one passing case, 81 skipped; details and setup below."
-  - "Handoff validator: exit 0, ok true, empty diagnostics; all five revision fields resolve."
+  - "Exact HEAD during application verification: 90e96d301bcbe7886755425b489123d87c455776; temporarily detached, then returned to p07-brood-abilities."
+  - "just poc-001-test: Docker, exit 0, 365 tests in eight files; 87 P07 tests / 1072 assertions."
+  - "just poc-001-typecheck and just poc-001-build: Docker, exit 0 each; existing build bundle-size warning."
+  - "Original one-point default-override probe: Docker, exit 0, all 87 P07 tests / 1072 assertions."
+  - "Missing-mitigation, eligibility and consumption mutation probes: intentional exit 1 each; detect the respective failures, details below."
+  - "Six stored traces independently executed with frozen inputs: Docker, exit 0; all results, metadata and rules match."
+  - "Required whitespace and existing-test preservation checks: exit 0 each; production source preservation also exit 0."
+  - "Handoff validator: exit 0, ok true, empty diagnostics; all seven revision fields resolve."
 review:
-  - "Request changes: one blocking finding (R1), one optional finding (R2). No material production correctness or accounting findings."
+  - "Approve: R1 and R2 resolved; zero remaining blocking findings and zero remaining optional findings. Original findings preserved below as historical evidence."
 discoveries:
-  - "Shared accounting preserves P06 settlement, including victory, with one actor spend and one revision. P05/P06 additive changes preserve existing tests."
-  - "Two P07 Shelter tests omit explicit mitigation at impact and therefore freeze a provisional P06 default."
-  - "The Implementer handoff does not include the six serialized input/result traces requested by the P07 plan."
-blockers:
-  - "R1: make exact Shelter damage assertions use explicit test-owned impact tuning before accepting the ADR-0006 condition."
+  - "Exact Shelter arithmetic now uses explicit impact tuning; dispatcher outcomes tolerate changed positive mitigation and detect incorrect behavior."
+  - "Six real serialized traces are supplied with revision, rules version and configuration, and replay exactly."
+  - "The technical fix changes only abilities.test.ts; production source and all other tests are unchanged."
+blockers: []
 
 Author: P07 Reviewer. Date: 2026-10-04 UTC. Worktree `/opt/dev/tehom-brainlab-p07`, branch `p07-brood-abilities`. Governing [assignment](assignment-reviewer.md), [P07 plan](../../plans/2026-10-02-f8938420-poc-001-brood-abilities.md), [Implementer handoff](implementer.md), [ADR-0006](../../adr/0006-contract-invariants-and-black-box-testing.md), [ruach-testing](../../../.agents/skills/ruach-testing/SKILL.md), and [ruach-handoff](../../../.agents/skills/ruach-handoff/SKILL.md).
 
@@ -119,3 +124,92 @@ docker run --rm --init --user "$(id -u):$(id -g)" --env HOME=/tmp --env BUN_INST
 First attempt exited 1 before executing tests because Vitest's mock hoisting did not accept the absolute-path `vi` import. Corrected only the temporary setup by removing that import and enabling `globals: true`. Final attempt exited 1 with the two specified arithmetic failures, one passing expanded case and 81 skipped cases. A temporary-config CommonJS/ESM advisory was emitted; it did not prevent test execution. This intentional alternate-default probe is separate from the passing unmodified candidate suite.
 
 No browser check or human playtest was required or run. Balance, enjoyment, playable encounters, UI integration, P08 scheduling and malformed serialized-state parsing remain unverified/outside this review. No merge, push, rebase or branch/worktree deletion occurred. Fixes remain with the Implementer; acceptance and delivery remain with the Coordinator.
+
+## Re-review of R1/R2 at 90e96d3
+
+**Verdict: approve. R1 and R2 are resolved. Remaining findings: zero blocking, zero optional. No new material findings.** The earlier findings and verification above describe the original candidate and are preserved unchanged; this section and the updated YAML describe the fixed candidate.
+
+Scope: [re-review assignment](assignment-rereview.md), technical fix range `20eb00c..90e96d3`, [fix handoff](fix.md), and [traces artifact](traces.json) introduced by evidence-only commit `9c39c01`. The fix changes only `poc-001-linked-formation/tests/abilities.test.ts`: one import, explicit impact tuning in the two reviewed test definitions (three executed cases), and three added dispatcher cases. Inspected all changed assertions and their P06/dispatcher boundaries; production code and all other tests are unchanged. No coverage was removed.
+
+All application checks and probes below executed while HEAD was exactly `90e96d301bcbe7886755425b489123d87c455776`, using `git switch --detach 90e96d301bcbe7886755425b489123d87c455776`. Returned with `git switch p07-brood-abilities` to existing evidence commit `9c39c01387980e21c4d6785a9af35bdab0e55400` before recording this report. Both switch commands exited 0; branches were not rewritten. `git diff --exit-code 90e96d3 HEAD -- poc-001-linked-formation` exited 0 on return. The trace artifact was copied to temporary scratch before detaching; its checksum before and after is `87b0d1514ad6a92767e21c23c26580e4f44bdc5c9f9c75eac0867d6bc3ad5512`.
+
+### R1 resolution
+
+At current `abilities.test.ts:161` and `:174`, exact impact tests call public `applyAttack(..., rules.damageRules)`. The independent test input explicitly supplies two-point Shelter mitigation, and the original exact HP, eligibility, consumption, same-blast source-death and expiry assertions remain intact. Passing rules only to installation is no longer relied on to configure damage.
+
+New dispatcher cases at `abilities.test.ts:186` and `:205` compare the same attack on sheltered and unsheltered snapshots. Eligible Close/same-blast targets must retain more HP, while an expanded target must have identical HP. They also assert consumed status removal, eligibility events, actor/maneuver preservation and one impact revision. These observable relationships allow the positive default mitigation amount to change without making missing mitigation pass. The existing frozen fixtures and replay checks remain, and the Close/expanded dispatcher cases also verify unchanged input snapshots.
+
+Independently reran the original unchanged one-point mock/configuration from the initial review against **all 87 P07 tests**: exit 0, 1,072 assertions. Thus the previously failing exact cases pass with alternate default tuning, and the new dispatcher cases also pass. Independently checked their detection strength with temporary mutations; all deliberately incorrect behaviors fail as expected:
+
+| Temporary behavior | Exit / counts | Evidence |
+| --- | --- | --- |
+| Default Shelter reduction zero; explicit tuning forwarded intact | 1; two failed, four passed, 81 skipped; 41 assertions | Close dispatcher line 196 fails HP5 > HP5; same-blast dispatcher line 214 fails HP7 > HP7. All three explicit-impact cases still pass. |
+| Corrupt default impact eligibility to threshold four while retaining exported default threshold two | 1; one failed, five passed, 81 skipped; 47 assertions | Expanded dispatcher line 195 fails received HP7 / unsheltered HP5. Explicit impact tuning remains intact. |
+| Restore input Shelters after otherwise normal attack settlement | 1; six failed, 81 skipped; 33 assertions | Both exact and dispatcher cases reject retained Shelters at lines 165, 179, 197 and 216. |
+
+The eligibility probe was first run by altering the exported default threshold as well (same one-failure/five-pass result), then refined and rerun to corrupt only default impact settlement, keeping the declared geometry tuning unchanged. These are intentional mutation-test failures, not candidate failures. No source or test file was modified by any probe.
+
+### R2 resolution
+
+The durable artifact contains exactly six full input/result records for Claw, Shelter, Sting, Impale, Gale and Crosswind. It identifies tested revision `90e96d301bcbe7886755425b489123d87c455776`, rules version `p07-v1`, fixture version `p07-fix-traces-v1`, public boundary `applyCommand`, and actual ability/damage rules. Inspected artifact structure and independently executed every stored command against its frozen stored state. All six actual results deeply equal the stored results, each succeeds with input revision + 1, and all six inputs remain unchanged. Artifact metadata and stored rule configuration also match the production exports. R2's requested executed examples are now present and independently reproducible.
+
+### Exact re-review verification
+
+Application execution used Docker and the pinned Bun 1.4.2 image throughout. Dependencies were already installed; no installation was needed. Docker and linked-worktree Git writes used escalation; no approval rejection occurred. No host-mode application checks ran.
+
+| Exact command | Exit / result |
+| --- | --- |
+| `git rev-parse HEAD` during application checks | 0; exact fixed technical revision `90e96d301bcbe7886755425b489123d87c455776`. |
+| `just poc-001-test` | 0; 365 tests / eight files: 87 abilities, 92 formation, 37 commands, 77 intents, 48 damage, 19 view, 3 assets, 2 smoke. P07 1,072 assertions; five instrumented suites total 3,801 assertions. |
+| `just poc-001-typecheck` | 0; `tsc --noEmit`. |
+| `just poc-001-build` | 0; 20 modules, nine prepared asset/attribution files; existing >500 kB Phaser bundle warning. |
+| `git diff --check 20eb00c..90e96d3` | 0; no whitespace errors. |
+| `git diff --exit-code 08dc630 90e96d3 -- poc-001-linked-formation/tests ':!poc-001-linked-formation/tests/abilities.test.ts'` | 0; all earlier test files unchanged. |
+| `git diff --exit-code 20eb00c 90e96d3 -- poc-001-linked-formation/src` | 0; production source unchanged by fix. |
+| `git diff --exit-code` before returning to branch | 0; no tracked edits from checks/probes. |
+| `git diff --name-only 90e96d3 9c39c01` | 0; only fix assignment, fix handoff and traces artifact. |
+| `PATH=/home/metatron/.bun/bin:$PATH bun .agents/skills/ruach-handoff/scripts/validate.ts docs/mailbox/p07-brood-abilities/reviewer.md --repo /opt/dev/tehom-brainlab-p07` | 0; `ok: true`, empty diagnostics, all seven revision fields resolve. |
+
+Original default-override probe, unchanged temporary setup/configuration shown in the original review, extended to all P07 tests (exit 0):
+
+```sh
+docker run --rm --init --user "$(id -u):$(id -g)" --env HOME=/tmp --env BUN_INSTALL_CACHE_DIR=/tmp/bun-cache --volume /opt/dev/tehom-brainlab-p07/poc-001-linked-formation:/app:ro --volume /tmp/p07-review-probes.0aXEmX:/probe --workdir /app oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895 bun run --bun test:unit --config /probe/tuning.config.ts tests/abilities.test.ts --reporter=dot
+```
+
+The inherited `.ts` temporary configuration emits a CommonJS/ESM future-loader advisory; execution succeeds. New mutation config `mutation-rereview.config.mts` uses the same root/Node/globals/include settings, cache `/tmp/p07-rereview-vite-cache`, and setup `/probe/mutation-rereview.setup.ts`. Final setup:
+
+```ts
+vi.mock('/app/src/core/damage.ts', async (importOriginal) => {
+  const actual = await importOriginal();
+  const mode = process.env.P07_REREVIEW_MUTATION;
+  const damageRules = { ...actual.DEFAULT_DAMAGE_RULES,
+    ...(mode === 'missing' ? { shelterReduction: 0 } : {}) };
+  return {
+    ...actual,
+    DEFAULT_DAMAGE_RULES: damageRules,
+    applyAttack: (state, attack, rules = damageRules) => {
+      const impactRules = mode === 'eligibility' && rules === damageRules
+        ? { ...rules, closeThreshold: 4 } : rules;
+      const result = actual.applyAttack(state, attack, impactRules);
+      return mode === 'consumption' && result.ok
+        ? { ...result, state: { ...result.state, shelters: state.shelters } } : result;
+    },
+  };
+});
+```
+
+Exact mutation command below was executed with each of the literal values `missing`, `eligibility` and `consumption` in the environment argument (exit 1 each). The eligibility command was executed a second time after the setup refinement described above:
+
+```sh
+docker run --rm --init --user "$(id -u):$(id -g)" --env HOME=/tmp --env BUN_INSTALL_CACHE_DIR=/tmp/bun-cache --env P07_REREVIEW_MUTATION=missing --volume /opt/dev/tehom-brainlab-p07/poc-001-linked-formation:/app:ro --volume /tmp/p07-review-probes.0aXEmX:/probe --workdir /app oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895 bun run --bun test:unit --config /probe/mutation-rereview.config.mts tests/abilities.test.ts --reporter=dot -t 'AC3: Shelter checks Close|AC3: installed Shelter|AC3 dispatcher'
+```
+
+Exact independent trace replay command (exit 0):
+
+```sh
+docker run --rm --init --user "$(id -u):$(id -g)" --env HOME=/tmp --env BUN_INSTALL_CACHE_DIR=/tmp/bun-cache --volume /opt/dev/tehom-brainlab-p07/poc-001-linked-formation:/app:ro --volume /tmp/p07-review-probes.0aXEmX:/probe:ro --workdir /app oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895 bun /probe/replay-rereview.ts
+```
+
+The disposable script reads the unchanged copy of `traces.json`; verifies revision, version, fixture, boundary, explicit rule metadata and the exact six ability IDs; recursively freezes each input; calls production `applyCommand`; and asserts success, full result equality, revision + 1 and unchanged JSON input. Output reports `passed_traces:6`, `inputs_preserved:6` and rules version `p07-v1`. The copy and repository artifact share the checksum recorded above.
+
+Only this report was edited; the re-review assignment is committed unchanged, SHA-256 `e9b504891d9404a09c3dcf3f85d51a7360daf3e5e4f885a443e1b9dd1ee22857`. All new disposable material remains in OS temporary scratch. No required check remains unrun. Browser/human playtest, balance, P08 scheduling and UI integration remain outside scope, with the same limitations as the original review. Coordinator acceptance/delivery remain separate from this approval recommendation. No merge, push, rebase or branch/worktree deletion occurred.
