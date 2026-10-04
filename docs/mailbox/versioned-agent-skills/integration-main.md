@@ -1,34 +1,42 @@
-task: versioned-agent-skills / integration-main / Part 1
+task: versioned-agent-skills / integration-main / Part 2
 status: complete
-outcome: Reviewed skills merged locally; root launches delegate to ruach-herdr with repository policy retained; Part 1 quick checks pass.
+outcome: Contract corrections merged locally, root automatic approval review restored, and assigned combined verification passed without real agent startup.
 artifacts:
   - docs/mailbox/versioned-agent-skills/integration-main.md
   - versioned-agent-skills-main
   - scripts/agent-routing.py
   - scripts/test-agent-routing.py
   - .agents/skills/ruach-herdr/scripts/worker.ts
+  - docs/CURRENT.md
+  - docs/TASK_LOGS.md
 verification:
-  - "Root CLI suite at tested_revision: 13 tests pass, exit 0."
-  - "Frozen installs in all three skill directories: exit 0."
-  - "Skill suites: herdr 81 pass; handoff 24 pass; harness-eval 59 pass; all exit 0."
-  - "Skill-creator quick validators: all three skills valid, exit 0; format evidence only."
-  - "Protected-path baseline diff and imported skill runtime/test equivalence diff: empty, exit 0."
-  - "Whitespace check: exit 0; portability runtime scan: no matches."
-  - "Handoff validator: exit 0, ok true, all six supplied revisions resolved."
+  - "Three frozen installs: exit 0, no dependency/lock changes."
+  - "Committed combined revision suites: root 13, herdr 107, handoff 24, harness-eval 59 tests pass; all exit 0."
+  - "Real root surface: nine preferred/alternative resolves, five rejection cases, and two foreign/alias-root cases pass."
+  - "Native matrix: all 18 resolve/auto-review dry-run preparations pass; preferred Claude Architect succeeds; panes/names/native session identities unchanged."
+  - "Existing named agent resolve rejected with exit 2 and duplicate_name; no startup requested."
+  - "All six ruach skill format checks and 21 versioned-skills mailbox validations pass."
+  - "Evaluator scope-check: clean, 74 assessed paths, no unexpected/protected changes, exit 0."
+  - "Temporary-HOME links: three realpaths, four script help calls, offline resolve and handoff validation pass; 43 skill files unchanged."
+  - "P01/P02 protected-path diff empty; portability/ownership scans and whitespace checks pass."
+  - "Updated Part 2 handoff validator: exit 0, ok true, eight supplied revisions resolved."
 review: not-run
 discoveries:
-  - "Root resolve intentionally uses offline selection; worker JSON and failure categories replace the prior flattened result."
-  - "Existing-pane launches are unsupported by the worker; root --pane is retired with an explicit diagnostic."
-  - "Common baseline 62d7ac7 predates delivered routing/P02; its aggregate diff includes inherited work, not new integration edits."
+  - "Complete Claude account/plugin/managed catalog visibility remains unverified and nonfatal; launcher supplies canonical role instructions, never workflow bodies."
+  - "Codex prefers a matching daemon, with short-lived stdio fallback that can initialize runtime state without changing user config; real matrix used daemon."
+  - "Root passes portable auto-review policy; skill adapters own native permission flags."
+  - "Herdr list contains both named agents and anonymous detected processes; corrected observer and actual named duplicate probe confirm the worker guard."
 blockers: []
 source_baseline: 97752643b31cdcf8c8ec9f09204382c6766b1573
-source_revision: 90ac37bea9ca8d308272c39976db5e020122220a
-merge_revision: b9a8e020759fffecdc0bf4b3d1ab2732ec7e603c
-candidate_revision: 3ba171cf37158ace89614108d795bfdc69062b33
-tested_revision: 3ba171cf37158ace89614108d795bfdc69062b33
-skill_evidence_revision: b9a8e020759fffecdc0bf4b3d1ab2732ec7e603c
+source_revision: ab1de719960dcbb349bf6729444a26120db0dde7
+merge_revision: e0ea8b48f6a638e22fb043b8fd0abc94750734dd
+candidate_revision: 8ea1c677e88b4c0d9b96646719836cae721c3454
+combined_revision: 8ea1c677e88b4c0d9b96646719836cae721c3454
+tested_revision: 8ea1c677e88b4c0d9b96646719836cae721c3454
+part1_candidate_revision: 3ba171cf37158ace89614108d795bfdc69062b33
+part1_report_revision: 35094569941c32c1f52ffb67bd2ace046330cdf5
 
-Author: Implementer, main integration owner. Date: 2026-10-04 UTC. Destination: local `versioned-agent-skills-main` worktree. This report completes Part 1 only. Its creating commit is returned in the terminal handoff; no master delivery or new independent review is claimed.
+Author: Implementer, main integration owner. Date: 2026-10-04 UTC. Destination: local `versioned-agent-skills-main` worktree. This report records Part 1 history and completes Part 2; the source/tested revisions in the leading fields now identify Part 2. Its creating commit is returned in the terminal handoff; no master delivery or new independent review is claimed.
 
 ## Part 1 interim outcome
 
@@ -43,7 +51,7 @@ Coordinator guidance now mentions both ruach-herdr and the delegating root surfa
 - `resolve ROLE [--name NAME]` remains usable without Herdr/native executables by mapping to worker `resolve --offline`. Default name remains `resolved-agent`. Output is worker schema version 1 with nested `selection` (`kind`/`model` replace `harness`/`native_model`); native argv are empty and `launchable` is false. Native config is not read. Use the skill directly for live resolution or dry-run.
 - `start ROLE NAME [--route ID] [--root DIR]` remains, creating one sibling pane through the worker. `--pane` is retained only to produce a clear retirement diagnostic before delegation; supporting existing panes would require extending the separately owned worker contract.
 - Worker stdout, stderr and exit categories 2/3/4 are forwarded unchanged. Root policy/setup errors retain exit 1, argument errors exit 2 (the inherited missing-PyYAML diagnostic also exits 2). No retries or fallback routes are added.
-- Worker names now match `[a-z][a-z0-9_-]{0,31}`. Permissions are inherited rather than imposing the previous root defaults. Native preparation/configuration, workflow exclusion and private material follow the skill contract, including Codex's existing matching daemon requirement and Claude's fail-closed customization gates.
+- Worker names now match `[a-z][a-z0-9_-]{0,31}`. Part 2 supersedes the Part 1 permission change: root automatic approval review is restored through `--permissions auto-review`. Codex now permits short-lived native stdio fallback; unverified complete Claude catalog visibility is a limitation rather than a startup gate.
 
 These changes are explained in root and subcommand help, the agent README, operational docs and the routing reference. They deliberately avoid rebuilding old native mechanics to emulate prior output.
 
@@ -81,7 +89,7 @@ Bun was `/home/metatron/.bun/bin/bun`, version `1.4.2 (744846f84)`. Each install
 
 The first root run found three obsolete error-wording assertions (12 tests, three subtest failures). They were updated to worker diagnostics without changing rejection requirements; the next run passed 12 tests. After adding the explicit-missing-Bun regression and committing implementation, the final run passed 13 tests.
 
-Skill suites started with HEAD at `skill_evidence_revision` and integration edits present in the worktree. Runtime, tests, manifests and locks were unchanged throughout those runs and are identical at `tested_revision`; an explicit equivalence diff below confirms that. The final root suite ran at the committed `tested_revision`. No checks are claimed at the later report-only commit.
+Part 1 skill suites started with HEAD at merge `b9a8e020759fffecdc0bf4b3d1ab2732ec7e603c` and integration edits present in the worktree. Runtime, tests, manifests and locks were unchanged throughout those runs and are identical at Part 1 tested revision `3ba171cf37158ace89614108d795bfdc69062b33`; an explicit equivalence diff below confirms that. The final Part 1 root suite ran at that committed revision. No checks are claimed at the later report-only commit.
 
 Other executed commands:
 
@@ -218,4 +226,174 @@ Common-rule scope command `git diff --stat 62d7ac7..HEAD` was executed. That ear
 
 No full combined acceptance/scope evaluation, live harness startup, paid turn, model entitlement check, or independent integration review was performed. Stub argv/stream results do not prove a live harness session; handoff schema validation does not certify truth. Herdr's suite required a sandbox allowance for Unix sockets. Writes to read-only `.agents` paths and local shared Git worktree metadata used approved escalation; no unrelated worktree, master branch, global skill install, persistent harness settings, push, deletion or prototype changes occurred.
 
-Part 2 remains: receive and merge the pending ruach-herdr contract fix into this integration branch, resolve any conflicts within scope, and perform the assigned combined verification. Later delivery/evidence updates remain Coordinator-controlled; CURRENT/TASK_LOGS have not been appended. Part 1 has no unresolved blocker. Executed `/home/metatron/.bun/bin/bun .agents/skills/ruach-handoff/scripts/validate.ts docs/mailbox/versioned-agent-skills/integration-main.md`: exit 0, `ok: true`, empty diagnostics, all six supplied revisions resolved. The final report is checked again before commit; the terminal handoff records the observed report-containing commit.
+At the Part 1 handoff, Part 2 remained pending: merge the ruach-herdr corrections and run combined verification. Those tasks and the now-authorized CURRENT/TASK_LOGS entries are completed below. Master delivery/global installation remain Coordinator-controlled. Part 1 has no unresolved blocker. Executed `/home/metatron/.bun/bin/bun .agents/skills/ruach-handoff/scripts/validate.ts docs/mailbox/versioned-agent-skills/integration-main.md`: exit 0, `ok: true`, empty diagnostics, all six Part 1 supplied revisions resolved. The Part 2 report is checked again before commit; the terminal handoff records the observed report-containing commit.
+
+
+## Part 2 — contract merge and combined verification
+
+Source branch `versioned-agent-skills-herdr` at `ab1de719960dcbb349bf6729444a26120db0dde7` contains implementations `97e7c09` (Claude correction) and `97ced69` (Codex fallback and portable permissions). `git merge --no-ff ab1de71` produced only the expected conflict in `.agents/skills/ruach-herdr/references/routing.md`. Resolution kept corrected native-reader, visibility and permission content while preserving the delivered delegation seam. Local merge commit is `e0ea8b48f6a638e22fb043b8fd0abc94750734dd`; implementation/documentation candidate is `8ea1c677e88b4c0d9b96646719836cae721c3454`.
+
+Root launches now pass `--permissions auto-review` as repository policy for both start and offline resolve. No native permission flags are constructed in root code. The startup argv regression checks the exact worker arguments, including this policy. Canonical Coordinator guidance remains role/route/cwd/name-based with no model names or native flags. Root help/README, operational docs, routing reference and this owner's prior prose are reconciled. SCHEMA's existing mechanical-validation/historical-boundary guidance remains accurate and was retained; navigation already links the delivered skills. CURRENT and TASK_LOGS receive factual local-integration entries; they do not establish master delivery or global installation.
+
+Claude preparation supplies canonical role instructions, omits launcher-supplied workflow bodies, and suppresses known repository workflows where supported. Full account/plugin/managed catalog visibility is an unverified nonfatal limit. Codex uses the running matching daemon when available and otherwise a short-lived native stdio inspector. That fallback may initialize native runtime state, but does not write user configuration. The real matrix here used the daemon for all eight Codex preparations; fallback behavior is covered by default fixtures, not a real forced-daemon-absence run.
+
+### Commands and results on the committed combined revision
+
+Every combined suite and root/native/link/scope check ran with HEAD at `8ea1c677e88b4c0d9b96646719836cae721c3454` and a clean tracked worktree. Intermediate evidence stayed in ignored `.agents/scratch/integration-main-part2/`. Bun was `/home/metatron/.bun/bin/bun`, version 1.4.2. Shell invocations used `$BUN_BIN` when set, then the standard user Bun install, then PATH.
+
+| Cwd | Exact command | Result |
+| --- | --- | --- |
+| `.agents/skills/ruach-herdr` | `/home/metatron/.bun/bin/bun install --frozen-lockfile` | exit 0; checked two installs across three packages, no changes |
+| `.agents/skills/ruach-handoff` | `/home/metatron/.bun/bin/bun install --frozen-lockfile` | exit 0; checked six installs across seven packages, no changes |
+| `.agents/skills/ruach-harness-eval` | `/home/metatron/.bun/bin/bun install --frozen-lockfile` | exit 0; done, no external dependencies |
+| Repository root | `bin/test-agent-routing -v` | exit 0; 13 tests in 7.866s |
+| `.agents/skills/ruach-herdr` | `/home/metatron/.bun/bin/bun test` | exit 0; 107 pass, 0 fail, 753 assertions, 124.00s |
+| `.agents/skills/ruach-handoff` | `/home/metatron/.bun/bin/bun test` | exit 0; 24 pass, 0 fail, 216 assertions, 16.60s |
+| `.agents/skills/ruach-harness-eval` | `/home/metatron/.bun/bin/bun test` | exit 0; 59 pass, 0 fail, 637 assertions, 12.99s |
+
+All existing corrected skill suites were preserved unchanged. Only the root expected portable policy argv and offline policy assertions were updated.
+
+The scratch helper was invoked as:
+
+```sh
+python3 .agents/scratch/integration-main-part2/verify.py root > .agents/scratch/integration-main-part2/root.jsonl
+python3 .agents/scratch/integration-main-part2/verify.py native > .agents/scratch/integration-main-part2/native-final.jsonl
+python3 .agents/scratch/integration-main-part2/verify.py links > .agents/scratch/integration-main-part2/links.jsonl
+```
+
+All final invocations exited 0. Its native command generation has no startup path without `--dry-run`. Root mode executed `just agent-routing resolve ROLE` for all five roles and repeated it with `--route ID` for each of the four declared alternatives below. All nine calls returned expected YAML-selected role/route/kind/model/effort, auto-review policy, offline action, no argv and `launchable: false`.
+
+Real root negative calls were:
+
+```sh
+bin/agent-routing resolve unknown
+bin/agent-routing resolve coordinator --route gpt-6.1-sol-high
+bin/agent-routing resolve scout --unknown-option
+bin/agent-routing start scout check-worker --pane existing-pane
+BUN_BIN=<scratch>/does-not-exist bin/agent-routing resolve scout
+```
+
+Their observed exits were 2, 2, 2, 1 and 1, with unreadable role, disallowed route, argparse unknown-option, explicit retired-pane and missing-Bun diagnostics respectively. Foreign-cwd `--root` resolution was checked from `/tmp`, and a temporary path containing spaces/quotes symlinked to this checkout resolved to its canonical realpath. All passed. The root suite separately captures exact start argv/cwd through a fake Bun and verifies unchanged stdout/stderr and worker exits 2/3/4 with exactly one delegation/no retries. No real root start was submitted.
+
+Native matrix commands used this exact form for each preferred role and every declared alternative (R is the absolute integration worktree):
+
+```sh
+/home/metatron/.bun/bin/bun "$R/.agents/skills/ruach-herdr/scripts/worker.ts" resolve --name "main-check-$ROLE" --role "$ROLE" --repo "$R" --cwd "$R" --permissions auto-review
+/home/metatron/.bun/bin/bun "$R/.agents/skills/ruach-herdr/scripts/worker.ts" start --name "main-check-$ROLE" --role "$ROLE" --repo "$R" --cwd "$R" --permissions auto-review --dry-run
+# Alternative rows append --route ROUTE_ID to each argv.
+```
+
+| Role | Selected route (preferred first, then alternative) | Kind | Config reader | Resolve / dry-run exit |
+| --- | --- | --- | --- | --- |
+| coordinator | claude-opus-5.5-high | claude | n/a | 0 / 0 |
+| architect | claude-opus-5.5-high | claude | n/a | 0 / 0 |
+| architect | gpt-6.1-sol-high | codex | daemon | 0 / 0 |
+| scout | gpt-6.1-sol-high | codex | daemon | 0 / 0 |
+| scout | claude-opus-5.5-high | claude | n/a | 0 / 0 |
+| implementer | gpt-6.1-sol-high | codex | daemon | 0 / 0 |
+| implementer | claude-opus-5.5-high | claude | n/a | 0 / 0 |
+| reviewer | gpt-6.1-sol-high | codex | daemon | 0 / 0 |
+| reviewer | claude-opus-5.5-high | claude | n/a | 0 / 0 |
+
+All 18 were launchable, returned `not-submitted`, had empty diagnostics and no pane/private launch directory. Native versions were Claude 2.1.289 and Codex 0.160.0. **Preferred Claude Architect preparation succeeded in both commands against this worktree's own catalogs.** Before/after `herdr pane layout --current` and `herdr agent list` snapshots confirm unchanged pane, named-agent and native-session identities (23 entries: 16 named and seven anonymous detected processes). No pane or agent was created.
+
+The scratch observer initially assumed every live list entry had a name and then confused anonymous harness labels with names. Two observer-only runs stopped before native preparation. An exploratory `resolve --name codex` returned 0, but `codex` was merely a harness label and this was not a valid duplicate probe. Full response inspection corrected those assumptions; no production code or test was changed. A valid read-only probe of existing named agent `skills-impl-main` then returned exit 2 with `duplicate_name`:
+
+```sh
+/home/metatron/.bun/bin/bun /opt/dev/tehom-brainlab/.agents/scratch/versioned-agent-skills-main/.agents/skills/ruach-herdr/scripts/worker.ts resolve --name skills-impl-main --role architect --repo /opt/dev/tehom-brainlab/.agents/scratch/versioned-agent-skills-main --cwd /opt/dev/tehom-brainlab/.agents/scratch/versioned-agent-skills-main --permissions auto-review
+```
+
+This resolves the briefly reported concern; there is no known duplicate-name blocker. It does not establish startup behavior because no start was requested.
+
+### Format, handoffs, links and portability
+
+Executed `python3 /home/metatron/.codex/skills/.system/skill-creator/scripts/quick_validate.py DIR` for every `.agents/skills/ruach-*/SKILL.md` owner: herdr, handoff, harness-eval, testing, simplification and workflow-feature. All six exited 0 with `Skill is valid!`; this is format evidence only.
+
+Executed `/home/metatron/.bun/bin/bun .agents/skills/ruach-handoff/scripts/validate.ts REPORT` over all 21 `docs/mailbox/versioned-agent-skills/*.md` reports. All exited 0 with `ok: true` and empty diagnostics. Historical reports by other workers are unchanged. The updated integration report was separately validated with `/home/metatron/.bun/bin/bun .agents/skills/ruach-handoff/scripts/validate.ts docs/mailbox/versioned-agent-skills/integration-main.md`: exit 0, `ok: true`, all eight supplied revisions resolved, empty diagnostics. Corpus validation checks structure/revision existence, not truth or acceptance.
+
+A fresh temporary HOME under ignored scratch linked `.agents/skills/{ruach-herdr,ruach-handoff,ruach-harness-eval}` to this worktree's canonical skill directories. All three resolved realpaths matched. With that HOME, commands through the links ran `worker.ts --help`, `validate.ts --help`, `acceptance.ts --help`, `scope-check.ts --help`, worker `resolve --offline --name link-check --role architect --repo R --cwd R`, and handoff validation of this report from the temporary HOME. All six exited 0; offline output remained unlaunchable. Temporary HOME was removed. SHA-256 snapshots of all 43 skill files excluding ignored node_modules matched before/after; no added/removed/changed skill files. No actual global link was installed.
+
+Executed scans (zero matches means rg exit 1):
+
+```sh
+rg -n -- '--append-system|--permission-mode|--approve-for-me|developer_instructions|skills\.config|harness_argv|herdr_call|def resolve|toml' scripts/agent-routing.py
+rg -n -- 'gpt-[0-9]|claude-opus|--model|--effort|--permission-mode|--approve-for-me|--append-system' .agents/agents/coordinator.md .agents/skills/ruach-workflow-feature/SKILL.md
+rg -n --glob '!**/node_modules/**' --glob '!bun.lock' -- '/tmp/brainlab-|tehom-brainlab|Brainlab|/home/metatron|gpt-[0-9]|claude-opus' .agents/skills
+rg -n -- 'from .*(ruach-|skills/)' .agents/skills/ruach-herdr/scripts .agents/skills/ruach-handoff/scripts .agents/skills/ruach-harness-eval/scripts
+rg -l --glob '!**/node_modules/**' -- '--permission-mode|--approve-for-me|--append-system-prompt-file' .agents/skills
+git diff --check 97752643..HEAD
+```
+
+First four scans had zero matches. The fifth locates expected native flag ownership inside ruach-herdr's adapters, fixtures/tests and skill docs, not root code or Coordinator/workflow guidance. An initial all-skills scan placed glob options after `--` and exited 2; the corrected command above completed with no matches. Whitespace check exited 0.
+
+### Scope and protected paths
+
+Executed:
+
+```sh
+/home/metatron/.bun/bin/bun .agents/skills/ruach-harness-eval/scripts/scope-check.ts --repo . --baseline 97752643 --candidate 8ea1c677e88b4c0d9b96646719836cae721c3454 --allow .agents/scratch/integration-main-part2/scope-allow.json
+```
+
+Exit 0; `ok: true`, expected branch, clean worktree, 74 changed/assessed paths, empty unexpected/protected paths and diagnostics. The explicit allow/protection configuration was:
+
+```json
+{
+  "schema_version": 1,
+  "paths": [
+    "scripts/agent-routing.py",
+    "scripts/test-agent-routing.py",
+    ".agents/README.md",
+    ".agents/agents/coordinator.md",
+    ".agents/skills/ruach-workflow-feature/SKILL.md",
+    "docs/SCHEMA.md",
+    "docs/README.md",
+    "docs/exploitation/agent-routing.md",
+    "docs/CURRENT.md",
+    "docs/TASK_LOGS.md"
+  ],
+  "prefixes": [
+    ".agents/skills/ruach-herdr/",
+    ".agents/skills/ruach-handoff/",
+    ".agents/skills/ruach-harness-eval/",
+    "docs/mailbox/versioned-agent-skills/"
+  ],
+  "require_clean": true,
+  "expected_branch": "versioned-agent-skills-main",
+  "protected_paths": [
+    "poc-001-linked-formation/",
+    "shared/",
+    "tools/",
+    "assets/",
+    "docs/prototypes/",
+    "docs/plans/",
+    "docs/playtests/",
+    "docs/adr/",
+    "docs/mailbox/p01-browser-harness/",
+    "docs/mailbox/p02-formation-algebra/",
+    "docs/mailbox/routing-p02/",
+    "docs/mailbox/agent-routing/",
+    ".agents/models.yaml",
+    ".agents/routing.yaml",
+    ".agents/roles.yaml",
+    "bin/",
+    "justfile",
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md"
+  ]
+}
+```
+
+Protected non-agent diff was empty, exit 0:
+
+```sh
+git diff --exit-code 97752643 HEAD -- prototypes 'poc-*' shared tools assets docs/prototypes docs/plans docs/playtests docs/adr docs/mailbox/p01-browser-harness docs/mailbox/p02-formation-algebra docs/mailbox/routing-p02 docs/mailbox/agent-routing
+```
+
+The actual prototype path is `poc-001-linked-formation/`; generic `prototypes/` remains absent. P01/P02 code, contracts and evidence, shared/tools/assets and their documentation remain unchanged. Routing catalogs, root bin/just surfaces, portable role definitions other than Coordinator, and historical reports are protected by the allow-list. CURRENT/TASK_LOGS are now explicitly authorized append-only evidence paths. No browser rerun was needed or performed.
+
+### Handoff limits and next step
+
+No live model session, paid turn, task submission, native role contribution acceptance, or full live skill discovery was verified. Claude complete account/plugin/managed catalog visibility remains an honest unverified limit. The real no-daemon stdio path was not forced; default tests cover fallback/cleanup/runtime-state boundaries. Mechanical handoff validity does not certify truth, and stub argv checks do not establish a live session.
+
+Part 2 has no unresolved blocker. The local combined/tested revision is the leading `8ea1c67` SHA; later report/CURRENT/TASK_LOGS changes only record evidence. Source and destination are local branches; no master delivery, remote push, branch/worktree deletion or persistent global install occurred. The Coordinator retains independent review, acceptance and any later delivery/global installation decision. Return the observed report-containing SHA after commit rather than predicting it here.

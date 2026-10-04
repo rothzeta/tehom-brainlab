@@ -625,3 +625,27 @@ Local destination is `versioned-agent-skills-main`, from delivered routing/P02 b
 Part 2 merged Herdr correction source `ab1de719960dcbb349bf6729444a26120db0dde7` (implementations `97e7c09` and `97ced69`) at `e0ea8b48f6a638e22fb043b8fd0abc94750734dd`. The sole conflict in the routing reference was resolved by retaining corrected native-reader/visibility/permission content and the delivered root-delegation seam. Root code now passes `--permissions auto-review` as repository policy; skill adapters own all native mappings. Updated root argv regression expectations and current documentation. Historical worker reports remain unchanged; the integration owner updates its own [handoff](mailbox/versioned-agent-skills/integration-main.md).
 
 The combined verification record will identify its committed candidate and actual results below. No master delivery, persistent global symlink installation, real agent startup, paid model turn or native role/skill discovery is claimed.
+
+### Combined verification at 8ea1c67
+
+Combined/candidate/tested revision: `8ea1c677e88b4c0d9b96646719836cae721c3454`, on clean local `versioned-agent-skills-main`. Frozen install and tests used `/home/metatron/.bun/bin/bun` 1.4.2 (or the task's `$BUN_BIN`/standard-install/PATH resolution). All scratch helpers/logs/configs are ignored under `.agents/scratch/integration-main-part2/`; durable detail is in the owner's [Part 2 handoff](mailbox/versioned-agent-skills/integration-main.md#part-2--contract-merge-and-combined-verification).
+
+| Exact command / cwd | Actual result |
+| --- | --- |
+| `/home/metatron/.bun/bin/bun install --frozen-lockfile` in each of `ruach-herdr`, `ruach-handoff`, `ruach-harness-eval` | All exit 0; packages/locks unchanged |
+| `bin/test-agent-routing -v` from root | Exit 0; 13 tests, 7.866s |
+| `/home/metatron/.bun/bin/bun test` in `ruach-herdr` | Exit 0; 107 pass, 753 assertions, 124.00s |
+| `/home/metatron/.bun/bin/bun test` in `ruach-handoff` | Exit 0; 24 pass, 216 assertions, 16.60s |
+| `/home/metatron/.bun/bin/bun test` in `ruach-harness-eval` | Exit 0; 59 pass, 637 assertions, 12.99s |
+| `python3 .agents/scratch/integration-main-part2/verify.py root` | Exit 0; real `just agent-routing` nine preferred/alternative resolves, five root rejection cases, two foreign/alias-root cases |
+| `python3 .agents/scratch/integration-main-part2/verify.py native` | Final observer run exit 0; 18 actual skill resolve/auto-review dry-runs against this checkout's catalogs, no startup; preferred Claude Architect succeeds |
+| `python3 .agents/scratch/integration-main-part2/verify.py links` | Exit 0; three temporary HOME skill links/realpaths, four script help calls, offline resolve and handoff validation; 43 skill files unchanged |
+| `python3 /home/metatron/.codex/skills/.system/skill-creator/scripts/quick_validate.py DIR` for all six ruach skill directories | All exit 0, format evidence only |
+| `/home/metatron/.bun/bin/bun .agents/skills/ruach-handoff/scripts/validate.ts REPORT` for all 21 versioned-skills reports | All exit 0, ok true, empty diagnostics; updated owner report separately revalidated |
+| `/home/metatron/.bun/bin/bun .agents/skills/ruach-harness-eval/scripts/scope-check.ts --repo . --baseline 97752643 --candidate 8ea1c677e88b4c0d9b96646719836cae721c3454 --allow .agents/scratch/integration-main-part2/scope-allow.json` | Exit 0; clean expected branch, 74 assessed paths, no unexpected/protected paths |
+| `git diff --exit-code 97752643 HEAD -- prototypes 'poc-*' shared tools assets docs/prototypes docs/plans docs/playtests docs/adr docs/mailbox/p01-browser-harness docs/mailbox/p02-formation-algebra docs/mailbox/routing-p02 docs/mailbox/agent-routing` | Exit 0, empty; P01/P02 code/contracts/evidence unchanged |
+| `git diff --check 97752643..HEAD`; runtime portability, cross-skill import and root/Coordinator/workflow model/native-flag scans | Whitespace exit 0; forbidden scans no matches; native flag mappings remain inside the skill |
+
+The scratch observer first assumed a uniform live agent-list shape and twice failed before running native preparations. Herdr mixes named agents with anonymous detected processes; the corrected observer plus saved before/after identities confirm all 23 entries remained unchanged (16 named, seven anonymous). An exploratory probe used a harness label as a name and did not establish a duplicate failure. A subsequent real `worker.ts resolve --name skills-impl-main --role architect --repo <this-worktree> --cwd <this-worktree> --permissions auto-review` correctly returned exit 2 with `duplicate_name`. The earlier concern is resolved; no production change was needed. Failed observer evidence was retained separately from the final matrix.
+
+Real preparations used Claude 2.1.289 and Codex 0.160.0; all eight Codex commands used the matching daemon. Stdio fallback/runtime-state handling is fixture-tested, not verified by forcing the real daemon absent. No real agents, model turns, native role/skill discovery acceptance, browser checks, global installation, master merge or remote push occurred. Later report/CURRENT/TASK_LOGS edits only record this tested revision's evidence; final report-containing SHA is returned in the terminal handoff.
