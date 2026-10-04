@@ -706,3 +706,20 @@ Assignment `P03-merge`/`P03-cleanup` accepts P03 after [independent review](mail
 Pre-delivery checks (`git -C /opt/dev/tehom-brainlab status --porcelain --untracked-files=all`, `branch --show-current`, `rev-parse HEAD`) confirm the main checkout is clean on master at required BASE `ab37525587b7739e3cf28b738f5bad5bece7965a`. The P03 worktree is clean at `8ff0fc9`; only the review report follows reviewed `6e0f797`. `git diff --exit-code b2d25339149b76f7a994da798f5f688449b3668c HEAD -- . ':(exclude)docs' ':(exclude)poc-001-linked-formation/README.md'` exits 0. Reviewer blob hash is `5054c172767efdc7fb898dfbd744eee646f0dba7` and is preserved.
 
 The source-side integration commit updates only CURRENT, plans index, P03 plan, prototype README P03 section, and this delivery entry. It records acceptance/local-delivery status without predicting its own SHA. The authorized fast-forward and delivered-master focused/full/typecheck/build results will be recorded in the documentation-only master successor and delivery handoff after execution. No remote action; unrelated worktrees, branches, panes, and historical reports are preserved.
+
+Actual delivered/tested master revision: `18d989894da22a47f2d9f375821d9b571c2e9804`. After immediately rechecking exact BASE, clean master/source, source revision and preserved Reviewer hash, `git -C /opt/dev/tehom-brainlab merge --ff-only p03-command-boundary` exited 0 and fast-forwarded local master without conflicts. Non-doc content equals reviewed technical candidate `b2d2533`; `git diff --name-only 6e0f797 master` lists only six Markdown paths.
+
+All four assigned checks ran from `/opt/dev/tehom-brainlab` at this delivered revision using unchanged default Docker/Bun 1.4.2 and Vitest 5.0.3:
+
+| Exact command | Actual result |
+| --- | --- |
+| `just poc-001-test tests/commands.test.ts tests/formation.test.ts` | Exit 0; 127 tests, P03 37/253 and P02 90/3,349 actual assertions |
+| `just poc-001-test` | Exit 0; 129 tests across three files |
+| `just poc-001-typecheck` | Exit 0 |
+| `just poc-001-build` | Exit 0; seven modules, existing large Phaser chunk warning |
+| `git diff --exit-code b2d25339149b76f7a994da798f5f688449b3668c master -- . ':(exclude)docs' ':(exclude)poc-001-linked-formation/README.md'` | Exit 0; tested technical content unchanged |
+| `git diff --check ab37525587b7739e3cf28b738f5bad5bece7965a..master`; `git status --short` | Exit 0; whitespace clean, checkout clean before evidence edits |
+
+The master recording successor adds [delivery handoff](mailbox/p03-command-boundary/delivery.md), this executed-check evidence, and CURRENT's delivered revision/evidence link. It contains no source/test/runtime changes and does not predict its own SHA. Prior Implementer/Reviewer reports remain unchanged. O1–O3 stay open optional; no unresolved blocker. No push, browser session, human playtest, mutation probe, routing suite, or host-mode application run. Cleanup follows only after this report is committed.
+
+Delivery handoff validation: `/home/metatron/.bun/bin/bun .agents/skills/ruach-handoff/scripts/validate.ts docs/mailbox/p03-command-boundary/delivery.md --repo /opt/dev/tehom-brainlab` exited 0, `ok:true`, seven revision references resolved, empty diagnostics.
