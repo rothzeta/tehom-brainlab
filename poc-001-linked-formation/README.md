@@ -1,6 +1,6 @@
 # POC 001 — Linked formation
 
-**Status: P01–P03 accepted and locally delivered. P04 formation lab implemented; verification and independent review are recorded in its mailbox handoff. Not a playable patrol.**
+**Status: P01–P03 accepted and locally delivered. P04 formation lab implemented, independently reviewed (no blocking findings; optional O1 open), accepted and locally delivered. [Evidence](../docs/mailbox/p04-formation-lab/implementer.md), [integration](../docs/mailbox/p04-formation-lab/integration.md), [review](../docs/mailbox/p04-formation-lab/reviewer.md). Not a playable patrol.**
 
 Test whether rotating, expanding, and contracting three linked Brood creates interesting ordinary combat decisions. The [design brief](../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../docs/adr/0004-repository-and-poc-direction.md) describe the experiment. P01 supplies the browser harness, P02 the pure geometry, and P03 the command boundary. P04 renders the inspection and maneuver lab. Combat remains later work.
 
