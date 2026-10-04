@@ -4,6 +4,7 @@ status: complete
 outcome: "Designed the two-ring (19-cell) board. Amended the brief (with accepted Decision record entries) and the P02/P04/P05/P06 plans, added notes to P08/P10/P12 and the CT plan, and updated the plan index. Wrote bounded implementation task TR. The user then accepted all three open-question defaults (2026-10-04): sector-aligned Compact (superseding CT mid-side), corner Spread, and a view-only centre enemy anchor. These are recorded as accepted decisions, and ADR-0004 carries a dated two-ring amendment. No source or test changes."
 baseline: 0a48098ff439bc84df06f5f8e965531d69e0dba2
 revision: 0d911ce07678ff5aa744e94810644dd9654811a4
+adr_index_revision: fc3660084c11ed710dae928fb6df8f3ebf72b78a
 artifacts:
   - docs/mailbox/two-ring-board/architect.md
   - docs/mailbox/two-ring-board/assignment-architect.md
@@ -20,6 +21,7 @@ artifacts:
   - docs/plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md
   - docs/plans/README.md
   - docs/adr/0004-repository-and-poc-direction.md
+  - docs/adr/README.md
   - branch two-ring-board
 verification:
   - "Disposable Python script in session scratch (outside the repository) checked the arithmetic. The board has 19 cells; T and S equal the radius-2 and radius-1 sets; the clockwise turn advances T by 2 and S by 1. For every orientation, Compact links are 1,1,1 and Spread links 4,4,4, and the turn maps each labelled position to orientation o+1. Clockwise order around the Compact centroid is -30/90/210 degrees. Sectors partition the 18 ring-1/2 cells, and each turned front equals the next front in order. P05 area/turned recipient tables keep their delivered values. All matched."
@@ -38,7 +40,7 @@ discoveries:
   - "CLOSE_THRESHOLD 2 and SPLASH_RADIUS 2 are kept. Thresholds and radii 1-3 classify both shapes identically, and the Spread Close boundary moves from 5/6 to 3/4."
   - "The P04 lab hard-codes '37 cells' in the legend. The TR plan derives it from boardCells() and raises the pixel spacing from 85 to 120 (provisional); the origin is unchanged, so the browser empty-centre click stays valid."
   - "The P06 damage fixture area [{q:3,r:0}] is now off-board. It asserts only retention and no selector validates area cells against the board, so it stays valid unedited."
-  - "ADR-0004 now carries a dated 2026-10-04 amendment (two rings, 19 cells), and its original scope sentence is retained as history. The ADR index row in docs/adr/README.md still reads 'Agreed decisions, 2026-10-02–03'. This assignment authorised only ADR-0004, so the Coordinator may want to add 'amended 2026-10-04' there, as ADR-0003 and ADR-0005 rows do."
+  - "ADR-0004 now carries a dated 2026-10-04 amendment (two rings, 19 cells), and its original scope sentence is retained as history. At the Coordinator's follow-up request, the ADR index row in docs/adr/README.md now reads 'Agreed decisions, 2026-10-02–03; amended 2026-10-04', matching the ADR-0003/0005 rows (commit fc36600)."
   - "The prototype README public contracts (37 cells, OUTER_RING/R, CT mapping, Spread 6, 30-cell sectors) must be updated by the TR Implementer; that is listed in the TR plan."
   - "P07, P09 and P11 need no change: no geometry assumptions (Impale still sees Spread Stretched; Shelter sees Compact Close)."
 open_questions: []
@@ -141,3 +143,5 @@ Changes made, with no other content changed:
 - **ADR-0004:** the status line notes the amendment. A dated italic pointer follows the original scope sentence, which stays unchanged as history, and a new `## Amendments` section records the 2026-10-04 two-ring decision and its source, following the ADR-0003 amendment pattern.
 
 The TR task is ready for implementation with no open questions and no blockers. Lab pixel spacing (120 px, 100–120 allowed) remains a provisional view choice for the Implementer, as P04 Amendment TR states.
+
+**Follow-up (Coordinator request):** the ADR-0004 row in [the ADR index](../../adr/README.md) now ends "; amended 2026-10-04", matching the ADR-0003/0005 rows. Commit `fc36600` contains only that file.
