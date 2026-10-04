@@ -1,11 +1,13 @@
-task: CT-design
+task: CT-design (+ CT-design-confirm)
 role: architect
 status: complete
-outcome: "Designed Compact as a true triangle and amended the brief and P02/P04/P05/P06/P10 plans, plus the plan index. Wrote bounded implementation task CT. No source or test changes."
-revision: 0f9c1b7d4d0ff01c4a890df8a8c4a4500737165e
+outcome: "Designed Compact as a true triangle and amended the brief and P02/P04/P05/P06/P10 plans, plus the plan index. Wrote bounded implementation task CT. The user then accepted all three open-question defaults (2026-10-04), and they are recorded as accepted decisions. No source or test changes."
+baseline: 0f9c1b7d4d0ff01c4a890df8a8c4a4500737165e
+revision: 33dcf5e5d08552287ec05b05c3934d39039b3c58
 artifacts:
   - docs/mailbox/compact-triangle/architect.md
   - docs/mailbox/compact-triangle/assignment-architect.md
+  - docs/mailbox/compact-triangle/assignment-architect-confirm.md
   - docs/prototypes/poc-001-linked-formation.md
   - docs/plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md
   - docs/plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md
@@ -19,6 +21,7 @@ verification:
   - "Disposable node script outside the repository checked the arithmetic: compact pairwise distances 1,1,1 and spread 6,6,6 at all orientations; clockwise axial turn maps every labelled position to orientation o+1; T has 12 radius-2 cells; T index +2 is the clockwise turn; the six amended sectors partition the 30 radius-2/3 cells; turned front masks equal the next front in order; P05 area/turned recipient tables keep their delivered values. All matched."
   - "Relative-link existence check over the brief and all plan files: all targets exist."
   - "ruach-handoff validator with --repo: ok true, revision resolved, no diagnostics (after a frozen install of the skill-local dependencies, which is ignored by Git)."
+  - "Confirmation pass: grep over the brief, the amended plans, the CT plan and the index found no remaining provisional or pending wording for Q1-Q3; git diff --check is clean."
   - "No application tests, typecheck, build or browser checks were run; no source changed."
 discoveries:
   - "Delivered P05 sectors cover the outer ring only, so the inward Brood would never be protected or swept. P05 Amendment CT extends sectors to rings 2-3; without it the triangle silently creates a safe slot."
@@ -27,10 +30,11 @@ discoveries:
   - "P04 FormationLab Compact link-label offsets assume the old 1,2,1 line. Tokens (112 px wide on an 85 px pitch) need a selectability check for the triangle."
   - "P07, P08, P09, P11 and P12 need no plan edits. P12's sweep and protection inherit the ring-2 masks through P05. P10 gained a note on ring-2 tokens next to P08's ring-1 enemy anchors."
   - "The prototype README public contracts (P02 mapping, [1,2,1], outer-only sectors) must be updated by the Implementer; this assignment did not permit editing it."
-open_questions:
-  - "Q1 inward exposure: should Compact's ring-2 Brood be covered by sector areas and protection fronts like the outer cells of its sector? Default applied (provisional): yes."
-  - "Q2 slot assignment and order: should Pazuzu stay inward per the sketch, with 'clockwise order' meaning order around the formation's own centre? Default applied (provisional): yes."
-  - "Q3 placement on the side: mid-side triangle (Ugallu moves one cell on Expand), or corner-anchored triangle (Ugallu stays fixed but the triangle is lopsided)? Default applied (provisional): mid-side."
+open_questions: []
+resolved_questions:
+  - "Q1 inward exposure: accepted by the user 2026-10-04. The ring-2 Brood is covered by sector areas, sweeps and protection fronts; sectors span rings 2-3."
+  - "Q2 slot and order: accepted by the user 2026-10-04. Pazuzu is inward; clockwise order is taken around the formation's own centre (U,G,P)."
+  - "Q3 placement: accepted by the user 2026-10-04. Mid-side triangle R[3o+1], R[3o+2], T[2o+1]."
 blockers: []
 
 # Compact triangle — Architect report (CT-design)
@@ -114,3 +118,13 @@ Ready for implementation under [task CT](../../plans/2026-10-04-fb4bf201-poc-001
 ## Validation
 
 The validator command is `bun .agents/skills/ruach-handoff/scripts/validate.ts docs/mailbox/compact-triangle/architect.md --repo /opt/dev/tehom-brainlab-compact`. It returned `ok: true` with BASE resolved and no diagnostics, after `bun install --frozen-lockfile` in the skill directory; the installed `node_modules` are Git-ignored. Only the checks listed in the leading block were performed.
+
+## User confirmation
+
+On 2026-10-04 the user accepted all three defaults ([assignment](assignment-architect-confirm.md)):
+
+1. **Inward exposure:** the ring-2 Brood is covered by sector areas, sweeps and protection fronts like the outer cells of its sector.
+2. **Slot and order:** Pazuzu is inward, and clockwise order is taken around the formation's own centre.
+3. **Placement:** mid-side, at `R[3o+1]`, `R[3o+2]`, `T[2o+1]`.
+
+These are now worded as accepted user decisions (2026-10-04) in the brief's Decision record and Open decisions, the P02 mapping, the P05 sector amendment, the CT task (its "Accepted user decisions" section and stop condition) and the plan index CT row. No other content changed. The earlier "Open questions" section above is historical. The task is ready for implementation with no blockers.

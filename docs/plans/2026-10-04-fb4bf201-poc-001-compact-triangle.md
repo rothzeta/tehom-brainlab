@@ -4,7 +4,7 @@
 
 **Proposed standalone task CT. Not implemented.** Written 2026-10-04 against BASE `0f9c1b7` (local master content with P01–P06 delivered). The Coordinator assigns the owner. The task owner is a POC 001 Implementer, who also owns local integration unless assigned otherwise.
 
-Authority: user decision of 2026-10-04, recorded in the [brief's Decision record](../prototypes/poc-001-linked-formation.md#decision-record). Compact is three mutually adjacent cells, two on the outer ring and one on ring 2, with all links at distance 1. Ugallu and Girtablilu are outer; Pazuzu is inward. The exact mapping and sector coverage are experimental defaults owned by their plans:
+Authority: user decision of 2026-10-04, recorded in the [brief's Decision record](../prototypes/poc-001-linked-formation.md#decision-record). Compact is three mutually adjacent cells, two on the outer ring and one on ring 2, with all links at distance 1. Ugallu and Girtablilu are outer; Pazuzu is inward. The user also accepted the exact mapping and the sector coverage of the inward cell on 2026-10-04 (see Accepted user decisions below). They are specified in their owning plans:
 
 - [P02 Amendment CT](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle): ring-2 table and mapping.
 - [P05 Amendment CT](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-ct-2026-10-04--compact-triangle): sectors.
@@ -58,7 +58,7 @@ The user decision above. Spread, six orientations, expand/contract semantics, th
 
 Keep the formation `{shape, orientation}` representation and derived positions. Compact and Spread may use separate index expressions; do not add a generic shape table or a configurable geometry layer. For P04 label placement, a per-link offset away from the third vertex is enough. No layout engine is needed.
 
-### Provisional defaults (user confirmation pending; do not block)
+### Accepted user decisions (2026-10-04)
 
 1. The inward Brood is covered by sector areas and fronts like the outer cells of its sector (P05 Amendment CT).
 2. Slot assignment follows the user's sketch, Pazuzu inward. "Clockwise order" means order around the formation's own centre (brief Decision record).
@@ -145,4 +145,4 @@ Stop and report before proceeding when:
 - an unlisted existing test fails;
 - a P05 recipient or protection table would need a different value than P05 Amendment CT states;
 - token selectability cannot be fixed without changing a core contract;
-- the user overrides a provisional default. The affected plan amendment must be revised first.
+- a later user decision changes one of the accepted decisions above. The affected plan amendment must be revised first.

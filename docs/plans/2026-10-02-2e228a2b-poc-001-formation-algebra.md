@@ -27,7 +27,7 @@ Task `P02` implementation and combined-verification owner: assignment B-impl Imp
 
 `T[(j+2) mod 12]` is the axial clockwise turn `(-r,q+r)` of `T[j]`, just as `R[(i+3) mod 18]` is for `R`.
 
-**Proposed mapping (experimental default).** Roster order stays `[ugallu, girtablilu, pazuzu]`. For orientation `o` in `0..5`:
+**Mapping (accepted user decision, 2026-10-04: Pazuzu inward, mid-side placement, clockwise order taken around the formation's own centre).** Roster order stays `[ugallu, girtablilu, pazuzu]`. For orientation `o` in `0..5`:
 
 - Compact: `R[3o+1]`, `R[3o+2]`, `T[2o+1]`.
 - Spread (unchanged): `R[3o]`, `R[3o+6]`, `R[3o+12]`, modulo 18.

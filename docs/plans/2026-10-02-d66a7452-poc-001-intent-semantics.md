@@ -18,7 +18,7 @@ Task `P05` owner and integration owner: POC 001 implementer, currently unassigne
 
 **Problem.** Delivered sectors contain outer-ring cells only, so an inward Brood could never be inside a protection front or a sector-built area. Compact Pazuzu would always ignore Warder protection, and a frontal sweep could never hit it. Neither outcome was chosen as a mechanic.
 
-**Proposed default (provisional; P05 owns masks).** Sectors become encounter-centred wedges over the two Brood-occupiable rings. With `R` the outer ring and `T` the P02 ring-2 table:
+**Accepted user decision (2026-10-04; P05 owns the mask definition).** Sectors become encounter-centred wedges over the two Brood-occupiable rings. With `R` the outer ring and `T` the P02 ring-2 table:
 
 - `sectorCells(s)` = `R[3s], R[3s+1], R[3s+2], T[2s], T[2s+1]`: outer cells clockwise, then ring-2 cells clockwise.
 - `frontMask(f)` = `sectorCells(f)` followed by `sectorCells((f+1) mod 6)`: ten cells. Facing zero is `R[0..5]` plus `T[0..3]`, in the order `R0,R1,R2,T0,T1,R3,R4,R5,T2,T3`. Facing five is `R15,R16,R17,T10,T11,R0,R1,R2,T0,T1`.
@@ -36,7 +36,7 @@ Task `P05` owner and integration owner: POC 001 implementer, currently unassigne
 
 **Amended acceptance criterion 1:** a facing-zero front mask contains exactly `R[0..5]` and `T[0..3]` in the declared order. A facing-five mask contains `R[15],R[16],R[17],T[10],T[11],R[0],R[1],R[2],T[0],T[1]`. The six sectors are disjoint and their union is exactly the 30 cells at radius 2 or 3. Criteria 2–6 are unchanged and are evaluated with the amended P02 mapping.
 
-**Open for user confirmation; provisional default applied:** the inward Brood is exposed to sector-based areas and protection fronts exactly like the outer cells of its sector. The alternative would treat ring 2 as sheltered, giving Compact a slot that sweeps and protection fronts never reach. That would be a new mechanic, so it is not adopted without a user decision.
+**Accepted user decision (2026-10-04):** the inward Brood is exposed to sector-based areas, sweeps and protection fronts exactly like the outer cells of its sector. The user rejected the alternative of a sheltered ring-2 slot.
 
 ## Smallest useful outcome
 

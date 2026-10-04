@@ -134,7 +134,7 @@ The first six formation checks are implemented and pass in the P02 candidate (90
 
 ## Open decisions
 
-Numeric balance, sector masks, enemy intention tie-breaking, the definition of isolation, and how formation behaves after a Brood falls must be specified before calling the combat loop complete. The Compact triangle (see [Decision record](#decision-record)) puts one Brood on ring 2; its exposure to sector-based areas and protection fronts is a provisional P05 default (covered like the outer cells of the same sector) pending user confirmation. P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
+Numeric balance, sector masks, enemy intention tie-breaking, the definition of isolation, and how formation behaves after a Brood falls must be specified before calling the combat loop complete. The Compact triangle (see [Decision record](#decision-record)) puts one Brood on ring 2; by accepted user decision (2026-10-04), it is covered by sector-based areas, sweeps and protection fronts like the outer cells of its sector. P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
 
 ## Decision record
 
@@ -147,7 +147,13 @@ Numeric balance, sector masks, enemy intention tie-breaking, the definition of i
 U-G 1, G-P 1, U-P 1
 ```
 
-This is a settled design decision, not a provisional default. The exact cell mapping, sector coverage of the inward cell, and other consequences are experimental defaults owned by the plans: the [P02 amendment](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle) (mapping), the [P05 amendment](../plans/2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-ct-2026-10-04--compact-triangle) (sector masks), and the [Compact triangle task](../plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md). Under that mapping, "clockwise order" means the order around the formation's own centre: Ugallu → Girtablilu → Pazuzu in both shapes, so contraction never mirrors the formation. Seen from the encounter centre, Compact Pazuzu sits between Ugallu and Girtablilu.
+This is a settled design decision, not a provisional default. On 2026-10-04 the user also accepted three geometry choices, which are therefore accepted user decisions rather than provisional defaults:
+
+1. **Inward exposure:** the ring-2 Brood is covered by sector areas, sweeps and protection fronts like the outer cells of its sector. Sectors extend over rings 2–3.
+2. **Slot assignment and order:** Pazuzu is inward, and "clockwise order" means order around the formation's own centre (Ugallu → Girtablilu → Pazuzu).
+3. **Placement:** the triangle sits mid-side, at `R[3o+1]`, `R[3o+2]`, `T[2o+1]`.
+
+These decisions are specified in the plans: the [P02 amendment](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle) (mapping), the [P05 amendment](../plans/2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-ct-2026-10-04--compact-triangle) (sector masks), and the [Compact triangle task](../plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md). Under that mapping, "clockwise order" means the order around the formation's own centre: Ugallu → Girtablilu → Pazuzu in both shapes, so contraction never mirrors the formation. Seen from the encounter centre, Compact Pazuzu sits between Ugallu and Girtablilu.
 
 ## Explicit exclusions
 
