@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**Proposed standalone task CT. Not implemented.** Written 2026-10-04 against BASE `0f9c1b7` (local master content with P01–P06 delivered). The Coordinator assigns the owner. The task owner is a POC 001 Implementer, who also owns local integration unless assigned otherwise.
+**Implemented, independently reviewed (no findings), accepted, locally delivered.** [Implementation evidence](../mailbox/compact-triangle/implementer.md); [independent review](../mailbox/compact-triangle/reviewer.md). Written 2026-10-04 against BASE `0f9c1b7` (local master content with P01–P06 delivered). The Coordinator assigns the owner. The task owner is a POC 001 Implementer, who also owns local integration unless assigned otherwise.
 
 Authority: user decision of 2026-10-04, recorded in the [brief's Decision record](../prototypes/poc-001-linked-formation.md#decision-record). Compact is three mutually adjacent cells, two on the outer ring and one on ring 2, with all links at distance 1. Ugallu and Girtablilu are outer; Pazuzu is inward. The user also accepted the exact mapping and the sector coverage of the inward cell on 2026-10-04 (see Accepted user decisions below). They are specified in their owning plans:
 
