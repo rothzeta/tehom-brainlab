@@ -1,0 +1,110 @@
+[
+  {
+    "kind": "claude",
+    "reviewed_revision": "a6dddadc43e35afe06df5959398d75b9faa11ba8",
+    "reviewed_ancestor": true,
+    "technical_content_unchanged_since_review": true,
+    "revision": "16ada84c10a6bb9418c6c1e26d69c515eaf9bc5e",
+    "branch": "experiment/orch2-claude-delivery",
+    "clean": true,
+    "unexpected_paths": [],
+    "changed_paths": [
+      "README.md",
+      "bin/repo-root",
+      "docs/CURRENT.md",
+      "docs/TASK_LOGS.md",
+      "docs/mailbox/orch2-claude-repo-root/implementer.md",
+      "docs/mailbox/orch2-claude-repo-root/reviewer.md",
+      "justfile",
+      "scripts/repo-root.sh",
+      "scripts/tests/test_repo_root.py"
+    ],
+    "existing_commands_unchanged": true,
+    "canonical_sha256": {
+      ".agents/agents/coordinator.md": "53abb258249d2f792eee3afd8588b931868230d111792d9670284b91b62ba99d",
+      ".agents/skills/ruach-workflow-feature/SKILL.md": "8ac6428b30addc14ffaad7aed9596638574114286191e6d6e7e58e541c0bcf22"
+    },
+    "passed": true
+  },
+  {
+    "kind": "codex",
+    "reviewed_revision": "901afe55e47fa454b7c1bff32dda9e9bb32485bd",
+    "reviewed_ancestor": true,
+    "technical_content_unchanged_since_review": true,
+    "revision": "41b5596a910ca9ab99f6dcc5143a2452313e04f9",
+    "branch": "experiment/orch2-codex-delivery",
+    "clean": true,
+    "unexpected_paths": [],
+    "changed_paths": [
+      "README.md",
+      "bin/repo-root",
+      "docs/CURRENT.md",
+      "docs/TASK_LOGS.md",
+      "docs/mailbox/orch2-codex-repo-root/implementer.md",
+      "docs/mailbox/orch2-codex-repo-root/reviewer.md",
+      "justfile",
+      "scripts/repo-root.sh",
+      "scripts/tests/test_repo_root.py"
+    ],
+    "existing_commands_unchanged": true,
+    "canonical_sha256": {
+      ".agents/agents/coordinator.md": "53abb258249d2f792eee3afd8588b931868230d111792d9670284b91b62ba99d",
+      ".agents/skills/ruach-workflow-feature/SKILL.md": "8ac6428b30addc14ffaad7aed9596638574114286191e6d6e7e58e541c0bcf22"
+    },
+    "passed": true
+  },
+  {
+    "kind": "omp",
+    "reviewed_revision": "b4357d25b00441f9696c822a21bd4623afb426b1",
+    "reviewed_ancestor": true,
+    "technical_content_unchanged_since_review": true,
+    "revision": "47529ea981a3adf0950990adcbf0e759c7d4b4d5",
+    "branch": "experiment/orch2-omp-delivery",
+    "clean": true,
+    "unexpected_paths": [],
+    "changed_paths": [
+      "README.md",
+      "bin/repo-root",
+      "docs/CURRENT.md",
+      "docs/TASK_LOGS.md",
+      "docs/mailbox/orch2-omp-repo-root/implementer.md",
+      "docs/mailbox/orch2-omp-repo-root/reviewer.md",
+      "justfile",
+      "scripts/repo-root.sh",
+      "scripts/tests/test_repo_root.py"
+    ],
+    "existing_commands_unchanged": true,
+    "canonical_sha256": {
+      ".agents/agents/coordinator.md": "53abb258249d2f792eee3afd8588b931868230d111792d9670284b91b62ba99d",
+      ".agents/skills/ruach-workflow-feature/SKILL.md": "8ac6428b30addc14ffaad7aed9596638574114286191e6d6e7e58e541c0bcf22"
+    },
+    "passed": true
+  },
+  {
+    "kind": "agy",
+    "reviewed_revision": "36e16e67016568bbaf0d5d4689b103ef40ad09f3",
+    "reviewed_ancestor": true,
+    "technical_content_unchanged_since_review": true,
+    "revision": "1c4d43937d0ff28162b4acd26c504fa6679c2a45",
+    "branch": "experiment/orch2-agy-delivery",
+    "clean": true,
+    "unexpected_paths": [],
+    "changed_paths": [
+      "README.md",
+      "bin/repo-root",
+      "docs/CURRENT.md",
+      "docs/TASK_LOGS.md",
+      "docs/mailbox/orch2-agy-repo-root/implementer.md",
+      "docs/mailbox/orch2-agy-repo-root/reviewer.md",
+      "justfile",
+      "scripts/repo-root.sh",
+      "scripts/tests/test_repo_root.py"
+    ],
+    "existing_commands_unchanged": true,
+    "canonical_sha256": {
+      ".agents/agents/coordinator.md": "53abb258249d2f792eee3afd8588b931868230d111792d9670284b91b62ba99d",
+      ".agents/skills/ruach-workflow-feature/SKILL.md": "8ac6428b30addc14ffaad7aed9596638574114286191e6d6e7e58e541c0bcf22"
+    },
+    "passed": true
+  }
+]

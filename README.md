@@ -55,3 +55,5 @@ Open [`docs/`](docs/README.md) as an Obsidian vault. Its [schema](docs/SCHEMA.md
 Read the [POC 001 brief](docs/prototypes/poc-001-linked-formation.md), the [direction ADR](docs/adr/0004-repository-and-poc-direction.md), and the [asset register](assets/manifest.json).
 
 There is no runnable application yet. The repository contains structure, design documentation, CLI tooling, and portable agent resources.
+
+The follow-up [four-harness Coordinator trial](docs/mailbox/orchestrator-four-harness/results.md) compares Claude, Codex, OMP with Sonnet 5, and Agy with Gemini 3.8 Flash using the same canonical workflow and a durable worker-handoff contract. Its report separates delivery acceptance from role-boundary and lifecycle findings.

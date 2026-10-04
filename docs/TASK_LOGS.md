@@ -379,3 +379,46 @@ Main-checkout evidence verification:
 | `python3 /tmp/check-brainlab-ruach-skills.py` | Exit 0; vault/plan contracts, 344 local links/fragments, 55 Markdown whitespace checks, role/skill identities, scratch ignore rules, and mailbox conventions passed. |
 | `python3 /tmp/check-brainlab-orchestrator-scope.py` | Exit 0; recorded acceptance matches final destinations; both worktrees clean with reviewed ancestry and unchanged command/test content, canonical/prototype/existing-tool scope preserved; main changes limited to three documentation files and three comparison artifacts. |
 | `git diff --check` | Exit 0; tracked whitespace clean. |
+
+## 2026-10-03 — Four-harness Coordinator workflow trial
+
+Scope: repeat the bounded `just repo-root` feature under Claude, Codex, OMP with exact `anthropic/claude-sonnet-5`, and Agy with `gemini-3.8-flash-medium`, in four isolated worktrees starting at `ccd0668c25af53d72a55c2148311b122d64ae036`. Main starts at `c430708`. No Pi, OpenCode, DSH, native agent definitions, persistent harness settings, dependencies, or main-branch feature merge. The [assignment](mailbox/orchestrator-four-harness/assignment.md), [results](mailbox/orchestrator-four-harness/results.md), [acceptance](mailbox/orchestrator-four-harness/acceptance.json), [scope](mailbox/orchestrator-four-harness/scope.json), and [observer source](mailbox/orchestrator-four-harness/observer-source.md) preserve the evidence.
+
+All four Coordinators selected the unchanged canonical feature workflow without its name in the feature brief. Temporary harness loading adapters use canonical role files, preserving normal harness instruction mechanisms. Claude loads the workflow through its native Skill tool; the other three read its canonical file. Agy uses a separate role-only startup turn before task work. The shared assignment adds a durable structured top-of-report worker handoff, including integration/merge evidence; it does not rewrite canonical roles or skills.
+
+The user first authorized Agy's pending launcher help command once, then explicitly authorized bounded trial command approvals across its Coordinator and workers. The observer inspected and answered those dialogs without persistent/global permission changes. One stale worker-permission question was answered with the already-resolved status and standing authorization to prevent duplicate keys. Herdr misclassified OMP work as idle and some Agy approval dialogs as done, requiring visible UI inspection. Details and Coordinator source/metadata/context deviations are in the report.
+
+| Executed command or operation | Observed result |
+| --- | --- |
+| `herdr worktree create --cwd /opt/dev/tehom-brainlab --branch experiment/orch2-<kind>-delivery --base ccd0668 --path /tmp/brainlab-orch2-<kind> --label brainlab-orch2-<kind> --no-focus`, for `claude`, `codex`, `omp`, `agy` | Four fresh isolated worktrees created; exit 0. No old experiment worktree changed. |
+| CLI version/help/catalog inspection through existing tools and Herdr shells | Claude 2.1.288, Codex 0.160.0, OMP 18.1.18, Agy 1.2.16. OMP catalog includes exact Sonnet 5; Agy catalog includes Gemini 3.8 Flash Medium. Runtime banners/records confirm requested models. No installs. |
+| `python3 /tmp/brainlab-orchestrator2-launch.py <kind> coordinator /tmp/brainlab-orch2-<kind> orch2-<kind> <assigned-pane>` | Four named sessions launched. Agy's first bootstrap preceded its actual input widget; the observer inspected before resubmitting only the role-read turn. Subsequent Agy launches wait for the actual CLI prompt. The temporary launcher's help support was added after an initial `--help` argument error. |
+| `python3 /tmp/brainlab-orchestrator2-submit.py <kind>` | Same feature brief plus run parameters submitted to each ready Coordinator; no workflow name included. |
+| `python3 /tmp/brainlab-orchestrator2-observe.py`; scoped `herdr agent get/read`; selected local session tool-action inspection | Sanitized evidence captured only for named trial sessions. Recorded model tool inputs distinguish actual Coordinator source/Git operations from terminal convenience previews. Raw session logs and private account banners are excluded from commits. |
+| `python3 /tmp/brainlab-orchestrator2-acceptance.py claude codex omp` | Exit 0 on exact deliveries `16ada84`, `41b5596`, `47529ea`. Seven identical CLI probes each; suites 5/5, 3/3 with subcases, 5/5; committed whitespace passed. Earlier completed-cohort runs also passed. |
+| `python3 /tmp/brainlab-orchestrator2-scope.py claude codex omp` | Exit 0. Clean delivery branches, reviewed ancestry, identical technical content after review, existing commands unchanged, allowed changed paths, canonical SHA-256 unchanged. |
+| `python3 /tmp/check-brainlab-ruach-skills.py` during report preparation | Exit 0: 354 local links/fragments, 58 Markdown whitespace checks; existing vault/plan contracts, five roles/three skills, ignore behavior, shim, and absence of native agent directories preserved. Final documentation checks follow completion. |
+
+### 2026-10-04 — Completion and observer corrections
+
+Agy independently reviewed candidate `36e16e67016568bbaf0d5d4689b103ef40ad09f3` with no blockers and 8/8 worker tests. Its first returned delivery `6a1b2b113ba4646ee38cdb36adff8c8c1381b679` failed observer scope because the final report block was uncommitted. Subsequent evidence repair used a nonexistent SHA. The observer returned concrete findings and clarified the brief's allowed predecessor/successor distinction; repairs stayed worker-owned. Agy's integration worker had read prior trial handoffs outside its worktree; one main-checkout historical report access was denied. This assisted result is not unassisted handoff compliance. The final delivery is `1c4d43937d0ff28162b4acd26c504fa6679c2a45`.
+
+| Executed command or operation | Observed result |
+| --- | --- |
+| `python3 /tmp/brainlab-orchestrator2-scope.py agy` at first returned delivery | Exit 1; `clean: false`, other scope/ancestry/content checks passed. [Original failed evidence](mailbox/orchestrator-four-harness/agy-initial-scope-failure.json) retained. |
+| `git cat-file -t f935ad1615a1a129d332906b3a0e4450ae728e83` in Agy worktree | Exit 128; the returned/report revision did not exist. Finding returned to Coordinator for worker repair. |
+| Scoped Herdr observer findings and original-protocol clarification to `orch2-agy` | Coordinator delegated report-only corrections. A finding submitted during a busy turn was not visible in its completed response; after inspecting the UI, the observer submitted it at idle. No observer source edit, test edit, merge, or worker-report repair. |
+| `python3 /tmp/brainlab-orchestrator2-acceptance.py agy` at final delivery | Exit 0; seven identical CLI probes, 8/8 worker tests, committed whitespace passed on `1c4d439`. An earlier accepted evidence revision `ca015db` also passed before the final report repair. |
+| `python3 /tmp/brainlab-orchestrator2-scope.py claude codex omp agy` | Exit 0; all four clean, exact destination branches, reviewed ancestry, unchanged technical content since review, existing commands unchanged, allowed paths, unchanged canonical digests. |
+| `git cat-file -t <sha>` and `git merge-base --is-ancestor <sha> HEAD` for the corrected Agy report's `revision`, `tested_revision`, and `delivered_revision` | All passed; fields identify real ancestor commits. Terminal handoff gives final successor; committed report gives predecessor. |
+
+All four selected the same canonical workflow and delivered correct implementations. Codex adhered most closely to Coordinator technical boundaries; Claude made Git metadata checks, OMP inspected production files and validated refs, and Agy needed assisted evidence repair. Context minimization and reliable Herdr lifecycle/handoff handling remain unresolved. Main contains documentation evidence only; experiment outputs and committed worker reports remain on isolated branches.
+
+
+Final main-checkout evidence verification:
+
+| Command | Actual result |
+| --- | --- |
+| `python3 /tmp/check-brainlab-ruach-skills.py` | Exit 0; 10 vault entry points, 5 ADR identities, 12 plan contracts, 50 checkpoints, 361 local links/fragments, 58 Markdown whitespace checks, five roles/three skills, shim, scratch ignore rules, and mailbox conventions passed. |
+| `python3 /tmp/brainlab-orchestrator2-evidence-check.py` | Exit 0; main changes exactly four documentation notes and six owned evidence artifacts; all four recorded acceptances match actual final delivery destinations and scope; canonical digests unchanged. Source preserved in observer-source.md. |
+| `git diff --check` | Exit 0; tracked whitespace clean. |
