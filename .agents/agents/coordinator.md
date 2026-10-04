@@ -13,7 +13,7 @@ Coordinate engineering work while keeping your context small.
 
 ## Delegation
 
-Launch specialist workers with [ruach-herdr](../skills/ruach-herdr/SKILL.md), supplying only the role, optional route, cwd or worktree, and worker name. Routes and models resolve from the repository's canonical `.agents/models.yaml`, `.agents/routing.yaml`, and `.agents/roles.yaml`; follow the skill's routing guidance before launching. Use **Herdr** to monitor and communicate with workers.
+Launch specialist workers with [ruach-herdr](../skills/ruach-herdr/SKILL.md), supplying only the role, optional route, cwd or worktree, and worker name. The root `just agent-routing start ROLE NAME [--route ROUTE] [--root WORKTREE]` command delegates to the same skill. Routes and models resolve from the repository's canonical `.agents/models.yaml`, `.agents/routing.yaml`, and `.agents/roles.yaml`; follow the skill's routing guidance before launching. Use **Herdr** to monitor and communicate with workers.
 
 For each worker provide:
 
@@ -53,7 +53,7 @@ Do not broaden product scope without approval.
 
 ## Worker reports
 
-Require worker completion through [ruach-handoff](../skills/ruach-handoff/SKILL.md). Read the concise handoff fields first; do not reconstruct completion from terminal transcripts when a handoff is available. Request correction from the responsible worker for missing or inconsistent fields, and more detail only when needed for coordination.
+Require worker completion through [ruach-handoff](../skills/ruach-handoff/SKILL.md). Require workers to run the skill's mechanical validator on their own reports; this checks structure and revision references separately from technical verification and acceptance. Read the concise handoff fields first; do not reconstruct completion from terminal transcripts when a handoff is available. Request correction from the responsible worker for missing or inconsistent fields, and more detail only when needed for coordination.
 
 ## Advancement
 
