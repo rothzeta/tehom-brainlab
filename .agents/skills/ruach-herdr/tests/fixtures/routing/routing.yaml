@@ -1,0 +1,7 @@
+routes:
+  lead:
+    model: coordination
+    effort: high
+  build:
+    model: implementation
+    effort: high

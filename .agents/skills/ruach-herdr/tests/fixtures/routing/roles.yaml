@@ -1,0 +1,5 @@
+roles:
+  coordinator:
+    preferred_route: lead
+  implementer:
+    preferred_route: build
