@@ -1,11 +1,12 @@
 ---
-task: CONV-triage-review
+task: CONV-triage-review (R1 CONV-triage-rereview)
 status: complete
-outcome: "Review complete; no blocking findings. All five acceptance conditions pass. Four optional findings; O1 and O2 should be decided before the irreversible deletion."
+outcome: "R1 re-review: accept, no blocking findings. All four R1 checks pass; O1 and O3 are resolved. One optional note (R1-a) asks the cleanup assignment to state the deletion scope explicitly. The original review had no blocking findings and four optional findings."
 role: reviewer
 worker: triage-reviewer
 artifacts:
   - docs/mailbox/agent-artifact-conventions/assignment-triage-reviewer.md
+  - docs/mailbox/agent-artifact-conventions/assignment-triage-rereview.md
   - docs/mailbox/agent-artifact-conventions/triage-reviewer.md
 verification:
   - "Manifest against the source filesystem: 49 rows, 49 unique, 49 files, no missing or extra paths, zero size mismatches; keep 3 / 4361 bytes, trash 46 / 643296 bytes."
@@ -16,15 +17,25 @@ verification:
   - "Every relative link in the three added files resolves (32 links)."
   - "Both reports pass the ruach-handoff validator with --repo: ok true, empty diagnostics."
   - "Secret-pattern scan of committed files: no credential values. Provider-token/private-key scan of all sources and extracted members: zero hits."
+  - "R1: all 33 assignment copies are SHA-256 equal to their sources (9 files on disk, 24 extracted archive members) in both the working tree and git show 33a66be."
+  - "R1: strict credential-pattern scan of the 33 copies finds 0 hits. All 9 keyword hits were reviewed; each is an instruction not to leak secrets."
+  - "R1: the session-ID table matches pane-cleanup-before.json: 9 names, panes and IDs, all kind id / source herdr:codex; skills-coordinator has no session."
+  - "R1: manifest is 49/49 with exact sizes; keep 14 / 346950 bytes, trash 35 / 300707 bytes. Exactly the 11 named rows changed (all trash to keep); no trash row changed."
+  - "R1: e6d5c35..33a66be adds 33 assignment copies and the R1 assignment, and modifies only the two triage-owned reports; no protected path or reviewer report changed; git diff --check exit 0."
+  - "R1: all 71 relative links and anchors in the 36 changed files resolve; both updated reports validate ok true."
 review: not-run
 discoveries:
   - "D1/D2 branches (task/repo-root-command, evidence/repo-root-20261004, experiment/repo-root-20261004) are local only: they are not in master, not on origin, and no master record mentions them."
-  - "The 33 legacy Coordinator assignments (110730 bytes) are cited by path from committed reports and TASK_LOGS but exist nowhere in Git."
+  - "R1: the 33 legacy Coordinator assignments are now committed verbatim. Old .agents/scratch citations in agent-routing reports map to them through the triage R1 table."
+  - "R1: the triage report does not say whether the 14 keep originals may be deleted along with the 35 trash files (finding R1-a)."
 blockers: []
 inspected_baseline: e70f49b1a6ca41e0aba4ff33015d9dc749439410
-candidate_revision: efc14c28344eec6516b594efd16832249e8849e3
-evidence_revision: c35915a7f52ef0fb4eafc9ab27eb87570f06b3e3
-reviewed_revision: c35915a7f52ef0fb4eafc9ab27eb87570f06b3e3
+r0_candidate_revision: efc14c28344eec6516b594efd16832249e8849e3
+r0_reviewed_revision: c35915a7f52ef0fb4eafc9ab27eb87570f06b3e3
+r1_baseline: e6d5c353189b4d2c35c38a2f2a50f2de37419f6f
+candidate_revision: 783b98ff915ffb485f151349937b67df0e92b6fc
+evidence_revision: 33a66bef77629b2d333f549982c23c84aedf1100
+reviewed_revision: 33a66bef77629b2d333f549982c23c84aedf1100
 ---
 
 Author: Reviewer (triage-reviewer), 2026-10-04 UTC. Assignment: [triage review](assignment-triage-reviewer.md). I reviewed the [triage handoff](scratch-triage.md), its [assignment](assignment-scratch-triage.md), and the kept [historical cleanup report](../worktree-cleanup-20261004/implementer-scratch-triage.md) for range `e70f49b..c35915a` on branch `agent-artifact-conventions`. Sources were read from `/opt/dev/tehom-brainlab/.agents/scratch/` without changes. Archives were extracted only into this session's scratch directory, and nothing in them was run. I changed no production files or source files.
@@ -81,3 +92,25 @@ Ordered by severity. None is blocking.
 - In the kept report, the link text "mailbox folder" points to `delivery-coordinator.md` rather than to the folder. This is cosmetic.
 - Not verified: the present Herdr pane state, and whether the historical removals ran as recorded. The sources omit commands and exit codes, and the kept report says so. I did not check every log line inside the archives for unique observations. I covered all unique non-log members, the archive inventories, and the cited reports' result summaries.
 - No application tests apply; this is a documentation-only review.
+
+## Re-review of R1
+
+Author: Reviewer (triage-reviewer), 2026-10-04 UTC. Assignment: [triage re-review](assignment-triage-rereview.md). I reviewed R1 range `e6d5c35..33a66be`: candidate `783b98f` and evidence `33a66be`, made under the [R1 assignment](assignment-triage-r1.md). The Coordinator accepted O1 and O3. O2 and O4 go to TASK_LOGS and are outside this change. Sources were only read. My earlier session-scratch extraction of the archives was reused, and nothing from it was run.
+
+**Verdict: accept, with no blocking findings.**
+
+| Check | Verdict | Evidence |
+| --- | --- | --- |
+| 1. 33 copies byte-identical, no secrets | Pass | For each of the 9 `routing-p02/assignments/*.md` and the 24 previously unique archive members, the SHA-256 equals that of the mailbox copy, both on disk and as committed at `33a66be`. No source is missing, and there is no extra `assignment-*.md` in either folder. A strict scan for private keys, Anthropic/OpenAI/GitHub/AWS/Slack/Google keys, JWTs and bearer values found 0 hits. A keyword pass found 9 hits, all instructions not to leak or print secrets. The only home paths are `/home/metatron/.bun` and `/home/metatron/.codex/...`, which committed docs already contain (TASK_LOGS, versioned-skills reports). |
+| 2. Session-ID table | Pass | Parsing `pane-cleanup-before.json` gives exactly the nine `skills-*` name → pane → `agent_session.value` triples in the table, all `kind: id` / `source: herdr:codex`. `skills-coordinator` is a Claude pane with no session, as the report says. |
+| 3. Manifest accurate, nothing unique left in trash | Pass | 49/49 rows with exact sizes; keep 14 / 346950 bytes, trash 35 / 300707 bytes, matching the stated totals. A row-by-row comparison against `e6d5c35` shows exactly the 11 named rows changed, all from trash to keep, and no trash row changed. The routing-plan reason is corrected. Of the 35 trash rows, 14 are byte-identical repo-root copies, 13 are redacted wait/resolve output, help text, a checker script and P02 probes (all in R0), and 4 are archives. After R1, the only unique Markdown left in any archive is test fixtures (e.g. `diagnostic-order.md`, a 71-byte `p1-reproduction/assignment.md` fixture), plus logs, probe outputs, scope listings and report-writer scripts whose results the cited reports already hold. |
+| 4. Scope, links, whitespace, validation | Pass | `git diff --name-status e6d5c35..33a66be` shows 34 `A` and 2 `M`. The two modified files are `scratch-triage.md` and `worktree-cleanup-20261004/implementer-scratch-triage.md`; the latter's diff adds lines only. CURRENT, TASK_LOGS, `.agents`, guidance, SCHEMA, ADRs, plans and this report are unchanged. All 71 relative links and anchors in the 36 changed files resolve. `git diff --check` exits 0. Both updated reports validate `ok: true`. |
+
+### R1-a (optional): state the deletion scope for the 14 keep originals
+
+- **Location:** [scratch-triage.md, Result and totals](scratch-triage.md#result-and-totals) and its closing limits paragraph.
+- **Problem:** The report says "Trash is a disposition for the later cleanup worker". It also says "deletion of the originals remain[s] a separate task". It never says whether the 14 keep originals may be deleted too. Those originals now include the 301596-byte archive and the raw pane snapshot.
+- **Why it matters:** If a cleanup worker deletes only trash rows, the 14 keep files stay in the retired `.agents/scratch/`. If the worker deletes all 49, that is correct: everything worth keeping is now committed, either verbatim or curated, and the rest of each keep file is transient.
+- **Suggested direction:** In the cleanup assignment, the Coordinator should name all 49 manifest paths, or say explicitly that keep originals are deleted once this branch is merged. No report change is needed.
+
+Not re-verified: R0 conclusions that R1 did not touch. Those still stand, apart from O1 and O3, which are now resolved.
