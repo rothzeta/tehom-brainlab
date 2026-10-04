@@ -498,7 +498,7 @@ Merge executed: reassert destination baseline and source combined HEAD, require 
 
 [Delivery handoff](mailbox/p01-browser-harness/delivery.md) records the exact first delivered application revision above. A documentation-only recording successor adds that handoff and actual delivery facts in CURRENT/this log; its exact final master revision is returned in the terminal handoff. Application/browser checks were reused from independently tested `a359fc5` after technical-content equality was confirmed, not rerun or claimed at the recording successor. No remote action or cleanup; accepted candidate branch and the clean `fce94b2` checkout remain available. Coordinator final reporting and any final evidence-only commit are separate assignments.
 
-## 2026-10-04 — Agent model routing candidate
+## 2026-10-04 Agent model routing candidate
 
 Assignment A-impl, inspected baseline `c6083e892285b43c297c742ff28553ae3e2e7310`, local branch `routing-setup` in the main checkout. Added `.agents/models.yaml`, `routing.yaml`, and `roles.yaml`; thin just/bin entrypoints; Python resolver and Herdr launcher; boundary tests; and schema/CLI documentation. Canonical role/skill bodies and prior P01 evidence remain unchanged. See the [Implementer handoff](mailbox/agent-routing/implementer.md) for candidate/tested revisions and detailed limitations; review, live launches and merge are separate Coordinator steps.
 
@@ -516,5 +516,8 @@ Executed checks:
 | `claude --help`; `codex --help`; `herdr agent start --help`; `herdr pane split --help`; `herdr pane layout --help`; CLI `--version` commands | All exit 0. Codex prints a read-only PATH-alias warning but help/version inspection succeeds. |
 | `just --list`; `just doctor`; `just export-tokens --help`; `just --dry-run poc-001-test` | Exit 0; new commands discoverable, existing exporter help and prototype recipe dispatch retained. Doctor reports unavailable Bun and inaccessible Docker daemon in this sandbox; its preexisting POC scaffold message is stale and outside this slice. |
 | `sh -n bin/agent-routing bin/test-agent-routing`; Python AST parse of both scripts; `git diff --check` | Exit 0. |
+| `python3 .agents/scratch/routing-p02/check-routing-docs.py` | Exit 0; 117 local links/fragments, Markdown whitespace, YAML catalogs, Python syntax, and protected baseline content pass. The initial audit found the new dated heading's fragment mismatch; removing its separator corrected the link without changing implementation. |
+
+Committed implementation/tested candidate: `23decc2acef5793777c408b908fc69d3e55aee7d`. `just test-agent-routing -v` reran successfully at that revision: 16 tests in 13.984s, exit 0. A documentation-only successor records the handoff, corrects the dated heading fragment, and adds these audit facts; executable/configuration/test content is unchanged. Master remains `c6083e892285b43c297c742ff28553ae3e2e7310`.
 
 No real agents, model-availability probes, application tests, browser sessions, remote push, deployment, or merge were run. POC sources/runtime/tests and existing recipes are unchanged; prototype application checks are outside this routing slice. Sandbox-protected `.git` and `.agents` writes used approved elevated tool execution. The report records final documentation/scope checks and committed-revision verification.
