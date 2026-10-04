@@ -735,3 +735,17 @@ Recorded by the Coordinator from worker handoffs. User decisions: retire `.agent
 
 Limits: this was a documentation change with no live model session. The Coordinator did not run checks; the results above come from the cited worker reports.
 
+## 2026-10-04 Prompt Coordinator cleanup
+
+Recorded by the Coordinator from worker handoffs. User decision: the Coordinator cleans up as soon as reuse of a worktree, Herdr space or agent is no longer required.
+
+- **Change** (`CLEAN-impl`, R1): candidate `f2aa62c` from BASE `06c181a` edits the feature workflow skill, the Coordinator role and SCHEMA. Markdown only. R1 adds removal of a worker launch's private temporary directory when its pane is closed, following the Implementer's ruach-herdr discovery. The [Implementer report](mailbox/workflow-prompt-cleanup/implementer.md) records the skill format check, routing (13), handoff (24) and Herdr (107) suites passing. The [independent review](mailbox/workflow-prompt-cleanup/reviewer.md) at `743abae` passed all six conditions with no findings and reran the checks. Fast-forwarded to local master at `ff65853`, and routing tests pass there ([delivery](mailbox/workflow-prompt-cleanup/delivery.md), committed at `8c1c3fb`).
+- **Cleanup, applying the new rule:**
+  - Reviewer pane `w2G:p1H` was closed right after its review was committed. Implementer pane `w2G:p1G` was closed after delivery.
+  - Worktree `/opt/dev/tehom-brainlab-cleanup` was removed by the Coordinator; branch `workflow-prompt-cleanup` is kept and reachable from master.
+  - Private Claude launch directories from this session's five Claude worker launches were removed: `/tmp/ruach-herdr-{tedr7n,qD0tSD,kh3wyE,ejtIiB,vNk0SL}`. They were identified by launch time and skill-set signature, and no process referenced them. The Codex launches reported none.
+  - Retained: the Coordinator's own adapter directory, other sessions' `ruach-herdr-*` directories, the caller pane `w2G:p18`, and unrelated panes `w2G:p3` and `w2G:p17`. No task-created Herdr workspaces or tabs existed.
+- **Process note:** the launcher's `temporary_directory` field was not captured at launch time for these workers, so the directories were matched after the fact. Coordinators should capture that field from each start result.
+
+Limits: Markdown-only change, with no live model session. The Coordinator did not run checks; the results come from the cited worker reports.
+
