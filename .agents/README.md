@@ -2,7 +2,8 @@
 
 Keep repository-owned skills, reusable prompts, and workflow support here. Working guidance starts in [AGENTS.md](../AGENTS.md).
 
-This required folder follows [ADR-0005](../docs/adr/0005-repository-management-and-tooling.md). Portable role definitions live in `agents/`; skills and reusable workflows live in `skills/`. These are the canonical sources; the repository launcher resolves portable model routes and injects these roles without installing persistent harness configuration. Only the Coordinator loads and executes workflows; workers receive self-contained assignments.
+This required folder follows [ADR-0005](../docs/adr/0005-repository-management-and-tooling.md). Portable role definitions live in `agents/`; skills and reusable workflows live in `skills/`. These are the canonical sources. The repository launcher consumes the committed `.agents/models.yaml`, `.agents/routing.yaml`, and `.agents/roles.yaml` catalogs. The versioned ruach-herdr launcher has Claude/Codex preparation verified with fake executables and installed-CLI dry runs. Claude worker preparation fails closed when account-synced, managed, or linked-worktree sources cannot be safely excluded; explicitly select a declared alternative with `--route` or use a verified environment. Codex preparation requires an already-running matching app-server daemon. Pi, OpenCode, DSH, OMP, and Agy currently fail before mutation. Live session acceptance has not been performed. See [routing schema and root delegation](skills/ruach-herdr/references/routing.md). Only the Coordinator loads and executes workflows; workers receive self-contained assignments.
+
 
 Durable worker handoffs live in [docs/mailbox/](../docs/mailbox/README.md); local working files live in [scratch/](scratch/README.md). Follow [SCHEMA](../docs/SCHEMA.md#agent-work-artifacts) for artifact locations, naming, and ownership, and [ruach-handoff](skills/ruach-handoff/SKILL.md) for the reporting protocol. Shared designs and plans remain in `docs/`.
 
@@ -11,7 +12,9 @@ Durable worker handoffs live in [docs/mailbox/](../docs/mailbox/README.md); loca
 Use the `ruach-` prefix for every custom skill's directory and frontmatter name. Directory and name must match.
 
 - [ruach-testing](skills/ruach-testing/SKILL.md): contract-based behavior tests and regression coverage.
-- [ruach-handoff](skills/ruach-handoff/SKILL.md): shared structured handoff production, consumption, and correction protocol.
+- [ruach-handoff](skills/ruach-handoff/SKILL.md): shared structured handoff production, consumption, and correction protocol, with the mechanical [handoff validator](skills/ruach-handoff/scripts/validate.ts).
+- [ruach-herdr](skills/ruach-herdr/SKILL.md): resolve repository roles and routes, prepare native harness configuration, and launch one named worker.
+- [ruach-harness-eval](skills/ruach-harness-eval/SKILL.md): acceptance and scope checks for explicit evaluation only; not loaded by daily coordination.
 - [ruach-simplification](skills/ruach-simplification/SKILL.md): reduce complexity while preserving required behavior.
 - [ruach-workflow-feature](skills/ruach-workflow-feature/SKILL.md): Coordinator's generic feature workflow through integration, verification, review, and merging; Scout and Architect are optional.
 
