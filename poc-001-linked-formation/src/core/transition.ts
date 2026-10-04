@@ -8,6 +8,8 @@ import type { CombatState } from './state';
 import { applyAttack } from './damage';
 import { applyAbility } from './abilities';
 import { isAbilityId } from '../content/brood';
+import type { PatrolState } from '../content/patrol';
+import { endPatrolPhase } from './rounds';
 
 function reject(state: GameState, code: ErrorCode): CommandResult {
   return { ok: false, state, events: [], error: { code } };
@@ -19,10 +21,16 @@ function guard(state: GameState, expectedRevision: number): ErrorCode | undefine
   return undefined;
 }
 
-/** Public dispatcher; P08 phase/round dispatch remains pending. */
+/** Public dispatcher; basic lab snapshots retain their unsupported phase command. */
+export function applyCommand(state: PatrolState, command: Command): CommandResult<PatrolState>;
 export function applyCommand(state: CombatState, command: Command): CommandResult<CombatState>;
 export function applyCommand(state: GameState, command: Command): CommandResult;
 export function applyCommand(state: GameState, command: Command): CommandResult {
+  if (command.kind === 'endPhase' && 'patrolVersion' in state && 'patrolRules' in state
+    && 'enemies' in state && 'declaredIntentions' in state && 'protections' in state
+    && 'shelters' in state && 'resolvedAttackIds' in state) {
+    return endPatrolPhase(state as PatrolState, command.expectedRevision);
+  }
   if (command.kind === 'attack') {
     if (!('enemies' in state && 'declaredIntentions' in state && 'protections' in state
       && 'shelters' in state && 'resolvedAttackIds' in state)) return reject(state, 'invalid-command');

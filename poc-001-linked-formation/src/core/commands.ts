@@ -4,6 +4,7 @@ import type { AttackCommand, DamageEvent } from './damage';
 import type { LifecycleEvent } from './lifecycle';
 import type { FacingEvent } from './intents';
 import type { AbilityCommand, AbilityEvent } from './abilities';
+import type { RoundEvent } from './rounds';
 
 export type Maneuver = 'clockwise' | 'anticlockwise' | 'expand' | 'contract';
 
@@ -32,7 +33,7 @@ export interface CommandError {
 }
 
 export type GameplayEvent =
-  | DamageEvent | LifecycleEvent | FacingEvent | AbilityEvent
+  | DamageEvent | LifecycleEvent | FacingEvent | AbilityEvent | RoundEvent
   | { readonly type: 'maneuver-applied'; readonly maneuver: Maneuver;
       readonly formation: Formation; readonly revision: number }
   | { readonly type: 'action-applied'; readonly actorId: string;
