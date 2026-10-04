@@ -1,6 +1,6 @@
 # POC 001 — bounded implementation plan index
 
-Twelve plans for the linked-formation prototype (P01 implemented, independently verified/reviewed and accepted, P02–P12 draft), written on 2 October 2026 against repository baseline `79f9498051df0281e6e9d3c904e9eee32f014873`.
+Twelve plans for the linked-formation prototype (P01 implemented, independently verified/reviewed and accepted; P02 implemented and verified candidate at `3570610406886f18ca08c51effc79b3e8f3ddd34`, review/delivery pending; P03–P12 draft), written on 2 October 2026 against repository baseline `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 **This is a navigation and authority note, not a thirteenth implementation plan.** Adding these documents does not implement the prototype, approve new game rules, or constitute a playtest. No package installation, application build, unit test suite, or browser combat test was run as part of drafting.
 
@@ -27,11 +27,11 @@ The original fixed Apex/Shadow direction is not silently promoted back into this
 
 **Settled choices** are constraints already stated in the inspected sources or the user's instruction: the accepted POC scope, no walking/translation, shared maneuvers, engine-independent rules, existing assets, and the requested document format.
 
-**Required contracts** describe what must be observably true to accept the bounded implementation. Some are engineering invariants proposed by the plan; those are identified locally. The draft contracts alone are not claims that an implementation satisfies them; P01 now links its executed evidence.
+**Required contracts** describe what must be observably true to accept the bounded implementation. Some are engineering invariants proposed by the plan; those are identified locally. The draft contracts alone are not claims that an implementation satisfies them; P01 and P02 now link their executed evidence and distinguish review/delivery status.
 
 **Proposed implementation / experimental defaults** fill explicitly open implementation details such as coordinate presets, mask boundaries, damage values, targeting ties, and defeat behavior. They are recommendations for executable fixtures, not historical decisions or balanced gameplay. Resolve/amend them explicitly at implementation start; a change affecting another plan requires reconciling that dependent plan's fixtures and tests, not creating a second hidden constant.
 
-All source/test file paths listed as proposed ownership are intended future paths. At the baseline the prototype has folders and a README, not a working TypeScript application. All commands in verification sections become executable only after the prerequisite plan supplies their scripts.
+Source/test file paths listed as proposed ownership describe planned paths at drafting; P01 and P02 now have implementations. At the original planning baseline the prototype had folders and a README, not a working TypeScript application. Commands in verification sections become executable only after the prerequisite plan supplies their scripts.
 
 The user's 3 October tooling preference supersedes the original npm proposal: use Bun with a prototype-local `bun.lock`, prefer Docker where useful, and orchestrate commands through the root justfile. Run `just poc-001-*` recipes from the repository root; P01 now supplies the install/dev/typecheck/test/build/preview recipes, with test-browser and replay supplied by their later owning plans. Keep implementations in the prototype's `scripts/` and executable entry points in its `bin/`. The current root justfile also retains repository tooling checks and the existing asset exporter.
 
@@ -40,7 +40,7 @@ The user's 3 October tooling preference supersedes the original npm proposal: us
 | ID | Plan | Bounded outcome | Direct prerequisites |
 |---|---|---|---|
 | P01 | [Browser harness](2026-10-02-a87b131a-poc-001-browser-harness.md) | Independently install, run, test, and build one browser shell. Implemented, independently verified/reviewed and accepted. | None |
-| P02 | [Formation algebra](2026-10-02-2e228a2b-poc-001-formation-algebra.md) | Preserve twelve labelled, reversible formations on 37 cells. | P01 |
+| P02 | [Formation algebra](2026-10-02-2e228a2b-poc-001-formation-algebra.md) | Preserve twelve labelled, reversible formations on 37 cells. Implemented and verified candidate; review/delivery pending. | P01 |
 | P03 | [Command boundary](2026-10-02-2dfffcd3-poc-001-command-boundary.md) | Reject illegal/stale commands without spending resources or mutating state. | P01, P02 |
 | P04 | [Formation lab](2026-10-02-9d81c6df-poc-001-formation-lab.md) | Inspect, preview, commit, and reset formation-only interaction. | P01, P02, P03 |
 | P05 | [Intent semantics](2026-10-02-d66a7452-poc-001-intent-semantics.md) | Keep fixed areas, following marks, and explicit facing changes distinct. | P02, P03 |

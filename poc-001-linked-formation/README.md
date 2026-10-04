@@ -1,6 +1,6 @@
 # POC 001 — Linked formation
 
-**Status: P01 browser shell implemented, independently verified/reviewed, and accepted. P02 formation algebra implemented as a candidate; verification, independent review, and delivery pending. Not a playable patrol.**
+**Status: P01 browser shell implemented, independently verified/reviewed, and accepted. P02 formation algebra implemented and verified at `3570610406886f18ca08c51effc79b3e8f3ddd34`; independent review and delivery pending. Not a playable patrol.**
 
 Test whether rotating, expanding, and contracting three linked Brood creates interesting ordinary combat decisions. The [design brief](../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../docs/adr/0004-repository-and-poc-direction.md) describe the experiment. P01 supplies a named Phaser scene, labelled placeholder, and pure readiness fixture. P02 adds pure geometry without changing the browser placeholder. Combat remains later work.
 
@@ -79,5 +79,7 @@ Public validation throws `RangeError` synchronously and never clamps, rounds, co
 Run the focused contracts from the repository root with `just poc-001-test tests/formation.test.ts`. The suite reports its actual assertion count and uses explicit thresholds for classification so provisional tuning can evolve.
 
 ## Evidence and limitations
+
+P02 candidate/tested revision is `3570610406886f18ca08c51effc79b3e8f3ddd34` on local branch `p02-formation-algebra`. The [P02 Implementer handoff](../docs/mailbox/p02-formation-algebra/implementer.md) records all six acceptance criteria, exact ring indices, defaults, and actual orientation-zero outputs; [verification](../docs/mailbox/p02-formation-algebra/verification.md) records command output. Focused tests pass 90 tests/3,349 assertions; full regression passes 92 tests including unchanged P01 coverage. Typecheck/build pass. Browser rendering remains the P01 placeholder; no P02 browser or human playtest was run. Review, Coordinator acceptance, and master delivery are pending.
 
 See the [Implementer handoff](../docs/mailbox/p01-browser-harness/implementer.md) and [verification record](../docs/mailbox/p01-browser-harness/verification.md) for the exact committed revision, clean reinstall, deliberate test failure, wrapper probes, and actual automated browser captures. These checks are not human playtests or combat acceptance. Vite reports the expected large Phaser bundle warning; no optimization or gameplay was added. The [independent review](../docs/mailbox/p01-browser-harness/reviewer.md) found no issues; the Coordinator accepted P01 criteria 1–7. Local delivery is recorded in [TASK_LOGS](../docs/TASK_LOGS.md#2026-10-04-p01-local-delivery).

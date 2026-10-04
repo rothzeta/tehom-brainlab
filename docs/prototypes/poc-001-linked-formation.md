@@ -1,6 +1,6 @@
 # POC 001 — Linked formation
 
-**Status:** specified experiment; implementation not started.
+**Status:** specified experiment; P01 shell delivered, P02 pure formation algebra implemented and verified at `3570610406886f18ca08c51effc79b3e8f3ddd34` with independent review/delivery pending. Combat and playtesting have not started.
 
 **Basis:** the POC accepted in the TEHOM planning conversation, 2 October 2026. Initial tuning and unresolved mechanics are identified below rather than presented as playtest findings.
 
@@ -35,7 +35,7 @@ Brood occupy the outer ring. Enemies occupy the central engagement area. The enc
 
 Expansion separates the Brood around the encounter; it does not move them farther from its centre. There is no independent movement, squad translation, pursuit, pathfinding, collision resolution, opportunity attack, or damage from crossing a telegraph during a maneuver. Only destination states determine the initial rules.
 
-Specify the exact coordinate mapping and reversible shape transitions in the implementation and tests; these have not yet been encoded.
+The exact experimental coordinate mapping and reversible shape transitions are now encoded in the [P02 implementation](../../poc-001-linked-formation/README.md#formation-algebra-p02) and tested against the [plan fixture](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md). All twelve labelled states are retained even when Spread occupied-cell sets coincide. Browser presentation remains the P01 placeholder; combat has not been added.
 
 ### Links
 
@@ -130,11 +130,11 @@ A fair comparison must preserve the original model's own strengths: Glare pressu
 - Shelter checks the link when damage resolves, not only when applied.
 - Preview leaves original state unchanged and agrees with the committed transition.
 
-These are planned checks; no implementation or passing test suite exists yet.
+The first six formation checks are implemented and pass in the P02 candidate (90 focused tests, 3,349 assertions), alongside the unchanged two P01 tests. [Verification evidence](../mailbox/p02-formation-algebra/verification.md) identifies the tested revision. Activation limits, intentions, Shelter resolution, and combat preview/commit equivalence remain planned checks; no passing combat test suite or human playtest exists yet.
 
 ## Open decisions
 
-Numeric balance, exact coordinate presets, sector masks, enemy intention tie-breaking, the definition of isolation, and how formation behaves after a Brood falls must be specified before calling the combat loop complete. Record their initial values as experimental defaults.
+Numeric balance, sector masks, enemy intention tie-breaking, the definition of isolation, and how formation behaves after a Brood falls must be specified before calling the combat loop complete. P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
 
 ## Explicit exclusions
 

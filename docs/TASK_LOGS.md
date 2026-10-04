@@ -544,3 +544,30 @@ Actual integration/delivery revision: `28ae38beabfd0150011988326f9bb87db865db60`
 The [delivery handoff](mailbox/agent-routing/delivery.md) is added in a documentation-only master successor, along with these actual delivery facts. Its delivered/tested revision references the existing first delivered revision above; no self-referential future commit identifier is recorded. Final documentation/scope checks are returned in the terminal handoff. No real agents, live availability/discovery checks, prototype/browser tests, push or deployment were run.
 
 Final audit observation: after the successful pre-evidence snapshot comparison, the unrelated `versioned-agent-skills-20261004` branch/worktree advanced separately to `62d7ac705b04d4e039112228775f6052a6f8da64` (`Design portable versioned worker, handoff, and evaluation skills`). A strict final snapshot-equality assertion detected the advancement. `git show --no-patch --format=fuller 62d7ac705b04d4e039112228775f6052a6f8da64` and `git merge-base --is-ancestor c6083e892285b43c297c742ff28553ae3e2e7310 62d7ac705b04d4e039112228775f6052a6f8da64` confirmed the separate descendant commit. This routing task left the worktree, branch and new revision untouched; all other unrelated refs match their initial values. The evidence commit is amended only to record this concurrent change accurately. Delivered routing code/config/tests and the successful test result above remain unchanged.
+
+## 2026-10-04 P02 formation algebra candidate
+
+Assignment B-impl implements [P02](plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md). Inspected delivered BASE `e3f60372a5fef279f92ed14caead48271247405f`; main checkout was clean on master. Created local branch `p02-formation-algebra` directly from BASE. Master, routing setup, prior P01 evidence/runtime/behavior, and unrelated `versioned-agent-skills-20261004` worktrees are preserved; no merge or remote action.
+
+P01 prerequisite commands existed but initially failed inside the sandbox: `just poc-001-test` and `just poc-001-typecheck` each exit 1, Docker daemon inaccessible. With approved Docker access at unchanged BASE, those same commands each exit 0; two smoke tests pass. No harness repair or host-runtime substitution was needed.
+
+Added `poc-001-linked-formation/src/core/hex.ts`, `src/core/formation.ts`, and `tests/formation.test.ts` exactly in the plan's proposed layout; documented typed exports/errors/coordinate convention in the prototype README. Implements the 37 integer axial cells, exact clockwise ring R, twelve labelled states, reversible rotations and shape transitions, ordered links, explicit public validation, and input immutability. No renderer, action accounting, movement, physics, or combat. Resolved safe-integer/RangeError boundaries and no default initial state; Close threshold two and coordinate fixtures remain experimental/provisional. Explicit-threshold tests permit later tuning.
+
+Final combined application/API/test candidate and tested revision: `3570610406886f18ca08c51effc79b3e8f3ddd34`. Checks ran from repository root using the unchanged P01 Docker wrapper and Bun 1.4.2 / Vitest 5.0.3:
+
+| Exact command | Exit / result at tested revision |
+| --- | --- |
+| `just poc-001-test tests/formation.test.ts` | 0; 90 tests pass, 3,349 actual P02 assertions reported in runner stdout |
+| `just poc-001-typecheck` | 0; strict TypeScript checks pass |
+| `just poc-001-test` | 0; 92 tests pass across two files, including two unchanged P01 tests |
+| `just poc-001-build` | 0; P01 static shell builds, existing large Phaser chunk warning |
+| `git diff --check` | 0; whitespace clean |
+| Pinned Docker/Bun read-only, network-disabled guarded core import and orientation-zero capture | 0; no access to guarded window/document/Phaser; actual Compact/Spread positions and links captured |
+
+Exact output and capture command: [verification](mailbox/p02-formation-algebra/verification.md). Numbered acceptance evidence 1–6, ring table R, enumeration/operation/wraparound/assertion coverage, actual serialized examples, defaults with sources, changed files, and limitations: [Implementer handoff](mailbox/p02-formation-algebra/implementer.md). All twelve states have five cases each; every ordered board-cell pair is checked. Frozen state tests cover all seven public state APIs; invalid-input tests assert error type/message. No Spread state is deduplicated.
+
+Initial uncommitted focused run failed nine tests because transform expectations distinguished JavaScript negative zero from zero. Correcting that incidental test comparison preserved exact clockwise coordinate assertions; restored run and both committed test runs pass. No deliberate-failure sanity check, clean reinstall, host-mode rerun, browser session, or human playtest was executed for P02.
+
+The documentation-only successor records this handoff and factual plan/index/CURRENT/brief status. No executable/test/runtime/configuration/CLI changes follow the tested candidate. Independent review, Coordinator acceptance, and delivery are pending. No unresolved implementation/verification blocker.
+
+Final scope checks confirmed protected routing/agent/P01 runtime/source/tests/evidence are byte-identical to BASE and P02 source/tests are byte-identical to the tested revision; master remains BASE. The unrelated `versioned-agent-skills-handoff` worktree independently advanced to `b12aa88be63a5ea0aa4dbbb1e9953661ce4cd947` during this task and was left untouched; `versioned-agent-skills-20261004` remains `62d7ac705b04d4e039112228775f6052a6f8da64`. No unrelated worktree or branch was changed by this assignment.

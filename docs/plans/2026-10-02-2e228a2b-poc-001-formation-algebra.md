@@ -2,13 +2,13 @@
 
 ## Status and authority
 
-**P02. Draft; not implemented or verified.** Depends on [P01](2026-10-02-a87b131a-poc-001-browser-harness.md) for the unit-test harness. Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
+**P02. Implemented and verified at `3570610406886f18ca08c51effc79b3e8f3ddd34`; independent review and delivery pending.** Depends on delivered [P01](2026-10-02-a87b131a-poc-001-browser-harness.md) for the unit-test harness. Original planning baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`; implementation BASE: `e3f60372a5fef279f92ed14caead48271247405f`. See [execution](../TASK_LOGS.md#2026-10-04-p02-formation-algebra-candidate) and [Implementer evidence](../mailbox/p02-formation-algebra/implementer.md).
 
-Authority: the [brief's Formation rules and Initial tests](../../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../adr/0004-repository-and-poc-direction.md). The exact coordinate mapping below is a proposed implementation of the accepted experiment, not an existing approved coordinate specification. The [index](README.md) and local ADRs below establish formatting authority.
+Authority: the [brief's Formation rules and Initial tests](../../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../adr/0004-repository-and-poc-direction.md). The exact coordinate mapping below is now implemented as the experimental fixture under assignment B-impl; verification does not establish balanced gameplay. The [index](README.md) and local ADRs below establish formatting authority.
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
-Task `P02` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Record actual execution in [TASK_LOGS](../TASK_LOGS.md); no execution evidence exists yet.
+Task `P02` implementation and combined-verification owner: assignment B-impl Implementer. Integration is a later assignment. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Actual execution is recorded in [TASK_LOGS](../TASK_LOGS.md#2026-10-04-p02-formation-algebra-candidate).
 
 ## Smallest useful outcome
 
@@ -66,7 +66,9 @@ Return link endpoints, integer distance, and `close`/`stretched` in stable roste
 
 ## Verification and hand-back
 
-Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. The commands below remain proposed until their prerequisites supply them.
+Executed on the committed candidate above: focused formation suite (90 tests, 3,349 actual assertions), strict typecheck, full suite (92 tests), P01 build, and `git diff --check`, all exit 0. P01 prerequisites passed at implementation BASE. [Verification evidence](../mailbox/p02-formation-algebra/verification.md) records commands/output; [public exports and errors](../../poc-001-linked-formation/README.md#formation-algebra-p02) resolve P02.C4 and validation choices. No default initial formation is selected; Close threshold two remains provisional and configurable. Readonly safe-integer axial inputs and synchronous `RangeError` are explicit implementation choices. Review, acceptance, and delivery remain pending.
+
+Record exact executed commands, results, acceptance evidence, and limitations in [TASK_LOGS](../TASK_LOGS.md), then link that entry here and update [CURRENT](../CURRENT.md) when implementation facts change. Delivered P01 supplies the required commands below.
 
 After P01 exists, run `just poc-001-test tests/formation.test.ts` and `just poc-001-typecheck` from the repository root. Return the coordinate table, exhaustive assertion count, command results, and a serialized example of both orientation-zero shapes. Verify the implementation, not only a drawing. Any independent arithmetic check of this draft is not a passing application test.
 
