@@ -1,5 +1,6 @@
 import { ROSTER } from './formation';
 import type { Brood, Formation } from './formation';
+import type { EnemyState, Intention, ProtectionRelation } from './intents';
 
 export type Phase = 'player' | 'enemy' | 'victory' | 'defeat';
 
@@ -22,6 +23,26 @@ export interface GameState {
   readonly actedIds: readonly string[];
   readonly maneuverUsed: boolean;
   readonly intentions: readonly string[];
+}
+
+/** P06 combat data composes P03 snapshots and P05 selector inputs. */
+export interface CombatEnemy extends EnemyState {
+  readonly maxHp: number;
+}
+
+export interface Shelter {
+  readonly id: string;
+  readonly sourceId: string;
+  readonly targetId: string;
+}
+
+export interface CombatState extends GameState {
+  readonly enemies: readonly CombatEnemy[];
+  readonly declaredIntentions: readonly Intention[];
+  readonly protections: readonly ProtectionRelation[];
+  readonly shelters: readonly Shelter[];
+  /** Encounter-scoped identities prevent a later callback from repeating a hit. */
+  readonly resolvedAttackIds: readonly string[];
 }
 
 /** Fresh independent collections on every call. Round reset belongs to P08. */

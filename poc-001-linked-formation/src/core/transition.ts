@@ -4,6 +4,8 @@ import {
 import type { Formation } from './formation';
 import type { ActorAction, Command, CommandResult, ErrorCode } from './commands';
 import type { BroodState, GameState } from './state';
+import type { CombatState } from './state';
+import { applyAttack } from './damage';
 
 function reject(state: GameState, code: ErrorCode): CommandResult {
   return { ok: false, state, events: [], error: { code } };
@@ -15,8 +17,15 @@ function guard(state: GameState, expectedRevision: number): ErrorCode | undefine
   return undefined;
 }
 
-/** The single player-command boundary. P07/P08 dispatchers are not installed yet. */
+/** P06 adds validated attack settlement; P07/P08 ability/round dispatch is pending. */
+export function applyCommand(state: CombatState, command: Command): CommandResult<CombatState>;
+export function applyCommand(state: GameState, command: Command): CommandResult;
 export function applyCommand(state: GameState, command: Command): CommandResult {
+  if (command.kind === 'attack') {
+    if (!('enemies' in state && 'declaredIntentions' in state && 'protections' in state
+      && 'shelters' in state && 'resolvedAttackIds' in state)) return reject(state, 'invalid-command');
+    return applyAttack(state as CombatState, command);
+  }
   // Unsupported kinds stay explicit even in stale or terminal snapshots.
   if (command.kind === 'useAbility' || command.kind === 'endPhase') {
     return reject(state, 'unsupported-command');
