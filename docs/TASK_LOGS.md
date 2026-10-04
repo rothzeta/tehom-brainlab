@@ -930,3 +930,22 @@ The user decided the POC arena has only two rings ("i dont see what three would 
 - Panes `w2G:p2B`, `p2C` and `p2D` closed. Launch directory `/tmp/ruach-herdr-LNMkv8` removed.
 - Worktree `/opt/dev/tehom-brainlab-tworing` removed. Branch `two-ring-board` kept.
 - No push and no human playtest.
+
+## 2026-10-04 P07 Brood abilities
+
+This task was part of the user's request to "implement up to p11". The Coordinator ran `ruach-workflow-feature` in worktree `/opt/dev/tehom-brainlab-p07` on branch `p07-brood-abilities`, starting from BASE `08dc630`. The Coordinator ran no checks itself, and every handoff passed the `ruach-handoff` validator.
+
+**Implementation.**
+- `p07-impl` (`gpt-6.1-sol-high`, pane `w2G:p2E`) produced candidate `42deffc5`. It touched `src/content/brood.ts`, `src/core/abilities.ts` and `tests/abilities.test.ts`, extended P03 `commands`/`transition`, made additive changes to P05 `intents` and P06 `state`, and updated the README.
+- Results: 362 tests, typecheck and build passed, with existing tests unedited. See the [implementer report](mailbox/p07-brood-abilities/implementer.md).
+
+**Review.**
+- `p07-review` (pane `w2G:p2F`) reviewed the candidate in `20eb00c` and raised two findings:
+  - R1 (blocking): the Shelter tests at `abilities.test.ts:160-176` froze P06's provisional mitigation default. A probe that changed the default made them fail.
+  - R2 (optional): the six per-ability serialized traces were missing.
+- Fix `90e96d30` gave the exact assertions explicit test-owned tuning, kept the dispatcher invariants, and added six executed traces. Results: 365 tests passed, and the default-override probe passed ([fix report](mailbox/p07-brood-abilities/fix.md)).
+- The re-review (`2b65f55`) approved the fix with no remaining findings ([review](mailbox/p07-brood-abilities/reviewer.md)).
+
+**Delivery.** Master was not advanced during the work. It fast-forwarded `08dc630` → `8f641d6e` (delivered and tested: 365 tests, typecheck and build exit 0; application equals `90e96d3`) → `7aecadca` (delivery report). See the [delivery report](mailbox/p07-brood-abilities/delivery.md).
+
+**Cleanup.** Panes `w2G:p2E` and `p2F` are closed, and worktree `/opt/dev/tehom-brainlab-p07` is removed. Branch `p07-brood-abilities` is kept. No push.
