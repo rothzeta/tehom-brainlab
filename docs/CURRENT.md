@@ -55,3 +55,9 @@ A [four-harness follow-up](mailbox/orchestrator-four-harness/results.md) complet
 ## Verification and limits
 
 The [vault alignment task log](TASK_LOGS.md#2026-10-03-vault-alignment) records documentation changes and executed checks. That documentation-only alignment task ran no application tests, browser combat checks, or human playtests. P01 now has the separate application/unit/build/automated-browser evidence linked above; it still has no combat or human-playtest evidence. [Playtests](playtests/README.md) currently contains navigation and a template only.
+
+## Versioned skills local integration
+
+The `versioned-agent-skills-main` branch locally integrates the three portable skills and the corrected Claude/Codex contracts; master delivery and global installation remain pending. The root routing surface delegates to ruach-herdr after repository policy validation and passes automatic approval review through the portable permission option. Workers receive canonical role instructions and self-contained assignments; the launcher supplies no workflow bodies. Complete Claude account/plugin/managed catalog visibility is unverified and does not prohibit preparation. Codex prefers the matching daemon and otherwise uses short-lived native stdio inspection, which may initialize runtime state without modifying user configuration.
+
+See the [integration handoff](mailbox/versioned-agent-skills/integration-main.md), [agent resources](../.agents/README.md), [routing procedure](exploitation/agent-routing.md), and [structured handoff validator](../.agents/skills/ruach-handoff/SKILL.md). The earlier handoff-only description above records the historical stage; the integrated skill now includes its JSON schema and validator. Live model sessions and role/skill discovery have not been verified for this integration.

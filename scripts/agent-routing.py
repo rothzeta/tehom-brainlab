@@ -131,8 +131,8 @@ def main():
         description=__doc__,
         epilog="resolve uses offline selection (no native argv or Herdr prerequisite). "
                "Output is worker schema_version 1 JSON; worker exit codes 2/3/4 are preserved. "
-               "--pane is retired: start creates one sibling pane. Native permission settings "
-               "are inherited; use the skill directly for dry-run or supported native flags.")
+               "--pane is retired: start creates one sibling pane. Root launches use "
+               "portable --permissions auto-review; use the skill directly for dry-run.")
     subcommands = parser.add_subparsers(dest="command", required=True)
     for command in ("resolve", "start"):
         sub = subcommands.add_parser(command, description=parser.epilog)
@@ -154,7 +154,8 @@ def main():
         # The installed root surface owns the launcher; --root selects its input checkout.
         worker = ROOT / ".agents/skills/ruach-herdr/scripts/worker.ts"
         argv = [bun_executable(), str(worker), args.command, "--role", args.role,
-                "--name", args.name, "--repo", str(root), "--cwd", str(root)]
+                "--name", args.name, "--repo", str(root), "--cwd", str(root),
+                "--permissions", "auto-review"]
         if args.command == "resolve":
             argv.append("--offline")
         if args.route is not None:

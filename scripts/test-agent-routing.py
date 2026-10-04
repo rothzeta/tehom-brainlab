@@ -162,7 +162,7 @@ class RoutingContracts(unittest.TestCase):
         self.assertEqual(self.recorded(), [{"argv": [
             str(ROOT / ".agents/skills/ruach-herdr/scripts/worker.ts"), "start",
             "--role", "architect", "--name", "worker-a", "--repo", str(self.root),
-            "--cwd", str(self.root), "--route", GPT], "cwd": str(self.root)}])
+            "--cwd", str(self.root), "--permissions", "auto-review", "--route", GPT], "cwd": str(self.root)}])
 
     def test_delegate_streams_and_exit_status_are_preserved_without_retry(self):
         self.env["BUN_BIN"] = str(self.stub)
@@ -182,6 +182,8 @@ class RoutingContracts(unittest.TestCase):
         result = self.run_cli("resolve", "implementer", "--name", "custom-name")
         self.assertEqual(result["action"], "resolved-offline")
         self.assertEqual(result["selection"]["name"], "custom-name")
+        self.assertEqual(result["permissions"], "auto-review")
+        self.assertEqual(result["selection"]["permissions"], "auto-review")
         self.assertFalse(result["launchable"])
         self.assertEqual(result["argv"], [])
         self.assertNotIn("SECRET", json.dumps(result))

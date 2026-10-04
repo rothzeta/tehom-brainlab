@@ -13,7 +13,7 @@ Coordinate engineering work while keeping your context small.
 
 ## Delegation
 
-Launch specialist workers with [ruach-herdr](../skills/ruach-herdr/SKILL.md), supplying only the role, optional route, cwd or worktree, and worker name. The root `just agent-routing start ROLE NAME [--route ROUTE] [--root WORKTREE]` command delegates to the same skill. Routes and models resolve from the repository's canonical `.agents/models.yaml`, `.agents/routing.yaml`, and `.agents/roles.yaml`; follow the skill's routing guidance before launching. Use **Herdr** to monitor and communicate with workers.
+Launch specialist workers with [ruach-herdr](../skills/ruach-herdr/SKILL.md), supplying only the role, optional route, cwd or worktree, and worker name. The root `just agent-routing start ROLE NAME [--route ROUTE] [--root WORKTREE]` command delegates to the same skill and supplies repository automatic approval review policy through its portable permission option. Routes and models resolve from the repository's canonical `.agents/models.yaml`, `.agents/routing.yaml`, and `.agents/roles.yaml`; follow the skill's routing guidance before launching. Use **Herdr** to monitor and communicate with workers.
 
 For each worker provide:
 
