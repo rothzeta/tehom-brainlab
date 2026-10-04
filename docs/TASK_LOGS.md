@@ -904,3 +904,29 @@ After P04–P06 delivery, the user reported that "compact formation is not a tri
 - Panes `w2G:p28`, `p29` and `p2A` closed. Architect launch directory `/tmp/ruach-herdr-cBeLUm` removed; the other launches reported none.
 - Worktree `/opt/dev/tehom-brainlab-compact` removed. Branch `compact-triangle` kept.
 - No push. No human playtest.
+
+## 2026-10-04 Two-ring board
+
+The user decided the POC arena has only two rings ("i dont see what three would bring"). They clarified that bosses sit in the middle, that the strategy is to go wide around them or tight against them, and that encounter layout is what the POC explores. The Coordinator ran `ruach-workflow-feature` in worktree `/opt/dev/tehom-brainlab-tworing`, branch `two-ring-board`, from BASE `0a48098`. The Coordinator ran no checks itself, and every handoff passed the `ruach-handoff` validator.
+
+**Design.**
+- Architect `tr-architect` (`claude-opus-5.5-high`, pane `w2G:p2B`) wrote `0d911ce` ([report](mailbox/two-ring-board/architect.md)), amending the brief, the P02/P04/P05/P06/P08/P10 plans, the index, and task [TR](plans/2026-10-04-d005e5f4-poc-001-two-ring-board.md).
+- It found that the CT mid-side placement has no radius-2 equivalent. It also found that P08's proposed ring-1 enemy cells collide with Compact's inward Brood.
+- The user chose the recommended answer on all three questions: a sector-aligned Compact, corner Spread at distance 4, and view-only enemies at the centre.
+- `d71cf9f` recorded these as accepted decisions and amended ADR-0004. `fc36600`/`ebc26d6` noted the amendment in the ADR index.
+
+**Implementation.**
+- `tr-impl` (`gpt-6.1-sol-high`, pane `w2G:p2C`) delivered candidate `2e98a276`, touching `src/core/{hex,formation,sectors}.ts`, `src/view/{FormationLab.ts,lab.css}` and the README.
+- Under the plan's exception it updated geometry expectations in `formation.test.ts`, `intents.test.ts` and `browser-lab.mjs`.
+- Results: 278 tests with 2,926 assertions, typecheck and build all passed. The browser check passed 177 assertions, including 36 token hit tests.
+
+**Review.**
+- `tr-review` (pane `w2G:p2D`) passed `2e98a27` with 0 blocking and 0 optional findings ([review](mailbox/two-ring-board/reviewer.md), `befb8e1`).
+- It reran the BASE suite (4,949 assertions) and accounted for the whole drop of 2,023: 2,016 come from 2 × (37² − 19²) board pairs, with the rest from ring-table changes. No coverage was lost.
+
+**Delivery.** Master was not advanced during the work. It fast-forwarded `0a48098` → `21f3d331` (delivered and tested: 278 tests, typecheck and build exit 0; prototype content equals `2e98a27`) → `8297db69` (delivery report). See the [delivery report](mailbox/two-ring-board/delivery.md).
+
+**Cleanup.**
+- Panes `w2G:p2B`, `p2C` and `p2D` closed. Launch directory `/tmp/ruach-herdr-LNMkv8` removed.
+- Worktree `/opt/dev/tehom-brainlab-tworing` removed. Branch `two-ring-board` kept.
+- No push and no human playtest.

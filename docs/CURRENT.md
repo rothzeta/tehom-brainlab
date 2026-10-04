@@ -74,6 +74,19 @@ As of 2026-10-04, local master `a76a0ff03f3d1da84ef948ec3009e3c7d42f1f4d` makes 
 - **Documents.** The brief and the P02/P04/P05/P06/P10 plans carry amendments, and the task is the [CT plan](plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md).
 - **Evidence.** The [review](mailbox/compact-triangle/reviewer.md) found 0 blocking and 0 optional findings and visually confirmed triangles at all six orientations. Delivered `40b516f4`: 278 tests, typecheck and build passed. [Implementer](mailbox/compact-triangle/implementer.md), [delivery](mailbox/compact-triangle/delivery.md), [execution record](TASK_LOGS.md#2026-10-04-compact-triangle).
 
+## Two-ring board
+
+As of 2026-10-04, local master `8297db694e08be91bf24e93eff7e3506efc991a9` shrinks the POC arena to the centre plus two rings (19 cells). The user decided that a third ring added nothing: the middle is enemy and boss space, the strategy is to go "wide around" or "tight against" it, and encounter layout stays an open question for this POC. [ADR-0004](adr/0004-repository-and-poc-direction.md) carries a dated amendment.
+
+- **Compact** is a sector-aligned triangle `T[2o], T[2o+1], S[o]`. Pazuzu sits on ring 1, tight against the middle. Links are `[1,1,1]` Close.
+- **Spread** is the corners `T[2o], T[2o+4], T[2o+8]`. Links are `[4,4,4]` Stretched.
+- **Thresholds** are unchanged: Close 2 and splash 2.
+- **Sectors** are `T[2s], T[2s+1], S[s]`, with the centre unmasked.
+- **Enemies** are view-only at the centre. They have no board cell or rule meaning yet; off-centre bosses are an open experiment.
+- This supersedes the [Compact triangle](#compact-triangle) mid-side mapping, which has no equivalent on a radius-2 ring.
+
+Design: [Architect report](mailbox/two-ring-board/architect.md) and [TR plan](plans/2026-10-04-d005e5f4-poc-001-two-ring-board.md). The [review](mailbox/two-ring-board/reviewer.md) found 0 findings and showed that the drop in assertion count comes entirely from the smaller board. Delivered revision `21f3d331` passed 278 tests, typecheck, build and a 177-assertion browser check. See also the [implementer report](mailbox/two-ring-board/implementer.md), [delivery report](mailbox/two-ring-board/delivery.md) and [execution record](TASK_LOGS.md#2026-10-04-two-ring-board).
+
 ## Verification and limits
 
 The [vault alignment task log](TASK_LOGS.md#2026-10-03-vault-alignment) records documentation changes and executed checks. That documentation-only alignment task ran no application tests, browser combat checks, or human playtests. P01 now has the separate application/unit/build/automated-browser evidence linked above; it still has no combat or human-playtest evidence. [Playtests](playtests/README.md) currently contains navigation and a template only.
