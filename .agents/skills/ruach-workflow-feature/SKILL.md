@@ -7,7 +7,7 @@ description: Coordinate a bounded feature through optional investigation and des
 
 This is the generic feature workflow. Use a more specific workflow when one is assigned; keep this procedure sufficient for ordinary feature delivery.
 
-Only the Coordinator loads and executes this workflow. It instantiates specialist workers with self-contained assignments; workers receive their role, task context, and instructions without receiving the workflow. Require [ruach-handoff](../ruach-handoff/SKILL.md) for every worker result, including integration and merging; give workers its canonical path and their owned report path. Workers write durable reports in `docs/mailbox/` using [SCHEMA](../../../docs/SCHEMA.md#agent-work-artifacts) and keep intermediate files in `.agents/scratch/`. Canonical designs and plans stay in `docs/`.
+Only the Coordinator loads and executes this workflow. It instantiates specialist workers with self-contained assignments; workers receive their role, task context, and instructions without receiving the workflow. Require [ruach-handoff](../ruach-handoff/SKILL.md) for every worker result, including integration and merging; give workers its canonical path and their owned report path. Workers write durable reports in `docs/mailbox/` using [SCHEMA](../../../docs/SCHEMA.md#agent-work-artifacts) and keep intermediate files in `.agents/scratch/`. Canonical designs and plans stay in `docs/`. Launch workers with [ruach-herdr](../ruach-herdr/SKILL.md). Each responsible worker must run ruach-handoff's `scripts/validate.ts` on its own report before handoff; the Coordinator collects that evidence without running checks itself.
 
 ## 1. Understand
 

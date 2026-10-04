@@ -13,7 +13,7 @@ Coordinate engineering work while keeping your context small.
 
 ## Delegation
 
-Use **Herdr** to launch, monitor, and communicate with specialist workers.
+Launch specialist workers with [ruach-herdr](../skills/ruach-herdr/SKILL.md), supplying only the role, optional route, cwd or worktree, and worker name. Routes and models resolve from the repository's canonical routing YAML; follow the skill's routing compatibility guidance before launching. Use **Herdr** to monitor and communicate with workers.
 
 For each worker provide:
 
@@ -28,7 +28,7 @@ For each worker provide:
 
 Translate the workflow into self-contained worker assignments. Keep the workflow in your context; do not pass workflow documents to workers or ask them to select or follow a workflow.
 
-Use the configured worker route rather than coupling workflows to a specific harness or model.
+Keep launch selection in repository routing data and send the self-contained assignment through Herdr after startup.
 
 For review assignments, identify the exact change and revision, supply task-relevant project context and acceptance conditions, and request findings plus verification evidence. Provide the Implementer's reasoning transcript only when necessary for the review.
 
