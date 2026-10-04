@@ -332,6 +332,16 @@ test.each<Partial<AttackCommand>>([
   rejected(applyCommand(state, packet(overrides)), state, 'invalid-command');
 });
 
+test.each([
+  ['hole-only', new Array<string>(1)],
+  ['valid ID with a hole', Object.assign(new Array<string>(2), { 0: 'ugallu' })],
+] as const)('boundary: sparse recipients (%s) reject without effects', (_label, recipientIds) => {
+  const state = fixture({ shelters: [shelter] });
+  const before = structuredClone(state);
+  rejected(applyCommand(state, packet({ recipientIds })), state, 'invalid-command');
+  expect(state).toEqual(before);
+});
+
 test.each<[Partial<AttackCommand>, ErrorCode]>([
   [{ sourceId: 'missing' }, 'unknown-actor'], [{ recipientIds: ['missing'] }, 'illegal-target'],
   [{ recipientIds: ['ugallu', 'missing'] }, 'illegal-target'], [{ expectedRevision: 1 }, 'stale-revision'],

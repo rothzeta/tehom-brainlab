@@ -45,8 +45,9 @@ export function applyAttack(
   if (attack.expectedRevision !== state.revision) return reject('stale-revision');
   if (state.phase !== 'player' && state.phase !== 'enemy') return reject('wrong-phase');
   const validId = (id: unknown): id is string => typeof id === 'string' && id.trim().length > 0;
+  // Expose sparse array positions as undefined so every logical ID is checked.
   if (attack.kind !== 'attack' || !validId(attack.eventId) || !validId(attack.sourceId)
-    || !Array.isArray(attack.recipientIds) || !attack.recipientIds.every(validId)
+    || !Array.isArray(attack.recipientIds) || ![...attack.recipientIds].every(validId)
     || new Set(attack.recipientIds).size !== attack.recipientIds.length
     || typeof attack.bypassProtection !== 'boolean') return reject('invalid-command');
   if (!Number.isSafeInteger(attack.rawDamage) || attack.rawDamage < 0
