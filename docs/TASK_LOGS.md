@@ -649,3 +649,26 @@ Combined/candidate/tested revision: `8ea1c677e88b4c0d9b96646719836cae721c3454`, 
 The scratch observer first assumed a uniform live agent-list shape and twice failed before running native preparations. Herdr mixes named agents with anonymous detected processes; the corrected observer plus saved before/after identities confirm all 23 entries remained unchanged (16 named, seven anonymous). An exploratory probe used a harness label as a name and did not establish a duplicate failure. A subsequent real `worker.ts resolve --name skills-impl-main --role architect --repo <this-worktree> --cwd <this-worktree> --permissions auto-review` correctly returned exit 2 with `duplicate_name`. The earlier concern is resolved; no production change was needed. Failed observer evidence was retained separately from the final matrix.
 
 Real preparations used Claude 2.1.289 and Codex 0.160.0; all eight Codex commands used the matching daemon. Stdio fallback/runtime-state handling is fixture-tested, not verified by forcing the real daemon absent. No real agents, model turns, native role/skill discovery acceptance, browser checks, global installation, master merge or remote push occurred. Later report/CURRENT/TASK_LOGS edits only record this tested revision's evidence; final report-containing SHA is returned in the terminal handoff.
+
+
+## 2026-10-04 Versioned skills local delivery and global installation
+
+Part 3 explicitly authorizes local master delivery and only the three named global skills. The accepted [independent review](mailbox/versioned-agent-skills/reviewer-main.md) identifies reviewed/tested `8ea1c677e88b4c0d9b96646719836cae721c3454` with no blocking/optional findings. Before mutation, main checkout was clean on master at exact required `97752643b31cdcf8c8ec9f09204382c6766b1573`; integration branch was exact accepted evidence-only successor `50420314efb474122d4570beac6fe704cccb9dff`. Conditions were reasserted immediately before `git -C /opt/dev/tehom-brainlab merge --ff-only versioned-agent-skills-main`: exit 0, fast-forward without conflicts to that source SHA.
+
+| Exact command / check | Actual result |
+| --- | --- |
+| `git -C /opt/dev/tehom-brainlab diff --exit-code 8ea1c67 master -- . ':(exclude)docs/mailbox' ':(exclude)docs/CURRENT.md' ':(exclude)docs/TASK_LOGS.md'` | Exit 0, empty; technical content equals reviewed candidate |
+| `git -C /opt/dev/tehom-brainlab diff --name-only 8ea1c67..master` | Only CURRENT, TASK_LOGS, integration-main.md and reviewer-main.md evidence differs |
+| Absent/collision checks and `os.symlink` for the three named global destinations | All absent; all installed to canonical master sources, no overwrite/collision |
+| `/home/metatron/.bun/bin/bun install --frozen-lockfile` in each canonical skill dir | All exit 0; dependency installs succeed, locks unchanged |
+| `readlink -f` for each installed link; per-file `git hash-object` versus `git rev-parse master:<path>` | All three targets canonical; all 43 tracked skill files equal delivered Git blobs |
+| `python3 .agents/scratch/integration-main-part3/verify-delivery.py` | Exit 0; seven global help/offline/dry-run/validator checks, root Architect resolve, unchanged pane/name/session identities and unrelated global files |
+| `/opt/dev/tehom-brainlab/bin/test-agent-routing -v`, cwd main checkout | Exit 0; 13 tests, 4.986s |
+| Protected baseline diff, listed in delivery report; `git diff --check 97752643..master` | Exit 0, no P01/P02 code/contracts/evidence changes; whitespace clean |
+| `git -C /opt/dev/tehom-brainlab check-ignore .agents/skills/ruach-herdr/node_modules .agents/skills/ruach-handoff/node_modules`; main status after installs/checks | Exit 0, both ignored; canonical checkout clean |
+
+Links: `~/.agents/skills/{ruach-herdr,ruach-handoff,ruach-harness-eval}` point to `/opt/dev/tehom-brainlab/.agents/skills/<same-name>`, never the integration worktree. Existing global find-skills/herdr directories and their two original SKILL.md SHA-256 values remain unchanged. Dependency/runtime packages are skill-local and ignored. The full skill suites were not repeated as assigned; reviewed source/test bytes are identical. [Delivery handoff](mailbox/versioned-agent-skills/delivery.md) contains exact global command argv, link table, reviewed/delivered revisions and protected paths.
+
+No live model turn, task execution, native role/skill discovery acceptance, browser rerun, settings edit, remote push or branch/worktree deletion. Pi/OpenCode/DSH are absent; OMP/Agy remain capability-unverified. Full Claude catalog visibility is unverified/nonfatal; Codex stdio may initialize runtime state without user-config writes. Only delivery.md plus appended CURRENT/TASK_LOGS are committed as recording evidence; their recording commit SHA is returned after it exists. Main checkout is left clean.
+
+Executed global handoff validation of delivery.md: exit 0, `ok: true`, five revision references resolved, empty diagnostics. A final `git check-ignore` also confirms the hypothetical evaluator node_modules path is ignored. Local executable lookup confirms Pi/OpenCode/DSH and OMP are absent from this PATH, while Agy is installed; OMP/Agy adapters remain capability-unverified. The exact recording scope is delivery.md plus the append-only CURRENT/TASK_LOGS entries.
