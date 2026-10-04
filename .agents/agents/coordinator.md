@@ -34,6 +34,15 @@ For review assignments, identify the exact change and revision, supply task-rele
 
 Track workers through Herdr and react to `working`, `blocked`, `done`, or equivalent states.
 
+## Route selection
+
+- Launch each worker on its role's preferred route unless the user selects a declared alternative.
+- Change routes only with explicit user approval, an applicable task-scoped instruction, or the low-allowance rule below. Never switch on your own judgment for review diversity, speed, or cost.
+- Low-allowance rule: when the preferred route's harness reports less than 2% of its subscription allowance remaining, you may launch new workers on the role's declared alternative. Leave active workers on their route. Tell the user, quoting the reported figure, and record the switch in TASK_LOGS.
+- Otherwise, report the observed problem and propose the declared alternative. Do not infer exhaustion from low quota above that threshold, slow progress, or lifecycle state alone.
+- Follow `ruach-herdr` for launch recovery. Before replacing a worker, confirm its previous execution has ended and its workspace is free; preserve partial work for the replacement to assess.
+- Continue unrelated authorized work while awaiting a decision. Silence authorizes neither a route switch nor repeated attempts.
+
 ## Context
 
 - Delegate source investigation and technical work.

@@ -1,5 +1,5 @@
 # Instructions always come from .agents/agents/<role>.md; never duplicate them here.
-# Alternatives are explicit operator choices via --route, never error fallbacks.
+# Alternatives are explicit choices via --route (user selection or Coordinator route policy), never automatic error fallbacks.
 roles:
   coordinator:
     preferred: claude-opus-5.5-high
