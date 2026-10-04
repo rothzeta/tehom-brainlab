@@ -571,3 +571,24 @@ Initial uncommitted focused run failed nine tests because transform expectations
 The documentation-only successor records this handoff and factual plan/index/CURRENT/brief status. No executable/test/runtime/configuration/CLI changes follow the tested candidate. Independent review, Coordinator acceptance, and delivery are pending. No unresolved implementation/verification blocker.
 
 Final scope checks confirmed protected routing/agent/P01 runtime/source/tests/evidence are byte-identical to BASE and P02 source/tests are byte-identical to the tested revision; master remains BASE. The unrelated `versioned-agent-skills-handoff` worktree independently advanced to `b12aa88be63a5ea0aa4dbbb1e9953661ce4cd947` during this task and was left untouched; `versioned-agent-skills-20261004` remains `62d7ac705b04d4e039112228775f6052a6f8da64`. No unrelated worktree or branch was changed by this assignment.
+
+## 2026-10-04 P02 review finding R1 correction
+
+Assignment B-fix-R1, inspected branch `p02-formation-algebra` at `fb0a352929e38dab21c9092a8d45246a2a81764d` plus the sole uncommitted Reviewer-owned report. Read its blocking R1: enumeration membership used serialized Formation objects and falsely depended on property insertion order. Changed only `poc-001-linked-formation/tests/formation.test.ts` lines 67–68 to compare explicit `${shape}:${orientation}` key sets. Length, exact twelve-state membership, distinct labelled positions, and all other contract coverage remain intact; no production geometry/API/default changes.
+
+Audited every `JSON.stringify` and `serializePositions` assertion in the prototype tests using `rg -n 'JSON\.stringify|serializePositions' poc-001-linked-formation/tests` and direct inspection. Remaining serialized-position inverse assertions implement the plan's explicit byte-equivalence requirement; labelled uniqueness does not compare independently constructed Formation JSON; frozen-input checks compare the same object before/after. Other object assertions are structural. No additional assertion with R1's incidental property-order dependency was found.
+
+Committed fix/candidate/tested revision: `29d9616f2ebdb69c83d12f66089495bca6f7f723`. All checks ran from repository root after this commit; application commands used unchanged P01 Docker wrappers, Bun 1.4.2 and Vitest 5.0.3:
+
+| Exact command | Exit / actual result |
+| --- | --- |
+| `just poc-001-test tests/formation.test.ts` | 0; 90 tests pass, 3,349 actual P02 assertions |
+| `just poc-001-typecheck` | 0; strict TypeScript passes |
+| `just poc-001-test` | 0; 92 tests pass across two files, including unchanged P01 tests; P02 count 3,349 |
+| `just poc-001-build` | 0; static P01 shell builds, existing large Phaser chunk warning |
+| `git diff --check` | 0; whitespace clean |
+| Network-disabled Docker/Bun property-order overlay probe | Before fix: exit 1, 89 tests pass / one enumeration failure; after committed fix: exit 0, all 90 tests / 3,349 assertions pass |
+
+The scratch probe reverses only property insertion order in a temporary copy of the enumeration module mounted read-only over the actual source; production files on disk stay unchanged. Initial probe startup failed on a read-only Vite cache; disposable tmpfs caches allowed the before/after test run. Scratch remains ignored/uncommitted. [Verification](mailbox/p02-formation-algebra/verification.md#r1-corrected-candidate-verification) records exact commands/output; [updated Implementer handoff](mailbox/p02-formation-algebra/implementer.md#r1-correction-and-re-verification) gives the fix/audit and current existing candidate/tested SHAs. Assertion/test counts are unchanged.
+
+Evidence-only successor updates the Implementer's two reports and this log. Reviewer report SHA256 remains `fed11f8aed7e97730199aa8792faccc69bd2697e1026d488d5b905695a840bd7`; it was not edited, staged, or committed. Master remains BASE `e3f60372a5fef279f92ed14caead48271247405f`. No merge, remote action, browser session, clean reinstall, host-mode rerun, or human playtest. Re-review, Coordinator acceptance, and delivery remain pending; no unresolved implementation blocker.

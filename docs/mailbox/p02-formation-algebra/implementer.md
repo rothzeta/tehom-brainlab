@@ -1,6 +1,6 @@
-task: B-impl / P02 formation algebra implementation and combined verification
+task: B-impl / B-fix-R1 / P02 formation algebra implementation and combined verification
 status: complete
-outcome: Implemented the exact experimental twelve-state formation algebra and verified all six plan criteria at the committed candidate. Ready for independent review; review, acceptance, and delivery pending.
+outcome: Implemented the exact experimental twelve-state formation algebra, corrected blocking test-policy finding R1, and reran all required checks at the corrected committed candidate. Ready for re-review; acceptance and delivery pending.
 artifacts:
   - docs/mailbox/p02-formation-algebra/implementer.md
   - docs/mailbox/p02-formation-algebra/verification.md
@@ -21,18 +21,30 @@ verification:
   - just poc-001-test: exit 0, 92 tests pass across two files, including unchanged P01 tests.
   - just poc-001-build: exit 0, existing large Phaser chunk warning.
   - git diff --check: exit 0.
-  - Pinned Bun guarded import and orientation-zero JSON capture: exit 0, no browser global access.
+  - Reordered Formation property overlay at corrected candidate: exit 0, all 90 tests and 3349 assertions pass; original assertion reproduced exit 1 with one failure.
+  - Initial-candidate pinned Bun guarded import and orientation-zero JSON capture: exit 0, no browser global access; production geometry remains unchanged.
 discoveries:
+  - R1 was an incidental JSON property-order dependency in enumeration membership; canonical shape/orientation keys now compare only contractual content. No other assertion with that dependency was found.
   - Docker is inaccessible inside the filesystem sandbox; approved daemon access made both unchanged BASE prerequisites pass.
   - Several Spread states share occupied-cell sets but retain different labelled assignments; enumeration keeps all twelve.
   - Initial clockwise test expectations distinguished JavaScript negative zero from zero; corrected incidental comparison without changing exact geometry invariants.
   - During this task the unrelated versioned-agent-skills-handoff worktree advanced independently to b12aa88be63a5ea0aa4dbbb1e9953661ce4cd947; it was left untouched.
 blockers: []
-candidate_revision: 3570610406886f18ca08c51effc79b3e8f3ddd34
-tested_revision: 3570610406886f18ca08c51effc79b3e8f3ddd34
+candidate_revision: 29d9616f2ebdb69c83d12f66089495bca6f7f723
+tested_revision: 29d9616f2ebdb69c83d12f66089495bca6f7f723
 source_baseline: e3f60372a5fef279f92ed14caead48271247405f
 
-Author: B-impl Implementer. Date: 2026-10-04 UTC. The revisions above already exist and identify the final combined application/API/test candidate. The evidence-only successor contains this report and status updates; its SHA is returned in the terminal handoff. No executable, test, runtime, lock, configuration, or CLI changes follow `tested_revision`.
+Author: B-impl / B-fix-R1 Implementer. Date: 2026-10-04 UTC. The revisions above already exist and identify the corrected combined application/API/test candidate. The evidence-only successor updates this report, verification, and TASK_LOGS; its SHA is returned in the terminal handoff. No executable, test, runtime, lock, configuration, or CLI changes follow `tested_revision`. Original implementation/tested candidate was `3570610406886f18ca08c51effc79b3e8f3ddd34`; initial evidence head was `fb0a352929e38dab21c9092a8d45246a2a81764d`.
+
+## R1 correction and re-verification
+
+Assignment B-fix-R1 changed only `tests/formation.test.ts` lines 67–68: enumeration membership now compares sets of explicit `${shape}:${orientation}` keys instead of JSON-serialized Formation objects. Length, exact twelve-state membership, distinct labelled configurations, all other exhaustive coverage, and contractual byte-equivalent serialized-position inverse assertions are preserved. No production geometry/API change was necessary. Test/assertion counts remain 90/3,349 focused and 92 full.
+
+Checked every `JSON.stringify` and `serializePositions` assertion in the prototype tests. The remaining position serializations compare byte-equivalent positions after inverse operations (explicit plan requirement) or count distinct labelled mappings; neither compares Formation objects against independently constructed JSON property order. Frozen-input serialization compares the same object before/after for immutability. Object comparisons elsewhere use structural `toEqual`; coordinate keys and ordered roster/link arrays encode contractual values/order. No additional assertion with R1's dependency was found or changed.
+
+Reproduced R1 before editing using a scratch copy of `formation.ts` mounted read-only over the real module, changing only enumeration construction from `{shape, orientation}` to `{orientation, shape}`. The original suite exited 1: 89 pass, one enumeration test fails. After the committed correction, the identical overlay passed all 90 tests/3,349 assertions. Production source files on disk remained unchanged; scratch probes were not committed. [Verification](verification.md#r1-corrected-candidate-verification) records exact commands and outputs.
+
+The Reviewer-owned `reviewer.md` was read but not edited, staged, or committed. Its SHA256 remains `fed11f8aed7e97730199aa8792faccc69bd2697e1026d488d5b905695a840bd7`. This assignment's changed files are the test above, this report, `verification.md`, and `docs/TASK_LOGS.md`. Re-review, Coordinator acceptance, and delivery remain pending; master remains BASE.
 
 ## Changes and scope
 
@@ -103,7 +115,7 @@ For each state, rotations are checked in both directions, both inverse orders, a
 
 ## Serialized orientation-zero examples
 
-Actual implementation output captured at `tested_revision` using pinned Bun, a read-only source mount, no network, and throwing browser-global guards. Command and exit 0 are in [verification](verification.md#actual-orientation-zero-capture-and-guarded-import). Both examples use the provisional default threshold two.
+Actual implementation output captured at initial candidate `3570610406886f18ca08c51effc79b3e8f3ddd34` using pinned Bun, a read-only source mount, no network, and throwing browser-global guards. Command and exit 0 are in [verification](verification.md#actual-orientation-zero-capture-and-guarded-import). Both examples use the provisional default threshold two. Production modules are byte-identical at the corrected candidate; this historical capture was not rerun for R1.
 
 Compact:
 
@@ -135,4 +147,4 @@ Public exports are documented in the prototype README; types are readonly, input
 
 ## Remaining limits
 
-Independent review, Coordinator acceptance, and delivery are pending separate assignments. No unresolved implementation blocker. Master remains BASE. Existing large Phaser build warning remains; browser checks, clean reinstall, host-mode rerun, deliberate-failure sanity check, and human playtesting were not run for P02. Existing P01 behavior is covered by unchanged smoke tests and the required build; prior browser evidence is preserved rather than claimed as newly executed.
+Re-review of R1, Coordinator acceptance, and delivery are pending separate assignments. No unresolved implementation blocker. Master remains BASE. Existing large Phaser build warning remains; browser checks, clean reinstall, host-mode rerun, deliberate corruption of an expected value, and human playtesting were not run for P02. The property-order variation probe was executed as described above. Existing P01 behavior is covered by unchanged smoke tests and the required build; prior browser evidence is preserved rather than claimed as newly executed.
