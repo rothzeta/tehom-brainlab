@@ -1,6 +1,6 @@
 # ADR-0004 — Repository and POC direction
 
-Status: agreed repository and experiment direction; individual decision dates and qualifications are retained below (2026-10-02–03).
+Status: agreed repository and experiment direction; individual decision dates and qualifications are retained below (2026-10-02–03). Amended by user decision, 2026-10-04 (see Amendments).
 
 ## Decision
 
@@ -21,6 +21,8 @@ Keep each prototype's dependencies and tests local. No shared combat engine or r
 The experiment replaces the earlier fixed Apex/Shadow formation with a bounded hex arena. Brood attack individually but reposition together through rotation and expansion/contraction. There is no individual walking and no squad translation.
 
 The accepted POC scope is a centre hex plus three rings (37 cells), two formation shapes and six orientations, three Brood with two abilities each, one ordinary patrol, and one directional boss. Start with the patrol; the boss is not sufficient evidence that the system works across normal encounters.
+
+*Amended 2026-10-04: the arena is now a centre hex plus two rings (19 cells); the original scope sentence above is retained as history. See [Amendments](#amendments).*
 
 See the [brief](../prototypes/poc-001-linked-formation.md) for the initial rule set.
 
@@ -65,3 +67,7 @@ Independent prototype ownership allows experiments to disagree about rules and t
 ## Consequences
 
 Keep prototype source, tests, dependencies, container configuration, and run instructions local. Preserve accepted scope, distinguish tuning from evidence, and record actual playtests before promoting the model. Retain these historical decisions here; future separate decisions use the next unused ADR number.
+
+## Amendments
+
+**2026-10-04, user decision: two-ring arena.** For POC 001 the arena is a centre hex plus two rings (19 cells), replacing "a centre hex plus three rings (37 cells)" in the POC 001 decision above. The user's reason: "i dont see what three would bring." The middle is enemy and boss space, and the Brood occupy the two rings around it. The rest of the accepted POC scope is unchanged: two formation shapes, six orientations, three Brood with two abilities each, one ordinary patrol and one directional boss. Exact coordinates, the formation mapping and enemy placement remain test parameters owned by the [brief's Decision record](../prototypes/poc-001-linked-formation.md#decision-record) and the [two-ring board task](../plans/2026-10-04-d005e5f4-poc-001-two-ring-board.md).

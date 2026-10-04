@@ -12,7 +12,7 @@ Authority: the user's two-ring decision of 2026-10-04, recorded in the [brief's 
 - [P06 Amendment TR](2026-10-02-4c3c0d42-poc-001-damage-and-fallen.md#amendment-tr-2026-10-04--two-ring-board): no change; fixtures stay valid.
 - Later-plan notes, not part of this task: [P08](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-tr-2026-10-04--two-ring-board), [P10](2026-10-02-e7c77542-poc-001-playable-patrol.md), [P12](2026-10-02-a18d7fe6-poc-001-directional-boss.md).
 
-This task supersedes the geometry of the [Compact triangle task](2026-10-04-fb4bf201-poc-001-compact-triangle.md) and keeps its accepted decisions on slot, order and inward exposure. The Compact placement (sector-aligned family A) is a **provisional default pending user confirmation**, because the accepted mid-side placement has no radius-2 equivalent (P02 Amendment TR, Geometric constraint). If the user picks the mirror family B instead, revise P02/P05 Amendment TR and this plan before implementing.
+This task supersedes the geometry of the [Compact triangle task](2026-10-04-fb4bf201-poc-001-compact-triangle.md) and keeps its accepted decisions on slot, order and inward exposure. The accepted mid-side placement has no radius-2 equivalent (P02 Amendment TR, Geometric constraint). On 2026-10-04 the user accepted the sector-aligned Compact placement (family A), which supersedes CT's mid-side decision, together with corner Spread and the view-only centre enemy anchor. These are **accepted user decisions**, listed under Contracts and decisions.
 
 Design rationale and open questions: [Architect report](../mailbox/two-ring-board/architect.md). Sequence: [plan index](README.md). Format: [ADR-0002](../adr/0002-plan-filenames.md), [ADR-0003](../adr/0003-implementation-plan-writing.md). Testing: [ADR-0006](../adr/0006-contract-invariants-and-black-box-testing.md).
 
@@ -94,11 +94,15 @@ No enemy cells are introduced. Enemy placement is an open experiment question ([
 - Do not add a board-radius parameter, a generic shape table or a configurable geometry layer. The board is fixed at radius 2.
 - Apart from `formation.ts` and `sectors.ts`, which both change, no `src/` module imports `OUTER_RING`. Typecheck confirms its removal.
 
-### Provisional defaults (pending user confirmation; do not block)
+### Accepted user decisions (2026-10-04)
 
-1. Compact family A, `T[2o], T[2o+1], S[o]`: sector-aligned, with Ugallu fixed through Expand/Contract.
+1. Compact family A, `T[2o], T[2o+1], S[o]`: sector-aligned, with Ugallu fixed through Expand/Contract. This supersedes the CT mid-side placement.
 2. Spread on the outer corners, `T[2o+{0,4,8}]`, distance 4.
-3. Lab spacing 120 px.
+3. Enemies are drawn as a cluster at the centre cell, view-only, with no rule meaning. Encounter layout, including off-centre bosses, stays an open experiment question. This lab renders no enemies.
+
+### Remaining provisional view choice
+
+Lab spacing 120 px (100–120 allowed; P04 Amendment TR).
 
 ## Implementation checkpoints
 
@@ -153,7 +157,7 @@ All other assertions, including the 36 per-token hit-tests, stay unchanged. Repo
 7. Across all twelve states and every legal maneuver, the hand-written area, turned-area, mark, splash, protection, active-link and isolation expectations hold, including with a fallen Girtablilu. The recipient tables are unchanged. Compact Pazuzu on ring 1 is protected inside Warder's front and is a fixed-area recipient.
 8. The P06 damage suite and the P03/P04 unit suites pass without edits.
 9. The built lab renders 19 cells, and the legend reports 19. All twelve fixtures match core positions and links. Every token is on screen and pointer-selectable, and Compact link labels lie outside the triangle without covering tokens. Expand and contract previews show the ring-1 cell exactly as committed. The 1280×800 layout fits without scrolling, and the headless Chrome check reports zero uncaught exceptions.
-10. The prototype README public contracts state the 19-cell board, `RING_TWO`/`RING_ONE`, the TR mapping, distances `[1,1,1]`/`[4,4,4]`, sectors over rings 1–2, and the centre as the only unmasked cell and a provisional, view-only enemy anchor. They contain no remaining claim of a 37-cell board, `OUTER_RING`/`R`, Spread distance 6 or 30-cell sectors.
+10. The prototype README public contracts state the 19-cell board, `RING_TWO`/`RING_ONE`, the TR mapping, distances `[1,1,1]`/`[4,4,4]`, sectors over rings 1–2, and the centre as the only unmasked cell and the view-only enemy anchor. They contain no remaining claim of a 37-cell board, `OUTER_RING`/`R`, Spread distance 6 or 30-cell sectors.
 11. Invalid inputs and frozen-input checks behave as delivered.
 
 ## Verification and hand-back
@@ -195,4 +199,4 @@ Stop and report before proceeding when:
 - an unlisted existing test fails;
 - a P05 recipient or protection table would need a value other than its current one;
 - a token cannot be made selectable and readable without changing a core contract;
-- the user changes a provisional default above (for example, choosing Compact family B or edge-cell Spread). The P02/P05 amendments and this plan must be revised first.
+- a later user decision changes one of the accepted decisions above (for example, choosing Compact family B or edge-cell Spread). The P02/P05 amendments and this plan must be revised first.

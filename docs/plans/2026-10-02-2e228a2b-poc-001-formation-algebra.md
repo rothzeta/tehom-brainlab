@@ -16,7 +16,7 @@ Task `P02` implementation and combined-verification owner: assignment B-impl Imp
 
 ## Amendment TR (2026-10-04) — two-ring board
 
-**Status: accepted board decision with a provisional Compact placement; not yet implemented.** Source: user decision, 2026-10-04, recorded in the [brief's Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record). Execution task: [Two-ring board](2026-10-04-d005e5f4-poc-001-two-ring-board.md). Design rationale: [Architect report](../mailbox/two-ring-board/architect.md).
+**Status: accepted design amendment (board, Compact placement and Spread are accepted user decisions, 2026-10-04); not yet implemented.** Source: user decision, 2026-10-04, recorded in the [brief's Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record). Execution task: [Two-ring board](2026-10-04-d005e5f4-poc-001-two-ring-board.md). Design rationale: [Architect report](../mailbox/two-ring-board/architect.md).
 
 This section supersedes the radius-3 enumeration, the 18-cell ring `R`, the original fixture and Amendment CT's mapping. Those sections stay below as the record of delivered behaviour: the original mapping at `803da5d`/`7e964c3`, and the Compact triangle at `40b516f`/`a76a0ff`. Where this section and an earlier one disagree, this section governs.
 
@@ -47,10 +47,10 @@ Even indices are corners and odd indices are the single edge cell between two co
 
 **Geometric constraint (a conflict with the CT placement).** On ring 2 each side has one edge cell, so any two adjacent outer cells are a corner `T[2o]` and an edge `T[2o±1]`. Their only common ring-1 neighbour lies radially inside the corner. So every triangle of two outer cells and one ring-1 cell is lopsided: no such triangle is mirror-symmetric about a side's radial midline. The accepted "mid-side" placement (CT decision 3, `R[3o+1]`, `R[3o+2]`, `T[2o+1]`) has no radius-2 equivalent. There are exactly two rotation-consistent families, mirror images of each other:
 
-- **A, sector-aligned (provisional default):** `T[2o]`, `T[2o+1]`, `S[o]`.
-- **B, mirror:** `T[2o+1]`, `T[2o+2]`, `S[o+1]`.
+- **A, sector-aligned (accepted user decision, 2026-10-04; supersedes CT decision 3):** `T[2o]`, `T[2o+1]`, `S[o]`.
+- **B, mirror (not chosen):** `T[2o+1]`, `T[2o+2]`, `S[o+1]`.
 
-**Mapping (provisional default A, pending user confirmation; slot and order are accepted).** Roster order stays `[ugallu, girtablilu, pazuzu]`. For orientation `o` in `0..5`:
+**Mapping (accepted user decisions, 2026-10-04: Compact family A, Spread on the outer corners; slot and order carried over from CT).** Roster order stays `[ugallu, girtablilu, pazuzu]`. For orientation `o` in `0..5`:
 
 - Compact: Ugallu `T[2o]`, Girtablilu `T[2o+1]`, Pazuzu `S[o]`.
 - Spread: Ugallu `T[2o]`, Girtablilu `T[(2o+4) mod 12]`, Pazuzu `T[(2o+8) mod 12]`.
@@ -71,7 +71,7 @@ Rationale for A:
 - Ugallu holds its corner through Expand/Contract (`T[2o]` in both shapes), Girtablilu moves `T[2o+1]` ↔ `T[2o+4]` and Pazuzu moves `S[o]` ↔ `T[2o+8]`. Only destinations matter.
 - Visual cost: the triangle sits towards its sector's leading corner rather than centred on a side. B has the same lopsidedness, mirrored.
 
-Spread uses the corners `T[2o]`, `T[2o+4]`, `T[2o+8]` (distance 4), which is the direct analogue of `R[3o]`, `R[3o+6]`, `R[3o+12]`. The edge cells `T[2o+1]`, `T[2o+5]`, `T[2o+9]` (distance 3) are also 120° apart; they were not chosen because corners are the widest "wide around" option and keep Ugallu stationary.
+Spread uses the corners `T[2o]`, `T[2o+4]`, `T[2o+8]` (distance 4), which is the direct analogue of `R[3o]`, `R[3o+6]`, `R[3o+12]`. The edge cells `T[2o+1]`, `T[2o+5]`, `T[2o+9]` (distance 3) are also 120° apart; they were not chosen because corners are the widest "wide around" option and keep Ugallu stationary. The user accepted the corner Spread on 2026-10-04.
 
 **Reversibility and identity.** The twelve labelled states are distinct. Compact states are pairwise disjoint (one per sector), and only Compact uses ring 1. Spread occupied-cell sets still coincide for orientations 0/2/4 and 1/3/5 while keeping different labelled assignments. The axial clockwise turn maps every labelled position at orientation `o` to its position at `o+1`, for both shapes. So six turns restore the start, each rotation is undone by its inverse, and Expand/Contract preserve orientation and roster labels and reverse exactly.
 

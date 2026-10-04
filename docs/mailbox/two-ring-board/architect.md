@@ -1,11 +1,13 @@
-task: TR-design
+task: TR-design (+ TR-design-confirm)
 role: architect
 status: complete
-outcome: "Designed the two-ring (19-cell) board. Amended the brief (with an accepted Decision record entry) and the P02/P04/P05/P06 plans, added notes to P08/P10/P12 and the CT plan, and updated the plan index. Wrote bounded implementation task TR. One geometric conflict was found: mid-side Compact placement is impossible at radius 2. It is resolved with a provisional default (sector-aligned triangle) pending user confirmation. No source or test changes."
+outcome: "Designed the two-ring (19-cell) board. Amended the brief (with accepted Decision record entries) and the P02/P04/P05/P06 plans, added notes to P08/P10/P12 and the CT plan, and updated the plan index. Wrote bounded implementation task TR. The user then accepted all three open-question defaults (2026-10-04): sector-aligned Compact (superseding CT mid-side), corner Spread, and a view-only centre enemy anchor. These are recorded as accepted decisions, and ADR-0004 carries a dated two-ring amendment. No source or test changes."
 baseline: 0a48098ff439bc84df06f5f8e965531d69e0dba2
+revision: 0d911ce07678ff5aa744e94810644dd9654811a4
 artifacts:
   - docs/mailbox/two-ring-board/architect.md
   - docs/mailbox/two-ring-board/assignment-architect.md
+  - docs/mailbox/two-ring-board/assignment-architect-confirm.md
   - docs/plans/2026-10-04-d005e5f4-poc-001-two-ring-board.md
   - docs/prototypes/poc-001-linked-formation.md
   - docs/plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md
@@ -17,6 +19,7 @@ artifacts:
   - docs/plans/2026-10-02-a18d7fe6-poc-001-directional-boss.md
   - docs/plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md
   - docs/plans/README.md
+  - docs/adr/0004-repository-and-poc-direction.md
   - branch two-ring-board
 verification:
   - "Disposable Python script in session scratch (outside the repository) checked the arithmetic. The board has 19 cells; T and S equal the radius-2 and radius-1 sets; the clockwise turn advances T by 2 and S by 1. For every orientation, Compact links are 1,1,1 and Spread links 4,4,4, and the turn maps each labelled position to orientation o+1. Clockwise order around the Compact centroid is -30/90/210 degrees. Sectors partition the 18 ring-1/2 cells, and each turned front equals the next front in order. P05 area/turned recipient tables keep their delivered values. All matched."
@@ -25,6 +28,8 @@ verification:
   - "git diff --check: clean."
   - "ruach-handoff validator with --repo: ok true, baseline resolved, no diagnostics (after a frozen install of the skill-local dependencies, which Git ignores)."
   - "No application tests, typecheck, build or browser checks were run; no source changed."
+  - "Confirmation pass: grep over the brief and docs/plans found no remaining provisional or pending-user wording for Q1-Q3. The only provisional item left is the lab pixel spacing, a view choice the user was not asked about."
+  - "Confirmation pass: the link/anchor check over the changed docs and ADR-0004 found 0 missing targets or anchors; git diff --check is clean; the handoff validator with --repo returned ok true."
 discoveries:
   - "Conflict: the accepted CT 'mid-side' placement has no radius-2 equivalent. Each ring-2 side has a single edge cell, so any triangle of two outer cells and one ring-1 cell pairs a corner with an edge, and its ring-1 cell sits radially inside the corner. Only two rotation-consistent families exist (A sector-aligned, B its mirror). A is used as the provisional default."
   - "With family A and corner Spread, every delivered P05/P06 recipient and protection table keeps its value, because Compact o is exactly sector o and Spread uses sectors o, o+2, o+4. Ugallu becomes stationary through Expand/Contract."
@@ -33,13 +38,14 @@ discoveries:
   - "CLOSE_THRESHOLD 2 and SPLASH_RADIUS 2 are kept. Thresholds and radii 1-3 classify both shapes identically, and the Spread Close boundary moves from 5/6 to 3/4."
   - "The P04 lab hard-codes '37 cells' in the legend. The TR plan derives it from boardCells() and raises the pixel spacing from 85 to 120 (provisional); the origin is unchanged, so the browser empty-centre click stays valid."
   - "The P06 damage fixture area [{q:3,r:0}] is now off-board. It asserts only retention and no selector validates area cells against the board, so it stays valid unedited."
-  - "ADR-0004 still states the accepted scope as 'a centre hex plus three rings (37 cells)'. This assignment may not edit ADRs; the Coordinator or a Librarian should amend it."
+  - "ADR-0004 now carries a dated 2026-10-04 amendment (two rings, 19 cells), and its original scope sentence is retained as history. The ADR index row in docs/adr/README.md still reads 'Agreed decisions, 2026-10-02–03'. This assignment authorised only ADR-0004, so the Coordinator may want to add 'amended 2026-10-04' there, as ADR-0003 and ADR-0005 rows do."
   - "The prototype README public contracts (37 cells, OUTER_RING/R, CT mapping, Spread 6, 30-cell sectors) must be updated by the TR Implementer; that is listed in the TR plan."
   - "P07, P09 and P11 need no change: no geometry assumptions (Impale still sees Spread Stretched; Shelter sees Compact Close)."
-open_questions:
-  - "Q1 Compact placement (needs the user). Mid-side is impossible at radius 2. Default A, sector-aligned: U T[2o] corner, G T[2o+1], P S[o]. It keeps the P05 tables and Ugallu fixed, but sits towards the sector's leading corner. Alternative B, mirror: U T[2o+1], G T[2o+2], P S[o+1]. It straddles two sectors and would change the P05 tables."
-  - "Q2 Spread cells. Default: outer corners T[2o], T[2o+4], T[2o+8], distance 4, the widest 'wide around'. Alternative: edge cells T[2o+1], T[2o+5], T[2o+9], distance 3. Both stay Stretched at threshold 2."
-  - "Q3 Provisional enemy anchor. Default: every enemy is view-only at the centre cell, rendered as a cluster, with no rule meaning. Encounter layout (off-centre bosses, enemies on empty ring-1 cells, enemy cells with rule meaning) stays an open experiment question for later encounter work."
+open_questions: []
+resolved_questions:
+  - "Q1 Compact placement: accepted by the user 2026-10-04. Family A, sector-aligned (U T[2o] corner, G T[2o+1], P S[o]); supersedes the CT mid-side decision."
+  - "Q2 Spread: accepted by the user 2026-10-04. Outer corners T[2o], T[2o+4], T[2o+8], distance 4."
+  - "Q3 Enemy anchor: accepted by the user 2026-10-04. View-only centre cell, drawn as a cluster, no rule meaning; encounter layout (including off-centre bosses) stays an open experiment question."
 blockers: []
 
 # Two-ring board — Architect report (TR-design)
@@ -115,3 +121,23 @@ B straddles sectors and would change the protection and area tables. A is record
 ## Readiness
 
 TR is ready for implementation on the provisional defaults. There are no blockers. Q1–Q3 in the leading block need the user but do not block; if the user changes Q1 or Q2, the P02/P05 amendments and the TR plan must be revised before implementation.
+
+## User confirmation
+
+Assignment: [assignment-architect-confirm.md](assignment-architect-confirm.md), committed unchanged. On 2026-10-04 the user chose the default for each open question:
+
+1. **Compact placement:** family A, sector-aligned: Ugallu `T[2o]` (corner), Girtablilu `T[2o+1]`, Pazuzu `S[o]`. It supersedes the CT "mid-side" decision, which has no radius-2 equivalent.
+2. **Spread:** the outer corners `T[2o]`, `T[2o+4]`, `T[2o+8]`, distance 4.
+3. **Enemy anchor:** view-only at the centre cell, drawn as a cluster, with no rule meaning. Encounter layout, including off-centre bosses, stays an open experiment question.
+
+Changes made, with no other content changed:
+
+- **Brief:** the Formation rules and Open decisions now state the three choices as accepted user decisions. The two-ring Decision record entry lists them as accepted, with Q1 superseding CT decision 3. The CT entry's board note and its placement item point to the superseding decision.
+- **P02 Amendment TR:** the status, family A label (B marked not chosen), mapping heading and Spread rationale now read as accepted.
+- **P05 and P08/P10/P12 notes:** the centre enemy anchor is now an accepted user decision. Encounter layout stays open, and P12 still notes that an off-centre boss with rule meaning needs its own mask proposal.
+- **TR plan:** the authority paragraph says the choices are accepted. "Provisional defaults" became "Accepted user decisions (2026-10-04)" plus a remaining provisional view choice (lab spacing). The criterion 10 wording and the stop condition were updated to match.
+- **CT plan:** accepted decision 3 is annotated as superseded on the two-ring board.
+- **Plan index:** the TR row and the P05 ownership row record the accepted decisions.
+- **ADR-0004:** the status line notes the amendment. A dated italic pointer follows the original scope sentence, which stays unchanged as history, and a new `## Amendments` section records the 2026-10-04 two-ring decision and its source, following the ADR-0003 amendment pattern.
+
+The TR task is ready for implementation with no open questions and no blockers. Lab pixel spacing (120 px, 100–120 allowed) remains a provisional view choice for the Implementer, as P04 Amendment TR states.

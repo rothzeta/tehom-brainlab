@@ -62,7 +62,7 @@ Keep the formation `{shape, orientation}` representation and derived positions. 
 
 1. The inward Brood is covered by sector areas and fronts like the outer cells of its sector (P05 Amendment CT).
 2. Slot assignment follows the user's sketch, Pazuzu inward. "Clockwise order" means order around the formation's own centre (brief Decision record).
-3. Compact uses the mid-side triangle. Ugallu moves one cell on Expand/Contract.
+3. Compact uses the mid-side triangle. Ugallu moves one cell on Expand/Contract. *(Superseded on the two-ring board by the accepted sector-aligned placement, user decision 2026-10-04; see the [Two-ring board task](2026-10-04-d005e5f4-poc-001-two-ring-board.md).)*
 
 ## Implementation checkpoints
 
