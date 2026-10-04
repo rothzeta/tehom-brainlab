@@ -1,0 +1,14 @@
+# Bounded investigation/fix: skills-impl-herdr — Claude worker customization gate
+
+Worktree/branch: /opt/dev/tehom-brainlab/.agents/scratch/versioned-agent-skills-herdr (versioned-agent-skills-herdr at 386a856; it equals the herdr content in combined candidate 618ee9b). Ownership `.agents/skills/ruach-herdr/**`; new report docs/mailbox/versioned-agent-skills/implementer-herdr-claude-gate.md. Common rules apply.
+
+Evidence from independent re-review of 618ee9b: with the committed catalogs (97752643, Architect preferred route = Claude), `worker.ts resolve`/`start --dry-run --role architect` exit 3 `unverified_workflow_source` through the Claude managed/account-synced customization gate in this environment. So on this machine the repository's preferred Architect route cannot launch at all (no fallback, correctly). The same will affect any Claude worker route.
+
+Tasks:
+1. Determine exactly which source(s) trip the gate in this environment (which managed/synced/legacy/plugin locations or settings exist, and whether they actually contain any workflow skill (ruach-workflow-*)). Read-only; do not modify user/managed settings; do not print secrets or full private content—names/paths/booleans suffice.
+2. Determine from the installed Claude CLI (2.1.x) help and primary documentation (https://code.claude.com/docs/...) whether a verified, non-mutating, per-launch mechanism exists to guarantee workflow skills from those sources are hidden for workers (e.g. settings overlay `skillOverrides`/visibility settings, `--setting-sources`, `--disable-slash-commands`, plugin disable settings) while preserving normal instructions and other user skills. Never invent a flag; cite sources.
+3. If such a mechanism is verified: implement it narrowly in the Claude adapter, keep fail-closed for anything still unverifiable, add black-box tests (fake claude recording argv/settings), and confirm `resolve --role architect` against a detached temp worktree of 97752643 now passes (remove temp worktree). If the gate is over-broad (e.g. trips on a source that is verified to be empty of workflow skills, or on a source that cannot contain skills), narrow it with a test.
+   If no verified mechanism exists: do not weaken the gate; instead make the diagnostic actionable (name the source category and the remedy options, e.g. explicit allowed alternative route via --route) and document it in SKILL.md/references as a known environment limitation.
+4. No real Claude sessions or paid turns.
+
+Verification: frozen install; full default `bun test` (socket access required); quick validator; portability scan; role-alone resolve/dry-run for all five roles against the detached 97752643 worktree with results table. Commit change, then report (validate with the combined-branch validator --repo your worktree). Handoff with SHAs; report SHA in terminal handoff.

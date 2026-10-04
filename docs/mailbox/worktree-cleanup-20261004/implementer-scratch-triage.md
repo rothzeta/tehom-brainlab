@@ -11,6 +11,7 @@ verification:
   - "Read the three original JSON files; removed paths and preserved branches match the nine-entry worktree inventory."
   - "All nine recorded branch tips still resolve and equal the inventory revisions at triage time."
   - "Pane results record 18 distinct closures and one retained current pane; no retained pane appears among the closures."
+  - "R1: the nine skills-* Codex session IDs below were transcribed from pane-cleanup-before.json and compared field by field with the source."
 review: not-run
 discoveries:
   - "These cleanup outcomes had no durable cleanup report on the inspected branch. Related repo-root evidence already exists on preserved experiment branches."
@@ -63,6 +64,22 @@ The result records these 18 closed named-agent panes. Current pane `w2G:p3` was 
 | `routing-p02-b-impl` | `w2G:pV` |
 | `routing-p02-a-review` | `w2G:pQ` |
 | `routing-p02-a-impl` | `w2G:pM` |
+
+## Versioned-skills worker sessions
+
+Added in R1 (task CONV-triage-r1) from `pane-cleanup-before.json`, the pre-cleanup snapshot of the panes listed above. These identifiers locate the Codex transcripts of the nine `skills-*` workers; they are identifiers, not credentials. In the snapshot, each has `agent_session.kind` `id` and `source` `herdr:codex`. `skills-coordinator` was a Claude pane with no recorded session, so it is not listed. Routing/P02 session IDs are already in the [routing/P02 Coordinator report](../routing-p02/coordinator.md). The repo-root session IDs remain on the D2 evidence branch.
+
+| Worker | Pane | Codex session ID |
+| --- | --- | --- |
+| `skills-architect` | `w2G:pP` | `01a104d0-a2a4-77a1-bf20-9b86ead59a37` |
+| `skills-impl-herdr` | `w2G:pR` | `01a104dd-f210-7b00-b855-43347bfc7c39` |
+| `skills-impl-handoff` | `w2G:pS` | `01a104dd-ffd4-71b1-a793-fcfef4678948` |
+| `skills-impl-eval` | `w2G:pT` | `01a104de-0f7c-7c20-b94b-0be262e5d302` |
+| `skills-impl-integration` | `w2G:pX` | `01a104fe-6898-7590-b202-f95d5d38d608` |
+| `skills-reviewer` | `w2G:pY` | `01a10505-e5ca-7670-bd93-56b40b7f15de` |
+| `skills-scout-forward` | `w2G:pZ` | `01a10505-f534-7ea2-b371-2281351d5b99` |
+| `skills-impl-main` | `w2G:p0` | `01a10548-cfe4-73f1-bb16-0d6de3200227` |
+| `skills-reviewer-main` | `w2G:p11` | `01a1057a-7b02-7ea3-a451-47928951d176` |
 
 ## Durable related evidence
 

@@ -1,0 +1,7 @@
+# Re-review: skills-reviewer (round 3)
+
+Same worktree/restrictions as before. Re-review exactly combined candidate 46689c1ea4084b5e91dd2c7c7e6ac3d11e37e866; changes since your reviewed 618ee9b: `git diff 618ee9b..46689c1` (8340a9d Claude adapter gate diagnostics/tests/docs; c8b542f README coverage note; merge 46689c1). 6faa3bf after it is an evidence-only integration report. New owned report docs/mailbox/versioned-agent-skills/reviewer-3.md.
+
+Assess: the Claude adapter keeps every fail-closed condition (no weakening, no automatic fallback, no suppression flags or persistent setting changes); diagnostics identify sources without leaking private content and advise only declared alternatives; tests are black-box and meaningful; README note is truthful and coordinator.md still has no model names/native flags. Also judge the implementer's claim that no verified selective non-mutating per-launch mechanism exists (installed Claude CLI help, primary docs) — state if you find a verified one (that would be a finding for a decision, not something to implement).
+
+Run: frozen install + default `bun test` for ruach-herdr (others only if their files changed: they did not); role-alone resolve for architect against a detached temp worktree of 97752643 (remove after), plus explicit `--route` alternative; portability scan. Report blocking/optional findings; validate report; commit only it; handoff with report SHA in terminal handoff.
