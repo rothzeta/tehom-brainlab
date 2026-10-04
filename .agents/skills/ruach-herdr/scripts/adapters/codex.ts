@@ -11,9 +11,12 @@ export function toml(v:any):string {
   if(v && typeof v==='object')return `{${Object.entries(v).map(([k,x])=>`${JSON.stringify(k)}=${toml(x)}`).join(',')}}`;
   return fail(3,'codex_config_unavailable','Unsupported effective skill configuration value','skills.config');
 }
+export function validateEffort(effort?:string) {
+  if(effort && !['none','minimal','low','medium','high','xhigh','max'].includes(effort)) fail(2,'unsupported_effort','Effort is not a verified Codex value','effort');
+}
 export async function prepare(s:Selection,pass:string[]):Promise<Plan> {
   const {exe,version}=await help('codex',s.cwd,['--model','--config','--cd']);
-  if(s.effort && !['none','minimal','low','medium','high','xhigh','max'].includes(s.effort)) fail(2,'unsupported_effort','Effort is not a verified Codex value','effort');
+  validateEffort(s.effort);
   const native=await codexRead(exe,s.cwd);
   const config=object(native.config,'codex effective config');
   const developer=config.developer_instructions;

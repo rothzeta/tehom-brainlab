@@ -1,7 +1,7 @@
-// Repository routing schema at 97752643b31cdcf8c8ec9f09204382c6766b1573.
+// Portable catalog structure; preferences live in data, capabilities in adapters.
 import { join } from 'node:path';
 import { contents, exactKeys, fail, object, string, type Kind } from './contracts';
-const canonicalRoles = ['coordinator','architect','scout','implementer','reviewer'];
+import { validateKind, validateEffort } from './adapters';
 async function yaml(path: string, root: string) {
   let parseDocument, visit, isScalar;
   try { ({parseDocument,visit,isScalar}=await import('yaml')); }
@@ -24,16 +24,15 @@ export async function routed(repo: string, role: string, requested?: string) {
   for(const [id,v] of Object.entries(models)) {
     const f=`models.yaml:models.${id}`, m=object(v,f);
     exactKeys(m,['harness','native_model'],f);
-    if(!['claude','codex'].includes(m.harness)) fail(2,'invalid_kind','Routed harness must be claude or codex',`${f}.harness`);
+    validateKind(m.harness,`${f}.harness`);
     string(m.native_model,`${f}.native_model`);
   }
   for(const [id,v] of Object.entries(routes)) {
     const f=`routing.yaml:routes.${id}`, r=object(v,f);
     exactKeys(r,['model','effort'],f);string(r.model,`${f}.model`);
     if(!Object.hasOwn(models,r.model)) fail(2,'missing_model','Route references a missing model',f);
-    if(r.effort!=='high') fail(2,'invalid_effort','Routed effort must be high',`${f}.effort`);
+    string(r.effort,`${f}.effort`);
   }
-  if(Object.keys(roles).length!==canonicalRoles.length || canonicalRoles.some(id=>!Object.hasOwn(roles,id))) fail(2,'invalid_roles','Catalog must contain exactly the five canonical roles','roles.yaml');
   for(const [id,v] of Object.entries(roles)) {
     const f=`roles.yaml:roles.${id}`, r=object(v,f);
     exactKeys(r,['preferred','alternatives'],f);string(r.preferred,`${f}.preferred`);
@@ -42,13 +41,13 @@ export async function routed(repo: string, role: string, requested?: string) {
     for(const reference of [r.preferred,...alternatives]) {
       string(reference,`${f}.route`);
       if(!Object.hasOwn(routes,reference)) fail(2,'missing_route','Role references a missing route',f);
-      if(id==='coordinator' && models[routes[reference].model].harness!=='claude') fail(2,'invalid_coordinator_route','Coordinator routes must use Claude',f);
     }
-    await contents(join(repo,'.agents','agents',`${id}.md`));
   }
   if(!Object.hasOwn(roles,role)) fail(2,'missing_role','Role is absent from roles.yaml','role');
   const route=requested ?? roles[role].preferred;
   if(![roles[role].preferred,...(roles[role].alternatives ?? [])].includes(route)) fail(2,'disallowed_route','Requested route is outside role preferences and alternatives','route');
   const r=routes[route],m=models[r.model];
+  await contents(join(repo,'.agents','agents',`${role}.md`));
+  validateEffort(m.harness as Kind,r.effort);
   return {route,kind:m.harness as Kind,model:m.native_model as string,effort:r.effort as string,provenance:'repository .agents YAML'};
 }

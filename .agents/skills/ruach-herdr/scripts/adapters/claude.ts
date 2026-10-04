@@ -9,12 +9,15 @@ async function settings(path:string) {
   try {const v=JSON.parse(body);if(!v||typeof v!=='object'||Array.isArray(v))throw Error();return v;}
   catch{return fail(2,'invalid_settings','Invalid Claude settings JSON',path);}
 }
+export function validateEffort(effort?:string) {
+  if(effort && !['low','medium','high','xhigh','max'].includes(effort))fail(2,'unsupported_effort','Effort is not a verified Claude value','effort');
+}
 export async function prepare(s:Selection,pass:string[]):Promise<Plan> {
   const {version}=await help('claude',s.cwd,['--model','--effort','--settings','--add-dir']);
   // Installed help omits the documented hidden append-file flag; verified version gate.
   const [major,minor,patch]=version.split('.').map(Number);
   if(major!==2 || minor!==1 || patch<260)fail(3,'unsupported_cli','Claude requires verified append-file and skillOverrides support','claude');
-  if(s.effort && !['low','medium','high','xhigh','max'].includes(s.effort))fail(2,'unsupported_effort','Effort is not a verified Claude value','effort');
+  validateEffort(s.effort);
   if(s.role!=='coordinator') {
     const managed=process.platform==='darwin' ? '/Library/Application Support/ClaudeCode' : process.platform==='win32' ? 'C:\\Program Files\\ClaudeCode' : '/etc/claude-code';
     for(const path of [join(managed,'managed-settings.json'),join(managed,'managed-settings.d'),join(managed,'.claude','skills'),join(claudeHome(s.cwd),'skills','synced')]) {

@@ -12,11 +12,19 @@ bun install --frozen-lockfile
 bun test
 ```
 
-Resolve effective selection or prepare a launch without creating files or panes:
+The test suite binds local Unix-domain sockets to simulate native config reads. Its sandbox must permit socket binding; a prerequisite probe fails immediately with an explanation when binding is denied. Tests use temporary HOME/config directories and fake CLIs; they do not silently skip unsupported environments.
+
+`resolve` without `--offline`, `start --dry-run`, and `start` all require live Herdr context (`HERDR_ENV=1`, the caller's `HERDR_PANE_ID`, and readable caller layout/live names), plus the selected native prerequisites. Resolve effective selection or prepare a launch without creating files or panes:
 
 ```sh
 bun scripts/worker.ts resolve --name task-worker --role implementer --cwd /path/to/worktree
 bun scripts/worker.ts start --dry-run --name task-worker --role implementer --cwd /path/to/worktree
+```
+
+For selection only without Herdr or native executable/config prerequisites, use:
+
+```sh
+bun scripts/worker.ts resolve --offline --name task-worker --role implementer --cwd /path/to/worktree
 ```
 
 For direct selection, supply `--kind KIND --model NATIVE_MODEL [--effort LEVEL]` instead of a route. Otherwise the role's preferred route comes from `.agents/models.yaml`, `.agents/routing.yaml`, and `.agents/roles.yaml`; `--route ID` selects a declared alternative. There are no model defaults or harness fallbacks. Supply `--repo DIR` if Git cannot infer the intended canonical repository from cwd. Relative launcher paths resolve from invocation cwd. See [routing schema and root delegation](references/routing.md).
@@ -27,7 +35,7 @@ Start only after authorization to create the named worker:
 bun scripts/worker.ts start --name task-worker --role implementer --cwd /path/to/worktree
 ```
 
-`start` requires `HERDR_ENV=1` and the caller's `HERDR_PANE_ID`; preflight reads that pane and live names. It splits that pane once with `--no-focus`, preserves the requested cwd and executable PATH, and submits one `herdr agent start`. It never sends a task prompt or retries. Coordinator workflow skills remain visible according to existing native settings; workers have every discovered `ruach-workflow-*` skill disabled. Existing developer and technical skill configuration is preserved.
+`start` uses the same live context as resolve/dry-run: `HERDR_ENV=1` and the caller's `HERDR_PANE_ID`; preflight reads that pane and live names. It splits that pane once with `--no-focus`, preserves the requested cwd and executable PATH, and submits one `herdr agent start`. It never sends a task prompt or retries. Coordinator workflow skills remain visible according to existing native settings; workers have every discovered `ruach-workflow-*` skill disabled. Existing developer and technical skill configuration is preserved.
 
 Claude and Codex have launch preparation enabled. Codex requires an already-running matching-version local daemon for read-only effective config discovery; this skill never starts a daemon. Pi, OpenCode, DSH, OMP, and Agy currently fail before mutation for missing or unverified capabilities. Read [adapter evidence and limits](references/adapters.md) before selecting a harness. A prepared argv does not establish account access, model availability, native acceptance, or a successful paid session.
 

@@ -4,6 +4,18 @@ import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { WebSocketServer } from 'ws';
 import { createServer, type Server } from 'node:http';
+// Fail once at module setup, before per-test fixtures, when the sandbox denies IPC.
+const socketProbeRoot=await mkdtemp(join(tmpdir(),'ruach-herdr-socket-'));
+try {
+  const probe=createServer();
+  await new Promise<void>((resolve,reject)=>{
+    probe.once('error',reject);
+    probe.listen(join(socketProbeRoot,'probe.sock'),()=>probe.close(error=>error?reject(error):resolve()));
+  });
+} catch(error) {
+  const code=(error as NodeJS.ErrnoException).code??'unknown';
+  throw new Error(`Test prerequisite failed: local Unix-domain socket binding is required (${code}). Run bun test in a sandbox that permits local sockets; no tests were skipped.`);
+} finally {await rm(socketProbeRoot,{recursive:true,force:true});}
 const worker=resolve(import.meta.dir,'../scripts/worker.ts');
 const fixture=join(import.meta.dir,'fixtures');
 let root:string,repo:string,home:string,temporary:string,bin:string,server:Server,wss:WebSocketServer;
@@ -103,7 +115,7 @@ test('Claude worker adds canonical role and overlays only workflow settings; tec
 for(const [name,file,content] of [
   ['duplicate key','models.yaml','models:\n  same: {harness: codex, native_model: a}\n  same: {harness: claude, native_model: b}\n'],
   ['missing model','routing.yaml','routes:\n  lead: {model: missing, effort: high}\n'],
-  ['invalid effort','routing.yaml','routes:\n  lead: {model: coordination.v1, effort: off}\n'],
+  ['invalid effort type','routing.yaml','routes:\n  lead: {model: coordination.v1, effort: false}\n'],
   ['missing route','roles.yaml','roles:\n  implementer: {preferred: missing}\n'],
   ['unknown keys','roles.yaml','roles:\n  implementer: {preferred: build.v1, surprise: yes}\n'],
   ['invalid YAML','models.yaml','models: [\n'],
@@ -124,8 +136,8 @@ test('Claude dry-run does not create settings or skill links',async()=>{const r=
 test('Claude additional directory workflow is hidden and native argv preserves whitespace and Unicode',async()=>{const extra=join(root,'external space ü $()');await skill(join(extra,'.claude','skills','alias'),'ruach-workflow-added');const pass=['--add-dir',extra,'--verbose'];const r=await launch('start',['--kind','claude','--model','test-model','--temp-dir',temporary,'--',...pass]);expect(r.exit).toBe(0);expect(r.result.hidden_workflows).toContain('ruach-workflow-added');expect((await lines('native-launches.jsonl'))[0].args.slice(-pass.length)).toEqual(pass);});
 test('Claude cannot start a worker when enabled plugin workflows cannot be hidden',async()=>{const plugin=join(root,'plugin');await skill(join(plugin,'skills','workflow'),'ruach-workflow-plugin');await writeFile(join(home,'.claude','settings.json'),JSON.stringify({enabledPlugins:{'example@market':true}}));await mkdir(join(home,'.claude','plugins'),{recursive:true});await writeFile(join(home,'.claude','plugins','installed_plugins.json'),JSON.stringify({plugins:{'example@market':[{installPath:plugin}]}}));const r=await launch('start',['--kind','claude','--model','test-model','--temp-dir',temporary]);expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('unfilterable_workflow_plugin');await noMutation();});
 test('entire routing graph is validated even when selected route is valid',async()=>{const file=join(repo,'.agents','routing.yaml');await writeFile(file,(await readFile(file,'utf8'))+'  broken.v1: {model: missing, effort: high}\n');const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe('missing_model');await noMutation();});
-test('missing canonical role fails before mutation',async()=>{await rm(join(repo,'.agents','agents','coordinator.md'));const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(2);await noMutation();});
-test('a routed profile requires explicit high effort',async()=>{for(const effort of ['', ', effort: low', ', effort: null']){await writeFile(join(repo,'.agents','routing.yaml'),`routes:\n  build.v1: {model: implementation.v1${effort}}\n`);const r=await launch('resolve',['--offline']);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe('invalid_effort');await noMutation();}});
+test('missing selected role file fails before mutation',async()=>{await rm(join(repo,'.agents','agents','implementer.md'));const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(2);await noMutation();});
+test('a routed profile requires a nonempty string effort',async()=>{for(const effort of ['', ', effort: null', ', effort: 1']){await writeFile(join(repo,'.agents','routing.yaml'),`routes:\n  build.v1: {model: implementation.v1${effort}}\n`);const r=await launch('resolve',['--offline']);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe('invalid_string');await noMutation();}});
 test('direct selection excludes route and routed effort cannot be overridden',async()=>{for(const extra of [[...explicit,'--route','lead.v1'],['--effort','high']]){const r=await launch('start',[...extra,'--temp-dir',temporary]);expect(r.exit).toBe(2);await noMutation();}});
 test('missing Codex executable fails before mutation',async()=>{await rm(join(bin,'codex'));const r=await launch('start',[...explicit,'--temp-dir',temporary]);expect(r.exit).toBe(3);expect(r.result.diagnostics[0].field).toBe('codex');await noMutation();});
 test('offline resolution reads routing without harness/Herdr prerequisites and never authorizes launch',async()=>{await rm(join(bin,'herdr'));await rm(join(bin,'codex'));const r=await launch('resolve',['--offline','--temp-dir',temporary],{HERDR_ENV:'0',HERDR_PANE_ID:''});expect(r.exit).toBe(0);expect(r.result.selection.kind).toBe('codex');expect(r.result.launchable).toBe(false);expect(r.result.argv).toEqual([]);expect(rpcCalls).toEqual([]);await noMutation();});
@@ -141,15 +153,13 @@ test('split preserves caller executable and harness configuration roots as exact
 for(const role of ['architect','scout','reviewer'])test(`routed ${role} uses its declared preference`,async()=>{const r=await asRole(role,'resolve',['--offline']);expect(r.exit).toBe(0);expect(r.result.selection.route).toBe(role==='architect'?'lead.v1':'build.v1');expect(r.result.selection.effort).toBe('high');await noMutation();});
 test('declared route outside role alternatives is rejected before mutation',async()=>{const r=await asRole('implementer','start',['--route','unassigned.v1']);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe('disallowed_route');await noMutation();});
 for(const [name,edit,code] of [
-  ['missing canonical role',(s:string)=>s.replace(/  reviewer:[\s\S]*/,''),'invalid_roles'],
-  ['unknown canonical role',(s:string)=>s+'  other: {preferred: build.v1}\n','invalid_roles'],
+  ['missing selected role',(s:string)=>s.replace(/  implementer:[\s\S]*?(?=  reviewer:)/,''),'missing_role'],
   ['missing alternative',(s:string)=>s.replace('[lead.v1]','[missing.v1]'),'missing_route'],
   ['nonlist alternatives',(s:string)=>s.replace('[lead.v1]','lead.v1'),'invalid_routes'],
-  ['coordinator Codex alternative',(s:string)=>s.replace('preferred: lead.v1','preferred: lead.v1\n    alternatives: [build.v1]'),'invalid_coordinator_route'],
   ['unknown field',(s:string)=>s.replace('preferred: lead.v1','preferred: lead.v1\n    surprise: true'),'unknown_key'],
   ['missing preference',(s:string)=>s.replace('preferred: lead.v1','alternatives: []'),'invalid_string'],
 ] as const)test(`invalid role catalog ${name} fails before mutation`,async()=>{const file=join(repo,'.agents','roles.yaml');await writeFile(file,edit(await readFile(file,'utf8')));const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe(code);await noMutation();});
-for(const value of ['pi','null'])test('routed harness follows the committed supported set',async()=>{const file=join(repo,'.agents','models.yaml');await writeFile(file,(await readFile(file,'utf8')).replace('harness: codex',`harness: ${value}`));const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe('invalid_kind');await noMutation();});
+for(const value of ['unknown-harness','codexx'])test('unknown routed harness fails clearly',async()=>{const file=join(repo,'.agents','models.yaml');await writeFile(file,(await readFile(file,'utf8')).replace('harness: codex',`harness: ${value}`));const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe('invalid_kind');await noMutation();});
 test('empty catalogs fail before mutation',async()=>{await writeFile(join(repo,'.agents','models.yaml'),'models: {}\n');const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(2);await noMutation();});
 
 for(const [name,data,code] of [
@@ -157,3 +167,34 @@ for(const [name,data,code] of [
   ['missing native model','models:\n  implementation.v1: {harness: codex}\n','invalid_string'],
   ['unknown model field','models:\n  implementation.v1: {harness: codex, native_model: test-model, efforts: [high]}\n','unknown_key'],
 ] as const)test(`invalid model catalog ${name} fails before mutation`,async()=>{await writeFile(join(repo,'.agents','models.yaml'),data);const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe(code);await noMutation();});
+
+async function portableRouting() {
+  await cp(join(fixture,'portable-routing'),join(repo,'.agents'),{recursive:true});
+  await writeFile(join(repo,'.agents','agents','builder.md'),'Portable builder role.');
+}
+test('portable role names and non-high adapter efforts resolve and prepare without writes',async()=>{
+  await portableRouting();
+  for(const [command,extra,kind,effort] of [['resolve',[],'codex','medium'],['start',['--dry-run'],'codex','medium'],['resolve',['--route','review.low'],'claude','low']] as const) {
+    const r=await asRole('builder',command,[...extra]);expect(r.exit).toBe(0);expect(r.result.selection.role).toBe('builder');expect(r.result.selection.kind).toBe(kind);expect(r.result.selection.effort).toBe(effort);
+    if(kind==='codex')expect(r.result.argv).toContain('model_reasoning_effort="medium"');else expect(r.result.argv.slice(r.result.argv.indexOf('--effort'),r.result.argv.indexOf('--effort')+2)).toEqual(['--effort','low']);
+    await noMutation();
+  }
+});
+test('only the selected declared role needs a canonical source file',async()=>{
+  await portableRouting();const r=await asRole('builder','resolve',['--offline']);expect(r.exit).toBe(0);expect(r.result.selection.role).toBe('builder');await noMutation();
+});
+test('coordinator routing comes from preference data, including Codex',async()=>{
+  const file=join(repo,'.agents','roles.yaml');await writeFile(file,(await readFile(file,'utf8')).replace('preferred: lead.v1','preferred: build.v1'));
+  const r=await asRole('coordinator','resolve');expect(r.exit).toBe(0);expect(r.result.selection.kind).toBe('codex');expect(r.result.hidden_workflows).toEqual([]);await noMutation();
+});
+for(const [route,effort] of [['work.medium','off'],['review.low','none']] as const)test('selected adapter rejects unsupported routed effort before mutation',async()=>{
+  await portableRouting();const file=join(repo,'.agents','routing.yaml');await writeFile(file,(await readFile(file,'utf8')).replace(route==='work.medium'?'effort: medium':'effort: low',`effort: ${effort}`));
+  const r=await asRole('builder','start',['--route',route]);expect(r.exit).toBe(2);expect(r.result.diagnostics[0].code).toBe('unsupported_effort');await noMutation();
+});
+for(const kind of ['pi','opencode','dsh','omp','agy'])test(`known gated routed ${kind} reports unavailable capability before mutation`,async()=>{
+  const file=join(repo,'.agents','models.yaml');await writeFile(file,(await readFile(file,'utf8')).replace('harness: codex',`harness: ${kind}`));
+  await cp(join(bin,'codex'),join(bin,kind));const r=await launch('start',['--temp-dir',temporary]);expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe(kind==='dsh'?'unsupported_herdr_kind':'unsupported_adapter');await noMutation();
+});
+for(const [command,extra] of [['resolve',[]],['start',['--dry-run']]] as const)test(`${command} preparation requires live Herdr context`,async()=>{
+  const r=await launch(command,[...explicit,...extra],{HERDR_ENV:'0',HERDR_PANE_ID:''});expect(r.exit).toBe(3);expect(r.result.diagnostics[0].code).toBe('missing_herdr_context');await noMutation();
+});
