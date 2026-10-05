@@ -182,9 +182,33 @@ try {
   await waitFor(`document.querySelector('.brood-token[data-brood="ugallu"] .emblem').dataset.art==='fallback'`);
   check(await evaluate(`document.querySelector('.brood-token[data-brood="ugallu"] img').hidden`),'failed image hidden, labelled geometry remains');
   await repeatSequence('failed-image');
+  // Destination captions must remain readable for all legal Compact/Spread previews.
+  await cdp('Network.setBlockedURLs',{urls:[]}); await navigate();
+  const captionFailures = [];
+  for (const [index, formation] of formations().entries()) {
+    for (const maneuver of ['clockwise','anticlockwise','expand','contract']) {
+      if (!applyCommand({...createInitialState(),formation},{kind:'maneuver',expectedRevision:0,maneuver}).ok) continue;
+      await evaluate(`(()=>{const e=document.querySelector('#fixture');e.value='${index}';e.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+      await hover(`[data-maneuver="${maneuver}"]`);
+      const unreadable = await evaluate(`(()=>{
+        const captions=[...document.querySelectorAll('.ghost > span')];
+        const live=[...document.querySelectorAll('.brood-token > span')].map(e=>e.getBoundingClientRect());
+        const board=document.querySelector('#board-stage').getBoundingClientRect();
+        const overlaps=(a,b)=>a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;
+        return captions.length!==3 ? ['missing captions'] : captions.filter((e,i)=>{
+          const r=e.getBoundingClientRect();
+          return !e.textContent.trim()||r.width===0||r.height===0||r.left<board.left||r.right>board.right||r.top<board.top||r.bottom>board.bottom||
+            live.some(b=>overlaps(r,b))||captions.some((other,j)=>i!==j&&overlaps(r,other.getBoundingClientRect()));
+        }).map(e=>e.textContent);
+      })()`);
+      if (unreadable.length) captionFailures.push({formation,maneuver,unreadable});
+      if (index === 0 && maneuver === 'expand') await capture('ghost-labels.png');
+    }
+  }
+  equal(captionFailures,[],'all destination captions fit the board without overlapping live emblems, names or other captions');
   equal(exceptions,[],'no uncaught browser exceptions'); check(failures.length>=1,'failed request actually exercised');
   await writeFile(join(output,'browser.json'),JSON.stringify({viewport:{width:1280,height:800},version,assertions,baseUrl,chromeFlags:chrome.spawnargs.slice(1),requests,failures,exceptions,trace},null,2)+'\n');
-  console.log(JSON.stringify({ok:true,assertions,fixtures:12,modes:['normal','placeholder','failed-image'],screenshots:18,exceptions:exceptions.length,failedRequests:failures.length,output}));
+  console.log(JSON.stringify({ok:true,assertions,fixtures:12,modes:['normal','placeholder','failed-image'],screenshots:19,exceptions:exceptions.length,failedRequests:failures.length,output}));
 } finally {
   socket?.close(); chrome.kill('SIGTERM');
   await new Promise((done)=>{if(chrome.exitCode!==null)done();else chrome.once('exit',done)});

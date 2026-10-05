@@ -117,7 +117,8 @@ export class CombatScene extends Phaser.Scene {
     }
   }
   private previewOn(button: HTMLButtonElement, command: () => Command): void {
-    for (const event of ['pointerenter', 'focus']) button.addEventListener(event, () => { if (!button.disabled) this.session.preview(command()); });
+    // Layout changes can send pointerenter under a stationary pointer after Restart.
+    for (const event of ['pointermove', 'focus']) button.addEventListener(event, () => { if (!button.disabled) this.session.preview(command()); });
   }
   private chooseActor(id: string): void {
     if (this.session.busy) return;
