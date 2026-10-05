@@ -1,0 +1,133 @@
+{
+  "ok": true,
+  "assertions": 192,
+  "automated": true,
+  "runs": [
+    {
+      "preset": "healthy",
+      "strategy": "attack",
+      "accepted": 14,
+      "rejected": 0,
+      "phase": "victory",
+      "round": 4,
+      "buildRevision": "8decc8c80546f1437fbd6107215fc84b8b2cabb2",
+      "file": "browser-healthy-attack.json"
+    },
+    {
+      "preset": "healthy",
+      "strategy": "forfeit",
+      "accepted": 4,
+      "rejected": 0,
+      "phase": "defeat",
+      "round": 4,
+      "buildRevision": "8decc8c80546f1437fbd6107215fc84b8b2cabb2",
+      "file": "browser-healthy-forfeit.json"
+    },
+    {
+      "preset": "wounded-ugallu",
+      "strategy": "attack",
+      "accepted": 14,
+      "rejected": 0,
+      "phase": "defeat",
+      "round": 5,
+      "buildRevision": "8decc8c80546f1437fbd6107215fc84b8b2cabb2",
+      "file": "browser-wounded-ugallu-attack.json"
+    },
+    {
+      "preset": "wounded-ugallu",
+      "strategy": "forfeit",
+      "accepted": 4,
+      "rejected": 0,
+      "phase": "defeat",
+      "round": 4,
+      "buildRevision": "8decc8c80546f1437fbd6107215fc84b8b2cabb2",
+      "file": "browser-wounded-ugallu-forfeit.json"
+    },
+    {
+      "preset": "wounded-girtablilu",
+      "strategy": "attack",
+      "accepted": 16,
+      "rejected": 0,
+      "phase": "victory",
+      "round": 6,
+      "buildRevision": "8decc8c80546f1437fbd6107215fc84b8b2cabb2",
+      "file": "browser-wounded-girtablilu-attack.json"
+    },
+    {
+      "preset": "wounded-girtablilu",
+      "strategy": "forfeit",
+      "accepted": 4,
+      "rejected": 0,
+      "phase": "defeat",
+      "round": 4,
+      "buildRevision": "8decc8c80546f1437fbd6107215fc84b8b2cabb2",
+      "file": "browser-wounded-girtablilu-forfeit.json"
+    }
+  ],
+  "provenance": [
+    {
+      "file": "browser-healthy-attack.json",
+      "download_sha256": "557ae7851bdbcffaafa39174352fbb9ae911876e14974fb037d085d0e3407991",
+      "retained_sha256": "48d8269f45109f43732ef20276638f23385876ccc7243bb35ddbd498c55d4e5d",
+      "download_bytes": 35344,
+      "retained_bytes": 21824
+    },
+    {
+      "file": "browser-healthy-forfeit.json",
+      "download_sha256": "a202dfac56a24be5c6e9def4efbe028132a88055632aa1b578a011896a2fa910",
+      "retained_sha256": "af86c2a8c693d86ad31af762b9128f05c6aa0680c2272dd6a2a658a5cc3e9b32",
+      "download_bytes": 25693,
+      "retained_bytes": 15507
+    },
+    {
+      "file": "browser-wounded-ugallu-attack.json",
+      "download_sha256": "f238dc5f1482a5bda7ce60b505df5c40dd8a34c596f1d4e0d9ba1d9c0144058d",
+      "retained_sha256": "75b1b17a84c20e9faab11e64932f7b31b88b7b809f06a8a9d95cbb5ca7401388",
+      "download_bytes": 35792,
+      "retained_bytes": 21937
+    },
+    {
+      "file": "browser-wounded-ugallu-forfeit.json",
+      "download_sha256": "3954a524dd01dd6f3f1abb17bc481a96050d5adf1d33d53a8dd1bc49f945aac5",
+      "retained_sha256": "976be28ff33c2bd4d0625d1d7f4a2bc3a2a622f6cadcadf6509704d680593b13",
+      "download_bytes": 23754,
+      "retained_bytes": 14307
+    },
+    {
+      "file": "browser-wounded-girtablilu-attack.json",
+      "download_sha256": "1ba24ca177dc24153104800b5b11d896fa7747a014b3b9848ecb26d2ae5cbcc8",
+      "retained_sha256": "aaa1644675d029fa98681d40aa565ebc1ceed2d4ad32f1b3791957b93000d2f3",
+      "download_bytes": 39363,
+      "retained_bytes": 24080
+    },
+    {
+      "file": "browser-wounded-girtablilu-forfeit.json",
+      "download_sha256": "e0c828447f155c3fdeb79958026b62b842c846f327a5b25d39a3502706b9af39",
+      "retained_sha256": "2f2331bf6af517d188b03006a61012d7123c0803b382f28c801f42f50073fc98",
+      "download_bytes": 23702,
+      "retained_bytes": 14255
+    },
+    {
+      "file": "browser-selection-only.json",
+      "download_sha256": "521215f3eab2b586139139050e279e63960b440aa8423e3a5e31d4ae807ddc49",
+      "retained_sha256": "df2343ad647605b05e07a7e2de83145ff67f91d5f2d30a9737c60fe2f64548f8",
+      "download_bytes": 5190,
+      "retained_bytes": 3219
+    },
+    {
+      "file": "browser-rejected-input.json",
+      "download_sha256": "9386b13cc90fdfc04772b2d7ca6ec5ae23efc68594c2d24d8b5619ec69ae564d",
+      "retained_sha256": "a6b10516393e5620008ff6a557c5eb7dd8626874ec6c45a26733fb7943746b1b",
+      "download_bytes": 5769,
+      "retained_bytes": 3540
+    },
+    {
+      "file": "browser-reset-after-rejection.json",
+      "download_sha256": "521215f3eab2b586139139050e279e63960b440aa8423e3a5e31d4ae807ddc49",
+      "retained_sha256": "df2343ad647605b05e07a7e2de83145ff67f91d5f2d30a9737c60fe2f64548f8",
+      "download_bytes": 5190,
+      "retained_bytes": 3219
+    }
+  ],
+  "normalization": "JSON indentation removed; data unchanged"
+}
