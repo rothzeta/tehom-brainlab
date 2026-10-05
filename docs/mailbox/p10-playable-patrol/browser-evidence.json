@@ -1,0 +1,4015 @@
+{
+  "ok": true,
+  "assertions": 2218,
+  "version": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/148.0.7778.96",
+    "revision": "@8625e066febc721e015ea99842da12901eb7ed73",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.96 Safari/537.36",
+    "jsVersion": "14.8.178.14"
+  },
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "traces": [
+    {
+      "mode": "normal",
+      "preset": "healthy",
+      "strategy": "attack",
+      "commands": 14,
+      "final": {
+        "revision": 14,
+        "phase": "victory",
+        "round": 4,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 0,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 8,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 8,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 0,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 0,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 0,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "girtablilu \u2194 pazuzu: close (1)",
+        "shelters": "Shelter: none",
+        "protection": "Protection: none \u00b7 Warder facing 0",
+        "feedback": "Action resolved. Restart or choose a fresh patrol.",
+        "intentions": [],
+        "events": [
+          {
+            "type": "action-applied",
+            "text": "Pazuzu used Gale on Harrier."
+          },
+          {
+            "type": "attack-settled",
+            "source": "pazuzu",
+            "text": "Pazuzu attack resolved."
+          },
+          {
+            "type": "damage-applied",
+            "text": "Harrier: HP 2 \u2192 0 (3 damage; protection \u22120, Shelter \u22120)."
+          },
+          {
+            "type": "fallen",
+            "text": "fallen"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "combat-ended",
+            "text": "combat ended"
+          }
+        ],
+        "controls": [
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Ugallu 0/18 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Girtablilu 8/14 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Pazuzu 8/14 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Gale (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Crosswind (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Warder (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Censer (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Harrier (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Confirm ability (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Rotate clockwise (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Rotate anticlockwise (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Expand (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Contract (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "End phase (0 actions unused) (Battle victory)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "normal",
+      "preset": "wounded-ugallu",
+      "strategy": "attack",
+      "commands": 14,
+      "final": {
+        "revision": 14,
+        "phase": "defeat",
+        "round": 5,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 0,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 0,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 0,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 0,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 0,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 7,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "",
+        "shelters": "Shelter: none",
+        "protection": "Protection: none \u00b7 Warder facing 0",
+        "feedback": "Unused actions forfeited. Enemy intentions resolved in the announced order. Restart or choose a fresh patrol.",
+        "intentions": [],
+        "events": [
+          {
+            "type": "enemy-phase-started",
+            "text": "enemy phase started"
+          },
+          {
+            "type": "attack-settled",
+            "source": "harrier",
+            "text": "Harrier attack resolved."
+          },
+          {
+            "type": "damage-applied",
+            "text": "Pazuzu: HP 1 \u2192 0 (7 damage; protection \u22120, Shelter \u22120)."
+          },
+          {
+            "type": "fallen",
+            "text": "fallen"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "combat-ended",
+            "text": "combat ended"
+          },
+          {
+            "type": "enemy-phase-ended",
+            "text": "enemy phase ended"
+          }
+        ],
+        "controls": [
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Ugallu 0/18 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Girtablilu 0/14 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Pazuzu 0/14 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Gale (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Crosswind (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Warder (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Censer (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Harrier (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Confirm ability (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Rotate clockwise (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Rotate anticlockwise (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Expand (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Contract (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "End phase (0 actions unused) (Battle defeat)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "normal",
+      "preset": "wounded-girtablilu",
+      "strategy": "attack",
+      "commands": 16,
+      "final": {
+        "revision": 16,
+        "phase": "victory",
+        "round": 6,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 0,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 0,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 1,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 0,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 0,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 0,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "",
+        "shelters": "Shelter: none",
+        "protection": "Protection: none \u00b7 Warder facing 0",
+        "feedback": "Action resolved. Restart or choose a fresh patrol.",
+        "intentions": [],
+        "events": [
+          {
+            "type": "action-applied",
+            "text": "Pazuzu used Gale on Harrier."
+          },
+          {
+            "type": "attack-settled",
+            "source": "pazuzu",
+            "text": "Pazuzu attack resolved."
+          },
+          {
+            "type": "damage-applied",
+            "text": "Harrier: HP 3 \u2192 0 (3 damage; protection \u22120, Shelter \u22120)."
+          },
+          {
+            "type": "fallen",
+            "text": "fallen"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "combat-ended",
+            "text": "combat ended"
+          }
+        ],
+        "controls": [
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Ugallu 0/18 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Girtablilu 0/14 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Pazuzu 1/14 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Gale (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Crosswind (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Warder (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Censer (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Harrier (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Confirm ability (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Rotate clockwise (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Rotate anticlockwise (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Expand (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Contract (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "End phase (0 actions unused) (Battle victory)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "normal",
+      "preset": "healthy",
+      "strategy": "forfeit",
+      "commands": 4,
+      "final": {
+        "revision": 4,
+        "phase": "defeat",
+        "round": 4,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 0,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 0,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 0,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 12,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 10,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 13,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "",
+        "shelters": "Shelter: none",
+        "protection": "Protection: none \u00b7 Warder facing 0",
+        "feedback": "Unused actions forfeited. Enemy intentions resolved in the announced order. Restart or choose a fresh patrol.",
+        "intentions": [],
+        "events": [
+          {
+            "type": "enemy-phase-started",
+            "text": "enemy phase started"
+          },
+          {
+            "type": "attack-settled",
+            "source": "warder",
+            "text": "Warder attack resolved."
+          },
+          {
+            "type": "damage-applied",
+            "text": "Pazuzu: HP 5 \u2192 2 (3 damage; protection \u22120, Shelter \u22120)."
+          },
+          {
+            "type": "attack-settled",
+            "source": "censer",
+            "text": "Censer attack resolved."
+          },
+          {
+            "type": "damage-applied",
+            "text": "Pazuzu: HP 2 \u2192 0 (3 damage; protection \u22120, Shelter \u22120)."
+          },
+          {
+            "type": "fallen",
+            "text": "fallen"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "combat-ended",
+            "text": "combat ended"
+          },
+          {
+            "type": "enemy-phase-ended",
+            "text": "enemy phase ended"
+          }
+        ],
+        "controls": [
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Ugallu 0/18 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Girtablilu 0/14 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Pazuzu 0/14 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Confirm ability (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Rotate clockwise (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Rotate anticlockwise (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Expand (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Contract (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "End phase (0 actions unused) (Battle defeat)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "placeholder",
+      "preset": "healthy",
+      "strategy": "attack",
+      "commands": 14,
+      "final": {
+        "revision": 14,
+        "phase": "victory",
+        "round": 4,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 0,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 8,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 8,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 0,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 0,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 0,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "girtablilu \u2194 pazuzu: close (1)",
+        "shelters": "Shelter: none",
+        "protection": "Protection: none \u00b7 Warder facing 0",
+        "feedback": "Action resolved. Restart or choose a fresh patrol.",
+        "intentions": [],
+        "events": [
+          {
+            "type": "action-applied",
+            "text": "Pazuzu used Gale on Harrier."
+          },
+          {
+            "type": "attack-settled",
+            "source": "pazuzu",
+            "text": "Pazuzu attack resolved."
+          },
+          {
+            "type": "damage-applied",
+            "text": "Harrier: HP 2 \u2192 0 (3 damage; protection \u22120, Shelter \u22120)."
+          },
+          {
+            "type": "fallen",
+            "text": "fallen"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "combat-ended",
+            "text": "combat ended"
+          }
+        ],
+        "controls": [
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Ugallu 0/18 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Girtablilu 8/14 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Pazuzu 8/14 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Gale (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Crosswind (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Warder (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Censer (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Harrier (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Confirm ability (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Rotate clockwise (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Rotate anticlockwise (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Expand (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Contract (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "End phase (0 actions unused) (Battle victory)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "placeholder",
+      "preset": "wounded-ugallu",
+      "strategy": "attack",
+      "commands": 14,
+      "final": {
+        "revision": 14,
+        "phase": "defeat",
+        "round": 5,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 0,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 0,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 0,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 0,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 0,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 7,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "",
+        "shelters": "Shelter: none",
+        "protection": "Protection: none \u00b7 Warder facing 0",
+        "feedback": "Unused actions forfeited. Enemy intentions resolved in the announced order. Restart or choose a fresh patrol.",
+        "intentions": [],
+        "events": [
+          {
+            "type": "enemy-phase-started",
+            "text": "enemy phase started"
+          },
+          {
+            "type": "attack-settled",
+            "source": "harrier",
+            "text": "Harrier attack resolved."
+          },
+          {
+            "type": "damage-applied",
+            "text": "Pazuzu: HP 1 \u2192 0 (7 damage; protection \u22120, Shelter \u22120)."
+          },
+          {
+            "type": "fallen",
+            "text": "fallen"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "combat-ended",
+            "text": "combat ended"
+          },
+          {
+            "type": "enemy-phase-ended",
+            "text": "enemy phase ended"
+          }
+        ],
+        "controls": [
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Ugallu 0/18 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Girtablilu 0/14 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Pazuzu 0/14 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Gale (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Crosswind (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Warder (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Censer (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Harrier (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Confirm ability (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Rotate clockwise (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Rotate anticlockwise (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Expand (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Contract (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "End phase (0 actions unused) (Battle defeat)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "placeholder",
+      "preset": "wounded-girtablilu",
+      "strategy": "attack",
+      "commands": 16,
+      "final": {
+        "revision": 16,
+        "phase": "victory",
+        "round": 6,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 0,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 0,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 1,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 0,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 0,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 0,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "",
+        "shelters": "Shelter: none",
+        "protection": "Protection: none \u00b7 Warder facing 0",
+        "feedback": "Action resolved. Restart or choose a fresh patrol.",
+        "intentions": [],
+        "events": [
+          {
+            "type": "action-applied",
+            "text": "Pazuzu used Gale on Harrier."
+          },
+          {
+            "type": "attack-settled",
+            "source": "pazuzu",
+            "text": "Pazuzu attack resolved."
+          },
+          {
+            "type": "damage-applied",
+            "text": "Harrier: HP 3 \u2192 0 (3 damage; protection \u22120, Shelter \u22120)."
+          },
+          {
+            "type": "fallen",
+            "text": "fallen"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "combat-ended",
+            "text": "combat ended"
+          }
+        ],
+        "controls": [
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Ugallu 0/18 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Girtablilu 0/14 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Pazuzu 1/14 (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Gale (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Crosswind (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Warder (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Censer (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Harrier (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Confirm ability (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Rotate clockwise (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Rotate anticlockwise (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Expand (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "Contract (Battle victory)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle victory",
+            "text": "End phase (0 actions unused) (Battle victory)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "placeholder",
+      "preset": "healthy",
+      "strategy": "forfeit",
+      "commands": 4,
+      "final": {
+        "revision": 4,
+        "phase": "defeat",
+        "round": 4,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 0,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 0,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 0,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 12,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 10,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 13,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "",
+        "shelters": "Shelter: none",
+        "protection": "Protection: none \u00b7 Warder facing 0",
+        "feedback": "Unused actions forfeited. Enemy intentions resolved in the announced order. Restart or choose a fresh patrol.",
+        "intentions": [],
+        "events": [
+          {
+            "type": "enemy-phase-started",
+            "text": "enemy phase started"
+          },
+          {
+            "type": "attack-settled",
+            "source": "warder",
+            "text": "Warder attack resolved."
+          },
+          {
+            "type": "damage-applied",
+            "text": "Pazuzu: HP 5 \u2192 2 (3 damage; protection \u22120, Shelter \u22120)."
+          },
+          {
+            "type": "attack-settled",
+            "source": "censer",
+            "text": "Censer attack resolved."
+          },
+          {
+            "type": "damage-applied",
+            "text": "Pazuzu: HP 2 \u2192 0 (3 damage; protection \u22120, Shelter \u22120)."
+          },
+          {
+            "type": "fallen",
+            "text": "fallen"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "intention-cancelled",
+            "text": "intention cancelled"
+          },
+          {
+            "type": "combat-ended",
+            "text": "combat ended"
+          },
+          {
+            "type": "enemy-phase-ended",
+            "text": "enemy phase ended"
+          }
+        ],
+        "controls": [
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Ugallu 0/18 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Girtablilu 0/14 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Pazuzu 0/14 (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Confirm ability (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Rotate clockwise (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Rotate anticlockwise (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Expand (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "Contract (Battle defeat)"
+          },
+          {
+            "disabled": true,
+            "reason": "Battle defeat",
+            "text": "End phase (0 actions unused) (Battle defeat)"
+          }
+        ]
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "mode": "normal",
+      "preset": "healthy",
+      "initial": {
+        "revision": 0,
+        "phase": "player",
+        "round": 1,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 18,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 14,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 14,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 12,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 10,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 13,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "ugallu \u2194 girtablilu: close (1) \u00b7 ugallu \u2194 pazuzu: close (1) \u00b7 girtablilu \u2194 pazuzu: close (1)",
+        "shelters": "Shelter: none",
+        "protection": "Protection: ugallu \u2192 censer; girtablilu \u2192 censer; pazuzu \u2192 censer \u00b7 Warder facing 0",
+        "feedback": "Choose a Brood, ability and target. Confirm to act.",
+        "intentions": [
+          {
+            "source": "warder",
+            "cells": [
+              {
+                "q": 2,
+                "r": 0
+              }
+            ],
+            "text": "Warder: follows creature ugallu \u00b7 marked-hit \u2192 ugallu"
+          },
+          {
+            "source": "censer",
+            "cells": [
+              {
+                "q": 1,
+                "r": 1
+              }
+            ],
+            "text": "Censer: follows creature girtablilu \u00b7 marked-splash \u2192 ugallu, girtablilu, pazuzu"
+          },
+          {
+            "source": "harrier",
+            "cells": [
+              {
+                "q": 2,
+                "r": 0
+              }
+            ],
+            "text": "Harrier: follows creature ugallu \u00b7 marked-hit \u2192 ugallu"
+          }
+        ],
+        "events": [],
+        "controls": [
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Ugallu 18/18"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Girtablilu 14/14"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Pazuzu 14/14"
+          },
+          {
+            "disabled": true,
+            "reason": "Select a legal ability target",
+            "text": "Confirm ability (Select a legal ability target)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate clockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate anticlockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Expand"
+          },
+          {
+            "disabled": true,
+            "reason": "same-shape",
+            "text": "Contract (same-shape)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "End phase (3 actions unused)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "normal",
+      "preset": "wounded-ugallu",
+      "initial": {
+        "revision": 0,
+        "phase": "player",
+        "round": 1,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 7,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 14,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 14,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 12,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 10,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 13,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "ugallu \u2194 girtablilu: close (1) \u00b7 ugallu \u2194 pazuzu: close (1) \u00b7 girtablilu \u2194 pazuzu: close (1)",
+        "shelters": "Shelter: none",
+        "protection": "Protection: ugallu \u2192 censer; girtablilu \u2192 censer; pazuzu \u2192 censer \u00b7 Warder facing 0",
+        "feedback": "Fresh patrol. Choose a Brood, ability and target.",
+        "intentions": [
+          {
+            "source": "warder",
+            "cells": [
+              {
+                "q": 2,
+                "r": 0
+              }
+            ],
+            "text": "Warder: follows creature ugallu \u00b7 marked-hit \u2192 ugallu"
+          },
+          {
+            "source": "censer",
+            "cells": [
+              {
+                "q": 1,
+                "r": 1
+              }
+            ],
+            "text": "Censer: follows creature girtablilu \u00b7 marked-splash \u2192 ugallu, girtablilu, pazuzu"
+          },
+          {
+            "source": "harrier",
+            "cells": [
+              {
+                "q": 2,
+                "r": 0
+              }
+            ],
+            "text": "Harrier: follows creature ugallu \u00b7 marked-hit \u2192 ugallu"
+          }
+        ],
+        "events": [],
+        "controls": [
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Ugallu 18/18"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Girtablilu 14/14"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Pazuzu 14/14"
+          },
+          {
+            "disabled": true,
+            "reason": "Select a legal ability target",
+            "text": "Confirm ability (Select a legal ability target)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate clockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate anticlockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Expand"
+          },
+          {
+            "disabled": true,
+            "reason": "same-shape",
+            "text": "Contract (same-shape)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "End phase (3 actions unused)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "normal",
+      "preset": "wounded-girtablilu",
+      "initial": {
+        "revision": 0,
+        "phase": "player",
+        "round": 1,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 18,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 5,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 14,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 12,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 10,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 13,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "ugallu \u2194 girtablilu: close (1) \u00b7 ugallu \u2194 pazuzu: close (1) \u00b7 girtablilu \u2194 pazuzu: close (1)",
+        "shelters": "Shelter: none",
+        "protection": "Protection: ugallu \u2192 censer; girtablilu \u2192 censer; pazuzu \u2192 censer \u00b7 Warder facing 0",
+        "feedback": "Fresh patrol. Choose a Brood, ability and target.",
+        "intentions": [
+          {
+            "source": "warder",
+            "cells": [
+              {
+                "q": 2,
+                "r": 0
+              }
+            ],
+            "text": "Warder: follows creature ugallu \u00b7 marked-hit \u2192 ugallu"
+          },
+          {
+            "source": "censer",
+            "cells": [
+              {
+                "q": 1,
+                "r": 1
+              }
+            ],
+            "text": "Censer: follows creature girtablilu \u00b7 marked-splash \u2192 ugallu, girtablilu, pazuzu"
+          },
+          {
+            "source": "harrier",
+            "cells": [
+              {
+                "q": 1,
+                "r": 1
+              }
+            ],
+            "text": "Harrier: follows creature girtablilu \u00b7 marked-hit \u2192 girtablilu"
+          }
+        ],
+        "events": [],
+        "controls": [
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Ugallu 7/18"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Girtablilu 14/14"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Pazuzu 14/14"
+          },
+          {
+            "disabled": true,
+            "reason": "Select a legal ability target",
+            "text": "Confirm ability (Select a legal ability target)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate clockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate anticlockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Expand"
+          },
+          {
+            "disabled": true,
+            "reason": "same-shape",
+            "text": "Contract (same-shape)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "End phase (3 actions unused)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "placeholder",
+      "preset": "healthy",
+      "initial": {
+        "revision": 0,
+        "phase": "player",
+        "round": 1,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 18,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 14,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 14,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 12,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 10,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 13,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "ugallu \u2194 girtablilu: close (1) \u00b7 ugallu \u2194 pazuzu: close (1) \u00b7 girtablilu \u2194 pazuzu: close (1)",
+        "shelters": "Shelter: none",
+        "protection": "Protection: ugallu \u2192 censer; girtablilu \u2192 censer; pazuzu \u2192 censer \u00b7 Warder facing 0",
+        "feedback": "Choose a Brood, ability and target. Confirm to act.",
+        "intentions": [
+          {
+            "source": "warder",
+            "cells": [
+              {
+                "q": 2,
+                "r": 0
+              }
+            ],
+            "text": "Warder: follows creature ugallu \u00b7 marked-hit \u2192 ugallu"
+          },
+          {
+            "source": "censer",
+            "cells": [
+              {
+                "q": 1,
+                "r": 1
+              }
+            ],
+            "text": "Censer: follows creature girtablilu \u00b7 marked-splash \u2192 ugallu, girtablilu, pazuzu"
+          },
+          {
+            "source": "harrier",
+            "cells": [
+              {
+                "q": 2,
+                "r": 0
+              }
+            ],
+            "text": "Harrier: follows creature ugallu \u00b7 marked-hit \u2192 ugallu"
+          }
+        ],
+        "events": [],
+        "controls": [
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Ugallu 18/18"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Girtablilu 14/14"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Pazuzu 14/14"
+          },
+          {
+            "disabled": true,
+            "reason": "Select a legal ability target",
+            "text": "Confirm ability (Select a legal ability target)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate clockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate anticlockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Expand"
+          },
+          {
+            "disabled": true,
+            "reason": "same-shape",
+            "text": "Contract (same-shape)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "End phase (3 actions unused)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "placeholder",
+      "preset": "wounded-ugallu",
+      "initial": {
+        "revision": 0,
+        "phase": "player",
+        "round": 1,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 7,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 14,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 14,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 12,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 10,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 13,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "ugallu \u2194 girtablilu: close (1) \u00b7 ugallu \u2194 pazuzu: close (1) \u00b7 girtablilu \u2194 pazuzu: close (1)",
+        "shelters": "Shelter: none",
+        "protection": "Protection: ugallu \u2192 censer; girtablilu \u2192 censer; pazuzu \u2192 censer \u00b7 Warder facing 0",
+        "feedback": "Fresh patrol. Choose a Brood, ability and target.",
+        "intentions": [
+          {
+            "source": "warder",
+            "cells": [
+              {
+                "q": 2,
+                "r": 0
+              }
+            ],
+            "text": "Warder: follows creature ugallu \u00b7 marked-hit \u2192 ugallu"
+          },
+          {
+            "source": "censer",
+            "cells": [
+              {
+                "q": 1,
+                "r": 1
+              }
+            ],
+            "text": "Censer: follows creature girtablilu \u00b7 marked-splash \u2192 ugallu, girtablilu, pazuzu"
+          },
+          {
+            "source": "harrier",
+            "cells": [
+              {
+                "q": 2,
+                "r": 0
+              }
+            ],
+            "text": "Harrier: follows creature ugallu \u00b7 marked-hit \u2192 ugallu"
+          }
+        ],
+        "events": [],
+        "controls": [
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Ugallu 18/18"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Girtablilu 14/14"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Pazuzu 14/14"
+          },
+          {
+            "disabled": true,
+            "reason": "Select a legal ability target",
+            "text": "Confirm ability (Select a legal ability target)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate clockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate anticlockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Expand"
+          },
+          {
+            "disabled": true,
+            "reason": "same-shape",
+            "text": "Contract (same-shape)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "End phase (3 actions unused)"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "placeholder",
+      "preset": "wounded-girtablilu",
+      "initial": {
+        "revision": 0,
+        "phase": "player",
+        "round": 1,
+        "busy": false,
+        "hp": [
+          {
+            "id": "ugallu",
+            "hp": 18,
+            "maxHp": 18
+          },
+          {
+            "id": "girtablilu",
+            "hp": 5,
+            "maxHp": 14
+          },
+          {
+            "id": "pazuzu",
+            "hp": 14,
+            "maxHp": 14
+          },
+          {
+            "id": "warder",
+            "hp": 12,
+            "maxHp": 12
+          },
+          {
+            "id": "censer",
+            "hp": 10,
+            "maxHp": 10
+          },
+          {
+            "id": "harrier",
+            "hp": 13,
+            "maxHp": 13
+          }
+        ],
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [],
+        "projection": "Preview \u2014 hover or focus a target, maneuver or End phase. Confirm an ability to spend its action.",
+        "links": "ugallu \u2194 girtablilu: close (1) \u00b7 ugallu \u2194 pazuzu: close (1) \u00b7 girtablilu \u2194 pazuzu: close (1)",
+        "shelters": "Shelter: none",
+        "protection": "Protection: ugallu \u2192 censer; girtablilu \u2192 censer; pazuzu \u2192 censer \u00b7 Warder facing 0",
+        "feedback": "Fresh patrol. Choose a Brood, ability and target.",
+        "intentions": [
+          {
+            "source": "warder",
+            "cells": [
+              {
+                "q": 2,
+                "r": 0
+              }
+            ],
+            "text": "Warder: follows creature ugallu \u00b7 marked-hit \u2192 ugallu"
+          },
+          {
+            "source": "censer",
+            "cells": [
+              {
+                "q": 1,
+                "r": 1
+              }
+            ],
+            "text": "Censer: follows creature girtablilu \u00b7 marked-splash \u2192 ugallu, girtablilu, pazuzu"
+          },
+          {
+            "source": "harrier",
+            "cells": [
+              {
+                "q": 1,
+                "r": 1
+              }
+            ],
+            "text": "Harrier: follows creature girtablilu \u00b7 marked-hit \u2192 girtablilu"
+          }
+        ],
+        "events": [],
+        "controls": [
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Ugallu 7/18"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Girtablilu 14/14"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Pazuzu 14/14"
+          },
+          {
+            "disabled": true,
+            "reason": "Select a legal ability target",
+            "text": "Confirm ability (Select a legal ability target)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate clockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Rotate anticlockwise"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "Expand"
+          },
+          {
+            "disabled": true,
+            "reason": "same-shape",
+            "text": "Contract (same-shape)"
+          },
+          {
+            "disabled": false,
+            "reason": "",
+            "text": "End phase (3 actions unused)"
+          }
+        ]
+      }
+    }
+  ],
+  "exceptions": [],
+  "failures": [],
+  "requests": [
+    "http://localhost:4173/?play=patrol",
+    "http://localhost:4173/assets/index-c0t5ZswX.js",
+    "http://localhost:4173/assets/index-HNYDt5iO.css",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/AP804Oa6AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABVJREFUeF7NwIEAAAAAgKD9qdeocAMAoAABm3DkcAAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi/P//PwMMMDEgAdwcgAADAJZuAwXJYZOzAAAAAElFTkSuQmCC",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX//wCKxvRFAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+    "http://localhost:4173/tehom/tokens/ugallu.svg",
+    "http://localhost:4173/tehom/tokens/girtablilu.svg",
+    "http://localhost:4173/tehom/tokens/pazuzu.svg",
+    "http://localhost:4173/tehom/tokens/warder.svg",
+    "http://localhost:4173/tehom/tokens/censer.svg",
+    "http://localhost:4173/tehom/tokens/harrier.svg",
+    "http://localhost:4173/?play=patrol&placeholder=1",
+    "http://localhost:4173/assets/index-c0t5ZswX.js",
+    "http://localhost:4173/assets/index-HNYDt5iO.css",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/AP804Oa6AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABVJREFUeF7NwIEAAAAAgKD9qdeocAMAoAABm3DkcAAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi/P//PwMMMDEgAdwcgAADAJZuAwXJYZOzAAAAAElFTkSuQmCC",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX//wCKxvRFAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+    "http://localhost:4173/?play=patrol",
+    "http://localhost:4173/assets/index-c0t5ZswX.js",
+    "http://localhost:4173/assets/index-HNYDt5iO.css",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/AP804Oa6AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABVJREFUeF7NwIEAAAAAgKD9qdeocAMAoAABm3DkcAAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi/P//PwMMMDEgAdwcgAADAJZuAwXJYZOzAAAAAElFTkSuQmCC",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX//wCKxvRFAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+    "http://localhost:4173/tehom/tokens/ugallu.svg",
+    "http://localhost:4173/tehom/tokens/girtablilu.svg",
+    "http://localhost:4173/tehom/tokens/pazuzu.svg",
+    "http://localhost:4173/tehom/tokens/warder.svg",
+    "http://localhost:4173/tehom/tokens/censer.svg",
+    "http://localhost:4173/tehom/tokens/harrier.svg",
+    "http://localhost:4173/p10-owned-fixture",
+    "http://localhost:4173/assets/index-HNYDt5iO.css",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/AP804Oa6AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABVJREFUeF7NwIEAAAAAgKD9qdeocAMAoAABm3DkcAAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg==",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi/P//PwMMMDEgAdwcgAADAJZuAwXJYZOzAAAAAElFTkSuQmCC",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX//wCKxvRFAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+    "http://localhost:4173/tehom/tokens/ugallu.svg",
+    "http://localhost:4173/tehom/tokens/girtablilu.svg",
+    "http://localhost:4173/tehom/tokens/pazuzu.svg",
+    "http://localhost:4173/tehom/tokens/warder.svg",
+    "http://localhost:4173/tehom/tokens/censer.svg",
+    "http://localhost:4173/tehom/tokens/harrier.svg"
+  ],
+  "tested_revision": "353dac7e134972e6e69b02914af10cbf1f2d34bb",
+  "source_run": "aggregate browser recipe: /tmp/p10-browser-final-all",
+  "other_scripts": {
+    "lab": {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "version": {
+        "protocolVersion": "1.3",
+        "product": "HeadlessChrome/148.0.7778.96",
+        "revision": "@8625e066febc721e015ea99842da12901eb7ed73",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.96 Safari/537.36",
+        "jsVersion": "14.8.178.14"
+      },
+      "assertions": 177,
+      "baseUrl": "http://localhost:4173/",
+      "chromeFlags": [
+        "--no-first-run",
+        "--no-default-browser-check",
+        "--disable-background-networking",
+        "--remote-debugging-port=9234",
+        "--user-data-dir=/tmp/p04-chrome-NhOG4F",
+        "about:blank"
+      ],
+      "requests": [
+        "http://localhost:4173/",
+        "http://localhost:4173/assets/index-c0t5ZswX.js",
+        "http://localhost:4173/assets/index-HNYDt5iO.css",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/AP804Oa6AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABVJREFUeF7NwIEAAAAAgKD9qdeocAMAoAABm3DkcAAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi/P//PwMMMDEgAdwcgAADAJZuAwXJYZOzAAAAAElFTkSuQmCC",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX//wCKxvRFAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+        "http://localhost:4173/tehom/tokens/ugallu.svg",
+        "http://localhost:4173/tehom/tokens/girtablilu.svg",
+        "http://localhost:4173/tehom/tokens/pazuzu.svg",
+        "http://localhost:4173/tehom/tokens/warder.svg",
+        "http://localhost:4173/tehom/tokens/censer.svg",
+        "http://localhost:4173/tehom/tokens/harrier.svg",
+        "http://localhost:4173/tehom/CREDITS.md",
+        "http://localhost:4173/tehom/licenses/game-icons-license.txt",
+        "http://localhost:4173/?placeholder=1",
+        "http://localhost:4173/assets/index-c0t5ZswX.js",
+        "http://localhost:4173/assets/index-HNYDt5iO.css",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/AP804Oa6AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABVJREFUeF7NwIEAAAAAgKD9qdeocAMAoAABm3DkcAAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi/P//PwMMMDEgAdwcgAADAJZuAwXJYZOzAAAAAElFTkSuQmCC",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX//wCKxvRFAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+        "http://localhost:4173/tehom/tokens/ugallu.svg",
+        "http://localhost:4173/tehom/tokens/girtablilu.svg",
+        "http://localhost:4173/tehom/tokens/pazuzu.svg",
+        "http://localhost:4173/tehom/tokens/warder.svg",
+        "http://localhost:4173/tehom/tokens/censer.svg",
+        "http://localhost:4173/tehom/tokens/harrier.svg",
+        "http://localhost:4173/",
+        "http://localhost:4173/assets/index-c0t5ZswX.js",
+        "http://localhost:4173/assets/index-HNYDt5iO.css",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/AP804Oa6AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABVJREFUeF7NwIEAAAAAgKD9qdeocAMAoAABm3DkcAAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUeNpi/P//PwMMMDEgAdwcgAADAJZuAwXJYZOzAAAAAElFTkSuQmCC",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX//wCKxvRFAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==",
+        "http://localhost:4173/tehom/tokens/ugallu.svg",
+        "http://localhost:4173/tehom/tokens/girtablilu.svg",
+        "http://localhost:4173/tehom/tokens/pazuzu.svg",
+        "http://localhost:4173/tehom/tokens/ugallu.svg",
+        "http://localhost:4173/tehom/tokens/warder.svg",
+        "http://localhost:4173/tehom/tokens/censer.svg",
+        "http://localhost:4173/tehom/tokens/harrier.svg"
+      ],
+      "failures": [
+        {
+          "requestId": "41336.51",
+          "timestamp": 1186651.512709,
+          "type": "Image",
+          "errorText": "",
+          "canceled": false,
+          "blockedReason": "inspector"
+        },
+        {
+          "requestId": "41336.54",
+          "timestamp": 1186651.513084,
+          "type": "Image",
+          "errorText": "",
+          "canceled": false,
+          "blockedReason": "inspector"
+        }
+      ],
+      "exceptions": [],
+      "trace": [
+        {
+          "mode": "normal",
+          "initial": {
+            "live": "Compact \u00b7 orientation 0 \u00b7 revision 0 \u00b7 round 1",
+            "revision": 0,
+            "used": false,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": 1,
+                  "r": 1
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 1,
+                  "r": 0
+                }
+              }
+            ],
+            "ghosts": [],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 1,
+            "allowance": "Shared maneuver remaining: 1.",
+            "preview": "No pending maneuver."
+          },
+          "preview": {
+            "live": "Compact \u00b7 orientation 0 \u00b7 revision 0 \u00b7 round 1",
+            "revision": 0,
+            "used": false,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": 1,
+                  "r": 1
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 1,
+                  "r": 0
+                }
+              }
+            ],
+            "ghosts": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": -2,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 0,
+                  "r": -2
+                }
+              }
+            ],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 1,
+            "allowance": "Shared maneuver remaining: 1.",
+            "preview": "Preview: Expand \u2192 Spread / 0. Live state unchanged."
+          },
+          "rotation": {
+            "live": "Compact \u00b7 orientation 1 \u00b7 revision 1 \u00b7 round 1",
+            "revision": 1,
+            "used": true,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 0,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": -1,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 0,
+                  "r": 1
+                }
+              }
+            ],
+            "ghosts": [],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 4,
+            "allowance": "Maneuver used. Select a fresh test fixture or reset the lab to maneuver again.",
+            "preview": "No pending maneuver."
+          },
+          "expansion": {
+            "live": "Spread \u00b7 orientation 0 \u00b7 revision 1 \u00b7 round 1",
+            "revision": 1,
+            "used": true,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": -2,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 0,
+                  "r": -2
+                }
+              }
+            ],
+            "ghosts": [],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Stretched (4)",
+                "state": "stretched"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Stretched (4)",
+                "state": "stretched"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Stretched (4)",
+                "state": "stretched"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 4,
+            "allowance": "Maneuver used. Select a fresh test fixture or reset the lab to maneuver again.",
+            "preview": "No pending maneuver."
+          },
+          "contractionPreview": {
+            "live": "Spread \u00b7 orientation 0 \u00b7 revision 0 \u00b7 round 1",
+            "revision": 0,
+            "used": false,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": -2,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 0,
+                  "r": -2
+                }
+              }
+            ],
+            "ghosts": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": 1,
+                  "r": 1
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 1,
+                  "r": 0
+                }
+              }
+            ],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Stretched (4)",
+                "state": "stretched"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Stretched (4)",
+                "state": "stretched"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Stretched (4)",
+                "state": "stretched"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 1,
+            "allowance": "Shared maneuver remaining: 1.",
+            "preview": "Preview: Contract \u2192 Compact / 0. Live state unchanged."
+          },
+          "contraction": {
+            "live": "Compact \u00b7 orientation 0 \u00b7 revision 1 \u00b7 round 1",
+            "revision": 1,
+            "used": true,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": 1,
+                  "r": 1
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 1,
+                  "r": 0
+                }
+              }
+            ],
+            "ghosts": [],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 4,
+            "allowance": "Maneuver used. Select a fresh test fixture or reset the lab to maneuver again.",
+            "preview": "No pending maneuver."
+          },
+          "afterDrag": {
+            "live": "Compact \u00b7 orientation 0 \u00b7 revision 0 \u00b7 round 1",
+            "revision": 0,
+            "used": false,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": 1,
+                  "r": 1
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 1,
+                  "r": 0
+                }
+              }
+            ],
+            "ghosts": [],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 1,
+            "allowance": "Shared maneuver remaining: 1.",
+            "preview": "No pending maneuver."
+          },
+          "fixtures": [
+            {
+              "formation": {
+                "shape": "compact",
+                "orientation": 0
+              },
+              "live": "Compact \u00b7 orientation 0 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": 2,
+                    "r": 0
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": 1,
+                    "r": 1
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": 1,
+                    "r": 0
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            },
+            {
+              "formation": {
+                "shape": "compact",
+                "orientation": 1
+              },
+              "live": "Compact \u00b7 orientation 1 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": 0,
+                    "r": 2
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": -1,
+                    "r": 2
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": 0,
+                    "r": 1
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            },
+            {
+              "formation": {
+                "shape": "compact",
+                "orientation": 2
+              },
+              "live": "Compact \u00b7 orientation 2 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": -2,
+                    "r": 2
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": -2,
+                    "r": 1
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": -1,
+                    "r": 1
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            },
+            {
+              "formation": {
+                "shape": "compact",
+                "orientation": 3
+              },
+              "live": "Compact \u00b7 orientation 3 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": -2,
+                    "r": 0
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": -1,
+                    "r": -1
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": -1,
+                    "r": 0
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            },
+            {
+              "formation": {
+                "shape": "compact",
+                "orientation": 4
+              },
+              "live": "Compact \u00b7 orientation 4 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": 0,
+                    "r": -2
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": 1,
+                    "r": -2
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": 0,
+                    "r": -1
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            },
+            {
+              "formation": {
+                "shape": "compact",
+                "orientation": 5
+              },
+              "live": "Compact \u00b7 orientation 5 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": 2,
+                    "r": -2
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": 2,
+                    "r": -1
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": 1,
+                    "r": -1
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                  "state": "close"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            },
+            {
+              "formation": {
+                "shape": "spread",
+                "orientation": 0
+              },
+              "live": "Spread \u00b7 orientation 0 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": 2,
+                    "r": 0
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": -2,
+                    "r": 2
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": 0,
+                    "r": -2
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            },
+            {
+              "formation": {
+                "shape": "spread",
+                "orientation": 1
+              },
+              "live": "Spread \u00b7 orientation 1 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": 0,
+                    "r": 2
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": -2,
+                    "r": 0
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": 2,
+                    "r": -2
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            },
+            {
+              "formation": {
+                "shape": "spread",
+                "orientation": 2
+              },
+              "live": "Spread \u00b7 orientation 2 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": -2,
+                    "r": 2
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": 0,
+                    "r": -2
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": 2,
+                    "r": 0
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            },
+            {
+              "formation": {
+                "shape": "spread",
+                "orientation": 3
+              },
+              "live": "Spread \u00b7 orientation 3 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": -2,
+                    "r": 0
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": 2,
+                    "r": -2
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": 0,
+                    "r": 2
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            },
+            {
+              "formation": {
+                "shape": "spread",
+                "orientation": 4
+              },
+              "live": "Spread \u00b7 orientation 4 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": 0,
+                    "r": -2
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": 2,
+                    "r": 0
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": -2,
+                    "r": 2
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            },
+            {
+              "formation": {
+                "shape": "spread",
+                "orientation": 5
+              },
+              "live": "Spread \u00b7 orientation 5 \u00b7 revision 0 \u00b7 round 1",
+              "revision": 0,
+              "used": false,
+              "positions": [
+                {
+                  "brood": "ugallu",
+                  "cell": {
+                    "q": 2,
+                    "r": -2
+                  }
+                },
+                {
+                  "brood": "girtablilu",
+                  "cell": {
+                    "q": 0,
+                    "r": 2
+                  }
+                },
+                {
+                  "brood": "pazuzu",
+                  "cell": {
+                    "q": -2,
+                    "r": 0
+                  }
+                }
+              ],
+              "ghosts": [],
+              "links": [
+                {
+                  "text": "Ugallu \u2194 Girtablilu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Ugallu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                },
+                {
+                  "text": "Girtablilu \u2194 Pazuzu: Stretched (4)",
+                  "state": "stretched"
+                }
+              ],
+              "selected": "Select a labelled token to inspect it.",
+              "disabled": 1,
+              "allowance": "Shared maneuver remaining: 1.",
+              "preview": "No pending maneuver."
+            }
+          ]
+        },
+        {
+          "mode": "placeholder",
+          "initial": {
+            "live": "Compact \u00b7 orientation 0 \u00b7 revision 0 \u00b7 round 1",
+            "revision": 0,
+            "used": false,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": 1,
+                  "r": 1
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 1,
+                  "r": 0
+                }
+              }
+            ],
+            "ghosts": [],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 1,
+            "allowance": "Shared maneuver remaining: 1.",
+            "preview": "No pending maneuver."
+          },
+          "preview": {
+            "live": "Compact \u00b7 orientation 0 \u00b7 revision 0 \u00b7 round 1",
+            "revision": 0,
+            "used": false,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": 1,
+                  "r": 1
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 1,
+                  "r": 0
+                }
+              }
+            ],
+            "ghosts": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": -2,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 0,
+                  "r": -2
+                }
+              }
+            ],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 1,
+            "allowance": "Shared maneuver remaining: 1.",
+            "preview": "Preview: Expand \u2192 Spread / 0. Live state unchanged."
+          },
+          "rotation": {
+            "live": "Compact \u00b7 orientation 1 \u00b7 revision 1 \u00b7 round 1",
+            "revision": 1,
+            "used": true,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 0,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": -1,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 0,
+                  "r": 1
+                }
+              }
+            ],
+            "ghosts": [],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 4,
+            "allowance": "Maneuver used. Select a fresh test fixture or reset the lab to maneuver again.",
+            "preview": "No pending maneuver."
+          },
+          "expansion": {
+            "live": "Spread \u00b7 orientation 0 \u00b7 revision 1 \u00b7 round 1",
+            "revision": 1,
+            "used": true,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": -2,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 0,
+                  "r": -2
+                }
+              }
+            ],
+            "ghosts": [],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Stretched (4)",
+                "state": "stretched"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Stretched (4)",
+                "state": "stretched"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Stretched (4)",
+                "state": "stretched"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 4,
+            "allowance": "Maneuver used. Select a fresh test fixture or reset the lab to maneuver again.",
+            "preview": "No pending maneuver."
+          }
+        },
+        {
+          "mode": "failed-image",
+          "initial": {
+            "live": "Compact \u00b7 orientation 0 \u00b7 revision 0 \u00b7 round 1",
+            "revision": 0,
+            "used": false,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": 1,
+                  "r": 1
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 1,
+                  "r": 0
+                }
+              }
+            ],
+            "ghosts": [],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 1,
+            "allowance": "Shared maneuver remaining: 1.",
+            "preview": "No pending maneuver."
+          },
+          "preview": {
+            "live": "Compact \u00b7 orientation 0 \u00b7 revision 0 \u00b7 round 1",
+            "revision": 0,
+            "used": false,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": 1,
+                  "r": 1
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 1,
+                  "r": 0
+                }
+              }
+            ],
+            "ghosts": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": -2,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 0,
+                  "r": -2
+                }
+              }
+            ],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 1,
+            "allowance": "Shared maneuver remaining: 1.",
+            "preview": "Preview: Expand \u2192 Spread / 0. Live state unchanged."
+          },
+          "rotation": {
+            "live": "Compact \u00b7 orientation 1 \u00b7 revision 1 \u00b7 round 1",
+            "revision": 1,
+            "used": true,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 0,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": -1,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 0,
+                  "r": 1
+                }
+              }
+            ],
+            "ghosts": [],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Close (1)",
+                "state": "close"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 4,
+            "allowance": "Maneuver used. Select a fresh test fixture or reset the lab to maneuver again.",
+            "preview": "No pending maneuver."
+          },
+          "expansion": {
+            "live": "Spread \u00b7 orientation 0 \u00b7 revision 1 \u00b7 round 1",
+            "revision": 1,
+            "used": true,
+            "positions": [
+              {
+                "brood": "ugallu",
+                "cell": {
+                  "q": 2,
+                  "r": 0
+                }
+              },
+              {
+                "brood": "girtablilu",
+                "cell": {
+                  "q": -2,
+                  "r": 2
+                }
+              },
+              {
+                "brood": "pazuzu",
+                "cell": {
+                  "q": 0,
+                  "r": -2
+                }
+              }
+            ],
+            "ghosts": [],
+            "links": [
+              {
+                "text": "Ugallu \u2194 Girtablilu: Stretched (4)",
+                "state": "stretched"
+              },
+              {
+                "text": "Ugallu \u2194 Pazuzu: Stretched (4)",
+                "state": "stretched"
+              },
+              {
+                "text": "Girtablilu \u2194 Pazuzu: Stretched (4)",
+                "state": "stretched"
+              }
+            ],
+            "selected": "Select a labelled token to inspect it.",
+            "disabled": 4,
+            "allowance": "Maneuver used. Select a fresh test fixture or reset the lab to maneuver again.",
+            "preview": "No pending maneuver."
+          }
+        }
+      ]
+    },
+    "preview": {
+      "ok": true,
+      "assertions": 24,
+      "version": {
+        "protocolVersion": "1.3",
+        "product": "HeadlessChrome/148.0.7778.96",
+        "revision": "@8625e066febc721e015ea99842da12901eb7ed73",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.96 Safari/537.36",
+        "jsVersion": "14.8.178.14"
+      },
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "initial": {
+        "revision": 0,
+        "panel": "Patrol preview fixture \u2014 maneuvers only. Live: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14.Hover or focus a maneuver to preview its immediate result and conditional enemy phase.",
+        "facts": [
+          "Patrol preview fixture \u2014 maneuvers only. Live: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14.",
+          "Hover or focus a maneuver to preview its immediate result and conditional enemy phase."
+        ],
+        "readout": "No pending maneuver.",
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": []
+      },
+      "preview": {
+        "revision": 0,
+        "panel": "Patrol preview fixture \u2014 maneuvers only. Live: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14.Immediate: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14 \u00b7 player.Destination links: ugallu \u2194 girtablilu stretched; ugallu \u2194 pazuzu stretched; girtablilu \u2194 pazuzu stretched.Protection gained: none; lost: girtablilu \u2192 censer, pazuzu \u2192 censer.Threats: Mark patrol:1:warder at (2,0) \u2192 ugallu; Mark patrol:1:censer at (-2,2) \u2192 girtablilu; Mark patrol:1:harrier at (2,0) \u2192 ugallu.Abilities enabled: Impale; disabled: Shelter.If end phase now: Ugallu 8/18 \u00b7 Girtablilu 11/14 \u00b7 Pazuzu 14/14 \u00b7 player. Remaining player choices are excluded.",
+        "facts": [
+          "Patrol preview fixture \u2014 maneuvers only. Live: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14.",
+          "Immediate: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14 \u00b7 player.",
+          "Destination links: ugallu \u2194 girtablilu stretched; ugallu \u2194 pazuzu stretched; girtablilu \u2194 pazuzu stretched.",
+          "Protection gained: none; lost: girtablilu \u2192 censer, pazuzu \u2192 censer.",
+          "Threats: Mark patrol:1:warder at (2,0) \u2192 ugallu; Mark patrol:1:censer at (-2,2) \u2192 girtablilu; Mark patrol:1:harrier at (2,0) \u2192 ugallu.",
+          "Abilities enabled: Impale; disabled: Shelter.",
+          "If end phase now: Ugallu 8/18 \u00b7 Girtablilu 11/14 \u00b7 Pazuzu 14/14 \u00b7 player. Remaining player choices are excluded."
+        ],
+        "readout": "Preview: Expand \u2192 Spread / 0. Live state unchanged.",
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": 1,
+              "r": 1
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 1,
+              "r": 0
+            }
+          }
+        ],
+        "ghosts": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": -2,
+              "r": 2
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 0,
+              "r": -2
+            }
+          }
+        ]
+      },
+      "committed": {
+        "revision": 1,
+        "panel": "Patrol preview fixture \u2014 maneuvers only. Live: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14.Hover or focus a maneuver to preview its immediate result and conditional enemy phase.",
+        "facts": [
+          "Patrol preview fixture \u2014 maneuvers only. Live: Ugallu 18/18 \u00b7 Girtablilu 14/14 \u00b7 Pazuzu 14/14.",
+          "Hover or focus a maneuver to preview its immediate result and conditional enemy phase."
+        ],
+        "readout": "No pending maneuver.",
+        "positions": [
+          {
+            "brood": "ugallu",
+            "cell": {
+              "q": 2,
+              "r": 0
+            }
+          },
+          {
+            "brood": "girtablilu",
+            "cell": {
+              "q": -2,
+              "r": 2
+            }
+          },
+          {
+            "brood": "pazuzu",
+            "cell": {
+              "q": 0,
+              "r": -2
+            }
+          }
+        ],
+        "ghosts": []
+      },
+      "exceptions": []
+    }
+  }
+}
