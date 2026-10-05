@@ -74,7 +74,7 @@ export type PreviewFacts = ReturnType<typeof previewFacts>;
 type AvailablePreviewFacts = Extract<PreviewFacts, { available: true }>;
 
 export type PhaseForecast<State extends GameState> =
-  | { readonly kind: 'terminal' | 'unavailable'; readonly condition: typeof FORECAST_CONDITION;
+  | { readonly kind: 'terminal' | 'unavailable' | 'not-applicable'; readonly condition: typeof FORECAST_CONDITION;
       readonly events: readonly [] }
   | ({ readonly kind: 'transition'; readonly condition: typeof FORECAST_CONDITION;
       /** Excludes next-round declarations; these are not attacks already dealt. */
@@ -143,7 +143,9 @@ export function previewCommand<State extends GameState>(
       && old.legality.ok !== enabled));
   };
   let forecast: PhaseForecast<State>;
-  if (result.state.phase === 'victory' || result.state.phase === 'defeat') {
+  if (request.kind === 'endPhase') {
+    forecast = { kind: 'not-applicable', condition: FORECAST_CONDITION, events: [] };
+  } else if (result.state.phase === 'victory' || result.state.phase === 'defeat') {
     forecast = { kind: 'terminal', condition: FORECAST_CONDITION, events: [] };
   } else if (!patrol(result.state)) {
     forecast = { kind: 'unavailable', condition: FORECAST_CONDITION, events: [] };

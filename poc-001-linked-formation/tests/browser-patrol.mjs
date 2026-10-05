@@ -160,7 +160,9 @@ try {
       expected.events.map(event=>({type:event.type,...('sourceId' in event?{source:event.sourceId}:{})})),'all accepted events render in core order');
     if (command.kind==='endPhase') {
       equal(actual.events.filter(event=>event.type==='attack-settled').map(event=>event.source),expected.events.filter(event=>event.type==='attack-settled').map(event=>event.sourceId),'enemy attacks presented in core order');
-      check(actual.feedback.includes('Unused actions forfeited'),'visible forfeiture explanation');
+      const unused=state.brood.filter(entity=>entity.hp>0&&!state.actedIds.includes(entity.id)).length;
+      equal(actual.feedback.includes('Unused actions forfeited'),unused>0,'forfeiture only when living actions unused');
+      if(unused>0) check(actual.feedback.includes(`Unused actions forfeited: ${unused}.`),'visible forfeiture count');
       await click('#history summary');
       check(await evaluate(`document.querySelector('#history').open`),'resolution log can be read through visible control');
       check(await evaluate(`[...document.querySelectorAll('#events li')].every(e=>e.getBoundingClientRect().height>0)`),'ordered event evidence is rendered visibly');
@@ -176,6 +178,17 @@ try {
     await cdp('Page.navigate',{url:baseUrl+'?play=patrol'+(mode==='placeholder'?'&placeholder=1':'')});
     await waitFor(`document.querySelectorAll('[data-entity]').length===6`);
     await waitFor(`[...document.querySelectorAll('.emblem')].every(e=>e.dataset.art===${JSON.stringify(mode==='placeholder'?'placeholder':'loaded')})`);
+  }
+  // B1: reproduce both scouts' native preset-change + Restart sequence before actor input.
+  await navigate();
+  for (const preset of ['wounded-ugallu', 'wounded-girtablilu']) {
+    await choosePreset('healthy'); await click('#reset');
+    await choosePreset(preset); await click('#reset');
+    for (const entity of createPatrol(preset).brood) {
+      equal(await evaluate(`document.querySelector('[data-actor="${entity.id}"]').textContent`),
+        `${entity.id[0].toUpperCase()+entity.id.slice(1)} ${entity.hp}/${entity.maxHp}`,
+        'B1: fresh actor HP after preset and Restart before selection');
+    }
   }
   const fixtureBundles=new Map();
   async function loadFixture(entry,path,mode='normal',params={}) {

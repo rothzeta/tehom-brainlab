@@ -101,7 +101,7 @@ export class CombatScene extends Phaser.Scene {
       link.click(); setTimeout(() => URL.revokeObjectURL(url), 0);
     });
     this.el('cancel').addEventListener('click', () => this.session.cancel());
-    const reset = () => { this.actor = this.ability = this.target = undefined; this.direction = 'clockwise'; this.session.reset(this.el<HTMLSelectElement>('preset').value as PatrolPreset); };
+    const reset = () => { this.controlsKey = ''; this.actor = this.ability = this.target = undefined; this.direction = 'clockwise'; this.session.reset(this.el<HTMLSelectElement>('preset').value as PatrolPreset); };
     this.el('reset').addEventListener('click', reset); this.el('preset').addEventListener('change', reset);
     const checkbox = this.el<HTMLInputElement>('placeholder'); checkbox.checked = this.placeholder;
     checkbox.addEventListener('change', () => { this.placeholder = checkbox.checked; this.artwork(); });
@@ -249,7 +249,7 @@ export class CombatScene extends Phaser.Scene {
         lines.push(`Threats: ${projection.after.threats.map(entry => `${entry.intention.sourceId}: ${entry.intention.kind === 'fixed-area' ? 'fixed cells' : 'follows creature'} ${entry.cells.map(cell => `(${cell.q},${cell.r})`).join(',')} → ${entry.recipientIds.join(',') || entry.reason}`).join('; ')}.`);
       }
       const forecast = pending.forecast;
-      lines.push(forecast.kind === 'transition' && forecast.ok ? `${forecast.condition}: ${hpText(forecast.state as PatrolSession['state'])} · ${forecast.state.phase}. Remaining player choices are excluded.` : `${forecast.condition}: ${forecast.kind === 'transition' && !forecast.ok ? `unavailable (${forecast.error.code})` : forecast.kind}.`);
+      if (forecast.kind !== 'not-applicable') lines.push(forecast.kind === 'transition' && forecast.ok ? `${forecast.condition}: ${hpText(forecast.state as PatrolSession['state'])} · ${forecast.state.phase}. Remaining player choices are excluded.` : `${forecast.condition}: ${forecast.kind === 'transition' && !forecast.ok ? `unavailable (${forecast.error.code})` : forecast.kind}.`);
     } else if (pending) lines.push(`Unavailable: ${pending.error.code}.`);
     this.el('projection').replaceChildren(...lines.map(line => Object.assign(document.createElement('p'), { textContent: line })));
     this.el('ghosts').replaceChildren(...(pending?.ok && pending.projection.after.available ? pending.projection.after.positions.map(position => {

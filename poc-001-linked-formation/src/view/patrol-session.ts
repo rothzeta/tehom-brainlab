@@ -54,13 +54,14 @@ export class PatrolSession {
   }
   confirm(preview = this.pending): void {
     if (this.busy || !preview) return;
+    const unused = this.state.brood.filter(entity => entity.hp > 0 && !this.state.actedIds.includes(entity.id)).length;
     const result = this.adapter.confirmPreview(preview);
     this.pending = undefined;
     if (!result.ok) { this.message = `Unavailable: ${result.error.code}.`; this.changed(); return; }
     this.record = appendAcceptedCommand(this.record, preview.command, result);
     this.events = result.events;
     this.message = preview.command.kind === 'endPhase'
-      ? 'Unused actions forfeited. Enemy intentions resolved in the announced order.'
+      ? `${unused > 0 ? `Unused actions forfeited: ${unused}. ` : ''}Enemy intentions resolved in the announced order.`
       : 'Action resolved.';
     this.busy = true;
     const generation = this.generation;
