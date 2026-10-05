@@ -33,20 +33,20 @@ const fronts = [
 ];
 const slots = {
   compact: [
-    [[2, 0], [1, 1], [1, 0]], [[0, 2], [-1, 2], [0, 1]],
-    [[-2, 2], [-2, 1], [-1, 1]], [[-2, 0], [-1, -1], [-1, 0]],
-    [[0, -2], [1, -2], [0, -1]], [[2, -2], [2, -1], [1, -1]],
+    [[1, 0], [-1, 1], [0, -1]], [[0, 1], [-1, 0], [1, -1]],
+    [[-1, 1], [0, -1], [1, 0]], [[-1, 0], [1, -1], [0, 1]],
+    [[0, -1], [1, 0], [-1, 1]], [[1, -1], [0, 1], [-1, 0]],
   ].map((cells) => cells.map(([q, r]) => ({ q: q!, r: r! }))),
   spread: [[0, 4, 8], [2, 6, 10], [4, 8, 0], [6, 10, 2], [8, 0, 4], [10, 2, 6]]
     .map((indices) => indices.map((i) => ringTwo[i]!)),
 };
 const ids = ['ugallu', 'girtablilu', 'pazuzu'];
 const areaRecipients = {
-  compact: [ids, ids, [], [], [], []],
+  compact: [['ugallu'], ['ugallu'], ['pazuzu'], ['pazuzu'], ['girtablilu'], ['girtablilu']],
   spread: [['ugallu'], ['ugallu'], ['pazuzu'], ['pazuzu'], ['girtablilu'], ['girtablilu']],
 };
 const turnedRecipients = {
-  compact: [[], ids, ids, [], [], []],
+  compact: [['girtablilu'], ['ugallu'], ['ugallu'], ['pazuzu'], ['pazuzu'], ['girtablilu']],
   spread: [['girtablilu'], ['ugallu'], ['ugallu'], ['pazuzu'], ['pazuzu'], ['girtablilu']],
 };
 const states: Formation[] = (['compact', 'spread'] as const).flatMap((shape) =>
@@ -63,8 +63,8 @@ function context(formation: Formation, fallenId?: string): IntentContext {
     ...createInitialState(), formation,
     brood: createInitialState().brood.map((brood) => ({ ...brood, hp: brood.id === fallenId ? 0 : 10 })),
     enemies: [
-      { id: 'warder', hp: 10, facing: 0 as const },
-      { id: 'censer', hp: 10, facing: 3 as const },
+      { id: 'warder', hp: 10, cell: { q: 0, r: 0 }, facing: 0 as const },
+      { id: 'censer', hp: 10, cell: { q: 0, r: 0 }, facing: 3 as const },
     ],
   });
 }
@@ -155,7 +155,7 @@ describe.each(states)('$shape orientation $orientation', (formation) => {
 });
 
 test.each([0, 1, 2, 3, 4, 5] as const)('AC4: clockwise turn from %i, wrap 5 to 0', (facing) => {
-  const enemy = freeze({ id: 'warder', hp: 10, facing });
+  const enemy = freeze({ id: 'warder', hp: 10, cell: { q: 0, r: 0 }, facing });
   const declaration: Intention = freeze({ ...area, cells: fronts[facing]! });
   const declarations = freeze([declaration, { ...hit, sourceId: 'warder' }, { ...splash, sourceId: 'warder' }]);
   const before = structuredClone({ enemy, declarations });
@@ -176,14 +176,14 @@ test('CT/AC1: sectors disjointly partition the eighteen radius-one/two cells', (
   expect(actual).not.toContainEqual({ q: 0, r: 0 });
 });
 
-test('CT: inward Pazuzu is protection-eligible and a fixed-area recipient', () => {
+test('a ring-1 Compact Brood is protection-eligible and a fixed-area recipient', () => {
   const input = context({ shape: 'compact', orientation: 0 });
-  expect(selectProtection(input, { actorId: 'pazuzu', targetId: 'censer', bypassProtection: false }, relations))
+  expect(selectProtection(input, { actorId: 'ugallu', targetId: 'censer', bypassProtection: false }, relations))
     .toEqual({ protected: true, sourceIds: ['warder'], reason: 'protected',
       checks: [{ sourceId: 'warder', reason: 'protected' }] });
   const inwardArea: Intention = freeze({ ...area, cells: [{ q: 1, r: 0 }] });
   expect(selectRecipients(input, inwardArea))
-    .toEqual({ reason: 'resolved', recipientIds: ['pazuzu'], cells: [{ q: 1, r: 0 }] });
+    .toEqual({ reason: 'resolved', recipientIds: ['ugallu'], cells: [{ q: 1, r: 0 }] });
 });
 
 test('AC5: each fallen source cancels; marked target fizzle cancels the whole splash without retargeting', () => {
@@ -199,7 +199,7 @@ test('AC5: each fallen source cancels; marked target fizzle cancels the whole sp
     expect(selectRecipients(input, { ...declaration, targetId: 'missing' } as Intention).reason).toBe('target-missing');
   }
   expect(selectRecipients(context(input.formation, 'ugallu'), splash, 2).recipientIds).toEqual(['girtablilu', 'pazuzu']);
-  expect(selectRecipients(deadMark, area).recipientIds).toEqual(['ugallu', 'pazuzu']);
+  expect(selectRecipients(deadMark, area).recipientIds).toEqual(['ugallu']);
   const enemy = deadSources.enemies[0]!;
   expect(turnEnemyClockwise(enemy, [area])).toEqual({ ok: false, reason: 'source-fallen', enemy,
     intentions: [area], events: [] });
@@ -218,10 +218,10 @@ test('AC6: lone survivor is isolated; fallen Brood cannot be isolated or maintai
 test('Close and splash boundaries use explicit tunable thresholds inclusively', () => {
   const input = context({ shape: 'compact', orientation: 0 });
   expect(selectRecipients(input, { ...splash, targetId: 'ugallu' } as Intention, 2).recipientIds).toEqual(ids);
-  expect(selectRecipients(input, { ...splash, targetId: 'ugallu' } as Intention, 1).recipientIds).toEqual(ids);
+  expect(selectRecipients(input, { ...splash, targetId: 'ugallu' } as Intention, 1).recipientIds).toEqual(['ugallu']);
   expect(selectRecipients(input, splash, 0).recipientIds).toEqual(['girtablilu']);
   expect(isCloseLinked(input, 'ugallu', 'pazuzu', 2)).toBe(true);
-  expect(isCloseLinked(input, 'ugallu', 'pazuzu', 1)).toBe(true);
+  expect(isCloseLinked(input, 'ugallu', 'pazuzu', 1)).toBe(false);
   expect(isCloseLinked(input, 'ugallu', 'pazuzu', 0)).toBe(false);
   expect(isCloseLinked(input, 'pazuzu', 'ugallu', 2)).toBe(true);
   expect(isIsolated(input, 'girtablilu', 0)).toBe(true);
@@ -257,13 +257,13 @@ test('Public IDs and ordering are independent of entity array order; protection 
   const input = context({ shape: 'compact', orientation: 0 });
   const renamed = freeze({ ...input, brood: [...input.brood].reverse().map((entity) => ({ ...entity, id: `id-${entity.id}` })),
     enemies: [...input.enemies].reverse() });
-  expect(selectRecipients(renamed, area).recipientIds).toEqual(['id-ugallu', 'id-girtablilu', 'id-pazuzu']);
+  expect(selectRecipients(renamed, area).recipientIds).toEqual(['id-ugallu']);
   expect(selectRecipients(renamed, { ...splash, targetId: 'id-girtablilu' } as Intention, 2).recipientIds)
     .toEqual(['id-ugallu', 'id-girtablilu', 'id-pazuzu']);
   expect(activeLinks(renamed, 2).map(({ fromId, toId }) => [fromId, toId])).toEqual([
     ['id-ugallu', 'id-girtablilu'], ['id-ugallu', 'id-pazuzu'], ['id-girtablilu', 'id-pazuzu'],
   ]);
-  const twoSources = freeze({ ...renamed, enemies: [...renamed.enemies, { id: 'another', hp: 10, facing: 0 as const }] });
+  const twoSources = freeze({ ...renamed, enemies: [...renamed.enemies, { id: 'another', hp: 10, cell: { q: 0, r: 0 }, facing: 0 as const }] });
   const duplicateRelations = freeze([...relations, ...relations, { sourceId: 'another', targetId: 'censer' }]);
   const selection = selectProtection(twoSources, { actorId: 'id-ugallu', targetId: 'censer', bypassProtection: false }, duplicateRelations);
   expect(selection.sourceIds).toEqual(['another', 'warder']);
@@ -274,7 +274,7 @@ test('Public IDs and ordering are independent of entity array order; protection 
 test.each([-1, 6, 0.5, NaN, Infinity])('Reject invalid facing %s without normalization', (value) => {
   expect(() => sectorCells(value as Orientation)).toThrow(RangeError);
   expect(() => frontMask(value as Orientation)).toThrow(RangeError);
-  expect(() => turnEnemyClockwise({ id: 'warder', hp: 10, facing: value as Orientation }, [area])).toThrow(RangeError);
+  expect(() => turnEnemyClockwise({ id: 'warder', hp: 10, cell: { q: 0, r: 0 }, facing: value as Orientation }, [area])).toThrow(RangeError);
 });
 
 test.each([-1, 0.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1])('Reject invalid distance threshold %s', (value) => {

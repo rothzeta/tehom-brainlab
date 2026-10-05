@@ -162,12 +162,12 @@ describe('P09 independent recipient and impact fixtures', () => {
 
   it('a Warder kill removes protection and its declared attack before forecasting', () => {
     const base = createPatrol('healthy', rules);
-    const state = frozen({ ...base, enemies: base.enemies.map((enemy) => enemy.id === 'warder' ? { ...enemy, hp: 2 } : enemy) });
+    const state = frozen({ ...base, enemies: base.enemies.map((enemy) => enemy.id === 'warder' ? { ...enemy, hp: 2, cell: { q: 1, r: -2 }, facing: 0 as const } : enemy) });
     const preview = previewCommand(state, attack(state, 'warder', 2), 1);
     expect(preview.ok).toBe(true); if (!preview.ok) return;
     const facts = availableFacts(preview);
     expect(preview.state.protections).toEqual([]);
-    expect(preview.projection.protectionLost.map((entry) => entry.actorId)).toEqual(['ugallu', 'girtablilu', 'pazuzu']);
+    expect(preview.projection.protectionLost.map((entry) => entry.actorId)).toEqual(['ugallu']);
     expect(preview.events).toContainEqual({ type: 'intention-cancelled', intentionId: 'patrol:1:warder', reason: 'source-fallen' });
     expect(facts.after.threats.some((entry) => entry.intention.sourceId === 'warder')).toBe(false);
     expect(preview.forecast.kind).toBe('transition');
@@ -179,7 +179,8 @@ describe('P09 independent recipient and impact fixtures', () => {
 
   it('Crosswind changes facing, protection and only turnable areas; marks remain distinct', () => {
     const { patrolRules: _rules, patrolVersion: _version, ...base } = createPatrol('healthy', rules);
-    const state: CombatState = frozen({ ...base, declaredIntentions: [
+    const state: CombatState = frozen({ ...base, enemies: base.enemies.map(enemy => enemy.id === 'warder'
+      ? { ...enemy, cell: { q: 1, r: -2 }, facing: 0 as const } : enemy), declaredIntentions: [
       { id: 'turn', sourceId: 'warder', kind: 'fixed-area', cells: [{ q: 2, r: 0 }], turnable: true },
       { id: 'fixed', sourceId: 'warder', kind: 'fixed-area', cells: [{ q: 2, r: 0 }], turnable: false },
       { id: 'mark', sourceId: 'warder', kind: 'marked-hit', targetId: 'ugallu' },
@@ -189,11 +190,12 @@ describe('P09 independent recipient and impact fixtures', () => {
     expect(preview.ok).toBe(true); if (!preview.ok) return;
     const facts = availableFacts(preview);
     expect(preview.state.enemies.find(({ id }) => id === 'warder')?.facing).toBe(1);
-    expect(preview.projection.protectionLost).toHaveLength(3);
+    expect(preview.projection.protectionLost.map(entry => entry.actorId)).toEqual([]);
+    expect(preview.projection.protectionGained.map(entry => entry.actorId)).toEqual(['pazuzu']);
     expect(facts.after.threats.map(({ intention, cells, recipientIds }) => ({ kind: intention.kind, cells, recipientIds }))).toEqual([
-      { kind: 'fixed-area', cells: [{ q: 0, r: 2 }], recipientIds: [] },
-      { kind: 'fixed-area', cells: [{ q: 2, r: 0 }], recipientIds: ['ugallu'] },
-      { kind: 'marked-hit', cells: [{ q: 2, r: 0 }], recipientIds: ['ugallu'] },
+      { kind: 'fixed-area', cells: [{ q: -1, r: 1 }], recipientIds: ['girtablilu'] },
+      { kind: 'fixed-area', cells: [{ q: 2, r: 0 }], recipientIds: [] },
+      { kind: 'marked-hit', cells: [{ q: 1, r: 0 }], recipientIds: ['ugallu'] },
     ]);
     expect(preview.forecast.kind).toBe('unavailable');
   });

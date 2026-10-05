@@ -55,3 +55,8 @@ export const RING_TWO: readonly Hex[] = Object.freeze([
   { q: -2, r: 0 }, { q: -1, r: -1 }, { q: 0, r: -2 },
   { q: 1, r: -2 }, { q: 2, r: -2 }, { q: 2, r: -1 },
 ].map((cell) => Object.freeze(cell)));
+
+/** Cells reserved for enemies: centre, then clockwise ring-two edges. */
+export const ENEMY_CELLS: readonly Hex[] = Object.freeze([
+  { q: 0, r: 0 }, ...[1, 3, 5, 7, 9, 11].map(index => RING_TWO[index]!),
+].map(cell => Object.freeze(cell)));

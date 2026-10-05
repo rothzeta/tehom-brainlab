@@ -25,7 +25,7 @@ test('B2: scout-1 attempt-2 commands 1–3 then End phase resolve exactly once',
     const result = applyAbility(state, { actorId, abilityId, targetId: 'warder',
       expectedRevision: state.revision }, abilityRules);
     expect(result.ok).toBe(true); if (!result.ok) throw new Error(result.error.code);
-    state = result.state;
+    state = result.state as typeof state;
   }
   const bytes = JSON.stringify(state);
   const command = { kind: 'endPhase' as const, expectedRevision: state.revision };
@@ -48,4 +48,17 @@ test.each([0, 1, 3])('B3: End phase reports only the %i actual unused living act
   expect(session.message.includes('Unused actions forfeited')).toBe(unused > 0);
   if (unused > 0) expect(session.message).toContain(`Unused actions forfeited: ${unused}.`);
   expect(session.message).toContain('Enemy intentions resolved in the announced order.');
+});
+
+
+test('B3: fallen Brood do not count as unused actions', () => {
+  vi.useFakeTimers();
+  const session = new PatrolSession(() => {}, 400, () => {
+    const base = createPatrol('healthy', rules);
+    return { ...base, actedIds: ['ugallu', 'girtablilu'],
+      brood: base.brood.map(entity => entity.id === 'pazuzu' ? { ...entity, hp: 0 } : entity) };
+  });
+  session.activate({ kind: 'endPhase', expectedRevision: 0 });
+  expect(session.state.revision).toBe(1);
+  expect(session.message).not.toContain('Unused actions forfeited');
 });

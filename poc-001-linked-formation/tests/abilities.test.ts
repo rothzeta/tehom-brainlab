@@ -23,9 +23,9 @@ function fixture(overrides: Partial<CombatState> = {}): CombatState {
   return freeze({ ...initial,
     brood: initial.brood.map((brood) => ({ ...brood, hp: 10, maxHp: 10 })),
     enemies: [
-      { id: 'warder', hp: 20, maxHp: 20, facing: 0 },
-      { id: 'censer', hp: 20, maxHp: 20, facing: 0 },
-      { id: 'unprotected', hp: 20, maxHp: 20, facing: 0, rotatable: false },
+      { id: 'warder', hp: 20, maxHp: 20, cell: { q: 0, r: 0 }, facing: 0 },
+      { id: 'censer', hp: 20, maxHp: 20, cell: { q: 0, r: 0 }, facing: 0 },
+      { id: 'unprotected', hp: 20, maxHp: 20, cell: { q: 0, r: 0 }, facing: 0, rotatable: false },
     ],
     protections: [{ sourceId: 'warder', targetId: 'censer' }],
     shelters: [], resolvedAttackIds: [], declaredIntentions: [], ...overrides });
@@ -77,7 +77,8 @@ test.each<[AbilityId, string, number]>([
   ['sting', 'unprotected', 4], ['sting', 'censer', 2],
   ['gale', 'unprotected', 3], ['gale', 'censer', 3],
 ])('AC1: %s on %s deals configured %i', (abilityId, targetId, damage) => {
-  const state = fixture();
+  const state = fixture(abilityId === 'sting' && targetId === 'censer'
+    ? { formation: { shape: 'compact', orientation: 4 } } : {});
   const action = request(abilityId, { targetId });
   const before = structuredClone({ state, action });
   expect(abilityLegality(state, action, rules)).toEqual({ ok: true });
@@ -385,7 +386,7 @@ test('AC7: shared maneuver still works after all three abilities in a nontermina
 });
 
 test('P06 integration: lethal ability clamps HP, cleans effects and enters victory with one action/revision', () => {
-  const state = fixture({ enemies: [{ id: 'last', hp: 2, maxHp: 20, facing: 0 }],
+  const state = fixture({ enemies: [{ id: 'last', hp: 2, maxHp: 20, cell: { q: 0, r: 0 }, facing: 0 }],
     declaredIntentions: [{ id: 'mark', sourceId: 'last', kind: 'marked-hit', targetId: 'ugallu' }] });
   const result = accepted(dispatch(state, request('claw', { targetId: 'last' })));
   expect(hp(result.state, 'last')).toBe(0);

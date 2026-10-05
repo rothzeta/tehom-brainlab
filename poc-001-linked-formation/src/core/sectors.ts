@@ -1,4 +1,4 @@
-import { RING_ONE, RING_TWO, validateHex } from './hex';
+import { hexDistance, RING_ONE, RING_TWO, validateHex } from './hex';
 import type { Hex } from './hex';
 import type { Orientation } from './formation';
 
@@ -25,6 +25,26 @@ export function turnCellsClockwise(cells: readonly Hex[]): readonly Hex[] {
   return cells.map((cell) => {
     validateHex(cell);
     const turned = { q: -cell.r + 0, r: cell.q + cell.r };
+    validateHex(turned);
+    return turned;
+  });
+}
+
+/** Carry the centre wedge to an enemy tile and clip it to the fixed board. */
+export function frontCells(origin: Hex, facing: Orientation): readonly Hex[] {
+  validateHex(origin);
+  return frontMask(facing).map(cell => ({ q: origin.q + cell.q, r: origin.r + cell.r }))
+    .filter(cell => hexDistance(cell, { q: 0, r: 0 }) <= 2);
+}
+
+/** Rotate stored cells about a source tile, preserving order without clipping. */
+export function turnCellsAboutClockwise(cells: readonly Hex[], origin: Hex): readonly Hex[] {
+  validateHex(origin);
+  return turnCellsClockwise(cells.map(cell => {
+    validateHex(cell);
+    return { q: cell.q - origin.q, r: cell.r - origin.r };
+  })).map(cell => {
+    const turned = { q: origin.q + cell.q, r: origin.r + cell.r };
     validateHex(turned);
     return turned;
   });

@@ -6,13 +6,17 @@ import { announcePatrol } from '../core/rounds';
 import { createInitialState } from '../core/state';
 import type { CombatState } from '../core/state';
 
-export const PATROL_VERSION = 'patrol-v1';
+export const PATROL_VERSION = 'patrol-v2';
 export const PATROL_ORDER = Object.freeze(['warder', 'censer', 'harrier'] as const);
 export const PATROL_HP = Object.freeze({ ugallu: 18, girtablilu: 14, pazuzu: 14,
   warder: 12, censer: 10, harrier: 13 });
 export const WOUNDED_HP = Object.freeze({ ugallu: 7, girtablilu: 5 });
-/** Presentation only; enemies have no board cells. P10 owns cluster offsets. */
-export const PATROL_VIEW_ANCHOR = Object.freeze({ q: 0, r: 0 });
+/** Provisional alternating tile layout shared by all HP presets. */
+export const PATROL_LAYOUT = Object.freeze({
+  warder: Object.freeze({ cell: Object.freeze({ q: 1, r: -2 }), facing: 0 as const }),
+  censer: Object.freeze({ cell: Object.freeze({ q: -2, r: 1 }), facing: 4 as const }),
+  harrier: Object.freeze({ cell: Object.freeze({ q: 1, r: 1 }), facing: 2 as const }),
+});
 export type PatrolPreset = 'healthy' | 'wounded-ugallu' | 'wounded-girtablilu';
 export interface PatrolRules {
   readonly warderDamage: number;
@@ -44,7 +48,7 @@ export function createPatrol(preset: PatrolPreset = 'healthy', rules = DEFAULT_P
         : preset === 'wounded-girtablilu' && brood.brood === 'girtablilu' ? WOUNDED_HP.girtablilu
           : PATROL_HP[brood.brood] })),
     enemies: PATROL_ORDER.map((id) => ({ id, hp: PATROL_HP[id], maxHp: PATROL_HP[id],
-      facing: 0, rotatable: id === 'warder' })),
+      cell: { ...PATROL_LAYOUT[id].cell }, facing: PATROL_LAYOUT[id].facing, rotatable: id === 'warder' })),
     protections: [{ sourceId: 'warder', targetId: 'censer' }],
     shelters: [], resolvedAttackIds: [], declaredIntentions: [] };
   return announcePatrol(state);

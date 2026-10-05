@@ -5,12 +5,13 @@ import { applyAbility, DEFAULT_ABILITY_RULES } from './abilities';
 import type { AbilityRules } from './abilities';
 import type { Command, CommandResult, GameplayEvent } from './commands';
 import { ROSTER, validateFormation } from './formation';
-import { validateHex } from './hex';
+import { ENEMY_CELLS, validateHex } from './hex';
+import type { Hex } from './hex';
 import { applyCommand } from './transition';
 
 export const RECORD_VERSION = 1;
 // Bump for any semantic change to geometry, legality, resolution or event ordering.
-export const RUN_RULES_VERSION = `poc-001-rules-v1/${PATROL_VERSION}/${BROOD_RULES_VERSION}`;
+export const RUN_RULES_VERSION = `poc-001-rules-v2/${PATROL_VERSION}/${BROOD_RULES_VERSION}`;
 export const PROTOTYPE_ID = 'poc-001-linked-formation';
 export type RecordedCommand = Exclude<Command, { kind: 'attack' }>;
 export interface RunRecord {
@@ -83,11 +84,18 @@ function state(value: unknown, path: string): asserts value is PatrolState {
   const enemies = value.enemies as Record<string, unknown>[];
   for (const entity of enemies) {
     requireValue(object(entity), `${path}.enemy`);
-    const keys = ['id', 'hp', 'maxHp', 'facing', ...(Object.hasOwn(entity, 'rotatable') ? ['rotatable'] : [])];
+    const keys = ['id', 'hp', 'maxHp', 'cell', 'facing', ...(Object.hasOwn(entity, 'rotatable') ? ['rotatable'] : [])];
     fields(entity, keys, `${path}.enemy`);
+    fields(entity.cell, ['q', 'r'], `${path}.enemy cell`);
+    const enemyCell = entity.cell;
+    try { validateHex(enemyCell); } catch { fail(`malformed ${path}.enemy cell`); }
+    requireValue(ENEMY_CELLS.some(cell => cell.q === enemyCell.q && cell.r === enemyCell.r), `${path}.enemy cell placement`);
     requireValue(id(entity.id) && integer(entity.facing) && entity.facing <= 5
       && (!Object.hasOwn(entity, 'rotatable') || typeof entity.rotatable === 'boolean'), `${path}.enemy identity/facing`);
   }
+  const enemyCells = enemies.map(entity => entity.cell as Hex);
+  requireValue(new Set(enemyCells.map(cell => `${cell.q},${cell.r}`)).size === enemies.length,
+    `${path}.enemy cells distinct`);
   const entities = [...brood, ...enemies];
   for (const entity of entities) requireValue(integer(entity.hp) && integer(entity.maxHp)
     && entity.maxHp > 0 && entity.hp <= entity.maxHp, `${path}.entity HP`);

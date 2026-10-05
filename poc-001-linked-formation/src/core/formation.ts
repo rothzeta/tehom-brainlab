@@ -39,7 +39,7 @@ export function validateFormation(value: unknown): asserts value is Formation {
   }
 }
 
-/** Enumerate all twelve labelled states; Spread cell-set coincidences stay distinct. */
+/** Enumerate all twelve labelled states; coincident cell sets keep their labels. */
 export function formations(): readonly Formation[] {
   const states: Formation[] = [];
   for (const shape of ['compact', 'spread'] as const) {
@@ -50,12 +50,12 @@ export function formations(): readonly Formation[] {
   return states;
 }
 
-/** Stable roster order. Compact: T[2o], T[2o+1], S[o]; Spread: T[2o+{0,4,8}]. */
+/** Stable roster order. Compact: S[o], S[o+2], S[o+4]; Spread: T[2o+{0,4,8}]. */
 export function formationPositions(formation: Formation): readonly Position[] {
   validateFormation(formation);
   const o = formation.orientation;
   const cells = formation.shape === 'compact'
-    ? [RING_TWO[2 * o]!, RING_TWO[2 * o + 1]!, RING_ONE[o]!]
+    ? [RING_ONE[o]!, RING_ONE[(o + 2) % 6]!, RING_ONE[(o + 4) % 6]!]
     : [RING_TWO[2 * o]!, RING_TWO[(2 * o + 4) % 12]!, RING_TWO[(2 * o + 8) % 12]!];
   return ROSTER.map((brood, index) => ({
     brood,

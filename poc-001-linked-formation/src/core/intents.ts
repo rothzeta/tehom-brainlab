@@ -3,13 +3,14 @@ import type { Link, Orientation, Position } from './formation';
 import { hexDistance } from './hex';
 import type { Hex } from './hex';
 import type { GameState } from './state';
-import { frontMask, turnCellsClockwise, validateFacing } from './sectors';
+import { frontCells, turnCellsAboutClockwise, validateFacing } from './sectors';
 
 /** P05 supplies only selector data; enemy HP tuning and intention choice are P08. */
 export interface EnemyState {
   readonly id: string;
   readonly hp: number;
   readonly facing: Orientation;
+  readonly cell: Hex;
 }
 
 /** Compose with P03 state; its opaque intention labels need no breaking change. */
@@ -131,7 +132,7 @@ export interface ProtectionSelection {
   }[];
 }
 
-/** Contact attacks need no enemy adjacency. Protection uses the encounter centre. */
+/** Contact attacks need no enemy adjacency. Protection uses the source enemy's tile. */
 export function selectProtection(
   context: IntentContext,
   attack: { readonly actorId: string; readonly targetId: string; readonly bypassProtection: boolean },
@@ -151,7 +152,7 @@ export function selectProtection(
     const source = context.enemies.find(({ id }) => id === sourceId);
     if (!source) return { sourceId, reason: 'source-missing' };
     if (source.hp <= 0) return { sourceId, reason: 'source-fallen' };
-    return { sourceId, reason: frontMask(source.facing).some((cell) => sameCell(cell, actor.cell))
+    return { sourceId, reason: frontCells(source.cell, source.facing).some((cell) => sameCell(cell, actor.cell))
       ? 'protected' : 'outside-sector' };
   });
   const sourceIds = checks.filter(({ reason }) => reason === 'protected').map(({ sourceId }) => sourceId);
@@ -189,7 +190,7 @@ export function turnEnemy(
     // Five clockwise transforms are exactly one anticlockwise step, with no extra events.
     let cells = intention.cells;
     for (let step = 0; step < (direction === 'clockwise' ? 1 : 5); step += 1) {
-      cells = turnCellsClockwise(cells);
+      cells = turnCellsAboutClockwise(cells, enemy.cell);
     }
     events.push({ type: 'intention-turned', intentionId: intention.id, sourceId: enemy.id,
       beforeCells: intention.cells, afterCells: cells });

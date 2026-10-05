@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import { ABILITIES } from '../content/brood';
 import type { AbilityId } from '../content/brood';
-import { createPatrol, PATROL_VIEW_ANCHOR } from '../content/patrol';
+import { createPatrol } from '../content/patrol';
 import type { PatrolPreset } from '../content/patrol';
-import { boardCells } from '../core/hex';
-import { frontMask } from '../core/sectors';
+import { boardCells, RING_ONE } from '../core/hex';
+import { frontCells } from '../core/sectors';
 import { previewFacts } from '../core/preview';
 import type { PreviewFacts } from '../core/preview';
 import type { Command, GameplayEvent } from '../core/commands';
@@ -15,8 +15,6 @@ import './lab.css';
 import './combat.css';
 
 const PROJECTION = { x: 310, y: 240, spacing: 102 };
-// Presentation offsets only; there are no enemy board coordinates or movement rules.
-const CLUSTER = [{ x: -44, y: -29 }, { x: 44, y: -29 }, { x: 0, y: 37 }];
 const title = (id: string) => id[0]!.toUpperCase() + id.slice(1);
 const hpText = (state: PatrolSession['state']) => [...state.brood, ...state.enemies]
   .map(entity => `${title(entity.id)} ${entity.hp}/${entity.maxHp}`).join(' · ');
@@ -27,20 +25,20 @@ export function createCombatShell(parent: HTMLElement): void {
     <header><div><h1>TEHOM — Patrol</h1><p>Three linked Brood. Inspect intentions, then choose your actions.</p></div><a href="?">Formation lab</a></header>
     <div class="patrol-columns"><section class="board-panel" aria-label="Patrol board">
       <div id="board-stage"><div id="board-canvas"></div><div id="ghosts" aria-hidden="true"></div><div id="tokens"></div></div>
-      <p class="legend">19 cells · ━ Close · ┄ Stretched · red: enemy front / mark · ◌ preview destination</p>
-      <h2 id="battle-status" role="status"></h2><p id="links"></p><p id="shelters"></p>
+      <p class="legend">19 cells · ━ Close · ┄ Stretched · red tint: front · ◯ intention · ➜ facing · ◌ preview</p>
+      <h2 id="battle-status" role="status"></h2>
     </section><aside aria-label="Patrol controls">
       <div class="setup"><label>Start a fresh patrol<select id="preset"><option value="healthy">Healthy</option><option value="wounded-ugallu">Wounded Ugallu</option><option value="wounded-girtablilu">Wounded Girtablilu</option></select></label><button id="reset">Restart patrol</button><button id="export-run">Export attempt (JSON)</button></div>
-      <h2>Enemy intentions — resolution order</h2><ol id="intentions"></ol><p id="protection"></p>
+      <h2>Enemy intentions — resolution order</h2><ol id="intentions"></ol><p id="protection"></p><p id="shelters"></p><p id="links"></p>
       <h2>Player actions</h2><div id="actors"></div><div id="abilities"></div>
       <div id="targets" aria-label="Ability targets"></div><p id="selection"></p>
       <div class="secondary"><button id="confirm">Confirm ability</button><button id="cancel">Cancel (Esc)</button></div>
       <h2>Shared maneuver</h2><div id="maneuvers"></div><p id="allowance"></p>
       <button id="end-phase"></button><p id="feedback" aria-live="polite"></p>
       <label class="placeholder"><input id="placeholder" type="checkbox"> Placeholder mode — labels only</label>
+      <details id="history"><summary>Last action and enemy resolution</summary><ol id="events"></ol></details>
     </aside></div>
     <section id="projection" aria-label="Command preview" aria-live="polite"></section>
-    <details id="history"><summary>Last action and enemy resolution</summary><ol id="events"></ol></details>
     <footer><details><summary>Emblem credits</summary><p>Icons by <a href="http://lorcblog.blogspot.com/">Lorc</a> at <a href="https://game-icons.net">Game-icons.net</a>, <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Backgrounds removed; attribution metadata added. <a href="./tehom/CREDITS.md">Bundled credits</a> · <a href="./tehom/licenses/game-icons-license.txt">License</a>.</p></details></footer>
   </main>`;
 }
@@ -151,13 +149,16 @@ export class CombatScene extends Phaser.Scene {
     for (const [id, button] of this.tokens) {
       const entity = [...state.brood, ...state.enemies].find(entity => entity.id === id)!;
       const position = positions.find(position => position.brood === id);
-      const anchor = projectHex(position?.cell ?? PATROL_VIEW_ANCHOR, PROJECTION);
-      const offset = position ? { x: 0, y: 0 } : CLUSTER[state.enemies.findIndex(enemy => enemy.id === id)]!;
-      button.style.left = `${anchor.x + offset.x}px`; button.style.top = `${anchor.y + offset.y}px`;
+      const enemy = state.enemies.find(enemy => enemy.id === id);
+      const cell = position?.cell ?? enemy!.cell;
+      const anchor = projectHex(cell, PROJECTION);
+      button.style.left = `${anchor.x}px`; button.style.top = `${anchor.y}px`;
+      button.dataset.side = position ? 'brood' : 'enemy';
+      if (enemy) button.dataset.facing = String(enemy.facing);
       button.dataset.hp = String(entity.hp); button.dataset.maxHp = String(entity.maxHp);
-      if (position) { button.dataset.q = String(position.cell.q); button.dataset.r = String(position.cell.r); }
+      button.dataset.q = String(cell.q); button.dataset.r = String(cell.r);
       button.lastElementChild!.textContent = `${title(id)} ${entity.hp}/${entity.maxHp}`;
-      button.setAttribute('aria-label', `${title(id)}, HP ${entity.hp}/${entity.maxHp}`);
+      button.setAttribute('aria-label', `${title(id)}, HP ${entity.hp}/${entity.maxHp}${enemy ? `, facing ${enemy.facing}` : ''}`);
       button.setAttribute('aria-pressed', String(this.actor === id || this.target === id));
       button.dataset.fallen = String(entity.hp <= 0);
     }
@@ -276,11 +277,23 @@ export class CombatScene extends Phaser.Scene {
       }
     }
     for (const enemy of this.session.state.enemies.filter(enemy => enemy.hp > 0)) {
-      for (const cell of frontMask(enemy.facing)) {
+      const hasFront = this.session.state.protections.some(relation => relation.sourceId === enemy.id)
+        || this.session.state.declaredIntentions.some(intention => intention.sourceId === enemy.id && intention.kind === 'fixed-area');
+      if (hasFront) for (const cell of frontCells(enemy.cell, enemy.facing)) {
         const pixel = projectHex(cell, PROJECTION); graphics.fillStyle(0xe88165, .16); graphics.fillCircle(pixel.x, pixel.y, 24);
       }
+      const origin = projectHex(enemy.cell, PROJECTION);
+      const step = RING_ONE[(enemy.facing + 1) % 6]!;
+      const toward = projectHex({ q: enemy.cell.q + step.q, r: enemy.cell.r + step.r }, PROJECTION);
+      const dx = (toward.x - origin.x) / PROJECTION.spacing, dy = (toward.y - origin.y) / PROJECTION.spacing;
+      // Keep the arrow outside the token so its facing remains visible with upright art.
+      const tip = { x: origin.x + dx * 48, y: origin.y + dy * 48 };
+      graphics.lineStyle(3, 0xffb4aa);
+      graphics.lineBetween(origin.x + dx * 35, origin.y + dy * 35, tip.x, tip.y);
+      graphics.lineBetween(tip.x, tip.y, tip.x - dx * 9 - dy * 5, tip.y - dy * 9 + dx * 5);
+      graphics.lineBetween(tip.x, tip.y, tip.x - dx * 9 + dy * 5, tip.y - dy * 9 - dx * 5);
     }
-    for (const threat of facts.threats) for (const cell of threat.cells) {
+    for (const threat of facts.threats) for (const cell of threat.cells.filter(cell => boardCells().some(board => board.q === cell.q && board.r === cell.r))) {
       const pixel = projectHex(cell, PROJECTION); graphics.lineStyle(3, 0xffa58e); graphics.strokeCircle(pixel.x, pixel.y, 32);
     }
   }

@@ -16,9 +16,9 @@ const ringTwo = [
   [-2, 0], [-1, -1], [0, -2], [1, -2], [2, -2], [2, -1],
 ].map(([q, r]) => ({ q: q!, r: r! }));
 const compactCells = [
-  [[2, 0], [1, 1], [1, 0]], [[0, 2], [-1, 2], [0, 1]],
-  [[-2, 2], [-2, 1], [-1, 1]], [[-2, 0], [-1, -1], [-1, 0]],
-  [[0, -2], [1, -2], [0, -1]], [[2, -2], [2, -1], [1, -1]],
+  [[1, 0], [-1, 1], [0, -1]], [[0, 1], [-1, 0], [1, -1]],
+  [[-1, 1], [0, -1], [1, 0]], [[-1, 0], [1, -1], [0, 1]],
+  [[0, -1], [1, 0], [-1, 1]], [[1, -1], [0, 1], [-1, 0]],
 ].map((cells) => cells.map(([q, r]) => ({ q: q!, r: r! })));
 const roster = ['ugallu', 'girtablilu', 'pazuzu'];
 const states: Formation[] = (['compact', 'spread'] as const).flatMap((shape) =>
@@ -71,11 +71,11 @@ test('CT: T contains twelve frozen radius-two cells in clockwise order', () => {
   }
 });
 
-test('CT: every Compact pair is adjacent in all six orientations', () => {
+test('CT: every Compact pair is at distance 2 in all six orientations', () => {
   for (const orientation of [0, 1, 2, 3, 4, 5] as const) {
     const cells = formationPositions({ shape: 'compact', orientation }).map(({ cell }) => cell);
     for (const [a, b] of [[0, 1], [0, 2], [1, 2]] as const) {
-      expect(hexDistance(cells[a]!, cells[b]!)).toBe(1);
+      expect(hexDistance(cells[a]!, cells[b]!)).toBe(2);
     }
   }
 });
@@ -121,7 +121,7 @@ for (const state of states) {
       expect(positions.map(({ brood }) => brood)).toEqual(roster);
       expect(new Set(positions.map(({ cell }) => cellKey(cell))).size).toBe(3);
       expect(positions.map(({ cell }) => hexDistance(cell, { q: 0, r: 0 })))
-        .toEqual(state.shape === 'compact' ? [2, 2, 1] : [2, 2, 2]);
+        .toEqual(state.shape === 'compact' ? [1, 1, 1] : [2, 2, 2]);
     });
 
     test('C3: both inverse rotations and six turns restore serialized positions, including wraparound', () => {
@@ -169,7 +169,7 @@ for (const state of states) {
       expect(links.map(({ from, to }) => [from, to])).toEqual([
         [positions[0], positions[1]], [positions[0], positions[2]], [positions[1], positions[2]],
       ]);
-      expect(links.map(({ distance }) => distance)).toEqual(state.shape === 'compact' ? [1, 1, 1] : [4, 4, 4]);
+      expect(links.map(({ distance }) => distance)).toEqual(state.shape === 'compact' ? [2, 2, 2] : [4, 4, 4]);
       expect(links.every(({ distance }) => Number.isInteger(distance))).toBe(true);
       expect(links.map(({ state: linkState }) => linkState)).toEqual(
         Array(3).fill(state.shape === 'compact' ? 'close' : 'stretched'));
@@ -192,8 +192,8 @@ for (const state of states) {
 test('Close uses an inclusive configurable threshold without changing geometry', () => {
   expect.assertions(4);
   const compact: Formation = { shape: 'compact', orientation: 0 };
-  expect(formationLinks(compact, 1).map(({ state }) => state)).toEqual(['close', 'close', 'close']);
-  expect(formationLinks(compact, 0).map(({ state }) => state)).toEqual(['stretched', 'stretched', 'stretched']);
+  expect(formationLinks(compact, 2).map(({ state }) => state)).toEqual(['close', 'close', 'close']);
+  expect(formationLinks(compact, 1).map(({ state }) => state)).toEqual(['stretched', 'stretched', 'stretched']);
   expect(formationLinks({ shape: 'spread', orientation: 0 }, 3).map(({ state }) => state))
     .toEqual(['stretched', 'stretched', 'stretched']);
   expect(formationLinks({ shape: 'spread', orientation: 0 }, 4).map(({ state }) => state))

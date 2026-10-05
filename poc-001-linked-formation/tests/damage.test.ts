@@ -22,8 +22,8 @@ function fixture(overrides: Partial<CombatState> = {}): CombatState {
   return freeze({
     ...createInitialState(),
     brood: createInitialState().brood.map((entity) => ({ ...entity, hp: 10, maxHp: 10 })),
-    enemies: [{ id: 'warder', hp: 10, maxHp: 10, facing: 0 },
-      { id: 'censer', hp: 10, maxHp: 10, facing: 3 }],
+    enemies: [{ id: 'warder', hp: 10, maxHp: 10, cell: { q: 0, r: 0 }, facing: 0 },
+      { id: 'censer', hp: 10, maxHp: 10, cell: { q: 0, r: 0 }, facing: 3 }],
     declaredIntentions: [], protections: [], shelters: [], resolvedAttackIds: [],
     ...overrides,
   });
@@ -267,7 +267,7 @@ test('C3/AC5: a dead Warder cancels its areas/marks and protection without alter
 test.each(['victory', 'defeat'] as const)('C3/AC6: final death yields %s and subsequent commands are atomic rejections', (outcome) => {
   const base = fixture();
   const state = fixture(outcome === 'victory'
-    ? { enemies: [{ id: 'last', hp: 2, maxHp: 10, facing: 0 }] }
+    ? { enemies: [{ id: 'last', hp: 2, maxHp: 10, cell: { q: 0, r: 0 }, facing: 0 }] }
     : { brood: base.brood.map((entity) => ({ ...entity, hp: entity.id === 'ugallu' ? 2 : 0 })) });
   const attack = packet(outcome === 'victory' ? { sourceId: 'ugallu', recipientIds: ['last'], rawDamage: 9 }
     : { rawDamage: 9 });
@@ -294,7 +294,7 @@ test.each(['victory', 'defeat'] as const)('C3/AC6: final death yields %s and sub
 test('C3/AC6: simultaneous all-dead batch chooses defeat before victory', () => {
   const base = fixture();
   const state = fixture({ brood: base.brood.map((entity) => ({ ...entity, hp: 2 })),
-    enemies: [{ id: 'last', hp: 2, maxHp: 10, facing: 0 }] });
+    enemies: [{ id: 'last', hp: 2, maxHp: 10, cell: { q: 0, r: 0 }, facing: 0 }] });
   const result = accepted(applyAttack(state, packet({ sourceId: 'last',
     recipientIds: ['last', 'ugallu', 'girtablilu', 'pazuzu'], rawDamage: 9 }), rules));
   expect([...result.state.brood, ...result.state.enemies].every(({ hp }) => hp === 0)).toBe(true);

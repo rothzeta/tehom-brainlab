@@ -1,7 +1,8 @@
 import { afterAll, afterEach, expect, test } from 'vitest';
 import { createPatrol, createHealthyPatrol, createWoundedUgalluPatrol, createWoundedGirtabliluPatrol,
-  DEFAULT_PATROL_RULES, PATROL_HP, PATROL_ORDER, PATROL_VIEW_ANCHOR, WOUNDED_HP } from '../src/content/patrol';
+  DEFAULT_PATROL_RULES, PATROL_HP, PATROL_ORDER, PATROL_LAYOUT, WOUNDED_HP } from '../src/content/patrol';
 import type { PatrolPreset, PatrolRules, PatrolState } from '../src/content/patrol';
+import { ENEMY_CELLS } from '../src/core/hex';
 import { applyAbility } from '../src/core/abilities';
 import type { AbilityRules } from '../src/core/abilities';
 import type { Command, CommandResult, ErrorCode } from '../src/core/commands';
@@ -71,13 +72,19 @@ test.each<PatrolPreset>(['healthy', 'wounded-ugallu', 'wounded-girtablilu'])('AC
   for (const enemy of state.enemies) {
     expect(enemy.hp).toBe(PATROL_HP[enemy.id as 'warder' | 'censer' | 'harrier']);
     expect(enemy.hp).toBe(enemy.maxHp);
-    expect(enemy).not.toHaveProperty('cell');
+    expect({ cell: enemy.cell, facing: enemy.facing }).toEqual(PATROL_LAYOUT[enemy.id as keyof typeof PATROL_LAYOUT]);
+    expect(ENEMY_CELLS).toContainEqual(enemy.cell);
     expect(enemy).not.toHaveProperty('position');
   }
   expect(state.patrolRules).not.toBe(another.patrolRules);
   expect(state.patrolRules.damageRules).not.toBe(another.patrolRules.damageRules);
   expect(state.declaredIntentions).not.toBe(another.declaredIntentions);
-  expect(PATROL_VIEW_ANCHOR).toEqual({ q: 0, r: 0 });
+  expect(state.enemies.map(({ id, cell, facing }) => ({ id, cell, facing }))).toEqual([
+    { id: 'warder', cell: { q: 1, r: -2 }, facing: 0 },
+    { id: 'censer', cell: { q: -2, r: 1 }, facing: 4 },
+    { id: 'harrier', cell: { q: 1, r: 1 }, facing: 2 },
+  ]);
+  expect(new Set(state.enemies.map(({ cell }) => `${cell.q},${cell.r}`)).size).toBe(state.enemies.length);
 });
 test('AC1: named factories differ only in the designated HP and consequent mark', () => {
   const healthy = createHealthyPatrol();

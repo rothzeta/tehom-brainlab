@@ -80,7 +80,8 @@ try {
   const snapshot = () => evaluate(`(()=>({revision:Number(document.querySelector('#patrol').dataset.revision),phase:document.querySelector('#patrol').dataset.phase,
     round:Number(document.querySelector('#patrol').dataset.round),busy:document.querySelector('#patrol').dataset.busy==='true',
     hp:[...document.querySelectorAll('[data-entity]')].map(e=>({id:e.dataset.entity,hp:Number(e.dataset.hp),maxHp:Number(e.dataset.maxHp)})),
-    positions:[...document.querySelectorAll('[data-entity][data-q]')].map(e=>({brood:e.dataset.entity,cell:{q:Number(e.dataset.q),r:Number(e.dataset.r)}})),
+    positions:[...document.querySelectorAll('[data-side="brood"][data-q]')].map(e=>({brood:e.dataset.entity,cell:{q:Number(e.dataset.q),r:Number(e.dataset.r)}})),
+    enemies:[...document.querySelectorAll('[data-side="enemy"]')].map(e=>({id:e.dataset.entity,cell:{q:Number(e.dataset.q),r:Number(e.dataset.r)},facing:Number(e.dataset.facing),x:parseFloat(e.style.left),y:parseFloat(e.style.top)})),
     ghosts:[...document.querySelectorAll('.ghost')].map(e=>({brood:e.dataset.brood,cell:{q:Number(e.dataset.q),r:Number(e.dataset.r)}})),
     projection:document.querySelector('#projection').textContent,links:document.querySelector('#links').textContent,shelters:document.querySelector('#shelters').textContent,
     selection:document.querySelector('#selection').textContent,protection:document.querySelector('#protection').textContent,feedback:document.querySelector('#feedback').textContent,
@@ -91,6 +92,10 @@ try {
     equal(actual.hp,[...expected.brood,...expected.enemies].map(({id,hp,maxHp})=>({id,hp,maxHp})),`${label}: HP`);
     equal(actual.revision,expected.revision,`${label}: revision`); equal(actual.phase,expected.phase,`${label}: phase`); equal(actual.round,expected.round,`${label}: round`);
     equal(actual.positions,formationPositions(expected.formation),`${label}: positions`);
+    equal(actual.enemies.map(({id,cell,facing})=>({id,cell,facing})),expected.enemies.map(({id,cell,facing})=>({id,cell,facing})),`${label}: enemy core tiles and facings`);
+    for(const enemy of actual.enemies) {
+      check(Math.abs(enemy.x-(310+102*(enemy.cell.q+enemy.cell.r/2)))<0.01 && Math.abs(enemy.y-(240+102*Math.sqrt(3)*enemy.cell.r/2))<0.01,`${label}: token on projected enemy tile`);
+    }
   }
   async function capture(name) {
     await evaluate('window.scrollTo(0,0)'); await pause(30);
@@ -113,6 +118,10 @@ try {
       check(actual.projection.includes(`Destination links: ${projection.after.links.map(link=>`${link.from.brood} ↔ ${link.to.brood} ${link.state}`).join('; ')}.`),'preview links equal P09');
       check(actual.projection.includes(`Shelter: ${projection.after.shelters.map(entry=>`${entry.sourceId} → ${entry.targetId}: ${entry.eligible?'eligible':'Close link lost'}`).join('; ')||'none'}.`),'preview Shelter eligibility equal P09');
       check(actual.projection.includes(`Threats: ${projection.after.threats.map(entry=>`${entry.intention.sourceId}: ${entry.intention.kind==='fixed-area'?'fixed cells':'follows creature'} ${entry.cells.map(cell=>`(${cell.q},${cell.r})`).join(',')} → ${entry.recipientIds.join(',')||entry.reason}`).join('; ')}.`),'all projected recipients and anchors equal P09');
+    }
+    if(command.kind==='endPhase') {
+      check(!actual.projection.includes('If end phase now'),'B2: no further-phase line');
+      equal(actual.projection.match(/Immediate:/g)?.length,1,'B2: one immediate resolution');
     }
     if (expected.forecast.kind==='transition' && expected.forecast.ok) check(actual.projection.includes(`If end phase now: ${hpText(expected.forecast.state)} · ${expected.forecast.state.phase}. Remaining player choices are excluded.`),'conditional forecast equals P09');
     return expected;
@@ -260,13 +269,22 @@ try {
       for (const entity of [...state.brood,...state.enemies]) {
         const selector=`[data-entity="${entity.id}"]`,position=await point(selector);
         const hit=await evaluate(`document.elementFromPoint(${position.x},${position.y})?.closest('[data-entity]')?.dataset.entity`);
-        equal(hit,entity.id,'centre cluster and all Brood pointer hit-test separately');
+        equal(hit,entity.id,'enemy tiles and all Brood pointer hit-test separately');
         await click(selector);
         check((await evaluate(`document.querySelector(${JSON.stringify(selector)}).getAttribute('aria-pressed')`))==='true','token pointer selects identity');
         const bounds=await evaluate(`(()=>{const r=document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};})()`);
         check(bounds.left>=0&&bounds.right<=1280&&bounds.top>=0&&bounds.bottom<=800,'token fits desktop viewport');
       }
       await click('#reset'); if(mode==='normal') await capture(`${preset}-start.png`); else if(preset==='healthy') await capture('placeholder.png');
+      check(await evaluate(`document.documentElement.scrollWidth<=1280&&document.documentElement.scrollHeight<=800`),'Compact layout fits without scrolling');
+      const expanded=await play({kind:'maneuver',maneuver:'expand',expectedRevision:0},state);
+      for(const entity of [...expanded.brood,...expanded.enemies]) {
+        const position=await point(`[data-entity="${entity.id}"]`);
+        equal(await evaluate(`document.elementFromPoint(${position.x},${position.y})?.closest('[data-entity]')?.dataset.entity`),entity.id,'Spread token pointer hit-tests separately');
+      }
+      check(await evaluate(`document.documentElement.scrollWidth<=1280&&document.documentElement.scrollHeight<=800`),'Spread layout fits without scrolling');
+      if(mode==='normal') await capture(`${preset}-spread.png`);
+      await click('#reset');
       evidence.push({mode,preset,initial:actual});
     }
     await choosePreset('healthy'); await click('#reset');
@@ -353,6 +371,31 @@ try {
     equal((await snapshot()).positions,before.positions,'drag does not move a Brood');
     equal(await evaluate(`[...document.querySelectorAll('#maneuvers button')].map(e=>e.dataset.maneuver)`),['clockwise','anticlockwise','expand','contract'],'only four shared maneuvers');
   }
+  // Native bug reproductions use historical commands with an independently owned encounter.
+  await navigate(); await loadFixture('rf-fixture.ts','rf-bugs');
+  let bugState=createPatrol('healthy',{warderDamage:3,censerDamage:3,harrierDamage:4,
+    isolatedHarrierDamage:7,splashRadius:2,closeThreshold:2,
+    damageRules:{directionalReduction:2,shelterReduction:2,closeThreshold:2}});
+  bugState={...bugState,brood:bugState.brood.map(entity=>({...entity,hp:100,maxHp:100})),
+    enemies:bugState.enemies.map(entity=>({...entity,hp:100,maxHp:100}))};
+  for(const [actorId,abilityId] of [['ugallu','claw'],['girtablilu','sting'],['pazuzu','gale']]) {
+    bugState=await play({kind:'useAbility',actorId,abilityId,targetId:'warder',expectedRevision:bugState.revision},bugState);
+  }
+  await previewMatches(bugState,{kind:'endPhase',expectedRevision:bugState.revision},'#end-phase');
+  await capture('end-phase-preview.png');
+  bugState=await play({kind:'endPhase',expectedRevision:bugState.revision},bugState);
+  regressions.push({case:'B2 scout-1 commands 1-3; B3 all acted',actual:await snapshot()});
+  await click('#reset');
+  bugState={...createPatrol('healthy',bugState.patrolRules),
+    brood:bugState.brood.map(entity=>({...entity,hp:100,maxHp:100})),
+    enemies:bugState.enemies.map(entity=>({...entity,hp:100,maxHp:100}))};
+  bugState=await play({kind:'maneuver',maneuver:'expand',expectedRevision:0},bugState);
+  for(const [actorId,abilityId] of [['ugallu','claw'],['girtablilu','impale'],['pazuzu','gale']]) {
+    bugState=await play({kind:'useAbility',actorId,abilityId,targetId:'harrier',expectedRevision:bugState.revision},bugState);
+  }
+  bugState=await play({kind:'endPhase',expectedRevision:bugState.revision},bugState);
+  regressions.push({case:'B3 scout-3 Expand then three attacks',actual:await snapshot()});
+  await cdp('Fetch.disable');
   // Isolated compiled entry gives this view explicit test-owned fixed and following declarations.
   // Fetch interception supplies the test page only, never mutates production state or dispatches gameplay.
   await navigate();
@@ -371,7 +414,7 @@ try {
   await capture('fixed-area.png'); await cdp('Fetch.disable');
   equal(exceptions,[],'no application-origin uncaught errors'); equal(failures,[],'no failed network requests');
   await writeFile(join(output,'browser.json'),JSON.stringify({ok:true,assertions,version,viewport:{width:1280,height:800},traces,regressions,evidence,exceptions,failures,requests},null,2)+'\n');
-  console.log(JSON.stringify({ok:true,assertions,traces:traces.length,commands:traces.reduce((sum,trace)=>sum+trace.commands,0),screenshots:7,exceptions:exceptions.length,failures:failures.length,output}));
+  console.log(JSON.stringify({ok:true,assertions,traces:traces.length,commands:traces.reduce((sum,trace)=>sum+trace.commands,0),screenshots:11,exceptions:exceptions.length,failures:failures.length,output}));
 } finally {
   socket?.close(); chrome.kill('SIGTERM');
   await new Promise(done=>{if(chrome.exitCode!==null)done();else chrome.once('exit',done);});
