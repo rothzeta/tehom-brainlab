@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**P11. Draft; not implemented or verified.** Depends on [P10](2026-10-02-e7c77542-poc-001-playable-patrol.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
+**P11. Implemented, independently reviewed (no findings), accepted, locally delivered. Boss gate: HOLD because no human playtest attempts are recorded.** [Implementation](../mailbox/p11-reproducible-playtests/implementer.md), [independent review](../mailbox/p11-reproducible-playtests/reviewer.md), [automated evidence and HOLD gate](../playtests/2026-10-05-poc-001-p11-automated.md). Depends on [P10](2026-10-02-e7c77542-poc-001-playable-patrol.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 Authority: [existing playtest template](../../docs/playtests/TEMPLATE.md), [brief Acceptance questions and Implementation order](../../docs/prototypes/poc-001-linked-formation.md), and [direction ADR Promotion rule](../adr/0004-repository-and-poc-direction.md). The export format and explicit boss gate are proposed implementation details. The [index](README.md) records local ADR authority and draft status.
 
