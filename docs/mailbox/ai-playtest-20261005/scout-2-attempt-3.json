@@ -1,0 +1,1372 @@
+{
+  "recordVersion": 1,
+  "prototypeId": "poc-001-linked-formation",
+  "buildRevision": "552f2b11b1f52a9826de618b30a5e043c2a6bf21",
+  "rulesVersion": "poc-001-rules-v1/patrol-v1/p07-v1",
+  "fixtureId": "healthy",
+  "configuration": {
+    "patrolRules": {
+      "warderDamage": 3,
+      "censerDamage": 3,
+      "harrierDamage": 4,
+      "isolatedHarrierDamage": 7,
+      "splashRadius": 2,
+      "closeThreshold": 2,
+      "damageRules": {
+        "directionalReduction": 2,
+        "shelterReduction": 2,
+        "closeThreshold": 2
+      }
+    },
+    "abilityRules": {
+      "clawDamage": 4,
+      "stingDamage": 4,
+      "impaleDamage": 6,
+      "galeDamage": 3,
+      "damageRules": {
+        "directionalReduction": 2,
+        "shelterReduction": 2,
+        "closeThreshold": 2
+      }
+    }
+  },
+  "initialState": {
+    "revision": 0,
+    "round": 1,
+    "phase": "player",
+    "formation": {
+      "shape": "compact",
+      "orientation": 0
+    },
+    "brood": [
+      {
+        "id": "ugallu",
+        "brood": "ugallu",
+        "owner": "player",
+        "hp": 18,
+        "maxHp": 18,
+        "statuses": []
+      },
+      {
+        "id": "girtablilu",
+        "brood": "girtablilu",
+        "owner": "player",
+        "hp": 14,
+        "maxHp": 14,
+        "statuses": []
+      },
+      {
+        "id": "pazuzu",
+        "brood": "pazuzu",
+        "owner": "player",
+        "hp": 14,
+        "maxHp": 14,
+        "statuses": []
+      }
+    ],
+    "actedIds": [],
+    "maneuverUsed": false,
+    "intentions": [
+      "patrol:1:warder",
+      "patrol:1:censer",
+      "patrol:1:harrier"
+    ],
+    "patrolVersion": "patrol-v1",
+    "patrolRules": {
+      "warderDamage": 3,
+      "censerDamage": 3,
+      "harrierDamage": 4,
+      "isolatedHarrierDamage": 7,
+      "splashRadius": 2,
+      "closeThreshold": 2,
+      "damageRules": {
+        "directionalReduction": 2,
+        "shelterReduction": 2,
+        "closeThreshold": 2
+      }
+    },
+    "enemies": [
+      {
+        "id": "warder",
+        "hp": 12,
+        "maxHp": 12,
+        "facing": 0,
+        "rotatable": true
+      },
+      {
+        "id": "censer",
+        "hp": 10,
+        "maxHp": 10,
+        "facing": 0,
+        "rotatable": false
+      },
+      {
+        "id": "harrier",
+        "hp": 13,
+        "maxHp": 13,
+        "facing": 0,
+        "rotatable": false
+      }
+    ],
+    "protections": [
+      {
+        "sourceId": "warder",
+        "targetId": "censer"
+      }
+    ],
+    "shelters": [],
+    "resolvedAttackIds": [],
+    "declaredIntentions": [
+      {
+        "id": "patrol:1:warder",
+        "sourceId": "warder",
+        "kind": "marked-hit",
+        "targetId": "ugallu"
+      },
+      {
+        "id": "patrol:1:censer",
+        "sourceId": "censer",
+        "kind": "marked-splash",
+        "targetId": "girtablilu"
+      },
+      {
+        "id": "patrol:1:harrier",
+        "sourceId": "harrier",
+        "kind": "marked-hit",
+        "targetId": "ugallu"
+      }
+    ]
+  },
+  "acceptedCommands": [
+    {
+      "command": {
+        "kind": "useAbility",
+        "expectedRevision": 0,
+        "actorId": "pazuzu",
+        "abilityId": "crosswind",
+        "targetId": "warder",
+        "direction": "clockwise"
+      },
+      "revision": 1,
+      "events": [
+        {
+          "type": "action-applied",
+          "actorId": "pazuzu",
+          "abilityId": "crosswind",
+          "targetId": "warder",
+          "revision": 1
+        },
+        {
+          "type": "facing-changed",
+          "sourceId": "warder",
+          "before": 0,
+          "after": 1
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "useAbility",
+        "expectedRevision": 1,
+        "actorId": "girtablilu",
+        "abilityId": "sting",
+        "targetId": "censer"
+      },
+      "revision": 2,
+      "events": [
+        {
+          "type": "action-applied",
+          "actorId": "girtablilu",
+          "abilityId": "sting",
+          "targetId": "censer",
+          "revision": 2
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "ability:[1,\"girtablilu\",\"sting\"]",
+          "sourceId": "girtablilu",
+          "revision": 2
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "ability:[1,\"girtablilu\",\"sting\"]",
+          "targetId": "censer",
+          "rawDamage": 4,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 4,
+          "hpBefore": 10,
+          "hpAfter": 6
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "useAbility",
+        "expectedRevision": 2,
+        "actorId": "ugallu",
+        "abilityId": "shelter",
+        "targetId": "girtablilu"
+      },
+      "revision": 3,
+      "events": [
+        {
+          "type": "action-applied",
+          "actorId": "ugallu",
+          "abilityId": "shelter",
+          "targetId": "girtablilu",
+          "revision": 3
+        },
+        {
+          "type": "shelter-installed",
+          "shelterId": "ability:[2,\"ugallu\",\"shelter\"]",
+          "sourceId": "ugallu",
+          "targetId": "girtablilu"
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "endPhase",
+        "expectedRevision": 3
+      },
+      "revision": 4,
+      "events": [
+        {
+          "type": "enemy-phase-started",
+          "round": 1
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "patrol:1:warder",
+          "sourceId": "warder",
+          "revision": 4
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "patrol:1:warder",
+          "targetId": "ugallu",
+          "rawDamage": 3,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 3,
+          "hpBefore": 18,
+          "hpAfter": 15
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "patrol:1:censer",
+          "sourceId": "censer",
+          "revision": 4
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "patrol:1:censer",
+          "targetId": "girtablilu",
+          "rawDamage": 3,
+          "directionalReduction": 0,
+          "shelterReduction": 2,
+          "damage": 1,
+          "hpBefore": 14,
+          "hpAfter": 13
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "patrol:1:censer",
+          "targetId": "pazuzu",
+          "rawDamage": 3,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 3,
+          "hpBefore": 14,
+          "hpAfter": 11
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "patrol:1:censer",
+          "targetId": "ugallu",
+          "rawDamage": 3,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 3,
+          "hpBefore": 15,
+          "hpAfter": 12
+        },
+        {
+          "type": "shelter-consumed",
+          "shelterId": "ability:[2,\"ugallu\",\"shelter\"]",
+          "targetId": "girtablilu",
+          "eligible": true
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "patrol:1:harrier",
+          "sourceId": "harrier",
+          "revision": 4
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "patrol:1:harrier",
+          "targetId": "ugallu",
+          "rawDamage": 4,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 4,
+          "hpBefore": 12,
+          "hpAfter": 8
+        },
+        {
+          "type": "enemy-phase-ended",
+          "round": 1
+        },
+        {
+          "type": "round-started",
+          "round": 2
+        },
+        {
+          "type": "intentions-announced",
+          "round": 2,
+          "intentions": [
+            {
+              "id": "patrol:2:warder",
+              "sourceId": "warder",
+              "kind": "marked-hit",
+              "targetId": "ugallu"
+            },
+            {
+              "id": "patrol:2:censer",
+              "sourceId": "censer",
+              "kind": "marked-splash",
+              "targetId": "pazuzu"
+            },
+            {
+              "id": "patrol:2:harrier",
+              "sourceId": "harrier",
+              "kind": "marked-hit",
+              "targetId": "ugallu"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "maneuver",
+        "expectedRevision": 4,
+        "maneuver": "expand"
+      },
+      "revision": 5,
+      "events": [
+        {
+          "type": "maneuver-applied",
+          "maneuver": "expand",
+          "formation": {
+            "shape": "spread",
+            "orientation": 0
+          },
+          "revision": 5
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "useAbility",
+        "expectedRevision": 5,
+        "actorId": "girtablilu",
+        "abilityId": "impale",
+        "targetId": "harrier"
+      },
+      "revision": 6,
+      "events": [
+        {
+          "type": "action-applied",
+          "actorId": "girtablilu",
+          "abilityId": "impale",
+          "targetId": "harrier",
+          "revision": 6
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "ability:[5,\"girtablilu\",\"impale\"]",
+          "sourceId": "girtablilu",
+          "revision": 6
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "ability:[5,\"girtablilu\",\"impale\"]",
+          "targetId": "harrier",
+          "rawDamage": 6,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 6,
+          "hpBefore": 13,
+          "hpAfter": 7
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "useAbility",
+        "expectedRevision": 6,
+        "actorId": "ugallu",
+        "abilityId": "claw",
+        "targetId": "harrier"
+      },
+      "revision": 7,
+      "events": [
+        {
+          "type": "action-applied",
+          "actorId": "ugallu",
+          "abilityId": "claw",
+          "targetId": "harrier",
+          "revision": 7
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "ability:[6,\"ugallu\",\"claw\"]",
+          "sourceId": "ugallu",
+          "revision": 7
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "ability:[6,\"ugallu\",\"claw\"]",
+          "targetId": "harrier",
+          "rawDamage": 4,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 4,
+          "hpBefore": 7,
+          "hpAfter": 3
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "useAbility",
+        "expectedRevision": 7,
+        "actorId": "pazuzu",
+        "abilityId": "gale",
+        "targetId": "harrier"
+      },
+      "revision": 8,
+      "events": [
+        {
+          "type": "action-applied",
+          "actorId": "pazuzu",
+          "abilityId": "gale",
+          "targetId": "harrier",
+          "revision": 8
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "ability:[7,\"pazuzu\",\"gale\"]",
+          "sourceId": "pazuzu",
+          "revision": 8
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "ability:[7,\"pazuzu\",\"gale\"]",
+          "targetId": "harrier",
+          "rawDamage": 3,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 3,
+          "hpBefore": 3,
+          "hpAfter": 0
+        },
+        {
+          "type": "fallen",
+          "entityId": "harrier",
+          "owner": "enemy"
+        },
+        {
+          "type": "intention-cancelled",
+          "intentionId": "patrol:2:harrier",
+          "reason": "source-fallen"
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "endPhase",
+        "expectedRevision": 8
+      },
+      "revision": 9,
+      "events": [
+        {
+          "type": "enemy-phase-started",
+          "round": 2
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "patrol:2:warder",
+          "sourceId": "warder",
+          "revision": 9
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "patrol:2:warder",
+          "targetId": "ugallu",
+          "rawDamage": 3,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 3,
+          "hpBefore": 8,
+          "hpAfter": 5
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "patrol:2:censer",
+          "sourceId": "censer",
+          "revision": 9
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "patrol:2:censer",
+          "targetId": "pazuzu",
+          "rawDamage": 3,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 3,
+          "hpBefore": 11,
+          "hpAfter": 8
+        },
+        {
+          "type": "enemy-phase-ended",
+          "round": 2
+        },
+        {
+          "type": "round-started",
+          "round": 3
+        },
+        {
+          "type": "intentions-announced",
+          "round": 3,
+          "intentions": [
+            {
+              "id": "patrol:3:warder",
+              "sourceId": "warder",
+              "kind": "marked-hit",
+              "targetId": "ugallu"
+            },
+            {
+              "id": "patrol:3:censer",
+              "sourceId": "censer",
+              "kind": "marked-splash",
+              "targetId": "ugallu"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "useAbility",
+        "expectedRevision": 9,
+        "actorId": "girtablilu",
+        "abilityId": "impale",
+        "targetId": "censer"
+      },
+      "revision": 10,
+      "events": [
+        {
+          "type": "action-applied",
+          "actorId": "girtablilu",
+          "abilityId": "impale",
+          "targetId": "censer",
+          "revision": 10
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "ability:[9,\"girtablilu\",\"impale\"]",
+          "sourceId": "girtablilu",
+          "revision": 10
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "ability:[9,\"girtablilu\",\"impale\"]",
+          "targetId": "censer",
+          "rawDamage": 6,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 6,
+          "hpBefore": 6,
+          "hpAfter": 0
+        },
+        {
+          "type": "fallen",
+          "entityId": "censer",
+          "owner": "enemy"
+        },
+        {
+          "type": "protection-removed",
+          "sourceId": "warder",
+          "targetId": "censer"
+        },
+        {
+          "type": "intention-cancelled",
+          "intentionId": "patrol:3:censer",
+          "reason": "source-fallen"
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "useAbility",
+        "expectedRevision": 10,
+        "actorId": "ugallu",
+        "abilityId": "claw",
+        "targetId": "warder"
+      },
+      "revision": 11,
+      "events": [
+        {
+          "type": "action-applied",
+          "actorId": "ugallu",
+          "abilityId": "claw",
+          "targetId": "warder",
+          "revision": 11
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "ability:[10,\"ugallu\",\"claw\"]",
+          "sourceId": "ugallu",
+          "revision": 11
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "ability:[10,\"ugallu\",\"claw\"]",
+          "targetId": "warder",
+          "rawDamage": 4,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 4,
+          "hpBefore": 12,
+          "hpAfter": 8
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "useAbility",
+        "expectedRevision": 11,
+        "actorId": "pazuzu",
+        "abilityId": "gale",
+        "targetId": "warder"
+      },
+      "revision": 12,
+      "events": [
+        {
+          "type": "action-applied",
+          "actorId": "pazuzu",
+          "abilityId": "gale",
+          "targetId": "warder",
+          "revision": 12
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "ability:[11,\"pazuzu\",\"gale\"]",
+          "sourceId": "pazuzu",
+          "revision": 12
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "ability:[11,\"pazuzu\",\"gale\"]",
+          "targetId": "warder",
+          "rawDamage": 3,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 3,
+          "hpBefore": 8,
+          "hpAfter": 5
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "endPhase",
+        "expectedRevision": 12
+      },
+      "revision": 13,
+      "events": [
+        {
+          "type": "enemy-phase-started",
+          "round": 3
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "patrol:3:warder",
+          "sourceId": "warder",
+          "revision": 13
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "patrol:3:warder",
+          "targetId": "ugallu",
+          "rawDamage": 3,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 3,
+          "hpBefore": 5,
+          "hpAfter": 2
+        },
+        {
+          "type": "enemy-phase-ended",
+          "round": 3
+        },
+        {
+          "type": "round-started",
+          "round": 4
+        },
+        {
+          "type": "intentions-announced",
+          "round": 4,
+          "intentions": [
+            {
+              "id": "patrol:4:warder",
+              "sourceId": "warder",
+              "kind": "marked-hit",
+              "targetId": "ugallu"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "useAbility",
+        "expectedRevision": 13,
+        "actorId": "girtablilu",
+        "abilityId": "impale",
+        "targetId": "warder"
+      },
+      "revision": 14,
+      "events": [
+        {
+          "type": "action-applied",
+          "actorId": "girtablilu",
+          "abilityId": "impale",
+          "targetId": "warder",
+          "revision": 14
+        },
+        {
+          "type": "attack-settled",
+          "eventId": "ability:[13,\"girtablilu\",\"impale\"]",
+          "sourceId": "girtablilu",
+          "revision": 14
+        },
+        {
+          "type": "damage-applied",
+          "eventId": "ability:[13,\"girtablilu\",\"impale\"]",
+          "targetId": "warder",
+          "rawDamage": 6,
+          "directionalReduction": 0,
+          "shelterReduction": 0,
+          "damage": 6,
+          "hpBefore": 5,
+          "hpAfter": 0
+        },
+        {
+          "type": "fallen",
+          "entityId": "warder",
+          "owner": "enemy"
+        },
+        {
+          "type": "intention-cancelled",
+          "intentionId": "patrol:4:warder",
+          "reason": "source-fallen"
+        },
+        {
+          "type": "combat-ended",
+          "outcome": "victory"
+        }
+      ]
+    }
+  ],
+  "finalState": {
+    "revision": 14,
+    "round": 4,
+    "phase": "victory",
+    "formation": {
+      "shape": "spread",
+      "orientation": 0
+    },
+    "brood": [
+      {
+        "id": "ugallu",
+        "brood": "ugallu",
+        "owner": "player",
+        "hp": 2,
+        "maxHp": 18,
+        "statuses": []
+      },
+      {
+        "id": "girtablilu",
+        "brood": "girtablilu",
+        "owner": "player",
+        "hp": 13,
+        "maxHp": 14,
+        "statuses": []
+      },
+      {
+        "id": "pazuzu",
+        "brood": "pazuzu",
+        "owner": "player",
+        "hp": 8,
+        "maxHp": 14,
+        "statuses": []
+      }
+    ],
+    "actedIds": [
+      "girtablilu"
+    ],
+    "maneuverUsed": false,
+    "intentions": [
+      "patrol:4:warder"
+    ],
+    "patrolVersion": "patrol-v1",
+    "patrolRules": {
+      "warderDamage": 3,
+      "censerDamage": 3,
+      "harrierDamage": 4,
+      "isolatedHarrierDamage": 7,
+      "splashRadius": 2,
+      "closeThreshold": 2,
+      "damageRules": {
+        "directionalReduction": 2,
+        "shelterReduction": 2,
+        "closeThreshold": 2
+      }
+    },
+    "enemies": [
+      {
+        "id": "warder",
+        "hp": 0,
+        "maxHp": 12,
+        "facing": 1,
+        "rotatable": true
+      },
+      {
+        "id": "censer",
+        "hp": 0,
+        "maxHp": 10,
+        "facing": 0,
+        "rotatable": false
+      },
+      {
+        "id": "harrier",
+        "hp": 0,
+        "maxHp": 13,
+        "facing": 0,
+        "rotatable": false
+      }
+    ],
+    "protections": [],
+    "shelters": [],
+    "resolvedAttackIds": [
+      "ability:[1,\"girtablilu\",\"sting\"]",
+      "patrol:1:warder",
+      "patrol:1:censer",
+      "patrol:1:harrier",
+      "ability:[5,\"girtablilu\",\"impale\"]",
+      "ability:[6,\"ugallu\",\"claw\"]",
+      "ability:[7,\"pazuzu\",\"gale\"]",
+      "patrol:2:warder",
+      "patrol:2:censer",
+      "ability:[9,\"girtablilu\",\"impale\"]",
+      "ability:[10,\"ugallu\",\"claw\"]",
+      "ability:[11,\"pazuzu\",\"gale\"]",
+      "patrol:3:warder",
+      "ability:[13,\"girtablilu\",\"impale\"]"
+    ],
+    "declaredIntentions": []
+  },
+  "events": [
+    {
+      "type": "action-applied",
+      "actorId": "pazuzu",
+      "abilityId": "crosswind",
+      "targetId": "warder",
+      "revision": 1
+    },
+    {
+      "type": "facing-changed",
+      "sourceId": "warder",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "type": "action-applied",
+      "actorId": "girtablilu",
+      "abilityId": "sting",
+      "targetId": "censer",
+      "revision": 2
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "ability:[1,\"girtablilu\",\"sting\"]",
+      "sourceId": "girtablilu",
+      "revision": 2
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "ability:[1,\"girtablilu\",\"sting\"]",
+      "targetId": "censer",
+      "rawDamage": 4,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 4,
+      "hpBefore": 10,
+      "hpAfter": 6
+    },
+    {
+      "type": "action-applied",
+      "actorId": "ugallu",
+      "abilityId": "shelter",
+      "targetId": "girtablilu",
+      "revision": 3
+    },
+    {
+      "type": "shelter-installed",
+      "shelterId": "ability:[2,\"ugallu\",\"shelter\"]",
+      "sourceId": "ugallu",
+      "targetId": "girtablilu"
+    },
+    {
+      "type": "enemy-phase-started",
+      "round": 1
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "patrol:1:warder",
+      "sourceId": "warder",
+      "revision": 4
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "patrol:1:warder",
+      "targetId": "ugallu",
+      "rawDamage": 3,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 3,
+      "hpBefore": 18,
+      "hpAfter": 15
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "patrol:1:censer",
+      "sourceId": "censer",
+      "revision": 4
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "patrol:1:censer",
+      "targetId": "girtablilu",
+      "rawDamage": 3,
+      "directionalReduction": 0,
+      "shelterReduction": 2,
+      "damage": 1,
+      "hpBefore": 14,
+      "hpAfter": 13
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "patrol:1:censer",
+      "targetId": "pazuzu",
+      "rawDamage": 3,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 3,
+      "hpBefore": 14,
+      "hpAfter": 11
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "patrol:1:censer",
+      "targetId": "ugallu",
+      "rawDamage": 3,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 3,
+      "hpBefore": 15,
+      "hpAfter": 12
+    },
+    {
+      "type": "shelter-consumed",
+      "shelterId": "ability:[2,\"ugallu\",\"shelter\"]",
+      "targetId": "girtablilu",
+      "eligible": true
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "patrol:1:harrier",
+      "sourceId": "harrier",
+      "revision": 4
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "patrol:1:harrier",
+      "targetId": "ugallu",
+      "rawDamage": 4,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 4,
+      "hpBefore": 12,
+      "hpAfter": 8
+    },
+    {
+      "type": "enemy-phase-ended",
+      "round": 1
+    },
+    {
+      "type": "round-started",
+      "round": 2
+    },
+    {
+      "type": "intentions-announced",
+      "round": 2,
+      "intentions": [
+        {
+          "id": "patrol:2:warder",
+          "sourceId": "warder",
+          "kind": "marked-hit",
+          "targetId": "ugallu"
+        },
+        {
+          "id": "patrol:2:censer",
+          "sourceId": "censer",
+          "kind": "marked-splash",
+          "targetId": "pazuzu"
+        },
+        {
+          "id": "patrol:2:harrier",
+          "sourceId": "harrier",
+          "kind": "marked-hit",
+          "targetId": "ugallu"
+        }
+      ]
+    },
+    {
+      "type": "maneuver-applied",
+      "maneuver": "expand",
+      "formation": {
+        "shape": "spread",
+        "orientation": 0
+      },
+      "revision": 5
+    },
+    {
+      "type": "action-applied",
+      "actorId": "girtablilu",
+      "abilityId": "impale",
+      "targetId": "harrier",
+      "revision": 6
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "ability:[5,\"girtablilu\",\"impale\"]",
+      "sourceId": "girtablilu",
+      "revision": 6
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "ability:[5,\"girtablilu\",\"impale\"]",
+      "targetId": "harrier",
+      "rawDamage": 6,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 6,
+      "hpBefore": 13,
+      "hpAfter": 7
+    },
+    {
+      "type": "action-applied",
+      "actorId": "ugallu",
+      "abilityId": "claw",
+      "targetId": "harrier",
+      "revision": 7
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "ability:[6,\"ugallu\",\"claw\"]",
+      "sourceId": "ugallu",
+      "revision": 7
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "ability:[6,\"ugallu\",\"claw\"]",
+      "targetId": "harrier",
+      "rawDamage": 4,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 4,
+      "hpBefore": 7,
+      "hpAfter": 3
+    },
+    {
+      "type": "action-applied",
+      "actorId": "pazuzu",
+      "abilityId": "gale",
+      "targetId": "harrier",
+      "revision": 8
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "ability:[7,\"pazuzu\",\"gale\"]",
+      "sourceId": "pazuzu",
+      "revision": 8
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "ability:[7,\"pazuzu\",\"gale\"]",
+      "targetId": "harrier",
+      "rawDamage": 3,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 3,
+      "hpBefore": 3,
+      "hpAfter": 0
+    },
+    {
+      "type": "fallen",
+      "entityId": "harrier",
+      "owner": "enemy"
+    },
+    {
+      "type": "intention-cancelled",
+      "intentionId": "patrol:2:harrier",
+      "reason": "source-fallen"
+    },
+    {
+      "type": "enemy-phase-started",
+      "round": 2
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "patrol:2:warder",
+      "sourceId": "warder",
+      "revision": 9
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "patrol:2:warder",
+      "targetId": "ugallu",
+      "rawDamage": 3,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 3,
+      "hpBefore": 8,
+      "hpAfter": 5
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "patrol:2:censer",
+      "sourceId": "censer",
+      "revision": 9
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "patrol:2:censer",
+      "targetId": "pazuzu",
+      "rawDamage": 3,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 3,
+      "hpBefore": 11,
+      "hpAfter": 8
+    },
+    {
+      "type": "enemy-phase-ended",
+      "round": 2
+    },
+    {
+      "type": "round-started",
+      "round": 3
+    },
+    {
+      "type": "intentions-announced",
+      "round": 3,
+      "intentions": [
+        {
+          "id": "patrol:3:warder",
+          "sourceId": "warder",
+          "kind": "marked-hit",
+          "targetId": "ugallu"
+        },
+        {
+          "id": "patrol:3:censer",
+          "sourceId": "censer",
+          "kind": "marked-splash",
+          "targetId": "ugallu"
+        }
+      ]
+    },
+    {
+      "type": "action-applied",
+      "actorId": "girtablilu",
+      "abilityId": "impale",
+      "targetId": "censer",
+      "revision": 10
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "ability:[9,\"girtablilu\",\"impale\"]",
+      "sourceId": "girtablilu",
+      "revision": 10
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "ability:[9,\"girtablilu\",\"impale\"]",
+      "targetId": "censer",
+      "rawDamage": 6,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 6,
+      "hpBefore": 6,
+      "hpAfter": 0
+    },
+    {
+      "type": "fallen",
+      "entityId": "censer",
+      "owner": "enemy"
+    },
+    {
+      "type": "protection-removed",
+      "sourceId": "warder",
+      "targetId": "censer"
+    },
+    {
+      "type": "intention-cancelled",
+      "intentionId": "patrol:3:censer",
+      "reason": "source-fallen"
+    },
+    {
+      "type": "action-applied",
+      "actorId": "ugallu",
+      "abilityId": "claw",
+      "targetId": "warder",
+      "revision": 11
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "ability:[10,\"ugallu\",\"claw\"]",
+      "sourceId": "ugallu",
+      "revision": 11
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "ability:[10,\"ugallu\",\"claw\"]",
+      "targetId": "warder",
+      "rawDamage": 4,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 4,
+      "hpBefore": 12,
+      "hpAfter": 8
+    },
+    {
+      "type": "action-applied",
+      "actorId": "pazuzu",
+      "abilityId": "gale",
+      "targetId": "warder",
+      "revision": 12
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "ability:[11,\"pazuzu\",\"gale\"]",
+      "sourceId": "pazuzu",
+      "revision": 12
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "ability:[11,\"pazuzu\",\"gale\"]",
+      "targetId": "warder",
+      "rawDamage": 3,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 3,
+      "hpBefore": 8,
+      "hpAfter": 5
+    },
+    {
+      "type": "enemy-phase-started",
+      "round": 3
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "patrol:3:warder",
+      "sourceId": "warder",
+      "revision": 13
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "patrol:3:warder",
+      "targetId": "ugallu",
+      "rawDamage": 3,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 3,
+      "hpBefore": 5,
+      "hpAfter": 2
+    },
+    {
+      "type": "enemy-phase-ended",
+      "round": 3
+    },
+    {
+      "type": "round-started",
+      "round": 4
+    },
+    {
+      "type": "intentions-announced",
+      "round": 4,
+      "intentions": [
+        {
+          "id": "patrol:4:warder",
+          "sourceId": "warder",
+          "kind": "marked-hit",
+          "targetId": "ugallu"
+        }
+      ]
+    },
+    {
+      "type": "action-applied",
+      "actorId": "girtablilu",
+      "abilityId": "impale",
+      "targetId": "warder",
+      "revision": 14
+    },
+    {
+      "type": "attack-settled",
+      "eventId": "ability:[13,\"girtablilu\",\"impale\"]",
+      "sourceId": "girtablilu",
+      "revision": 14
+    },
+    {
+      "type": "damage-applied",
+      "eventId": "ability:[13,\"girtablilu\",\"impale\"]",
+      "targetId": "warder",
+      "rawDamage": 6,
+      "directionalReduction": 0,
+      "shelterReduction": 0,
+      "damage": 6,
+      "hpBefore": 5,
+      "hpAfter": 0
+    },
+    {
+      "type": "fallen",
+      "entityId": "warder",
+      "owner": "enemy"
+    },
+    {
+      "type": "intention-cancelled",
+      "intentionId": "patrol:4:warder",
+      "reason": "source-fallen"
+    },
+    {
+      "type": "combat-ended",
+      "outcome": "victory"
+    }
+  ]
+}
