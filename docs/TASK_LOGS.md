@@ -1050,3 +1050,46 @@ The user ran `just poc-001-test-browser` with no environment, and it failed with
 **Cleanup.** Panes `w2G:p2R` and `p2S` closed. Worktree removed; branch kept. No push.
 
 **Process note.** Future browser and tooling reviews should run the delivered command exactly as a user would, with no hand-supplied environment.
+
+## 2026-10-05 AI playtests and ring formation
+
+**AI playtests.** At the user's request, the Coordinator launched three Scouts (`gpt-6.1-sol-high`; panes `w2G:p2T`, `p2V`, `p2W`) as AI playtesters in worktree `/opt/dev/tehom-brainlab-aiplay`, branch `ai-playtest-20261005`, based on `552f2b1`. The Coordinator installed dependencies once so the three would not race each other. The testers had different perspectives: first-time player, optimizer, and formation-focused. They played 9 attempts through the real UI on ports 5181–5183, and all 9 were victories. Exports replayed exactly. Their reports, `scout-{1,2,3}.md` in `ef0e3b4`, found:
+- a dominant opening: Expand, then kill Harrier (Impale 6 + Claw 4 + Gale 3 = 13), then hold Spread;
+- that shape mattered mostly through numbers;
+- that Shelter and Crosswind were rarely needed;
+- bugs B1–B3 and several readability gaps.
+
+This is AI evidence only, and the boss gate stays HOLD.
+
+**User decisions.** The user agreed with the playtest findings and made these decisions:
+- Compact becomes a triangle on alternating ring-1 cells around the empty centre, which is reserved for a boss.
+- Expand moves the Brood to the ring-2 corners.
+- Enemies stand on tiles.
+- Rules follow the tiles. The user framed the game as "mostly Darkest Dungeon rather than XCOM".
+
+The user left enemy placement to the Architect. On the Architect's open questions, the user chose no generic reach rule ("all dependent of the abilities which we'll focus on later"), no second layout yet, and no tuning.
+
+**Design.**
+- Architect `rf-architect` (`claude-opus-5.5-high`, pane `w2G:p2X`) worked in worktree `/opt/dev/tehom-brainlab-ring`, branch `ring-formation`, based on `ef0e3b4`. It produced `bd320d3` and `05bc25c` ([report](mailbox/ring-formation/architect.md)), covering the brief, Amendment RF to the P02 and P04–P12 plans, and the [RF task](plans/2026-10-05-c6399cb6-poc-001-ring-formation.md).
+- Its computed placement argument: by rotation symmetry, every layout gives equal average exposure. Only the alternating layout keeps per-state exposure spread at zero.
+
+**Implementation.**
+- `rf-impl` (`gpt-6.1-sol-high`, pane `w2G:p2Y`) produced `4137db1`, the bug fixes with failing regressions written before each fix:
+  - B1: the reset left a stale controls cache;
+  - B2: End phase was applied twice in its forecast;
+  - B3: the forfeiture message was shown unconditionally.
+- It then produced `e18cd09` (RF). The final bare browser run failed an unchanged reset-preview assertion, so the Implementer stopped as instructed ([blocked handoff](mailbox/ring-formation/implementer.md)).
+- Coordinator disposition: investigate while preserving the assertion. Scrolling in expanded states is allowed. A bounded fix to lab captions is authorised.
+- Fix `0d5fadcb` addressed a real application defect. Chromium's `pointerenter` under a stationary pointer after Restart had recreated the preview; previews now require pointer movement or focus. Lab captions were centred.
+- Results: three consecutive bare browser runs passed (4,964 assertions each) and 477 tests passed ([fix](mailbox/ring-formation/fix.md)).
+
+**Review and delivery.**
+- `rf-review` (pane `w2G:p2Z`) approved `0d5fadc` with 0 blocking findings and 1 optional README status correction ([review](mailbox/ring-formation/reviewer.md), `9854131`). It ran two bare browser runs and probed with changed defaults.
+- The first merge attempt stopped correctly (`29883e3`) because the Coordinator's assignment truncated the destination SHA. After correction, master fast-forwarded `552f2b1` → `23e7d092` (delivered/tested) → `b415ff7` (report). On delivered master, 477 tests, typecheck and bare `test-browser` (4,964 assertions) passed. Only README documentation edits differ from `0d5fadc`. All 31 AI playtest evidence files were delivered unchanged ([delivery](mailbox/ring-formation/delivery.md)).
+
+**Cleanup.**
+- Panes `w2G:p2T`, `p2V`, `p2W`, `p2X`, `p2Y` and `p2Z` closed. Launch directory `/tmp/ruach-herdr-rCut9z` removed.
+- Worktrees `-aiplay` and `-ring` removed. Branches `ai-playtest-20261005` and `ring-formation` kept.
+- No push.
+
+**Process note.** Always give a full SHA in merge assignments.

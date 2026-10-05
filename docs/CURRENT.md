@@ -139,6 +139,27 @@ As of 2026-10-05, local master `4d3ea29` contains P11.
 - **Boss gate: HOLD.** No human playtest attempts are recorded. The independent [Reviewer](mailbox/p11-reproducible-playtests/reviewer.md) confirmed HOLD, so P12 stays blocked until real attempts are recorded and reviewed. No fair Apex/Shadow comparison or production-combat selection has been made.
 - **Checks.** Review found 0 findings. At delivered revision `cd703d46`, 460 tests, typecheck and build pass, along with four browser scripts (3,302 assertions) and the replay. See the [implementer report](mailbox/p11-reproducible-playtests/implementer.md), [delivery report](mailbox/p11-reproducible-playtests/delivery.md) and [execution record](TASK_LOGS.md#2026-10-05-p11-reproducible-playtests).
 
+## AI playtests and ring formation
+
+**AI playtests.** On 2026-10-05, three Scout playtesters (`gpt-6.1-sol-high`) played 9 attempts through the real UI ([reports](mailbox/ai-playtest-20261005/)). All 9 ended in victory and every replay matched.
+- One opening dominated: Expand, kill Harrier at exactly 13 damage, then hold Spread. Shelter and Crosswind were rarely needed.
+- The testers found three bugs and several readability gaps.
+- This is AI evidence, not human playtesting, so the boss gate stays HOLD.
+
+**Ring formation.** As of 2026-10-05, local master `b415ff7` implements the user's response ([RF plan](plans/2026-10-05-c6399cb6-poc-001-ring-formation.md), [Architect](mailbox/ring-formation/architect.md)). The user frames the game as Darkest-Dungeon-style positional ranks, not XCOM movement.
+- **Formation.** Compact is a ring-1 triangle `S[o],S[o+2],S[o+4]` around a centre that stays empty and is reserved for a boss; its links are `[2,2,2]` Close. Spread uses the ring-2 corners, `[4,4,4]`. Expand and Contract are one radial step per Brood.
+- **Enemies.** Enemies stand on tiles in one alternating layout, `patrol-v2`: Warder `(1,-2)` facing 0, Censer `(-2,1)` facing 4, Harrier `(1,1)` facing 2. They never occupy Brood cells. Fronts and protection derive from each enemy's own tile and facing.
+- **User decisions.** There is no generic targeting reach; reach will be ability-specific and designed later. No numeric tuning was applied. The clustered "flank" layout is documented as the next scenario. Keeping enemies off Brood cells and the exact front shape remain provisional proposals.
+- **Bugs fixed.**
+  - B1: stale actor HP after a reset.
+  - B2: the End-phase forecast applied End phase twice.
+  - B3: a false "unused actions forfeited" message.
+  - Restart could show a stale preview under a stationary pointer.
+  - Lab destination captions were illegible.
+- **Known.** The Harrier 13-damage breakpoint survives, by computation, so the dominant opening may persist. Expanded preview states may scroll.
+
+The [review](mailbox/ring-formation/reviewer.md) found 0 blocking findings. Its one optional README correction was applied, along with the stale P02 status text. At delivered revision `23e7d092`, the bare checks passed: 477 tests, typecheck, and `just poc-001-test-browser` (4 scripts, 4,964 assertions). See [implementer](mailbox/ring-formation/implementer.md), [fix](mailbox/ring-formation/fix.md), [delivery](mailbox/ring-formation/delivery.md) and the [execution record](TASK_LOGS.md#2026-10-05-ai-playtests-and-ring-formation). No human playtest has been recorded yet; the user plans a manual round next.
+
 ## Verification and limits
 
 The [vault alignment task log](TASK_LOGS.md#2026-10-03-vault-alignment) records documentation changes and executed checks. That documentation-only alignment task ran no application tests, browser combat checks, or human playtests. P01 now has the separate application/unit/build/automated-browser evidence linked above; it still has no combat or human-playtest evidence. [Playtests](playtests/README.md) currently contains navigation and a template only.
