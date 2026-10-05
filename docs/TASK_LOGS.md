@@ -965,3 +965,23 @@ This task was part of the request to "implement up to p11". The Coordinator ran 
 **Delivery.** Master fast-forwarded `9976e9a` → `16d38000` (delivered and tested: 413 tests, typecheck and build exit 0) → `4a26279` (delivery report). See the [delivery record](mailbox/p08-patrol-round-loop/delivery.md).
 
 **Cleanup.** Panes `w2G:p2G` and `p2H` are closed and worktree `/opt/dev/tehom-brainlab-p08` is removed. Branch `p08-patrol-round-loop` is kept. No push.
+
+## 2026-10-05 P09 preview equivalence
+
+Part of the "implement up to p11" request. Worktree `/opt/dev/tehom-brainlab-p09`, branch `p09-preview-equivalence`, BASE `35586e8`. The Coordinator ran no checks itself, and every handoff passed the validator.
+
+**Implementation.**
+- `p09-impl` (`gpt-6.1-sol-high`, pane `w2G:p2J`) produced candidate `63b567ba`.
+- New: `src/core/preview.ts`, `tests/preview.test.ts` and `tests/browser-preview.mjs`. Changed: `src/view/lab-state.ts` and `FormationLab.ts` (the `?preview=patrol` fixture), plus the README.
+- Results: 427 tests, typecheck, build and both browser checks passed, with existing tests byte-identical. See the [implementer report](mailbox/p09-preview-equivalence/implementer.md).
+
+**Review.**
+- `p09-review` (pane `w2G:p2K`, `61aac67`) raised two blocking findings:
+  - R1: `previewFacts` threw `RangeError` on `splashRadius: -1` or `closeThreshold: -1` before the real forecast ran, breaking the preview/transition equivalence.
+  - R2: `browser-preview.mjs:95` hard-coded the default splash recipients.
+- Fix `aac80686`: when selector facts are unavailable, the preview still returns the accepted immediate result plus the real typed forecast rejection. The browser assertion no longer depends on provisional tuning. Results: 431 tests and both browser checks passed ([fix](mailbox/p09-preview-equivalence/fix.md)).
+- The re-review (`9affcea`) approved with no remaining findings ([review](mailbox/p09-preview-equivalence/reviewer.md)).
+
+**Delivery.** Master fast-forwarded from `35586e8` to `86e0da36`. At that revision, delivered and tested: 431 tests, typecheck and build exit 0, and prototype and assets equal `aac8068`. A second fast-forward to `f60afc5` added the delivery report. See the [delivery record](mailbox/p09-preview-equivalence/delivery.md).
+
+**Cleanup.** Panes `w2G:p2J` and `p2K` closed. Worktree `/opt/dev/tehom-brainlab-p09` removed. Branch kept. No push.
