@@ -94,6 +94,7 @@ test('records are detached from mutable caller state and results', () => {
 });
 test.each([
   ['recordVersion', 99, 'unsupported record version: 99'],
+  ['recordVersion', { toString: 'supplied data' }, 'unsupported record version: {"toString":"supplied data"}'],
   ['rulesVersion', 'future', 'unsupported rules version: future'],
   ['buildRevision', 'not-a-commit', 'malformed buildRevision'],
   ['initialState', null, 'malformed initialState'],

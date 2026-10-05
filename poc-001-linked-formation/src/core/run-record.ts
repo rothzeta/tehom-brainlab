@@ -33,6 +33,7 @@ function requireValue(condition: unknown, path: string): asserts condition {
 }
 const object = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
+const versionLabel = (value: unknown): string | undefined => typeof value === 'string' ? value : JSON.stringify(value);
 const id = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
 const integer = (value: unknown): value is number => Number.isSafeInteger(value) && (value as number) >= 0;
 function fields(value: unknown, names: readonly string[], path: string): asserts value is Record<string, unknown> {
@@ -164,8 +165,8 @@ export function parseRunRecord(json: string): RunRecord {
   let value: unknown;
   try { value = JSON.parse(json); } catch { fail('invalid JSON'); }
   requireValue(object(value), 'record');
-  if (value.recordVersion !== RECORD_VERSION) fail(`unsupported record version: ${String(value.recordVersion)}`);
-  if (value.rulesVersion !== RUN_RULES_VERSION) fail(`unsupported rules version: ${String(value.rulesVersion)}`);
+  if (value.recordVersion !== RECORD_VERSION) fail(`unsupported record version: ${versionLabel(value.recordVersion)}`);
+  if (value.rulesVersion !== RUN_RULES_VERSION) fail(`unsupported rules version: ${versionLabel(value.rulesVersion)}`);
   fields(value, ['recordVersion', 'prototypeId', 'buildRevision', 'rulesVersion', 'fixtureId',
     'configuration', 'initialState', 'acceptedCommands', 'finalState', 'events'], 'record');
   requireValue(value.prototypeId === PROTOTYPE_ID, 'prototypeId');
