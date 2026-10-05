@@ -1006,3 +1006,29 @@ Fix `dfeaadeb` binds each activation to its own command identity, adds focus/hov
 **Cleanup.** Panes `w2G:p2M` and `p2N` closed. Worktree removed; branch kept. No push and no human playtest.
 
 **Process note.** P07, P09 and P10 each had a blocking review for test assertions that froze provisional defaults, even though every assignment prohibited it. The reviewers' default-override probes caught each one.
+
+## 2026-10-05 P11 reproducible playtests
+
+This was the last plan in the "implement up to p11" request. Worktree `/opt/dev/tehom-brainlab-p11`, branch `p11-reproducible-playtests`, BASE `8315349`. The Coordinator ran no checks itself, and every handoff passed the validator. The assignment fixed a human-evidence boundary: agents build and verify criteria 1–3 and 7, and since no human playtest has occurred, criteria 4–6 are met with an honest automated-evidence artifact and an explicit HOLD gate.
+
+**Implementation.**
+- `p11-impl` (`gpt-6.1-sol-high`, pane `w2G:p2P`) produced candidate `8decc8c8`.
+- Changes: `src/core/run-record.ts`, export control in the P10 UI, replay script, wrapper and root recipe `poc-001-replay`, `tests/run-record.test.ts` with P11 browser checks, the README, and the [playtest artifact](playtests/2026-10-05-poc-001-p11-automated.md).
+- Results: 460 tests, typecheck and build pass. Four browser scripts pass. Nine exported-record replays pass, and invalid records fail as expected.
+- Discovery: P07 ability tuning must be captured separately from P08's in-state patrol tuning. See the [implementer report](mailbox/p11-reproducible-playtests/implementer.md).
+
+**Review.**
+- `p11-review` (pane `w2G:p2Q`) passed `8decc8c` with 0 blocking and 0 optional findings ([review](mailbox/p11-reproducible-playtests/reviewer.md), `1fd2927`).
+- It probed with hostile and malformed records and with changed tuning.
+- It independently confirmed the boss gate as HOLD.
+
+**Delivery.** Master fast-forwarded `8315349` → `cd703d46` → `4d3ea29`.
+- At `cd703d46` (delivered and tested): 460 tests, typecheck, build, four browser scripts (3,302 assertions) and a committed UI-record replay all exit 0. Prototype, assets and justfile are identical to `8decc8c`.
+- `4d3ea29` adds the [delivery report](mailbox/p11-reproducible-playtests/delivery.md).
+
+**Cleanup.** Panes `w2G:p2P` and `p2Q` closed. Worktree removed; branch kept. No push.
+
+**Request outcome ("implement up to p11").**
+- P07–P11 delivered to local master, in addition to the two-ring board change.
+- Open state: the boss gate is HOLD pending real human attempts, so P12 stays blocked.
+- Earlier optional findings P03 O1–O3 and P04 O1 remain open.
