@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**P10. Draft; not implemented or verified.** Depends on [P04](2026-10-02-9d81c6df-poc-001-formation-lab.md), [P08](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md), and [P09](2026-10-02-d28ae958-poc-001-preview-equivalence.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
+**P10. Implemented, independently reviewed (R1/R2 fixed and re-reviewed; no remaining findings), accepted, locally delivered.** [Implementation](../mailbox/p10-playable-patrol/implementer.md); [fix evidence](../mailbox/p10-playable-patrol/fix.md); [independent review](../mailbox/p10-playable-patrol/reviewer.md). Depends on [P04](2026-10-02-9d81c6df-poc-001-formation-lab.md), [P08](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md), and [P09](2026-10-02-d28ae958-poc-001-preview-equivalence.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 Authority: [brief Presentation requirements, Round structure, and Ordinary patrol](../../docs/prototypes/poc-001-linked-formation.md), plus [prototype rendering boundary](../../poc-001-linked-formation/README.md). Interface choices below are proposals; they do not change the six abilities or action economics. See the [index](README.md) for formatting authority.
 
