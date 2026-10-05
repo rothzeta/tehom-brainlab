@@ -284,14 +284,22 @@ base URL uses an already-running server. `POC001_BROWSER_PORT` chooses the
 wrapper-owned preview port. Output defaults to a fresh OS temporary directory.
 Individual scripts take the same Chrome/output/base-URL arguments.
 
-The P10 probe plays all four recorded P08 traces in both artwork modes through
-native pointer controls and compares every accepted step to the public core.
-It also checks previews, double input, disabled reasons, early phase ending,
-reset during feedback, terminal restart, cluster hit-tests and no uncaught
-application errors. A separately compiled, intercepted test page supplies
-explicit fixed-area and following declarations to the same scene; ordinary
-P08 patrols only declare following marks. This entry is under `tests/browser/`,
-is absent from the production build and has no product route or fixture control.
+Activation belongs to its control: a focused maneuver keeps its own command when
+another maneuver is hovered, and Confirm uses the selected ability, target and
+Crosswind direction. Its label identifies that selection. A matching cached
+preview retains P09's stale guards; a different preview cannot replace the action.
+
+The P10 probe replays all four recorded P08 command sequences in both artwork
+modes against a runtime core oracle with the same current rules as the page.
+It checks both accepted and unavailable steps without freezing historical final
+HP, outcome or command legality. Separate intercepted test pages use explicit
+encounter rules and HP to demonstrate victory and defeat through those controls.
+The probe also covers mixed focus/hover activation, previews, double input,
+disabled reasons, early phase ending, reset, terminal restart and cluster hit-tests.
+Another intercepted page supplies fixed-area and following declarations to the
+same scene; ordinary P08 patrols only declare following marks. These entries
+are under `tests/browser/`, are absent from the production build, and have no
+product route or fixture control.
 The controller's injectable factory is also covered at its public boundary for
 stale revision/session rejection and timer cancellation. See the
 [P10 handoff](../docs/mailbox/p10-playable-patrol/implementer.md) for tested

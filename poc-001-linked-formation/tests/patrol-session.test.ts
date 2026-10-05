@@ -38,3 +38,33 @@ test('terminal combat input is rejected without changing resources or HP', () =>
   expect(session.state).toEqual(terminal); expect(session.message).toContain('wrong-phase');
   session.reset(); expect(session.state).toEqual(createPatrol());
 });
+
+test.each([
+  [{ kind: 'maneuver', expectedRevision: 0, maneuver: 'clockwise' },
+    { kind: 'maneuver', expectedRevision: 0, maneuver: 'expand' }],
+  [{ kind: 'useAbility', expectedRevision: 0, actorId: 'ugallu', abilityId: 'claw', targetId: 'warder' },
+    { kind: 'useAbility', expectedRevision: 0, actorId: 'ugallu', abilityId: 'claw', targetId: 'censer' }],
+  [{ kind: 'useAbility', expectedRevision: 0, actorId: 'pazuzu', abilityId: 'crosswind', targetId: 'warder', direction: 'clockwise' },
+    { kind: 'useAbility', expectedRevision: 0, actorId: 'pazuzu', abilityId: 'crosswind', targetId: 'warder', direction: 'anticlockwise' }],
+  [{ kind: 'endPhase', expectedRevision: 0 }, { kind: 'maneuver', expectedRevision: 0, maneuver: 'expand' }],
+  [{ kind: 'useAbility', expectedRevision: 0, actorId: 'ugallu', abilityId: 'claw', targetId: 'warder' },
+    { kind: 'endPhase', expectedRevision: 0 }],
+] as const)('activation owns its command even when another control was previewed: %j', (activated, hovered) => {
+  vi.useFakeTimers(); const session = new PatrolSession();
+  const initial = structuredClone(session.state), expected = applyCommand(initial, activated);
+  expect(expected.ok).toBe(true); session.preview(hovered); session.activate(activated);
+  expect(session.state).toEqual(expected.state); expect(session.events).toEqual(expected.events);
+  expect(session.pending).toBeUndefined(); vi.runAllTimers();
+});
+test('matching control identity retains the cached revision guard', () => {
+  vi.useFakeTimers(); const session = new PatrolSession();
+  const action = { kind: 'useAbility' as const, expectedRevision: 0, actorId: 'ugallu', abilityId: 'claw', targetId: 'warder' };
+  session.preview(action); const cached = session.pending!;
+  session.activate({ kind: 'maneuver', maneuver: 'clockwise', expectedRevision: 0 }); vi.runAllTimers();
+  const live = structuredClone(session.state);
+  session.pending = cached;
+  session.activate({ ...action, expectedRevision: live.revision });
+  expect(session.state).toEqual(live); expect(session.message).toContain('stale-revision');
+  session.reset(); session.pending = cached; session.activate(action);
+  expect(session.state).toEqual(createPatrol()); expect(session.message).toContain('stale-session');
+});

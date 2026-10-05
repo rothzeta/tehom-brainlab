@@ -4,6 +4,18 @@ import type { Command, GameplayEvent } from '../core/commands';
 import type { CommandPreview } from '../core/preview';
 import { LabSession } from './lab-state';
 
+type ControlCommand = Exclude<Command, { kind: 'attack' }>;
+
+/** Control identity excludes revision so matching cached previews retain stale guards. */
+function controlIdentity(command: ControlCommand): string {
+  switch (command.kind) {
+    case 'maneuver': return JSON.stringify([command.kind, command.maneuver]);
+    case 'useAbility': return JSON.stringify([command.kind, command.actorId, command.abilityId,
+      command.targetId, 'direction' in command ? command.direction : undefined]);
+    case 'endPhase': return command.kind;
+  }
+}
+
 /** The existing P09 adapter owns all command submission and preview validity. */
 export class PatrolSession {
   private preset: PatrolPreset = 'healthy';
@@ -26,6 +38,12 @@ export class PatrolSession {
     this.pending = this.project(command); this.changed();
   }
   cancel(): void { this.pending = undefined; this.changed(); }
+  activate(command: ControlCommand): void {
+    const pending = this.pending;
+    this.confirm(pending && pending.command.kind !== 'attack'
+      && controlIdentity(pending.command) === controlIdentity(command)
+      ? pending : this.project(command));
+  }
   confirm(preview = this.pending): void {
     if (this.busy || !preview) return;
     const result = this.adapter.confirmPreview(preview);

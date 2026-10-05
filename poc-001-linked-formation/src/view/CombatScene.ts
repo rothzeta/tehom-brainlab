@@ -82,16 +82,19 @@ export class CombatScene extends Phaser.Scene {
       this.tokens.set(entity.id, button); this.el('tokens').append(button);
     }
     for (const maneuver of MANEUVERS) {
-      const command = (): Command => ({ kind: 'maneuver', expectedRevision: this.session.state.revision, maneuver });
-      const button = this.button(MANEUVER_LABELS[maneuver], () => this.session.confirm(this.session.pending?.command.kind === 'maneuver' ? this.session.pending : this.session.project(command())));
+      const command = () => ({ kind: 'maneuver' as const, expectedRevision: this.session.state.revision, maneuver });
+      const button = this.button(MANEUVER_LABELS[maneuver], () => this.session.activate(command()));
       button.dataset.maneuver = maneuver; this.previewOn(button, command);
       this.maneuvers.set(maneuver, button); this.el('maneuvers').append(button);
     }
     const end = this.el<HTMLButtonElement>('end-phase');
-    const endCommand = (): Command => ({ kind: 'endPhase', expectedRevision: this.session.state.revision });
+    const endCommand = () => ({ kind: 'endPhase' as const, expectedRevision: this.session.state.revision });
     this.previewOn(end, endCommand);
-    end.addEventListener('click', () => this.session.confirm(this.session.pending?.command.kind === 'endPhase' ? this.session.pending : this.session.project(endCommand())));
-    this.el('confirm').addEventListener('click', () => this.session.confirm());
+    end.addEventListener('click', () => this.session.activate(endCommand()));
+    this.el('confirm').addEventListener('click', () => {
+      const command = this.abilityCommand();
+      if (command) this.session.activate(command);
+    });
     this.el('cancel').addEventListener('click', () => this.session.cancel());
     const reset = () => { this.actor = this.ability = this.target = undefined; this.direction = 'clockwise'; this.session.reset(this.el<HTMLSelectElement>('preset').value as PatrolPreset); };
     this.el('reset').addEventListener('click', reset); this.el('preset').addEventListener('change', reset);
@@ -117,7 +120,7 @@ export class CombatScene extends Phaser.Scene {
     if (this.session.busy) return;
     this.actor = id; this.ability = undefined; this.target = undefined; this.session.cancel();
   }
-  private abilityCommand(targetId = this.target): Command | undefined {
+  private abilityCommand(targetId = this.target): Extract<Command, { kind: 'useAbility' }> | undefined {
     if (!this.actor || !this.ability || !targetId) return;
     return { kind: 'useAbility', expectedRevision: this.session.state.revision, actorId: this.actor,
       abilityId: this.ability, targetId, ...(this.ability === 'crosswind' ? { direction: this.direction } : {}) };
@@ -181,7 +184,7 @@ export class CombatScene extends Phaser.Scene {
         this.previewOn(button, () => ({ kind: 'useAbility', ...entry.request })); return button;
       }));
     }
-    this.el('selection').textContent = `Selected: ${this.actor ?? 'Brood'} / ${this.ability ?? 'ability'} / ${this.target ?? 'target'}. Selection spends no action.`;
+    this.el('selection').textContent = `Selected: ${this.actor ?? 'Brood'} / ${this.ability ?? 'ability'} / ${this.target ?? 'target'}${this.ability === 'crosswind' ? ` / ${this.direction}` : ''}. Selection spends no action.`;
     for (const maneuver of MANEUVERS) {
       const result = this.session.project({ kind: 'maneuver', expectedRevision: state.revision, maneuver });
       this.availability(this.maneuvers.get(maneuver)!, locked ?? (result.ok ? undefined : result.error.code));
@@ -191,7 +194,14 @@ export class CombatScene extends Phaser.Scene {
     const end = this.el<HTMLButtonElement>('end-phase'); end.dataset.label = `End phase (${unused} actions unused)`;
     const endPreview = this.session.project({ kind: 'endPhase', expectedRevision: state.revision });
     this.availability(end, locked ?? (endPreview.ok ? undefined : endPreview.error.code));
-    this.availability(this.el<HTMLButtonElement>('confirm'), locked ?? (this.session.pending?.ok && this.session.pending.command.kind === 'useAbility' ? undefined : 'Select a legal ability target'));
+    const selectedCommand = this.abilityCommand();
+    const selectedPreview = selectedCommand ? this.session.project(selectedCommand) : undefined;
+    const confirm = this.el<HTMLButtonElement>('confirm');
+    confirm.dataset.label = selectedCommand
+      ? `Confirm ${title(selectedCommand.abilityId)} → ${title(selectedCommand.targetId)}${this.ability === 'crosswind' ? ` (${this.direction})` : ''}`
+      : 'Confirm ability';
+    this.availability(confirm, locked ?? (!this.session.pending || !selectedPreview ? 'Select a legal ability target'
+      : selectedPreview.ok ? undefined : selectedPreview.error.code));
     this.el('feedback').textContent = `${this.session.message}${this.session.busy ? ' Resolving action…' : ''}${state.phase === 'victory' || state.phase === 'defeat' ? ' Restart or choose a fresh patrol.' : ''}`;
     this.renderFacts(facts); this.draw(facts);
     this.el('events').replaceChildren(...this.session.events.map(event => {
