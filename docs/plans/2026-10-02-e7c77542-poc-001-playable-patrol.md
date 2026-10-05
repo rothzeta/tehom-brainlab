@@ -55,9 +55,8 @@ The early lab-only configuration selector must be clearly separated from the pla
 - Draw each enemy token on its own cell (P08 RF: Warder `(1,-2)`, Censer `(-2,1)`, Harrier `(1,1)`), using the same projection as the Brood. Remove the cluster offsets and the `PATROL_VIEW_ANCHOR` import.
 - Show each living enemy's facing with a mark from its tile toward the adjacent cell on its front's bisector, `cell + S[(facing+1) mod 6]`.
 - Tint front cells only for enemies whose front has a rule effect (protection sources; area sources, if any), using P05 `frontCells`. The current code tints `frontMask(facing)` around the centre for every enemy, which would now be wrong.
-- Show reach in text: each intention line lists the Brood currently in that enemy's reach. Every preview with a forecast lists the next round's marks ("Next marks if you end now: …"), read from the forecast state.
 - Keep Brood and enemy tokens separately readable and pointer-selectable. Enemy tiles neighbour Brood cells in both shapes.
-- The legend explains the front tint, the facing mark and reach.
+- The legend explains the front tint and the facing mark. No reach display: reach is deferred to ability design (user decision, 2026-10-05).
 - **B1** (scout-2 D1, scout-3): after a preset change plus Restart, the actor buttons kept the previous preset's HP until a Brood was selected. At BASE the controls cache key is `[revision, locked, actor, ability]`, which is identical across a reset at revision 0; this is a probable cause, for the implementer to confirm. Contract: after any reset, every actor button shows the fresh state's HP before any input.
 - **B3** (scout-3): End phase always reported "Unused actions forfeited". Contract: the feedback mentions forfeiture only when at least one living Brood had not acted, and then states how many actions were forfeited.
 

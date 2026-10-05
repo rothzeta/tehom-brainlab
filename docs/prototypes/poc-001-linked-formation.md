@@ -26,7 +26,7 @@ The experiment tests whether three Brood attacking individually but moving as a 
 
 ## Formation rules
 
-This is still mostly a Darkest Dungeon game, not an XCOM game *(user, 2026-10-05)*. Position works like Darkest Dungeon ranks: where each Brood stands relative to each enemy changes who can be protected against, who can be marked and which shared maneuver is worth spending. It is not a puzzle-movement game. The only movement is the shared formation maneuver; there is no individual movement, and enemies never move.
+This is still mostly a Darkest Dungeon game, not an XCOM game *(user, 2026-10-05)*. Position works like Darkest Dungeon ranks: where each Brood stands relative to each enemy changes who can be protected against and which shared maneuver is worth spending. Reach is ability-specific and will be designed later with the abilities. It is not a puzzle-movement game. The only movement is the shared formation maneuver; there is no individual movement, and enemies never move.
 
 The board is the centre plus two rings: ring 1 (6 cells, table `S`) and ring 2 (12 cells, table `T`, whose even indices are corners and odd indices are the single edge cell between two corners). Its cells divide into two fixed kinds:
 
@@ -46,15 +46,15 @@ The exact mapping, all twelve labelled states and their reversibility are in the
 
 ### Enemies on tiles
 
-By user decision (2026-10-05), every enemy stands on a real tile, and each enemy's front, protection and reach derive from its own tile and facing. The formation's position relative to each enemy therefore matters, through the shared maneuvers only.
+By user decision (2026-10-05), every enemy stands on a real tile, and each enemy's front and protection derive from its own tile and facing. The formation's position relative to each enemy therefore matters, through the shared maneuvers only. Reach is ability-specific and will be designed later together with the abilities (user decision, 2026-10-05).
 
 - **Front:** an enemy facing `f` watches the same six-cell wedge that a centre enemy would, carried to its own tile and clipped to the board. A centre (boss) enemy keeps exactly the delivered encounter-centred front.
 - **Protection:** a Warder protects its ward against non-bypassing attacks from Brood standing in the Warder's own front.
-- **Reach:** an enemy may announce its marked attack only against a living Brood within two steps of its tile. If none is in reach, it may mark any living Brood. This reading of "reach", the value 2 and the fallback are the Architect's provisional defaults (open question RF-Q1 in the [ring-formation task](../plans/2026-10-05-c6399cb6-poc-001-ring-formation.md#open-questions-with-applied-defaults)). Reach is checked once, when intentions are announced. Marks still follow their creature until impact, and a squad maneuver never cancels an announced mark.
+- **Reach:** no generic reach rule in this round. Enemy targeting and marking keep their delivered behaviour and read no cells. Reach will be ability-specific, designed later together with the abilities *(user decision, 2026-10-05)*. Marks still follow their creature until impact.
 - **Areas:** a turnable area turns around its source's tile.
 - **Unchanged:** every Brood contact attack still reaches every enemy wherever it stands; links, isolation and splash are measured between Brood; rotation and Expand/Contract still pivot on the centre.
 
-The default patrol layout and its rationale are in the [P08 ring-formation amendment](../plans/2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles). Rule details are in the [P05 ring-formation amendment](../plans/2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-reach-from-enemy-tiles).
+The default patrol layout and its rationale are in the [P08 ring-formation amendment](../plans/2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles). Rule details are in the [P05 ring-formation amendment](../plans/2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-areas-from-enemy-tiles).
 
 ### Links
 
@@ -102,7 +102,7 @@ The intended question is: which threat do I solve with formation, and which do I
 
 Replay this patrol with a healthy party, wounded Ugallu, and wounded Girtablilu. Damage values and targeting rules require testing; the proposed composition is not yet demonstrated to be balanced.
 
-Since 2026-10-05 the patrol stands on three alternating ring-2 edge tiles, one on each side of the triangle: Warder `(1,-2)`, Censer `(-2,1)`, Harrier `(1,1)`. All three presets use this one layout, so the wounded comparisons stay comparable. A layout clustered on one side is the documented next scenario, not part of this round. The layout, facings and reach are provisional P08 content ([P08 ring-formation amendment](../plans/2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles)).
+Since 2026-10-05 the patrol stands on three alternating ring-2 edge tiles, one on each side of the triangle: Warder `(1,-2)`, Censer `(-2,1)`, Harrier `(1,1)`. All three presets use this one layout, so the wounded comparisons stay comparable. A layout clustered on one side ("flank") is the next scenario, not part of this round. Both are accepted user decisions (2026-10-05); the exact cells and facings are provisional P08 content ([P08 ring-formation amendment](../plans/2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles)).
 
 ## Directional boss — build second
 
@@ -157,7 +157,7 @@ The first six formation checks are implemented and pass in the P02 candidate (90
 
 Numeric balance, enemy intention tie-breaking, the definition of isolation, and how formation behaves after a Brood falls must be specified before calling the combat loop complete. The 2026-10-05 decisions below replace the earlier inward-Pazuzu exposure question: every Compact Brood is on ring 1, and fronts are measured from each enemy's tile.
 
-**Encounter layout (partly resolved 2026-10-05).** Enemies now stand on tiles, and their cells carry rule meaning (user decision, 2026-10-05). Ordinary enemies use ring-2 edge cells and the centre is the boss tile. Still open as experiment questions: other patrol layouts (for example clustered on one side), whether a boss ever stands off the centre, and the reach value. P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
+**Encounter layout (partly resolved 2026-10-05).** Enemies now stand on tiles, and their cells carry rule meaning (user decision, 2026-10-05). Ordinary enemies use ring-2 edge cells and the centre is the boss tile. Still open as experiment questions: other patrol layouts (for example clustered on one side), whether a boss ever stands off the centre, and ability-specific reach (to be designed with the abilities). P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
 
 ## Decision record
 
@@ -169,12 +169,18 @@ The user confirmed these decisions:
 
 1. **Formation.** Compact puts the Brood on alternating ring-1 cells, Ugallu `S[o]`, Girtablilu `S[o+2]`, Pazuzu `S[o+4]`: a triangle around the centre with every pair at distance 2. Expand moves each Brood one radial step outward to the ring-2 corner behind it, giving the corner triangle at distance 4; Contract reverses this. Rotation turns the triangle around the centre. The centre is never occupied by Brood; it is reserved for an occasional boss-type enemy. This supersedes the sector-aligned Compact (`T[2o], T[2o+1], S[o]`) and the inward-Pazuzu slot of 2026-10-04. Spread stays on the ring-2 corners, and Close threshold 2 is kept.
 2. **Enemies stand on real tiles**, replacing the view-only centre anchor of 2026-10-04.
-3. **Rules follow tiles.** Each enemy's front, protection and reach derive from its own tile and facing, so the formation's position relative to each enemy matters. The only movement is the shared maneuvers: no individual movement and no puzzle movement.
+3. **Rules follow tiles.** Each enemy's front, protection and reach derive from its own tile and facing, so the formation's position relative to each enemy matters. The only movement is the shared maneuvers: no individual movement and no puzzle movement. *(Reach was later deferred to ability design; see the answers below.)*
 4. **Enemy placement** was delegated to the Architect for a proposal.
 
-The intent is Darkest-Dungeon-style positional ranks, not tactical movement. Position should change who is protected against, who can be marked and which maneuver is worth its allowance, without turning maneuvers into a movement puzzle.
+The intent is Darkest-Dungeon-style positional ranks, not tactical movement. Position should change who is protected against and which maneuver is worth its allowance, without turning maneuvers into a movement puzzle.
 
-The Architect's proposals, provisional until the user's next manual test, are: enemies never stand on Brood cells (the ring-2 edges and the centre are enemy cells); fronts are the delivered six-cell wedge carried to the enemy's tile; reach is a two-step targeting limit applied at announcement; and the patrol stands on three alternating edge tiles. The computed layout argument, rule details and open questions are in the [ring-formation task](../plans/2026-10-05-c6399cb6-poc-001-ring-formation.md) and its owning amendments ([P02](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells), [P05](../plans/2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-reach-from-enemy-tiles), [P08](../plans/2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles)).
+The Architect's proposals, provisional until the user's next manual test, are: enemies never stand on Brood cells (the ring-2 edges and the centre are enemy cells); and fronts are the delivered six-cell wedge carried to the enemy's tile.
+
+On 2026-10-05 the user also answered the Architect's three open questions (accepted user decisions):
+
+- **Reach.** No generic enemy targeting reach in this round: "its all dependent of the abilities which we'll focus on later." Enemy targeting and marking keep their delivered behaviour. Reach will be ability-specific and designed together with the abilities.
+- **Layout.** One alternating layout for all three presets now. A layout clustered on one side ("flank") is recorded as the next scenario, separate from the HP presets.
+- **Tuning.** No numeric change in this round, so the manual test isolates the formation and tile changes. The computed layout argument, rule details and open questions are in the [ring-formation task](../plans/2026-10-05-c6399cb6-poc-001-ring-formation.md) and its owning amendments ([P02](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells), [P05](../plans/2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-areas-from-enemy-tiles), [P08](../plans/2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles)).
 
 Orientation zero, screen convention with vertical coordinates increasing downward (`W`, `C`, `H` are the patrol's edge tiles, `·` an empty cell, `◦` the empty centre):
 

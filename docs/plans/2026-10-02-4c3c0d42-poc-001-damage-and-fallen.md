@@ -14,7 +14,7 @@ Task `P06` owner and integration owner: POC 001 implementer, currently unassigne
 
 ## Amendment RF (2026-10-05) — ring formation and enemies on tiles
 
-**Status: assessed, no contract change.** Trigger: [brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record), [P02 Amendment RF](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells) and [P05 Amendment RF](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-reach-from-enemy-tiles). Execution: [Ring formation task](2026-10-05-c6399cb6-poc-001-ring-formation.md).
+**Status: assessed, no contract change.** Trigger: [brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record), [P02 Amendment RF](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells) and [P05 Amendment RF](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-areas-from-enemy-tiles). Execution: [Ring formation task](2026-10-05-c6399cb6-poc-001-ring-formation.md).
 
 P06 reads geometry only through P05 selectors and P02 links. Hand-checking `tests/damage.test.ts` with each fixture enemy on the centre cell (which reproduces the delivered encounter-centred protection):
 

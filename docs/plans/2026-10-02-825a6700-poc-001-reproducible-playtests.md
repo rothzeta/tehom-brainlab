@@ -14,10 +14,10 @@ Task `P11` owner and integration owner: POC 001 implementer, currently unassigne
 
 ## Amendment RF (2026-10-05) — rules version and enemy cells
 
-**Status: design amendment, not yet implemented.** Trigger: [P02 Amendment RF](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells), [P05 Amendment RF](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-reach-from-enemy-tiles) and [P08 Amendment RF](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles). Execution: [Ring formation task](2026-10-05-c6399cb6-poc-001-ring-formation.md).
+**Status: design amendment, not yet implemented.** Trigger: [P02 Amendment RF](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells), [P05 Amendment RF](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-areas-from-enemy-tiles) and [P08 Amendment RF](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles). Execution: [Ring formation task](2026-10-05-c6399cb6-poc-001-ring-formation.md).
 
 - The ring formation changes geometry, protection, targeting and the serialized enemy shape, so bump `RUN_RULES_VERSION` to `poc-001-rules-v2/patrol-v2/p07-v1`. `RECORD_VERSION` stays 1: the record envelope is unchanged, and the rules version identifies the state semantics.
-- The state validator requires each enemy's `cell`: a valid hex, one of P02 `ENEMY_CELLS`, and distinct from the other enemies' cells. It also requires `patrolRules.enemyReach` as a nonnegative safe integer, in both the snapshot and the record configuration.
+- The state validator requires each enemy's `cell`: a valid hex, one of P02 `ENEMY_CELLS`, and distinct from the other enemies' cells. `PatrolRules` is unchanged (no reach field; reach is deferred to ability design by user decision, 2026-10-05).
 - Records with rules version `poc-001-rules-v1/patrol-v1/p07-v1`, including the nine 2026-10-05 AI playtest exports, are rejected with the explicit unsupported-rules-version error. They stay replayable at their embedded build revision `552f2b1`. No migration is added.
 - The boss gate stays **HOLD**; this amendment adds no human evidence.
 

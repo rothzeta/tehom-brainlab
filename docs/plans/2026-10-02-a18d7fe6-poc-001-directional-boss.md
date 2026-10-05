@@ -34,7 +34,6 @@ At each announcement declare two ordered attacks: first a turnable fixed-area sw
 
 - Compact now places one Brood in each of sectors `o`, `o+2` and `o+4`. A two-sector sweep therefore always hits exactly one Brood, in either shape, and Expand/Contract never change which. The TR statement that a facing-zero sweep hits all of Compact at orientations 0 and 1 is superseded.
 - The marked blast's radius-2 splash still reaches all three Compact Brood (pairs at distance 2) and only the target in Spread.
-- Every Brood is within two steps of the centre in both shapes (1 in Compact, 2 in Spread), so reach never restricts a centre boss's marks.
 
 The gate review must re-check the "one rotation solves every turn" risk against this geometry: rotation now chooses who is swept rather than escaping the sweep. Ordinary enemies sharing the board with the boss are not authorized here. The plan stays blocked by the HOLD gate.
 
