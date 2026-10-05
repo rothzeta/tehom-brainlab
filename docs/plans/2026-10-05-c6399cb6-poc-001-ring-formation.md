@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**Proposed task, not implemented.** Written 2026-10-05 against BASE `ef0e3b4` (branch `ring-formation`, which contains local master with P01–P11, CT, TR and the 2026-10-05 AI playtest evidence). The Coordinator assigns the owner. The task owner is a POC 001 Implementer, who also owns local integration unless assigned otherwise.
+**Implemented, independently reviewed (no blocking findings), accepted and locally delivered.** [Implementation](../mailbox/ring-formation/implementer.md), [follow-up fix and verification](../mailbox/ring-formation/fix.md), [independent review](../mailbox/ring-formation/reviewer.md). Written 2026-10-05 against BASE `ef0e3b4` (branch `ring-formation`, which contains local master with P01–P11, CT, TR and the 2026-10-05 AI playtest evidence). The task owner is a POC 001 Implementer, who also owns local integration unless assigned otherwise.
 
 Authority: the user's decisions of 2026-10-05, recorded in the [brief's Decision record](../prototypes/poc-001-linked-formation.md#decision-record):
 
