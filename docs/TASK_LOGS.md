@@ -1032,3 +1032,21 @@ This was the last plan in the "implement up to p11" request. Worktree `/opt/dev/
 - P07–P11 delivered to local master, in addition to the two-ring board change.
 - Open state: the boss gate is HOLD pending real human attempts, so P12 stays blocked.
 - Earlier optional findings P03 O1–O3 and P04 O1 remain open.
+
+## 2026-10-05 test-browser Chrome discovery
+
+The user ran `just poc-001-test-browser` with no environment, and it failed with "Set POC001_CHROME or pass CHROME_PATH". During P10 and P11, every worker and Reviewer had supplied `POC001_CHROME` and a prior build by hand, so the bare command was never exercised. That review gap let the defect through. Work ran in worktree `/opt/dev/tehom-brainlab-tbc`, branch `test-browser-chrome`, from BASE `5b7c191`. The Coordinator ran no checks itself.
+
+**Implementation.** `tbc-impl` (`gpt-6.1-sol-high`, pane `w2G:p2R`) delivered `e30cb0bf`. The change touches only `scripts/browser-checks.mjs` and the README.
+- Chrome discovery order: `POC001_CHROME` or an explicit argument, then the highest Playwright headless shell, then `PATH` candidates. The selected binary is announced.
+- When no Chrome is found, the script fails with an actionable message and downloads nothing.
+- It rebuilds before running the Docker preview. A supplied `BASE_URL` skips the build and is documented.
+- Verified with `POC001_CHROME` unset and no `dist` directory: all four scripts pass. The override path also passes, and the no-Chrome case fails as intended. 460 tests pass. Source, tests and the justfile are unchanged. ([report](mailbox/test-browser-chrome/implementer.md))
+
+**Review.** `tbc-review` (pane `w2G:p2S`) found 0 blocking and 0 optional findings ([review](mailbox/test-browser-chrome/reviewer.md), `47a4b27`).
+
+**Delivery.** Master fast-forwarded `5b7c191` → `47a4b27f` → `a16c0f2` ([delivery](mailbox/test-browser-chrome/delivery.md)). At `47a4b27f`, the main checkout reran exactly the user's command with `POC001_CHROME` unset: exit 0, all four scripts passed. It also ran 460 tests and typecheck, both exit 0.
+
+**Cleanup.** Panes `w2G:p2R` and `p2S` closed. Worktree removed; branch kept. No push.
+
+**Process note.** Future browser and tooling reviews should run the delivered command exactly as a user would, with no hand-supplied environment.
