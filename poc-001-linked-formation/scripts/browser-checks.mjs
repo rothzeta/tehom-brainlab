@@ -32,7 +32,8 @@ try {
   await run('tests/browser-lab.mjs', 'lab');
   await run('tests/browser-preview.mjs', 'preview');
   await run('tests/browser-patrol.mjs', 'patrol');
-  console.log(JSON.stringify({ ok: true, scripts: 3, output }));
+  await run('tests/browser-run-record.mjs', 'records');
+  console.log(JSON.stringify({ ok: true, scripts: 4, output }));
 } finally {
   if (server && server.exitCode === null) {
     process.kill(-server.pid, 'SIGINT');

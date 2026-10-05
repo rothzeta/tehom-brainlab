@@ -55,3 +55,7 @@ poc-001-preview *args:
 # POC 001: browser checks.
 poc-001-test-browser *args:
     @./poc-001-linked-formation/bin/run test-browser "$@"
+
+# POC 001: replay a locally exported attempt.
+poc-001-replay *args:
+    @./poc-001-linked-formation/bin/run replay "$@"

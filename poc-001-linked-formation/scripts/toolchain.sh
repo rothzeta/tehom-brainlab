@@ -17,6 +17,7 @@ case "$command_name" in
   install) exec bun install --frozen-lockfile "$@" ;;
   dev|preview) exec bun run --bun "$command_name" --port "$POC001_PORT" "$@" ;;
   test-browser) exec bun run --bun test:browser "$@" ;;
+  replay) exec bun ./scripts/replay-run.ts "$@" ;;
   test) exec bun run --bun test:unit "$@" ;;
   typecheck|build) exec bun run --bun "$command_name" "$@" ;;
 esac

@@ -30,7 +30,7 @@ export function createCombatShell(parent: HTMLElement): void {
       <p class="legend">19 cells · ━ Close · ┄ Stretched · red: enemy front / mark · ◌ preview destination</p>
       <h2 id="battle-status" role="status"></h2><p id="links"></p><p id="shelters"></p>
     </section><aside aria-label="Patrol controls">
-      <div class="setup"><label>Start a fresh patrol<select id="preset"><option value="healthy">Healthy</option><option value="wounded-ugallu">Wounded Ugallu</option><option value="wounded-girtablilu">Wounded Girtablilu</option></select></label><button id="reset">Restart patrol</button></div>
+      <div class="setup"><label>Start a fresh patrol<select id="preset"><option value="healthy">Healthy</option><option value="wounded-ugallu">Wounded Ugallu</option><option value="wounded-girtablilu">Wounded Girtablilu</option></select></label><button id="reset">Restart patrol</button><button id="export-run">Export attempt (JSON)</button></div>
       <h2>Enemy intentions — resolution order</h2><ol id="intentions"></ol><p id="protection"></p>
       <h2>Player actions</h2><div id="actors"></div><div id="abilities"></div>
       <div id="targets" aria-label="Ability targets"></div><p id="selection"></p>
@@ -94,6 +94,11 @@ export class CombatScene extends Phaser.Scene {
     this.el('confirm').addEventListener('click', () => {
       const command = this.abilityCommand();
       if (command) this.session.activate(command);
+    });
+    this.el('export-run').addEventListener('click', () => {
+      const url = URL.createObjectURL(new Blob([this.session.exportRecord()], { type: 'application/json' }));
+      const link = document.createElement('a'); link.href = url; link.download = 'poc-001-attempt.json';
+      link.click(); setTimeout(() => URL.revokeObjectURL(url), 0);
     });
     this.el('cancel').addEventListener('click', () => this.session.cancel());
     const reset = () => { this.actor = this.ability = this.target = undefined; this.direction = 'clockwise'; this.session.reset(this.el<HTMLSelectElement>('preset').value as PatrolPreset); };

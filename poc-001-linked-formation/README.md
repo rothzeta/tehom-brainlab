@@ -305,3 +305,54 @@ stale revision/session rejection and timer cancellation. See the
 [P10 handoff](../docs/mailbox/p10-playable-patrol/implementer.md) for tested
 revisions, commands, screenshots and limitations. Automated browser play is not
 a human playtest.
+
+## Reproducible attempts (P11)
+
+On `?mode=patrol`, **Export attempt (JSON)** downloads the current attempt locally,
+including an empty, partial or terminal attempt. Restart and preset changes begin
+a fresh record. Only commands accepted by the P10 adapter are appended; selections,
+previews, unavailable controls, stale confirmations and feedback-lock duplicates
+are excluded. No record or observation is sent over the network.
+
+```sh
+just poc-001-replay /path/to/poc-001-attempt.json
+```
+
+The root recipe delegates through the prototype's ordinary pinned Bun/Docker
+wrapper. The named record is mounted read-only; replay's Docker container has no
+network. The CLI reads that file once, validates JSON and the supported versions,
+then invokes the same public transitions (`applyAbility` with stored tuning for
+abilities; `applyCommand` for maneuvers and phase ending). Success prints command
+and event counts, revision, round and phase. Errors exit 1 with a specific schema,
+version, rejection or divergence reason; wrapper/usage errors exit 2. Replay never
+imports code, opens paths or follows URLs from record fields. A supplied build SHA
+is metadata, not executable code or an instruction to fetch/check out a revision.
+No import UI, migration or replay timeline is provided.
+
+P11 resolves its schema and evidence defaults explicitly:
+
+| Default / value | Source and reason |
+| --- | --- |
+| Record version `1`; prototype `poc-001-linked-formation` | P11 plan's proposed v1 schema; a strict local envelope gives unsupported records an explicit failure. |
+| Rules version `poc-001-rules-v1/patrol-v1/p07-v1` | P11 semantic envelope plus the P08/P07 version owners. Bump the envelope for geometry, legality, resolution or event-order changes; no silent migration. Numeric tuning alone is captured separately. |
+| Build revision: full Git SHA, otherwise `unknown` | P11 plan. The wrapper injects HEAD for a clean prototype build/dev run; changed/untracked prototype files or unavailable Git produce `unknown`. Static preview retains the revision embedded when built. |
+| Fixture ID: `healthy`, `wounded-ugallu`, `wounded-girtablilu` | P08 factories; the actual serialized initial state is authoritative, including explicit experimental overrides. |
+| Configuration: all patrol numbers, all ability damage numbers, both mitigation rule sets | P08 state's `patrolRules` and P07 `DEFAULT_ABILITY_RULES` at attempt start. Capturing both prevents later provisional default changes from altering replay. Semantic ability ownership/bypass rules remain covered by the rules version. |
+| Initial state; accepted command + expected/resulting revision + ordered events per step; final state + ordered event list | P11 required exact replay and P10 accepted-command boundary. Step events locate the first divergence; the final summary proves state and overall event order. Snapshots are detached copies. Object-key ordering is immaterial. |
+| Player command kinds only: maneuver, useAbility, endPhase | P10 controls; raw internal attack commands cannot be exported as player inputs. Unknown fields, malformed payloads and invalid numeric rules fail rather than being corrected. |
+| Filename `poc-001-attempt.json`, formatted UTF-8 JSON | P11 local export default; a fixed name carries no person identifier or timestamp. Rename downloads to preserve multiple attempts. |
+| Observations outside the record; no optional text fields, identities or wall-clock timestamps | P11 allows separately entered observations; the existing playtest template keeps observations, tester explanations and interpretation distinct without collecting personal data. |
+| Boss gate **HOLD** until actual human attempts support an independent review opening it | P11 gate contract: absent/inconclusive evidence cannot open the gate. Automated verification establishes reproducibility, not enjoyment or comparative combat value. |
+
+`tests/run-record.test.ts` verifies explicit P08 winning/forfeit traces, stored
+alternate tuning, all factory starts, reset/rejection and specific failures.
+`test-browser` adds `browser-run-record.mjs` after the three unchanged P01–P10
+browser scripts. It uses native controls and actual downloaded files for all
+three presets, compares against current transitions, and checks reset and rejected
+inputs without fixing provisional outcomes. Browser output stays in the supplied
+scratch directory. These runs are automated, not human playtests.
+
+The [P11 evidence artifact](../docs/playtests/2026-10-05-poc-001-p11-automated.md)
+records the build/conditions and HOLD gate. No fair Apex/Shadow comparison or
+production-combat selection has been completed. Human attempts and independent
+Reviewer confirmation remain necessary before boss work is authorized.

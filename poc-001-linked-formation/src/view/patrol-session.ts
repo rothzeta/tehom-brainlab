@@ -2,6 +2,8 @@ import { createPatrol } from '../content/patrol';
 import type { PatrolPreset, PatrolState } from '../content/patrol';
 import type { Command, GameplayEvent } from '../core/commands';
 import type { CommandPreview } from '../core/preview';
+import { appendAcceptedCommand, createRunRecord } from '../core/run-record';
+import type { RunRecord } from '../core/run-record';
 import { LabSession } from './lab-state';
 
 type ControlCommand = Exclude<Command, { kind: 'attack' }>;
@@ -20,6 +22,7 @@ function controlIdentity(command: ControlCommand): string {
 export class PatrolSession {
   private preset: PatrolPreset = 'healthy';
   private readonly adapter: LabSession;
+  private record: RunRecord;
   private timer: ReturnType<typeof setTimeout> | undefined;
   private generation = 0;
   busy = false;
@@ -30,7 +33,12 @@ export class PatrolSession {
   constructor(private readonly changed: () => void = () => {}, private readonly duration = 400,
     private readonly factory: (preset: PatrolPreset) => PatrolState = createPatrol) {
     this.adapter = new LabSession(() => this.factory(this.preset));
+    this.record = this.freshRecord();
   }
+  private freshRecord(): RunRecord {
+    return createRunRecord(this.state, this.preset, import.meta.env?.VITE_POC001_BUILD_REVISION || 'unknown');
+  }
+  exportRecord(): string { return JSON.stringify(this.record, null, 2); }
   get state(): PatrolState { return this.adapter.state as PatrolState; }
   project(command: Command): CommandPreview { return this.adapter.previewCommand(command); }
   preview(command: Command): void {
@@ -49,6 +57,7 @@ export class PatrolSession {
     const result = this.adapter.confirmPreview(preview);
     this.pending = undefined;
     if (!result.ok) { this.message = `Unavailable: ${result.error.code}.`; this.changed(); return; }
+    this.record = appendAcceptedCommand(this.record, preview.command, result);
     this.events = result.events;
     this.message = preview.command.kind === 'endPhase'
       ? 'Unused actions forfeited. Enemy intentions resolved in the announced order.'
@@ -65,6 +74,7 @@ export class PatrolSession {
     this.generation += 1;
     if (this.timer !== undefined) clearTimeout(this.timer);
     this.timer = undefined; this.preset = preset; this.adapter.reset();
+    this.record = this.freshRecord();
     this.busy = false; this.pending = undefined; this.events = [];
     this.message = 'Fresh patrol. Choose a Brood, ability and target.'; this.changed();
   }
