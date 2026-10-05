@@ -10,6 +10,17 @@ Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](..
 
 Task `P09` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
 
+**Amended 2026-10-05:** End-phase forecast defect B2 and position-dependent next marks; see [Amendment RF](#amendment-rf-2026-10-05--end-phase-forecast-and-next-marks).
+
+## Amendment RF (2026-10-05) — End-phase forecast and next marks
+
+**Status: design amendment, not yet implemented.** Trigger: AI playtest defect report ([scout-1 D1](../mailbox/ai-playtest-20261005/scout-1.md#defect-d1--end-phase-forecast-describes-a-further-resolution-without-saying-so)) and [P08 Amendment RF](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles). Execution: [Ring formation task](2026-10-05-c6399cb6-poc-001-ring-formation.md) (bug B2).
+
+- **B2, End-phase forecast.** Hovering End phase showed an Immediate line that matched the committed result, plus an "If end phase now" line with lower HP. Source reading at BASE `ef0e3b4` suggests a cause: `previewCommand` builds the forecast by applying `endPhase` to the candidate state. When the previewed command is itself `endPhase`, that resolves a second enemy phase, the next round's. This is a hypothesis. The implementer must first reproduce the defect from the [scout-1 attempt 2 record](../mailbox/ai-playtest-20261005/scout-1-attempt-2.json) (commands 1–3, then preview End phase) in a failing regression test, and confirm or replace the cause before fixing.
+- **Contract.** Previewing `endPhase` shows that command's own resolution exactly once. It carries no further-phase forecast, and the interface shows no "If end phase now" line for it. The forecast type may gain an explicit kind for this case (proposed `not-applicable`); the implementer documents the chosen shape in the prototype README. Forecasts for every other command are unchanged: one `endPhase` applied to the candidate.
+- **Next marks.** With reach (P08 RF), next round's marks depend on the formation at the end of the player phase. A forecast's resulting state already contains them (`declaredIntentions` after `intentions-announced`). `enemyEvents` still excludes the announcement. No core change is needed; P10 renders them.
+- Protection gained/lost lists already come from the shared selectors, so they reflect enemy-tile fronts without change.
+
 ## Smallest useful outcome
 
 For a proposed ability or maneuver, the player-facing model can show the exact immediate result and a clearly labelled forecast of ending the phase now, without changing the live battle or guessing future player choices.

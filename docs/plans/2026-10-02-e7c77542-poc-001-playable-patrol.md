@@ -8,6 +8,8 @@ Authority: [brief Presentation requirements, Round structure, and Ordinary patro
 
 **Amended 2026-10-04 (two-ring board):** see the TR note under Proposed implementation.
 
+**Amended 2026-10-05 (enemies on tiles, bugs B1/B3):** see the RF note under Proposed implementation. Not yet implemented.
+
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P10` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
@@ -47,6 +49,19 @@ The early lab-only configuration selector must be clearly separated from the pla
 *Amendment CT (2026-10-04):* Compact now places Pazuzu on ring 2 ([P02 amendment](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-ct-2026-10-04--compact-triangle)). P08's proposed enemy anchors are ring-1 cells, for example Harrier `(1,0)`, which is adjacent to Compact orientation-zero Pazuzu `(1,1)`. Brood and enemy tokens must remain separately readable and selectable. Telegraphs over ring-2 cells must be visible, since P05 masks now include them.
 
 *Amendment TR (2026-10-04, two-ring board):* this supersedes the CT note's cells. On the [19-cell board](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-tr-2026-10-04--two-ring-board), Compact Pazuzu is on ring 1, and P08's former ring-1 enemy cells collide with it (Harrier `(1,0)` is Compact orientation-zero Pazuzu). Per the [P08 amendment](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-tr-2026-10-04--two-ring-board), enemies share the centre `(0,0)` as a view-only anchor (accepted user decision, 2026-10-04). Render them as a compact labelled cluster centred there, using view-only pixel offsets. Keep them separately readable and selectable from each other and from an adjacent ring-1 Pazuzu; the browser check should assert pointer hit-tests for every enemy and Brood token. Telegraphs now cover ring-1 and ring-2 cells (P05's six-cell fronts) and must be visible on both. Encounter layout stays an open experiment question; this is presentation, not a placement rule.
+
+*Amendment RF (2026-10-05, enemies on tiles; supersedes the TR note's centre cluster):* by user decision ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)) enemies stand on real tiles. Execution: [Ring formation task](2026-10-05-c6399cb6-poc-001-ring-formation.md).
+
+- Draw each enemy token on its own cell (P08 RF: Warder `(1,-2)`, Censer `(-2,1)`, Harrier `(1,1)`), using the same projection as the Brood. Remove the cluster offsets and the `PATROL_VIEW_ANCHOR` import.
+- Show each living enemy's facing with a mark from its tile toward the adjacent cell on its front's bisector, `cell + S[(facing+1) mod 6]`.
+- Tint front cells only for enemies whose front has a rule effect (protection sources; area sources, if any), using P05 `frontCells`. The current code tints `frontMask(facing)` around the centre for every enemy, which would now be wrong.
+- Show reach in text: each intention line lists the Brood currently in that enemy's reach. Every preview with a forecast lists the next round's marks ("Next marks if you end now: …"), read from the forecast state.
+- Keep Brood and enemy tokens separately readable and pointer-selectable. Enemy tiles neighbour Brood cells in both shapes.
+- The legend explains the front tint, the facing mark and reach.
+- **B1** (scout-2 D1, scout-3): after a preset change plus Restart, the actor buttons kept the previous preset's HP until a Brood was selected. At BASE the controls cache key is `[revision, locked, actor, ability]`, which is identical across a reset at revision 0; this is a probable cause, for the implementer to confirm. Contract: after any reset, every actor button shows the fresh state's HP before any input.
+- **B3** (scout-3): End phase always reported "Unused actions forfeited". Contract: the feedback mentions forfeiture only when at least one living Brood had not acted, and then states how many actions were forfeited.
+
+Additional acceptance evidence: enemy tokens sit on their core cells in every preset; pointer hit-tests resolve every enemy and Brood token in Compact and Spread; screenshots show Compact, Spread and enemies on tiles for each preset; the B1/B3 regressions fail at BASE and pass after the fix.
 
 ## Implementation checkpoints
 

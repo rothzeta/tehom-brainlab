@@ -10,9 +10,54 @@ Authority: the [brief's Formation rules and Initial tests](../../docs/prototypes
 
 **Amended 2026-10-04 (later):** the board is now two rings, 19 cells, by user decision; see [Amendment TR](#amendment-tr-2026-10-04--two-ring-board). It supersedes the radius-3 board, the ring table `R` and the Amendment CT mapping. Not yet implemented.
 
+**Amended 2026-10-05:** by user decision, Compact moves to alternating ring-1 cells around the empty centre; the Architect proposes that the centre and ring-2 edge cells become enemy cells. See [Amendment RF](#amendment-rf-2026-10-05--ring-formation-and-enemy-cells). It supersedes the TR Compact mapping. Not yet implemented.
+
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P02` implementation and combined-verification owner: assignment B-impl Implementer; local integration/delivery owner: assignment B-merge Implementer. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Actual execution is recorded in [TASK_LOGS](../TASK_LOGS.md#2026-10-04-p02-formation-algebra-candidate).
+
+## Amendment RF (2026-10-05) — ring formation and enemy cells
+
+**Status: design amendment, not yet implemented. The formation is an accepted user decision (2026-10-05); `ENEMY_CELLS` and the cell partition are the Architect's proposal, provisional until the user's next manual test.** Source: the [brief's Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record), 2026-10-05. Execution task: [Ring formation](2026-10-05-c6399cb6-poc-001-ring-formation.md). Design report: [Architect](../mailbox/ring-formation/architect.md).
+
+This section supersedes Amendment TR's Compact mapping (`T[2o], T[2o+1], S[o]`, the sector-aligned "family A"), the CT slot decision (Pazuzu inward) and the TR statement that Compact links are distance 1. The 19-cell board, the `T` and `S` tables, the Spread mapping, six orientations, the rotation step and the roster order are unchanged. Where this section and an earlier one disagree, this section governs.
+
+**Settled (user, 2026-10-05).** Compact places the Brood on alternating ring-1 cells, a triangle around the centre with every pair at distance 2. Expand moves each Brood one radial step outward to the ring-2 corner behind it; Contract reverses it. Rotation turns the triangle around the centre. No Brood ever occupies the centre. Spread stays on the ring-2 corners. Close threshold 2 is kept.
+
+**Mapping.** Roster order stays `[ugallu, girtablilu, pazuzu]`. For orientation `o` in `0..5`:
+
+- Compact: Ugallu `S[o]`, Girtablilu `S[(o+2) mod 6]`, Pazuzu `S[(o+4) mod 6]`.
+- Spread (unchanged): Ugallu `T[2o]`, Girtablilu `T[(2o+4) mod 12]`, Pazuzu `T[(2o+8) mod 12]`.
+
+`S[k]` lies radially inside corner `T[2k]` (`T[2k]` = 2 × `S[k]`), so every Spread position is exactly twice the same Brood's Compact position at the same orientation.
+
+| o | Compact Ugallu | Compact Girtablilu | Compact Pazuzu | Spread Ugallu | Spread Girtablilu | Spread Pazuzu |
+|---|---|---|---|---|---|---|
+| 0 | (1,0) | (-1,1) | (0,-1) | (2,0) | (-2,2) | (0,-2) |
+| 1 | (0,1) | (-1,0) | (1,-1) | (0,2) | (-2,0) | (2,-2) |
+| 2 | (-1,1) | (0,-1) | (1,0) | (-2,2) | (0,-2) | (2,0) |
+| 3 | (-1,0) | (1,-1) | (0,1) | (-2,0) | (2,-2) | (0,2) |
+| 4 | (0,-1) | (1,0) | (-1,1) | (0,-2) | (2,0) | (-2,2) |
+| 5 | (1,-1) | (0,1) | (-1,0) | (2,-2) | (0,2) | (-2,0) |
+
+The Architect checked this table and every invariant below with a disposable script outside the repository. The task's tests must restate them independently.
+
+**Reversibility and identity.**
+
+- The axial clockwise turn `(-r,q+r)` maps every labelled position at orientation `o` to its position at `o+1`, in both shapes. Six turns restore the start, and each rotation is undone by its inverse.
+- Expand is exactly the radial step `S[k]` → `T[2k]` for every Brood; Contract is its inverse. Both preserve orientation and roster labels and reverse exactly.
+- The twelve labelled states are distinct. Occupied-cell sets now coincide in both shapes: Compact (like Spread) has the same cells at orientations 0/2/4 and at 1/3/5, with different labelled assignments.
+- Order: around the centre, which is now the centre of both shapes, Ugallu, Girtablilu and Pazuzu run clockwise 120° apart in both shapes. Contraction never mirrors the formation.
+
+**Links and Close threshold.** In roster-pair order Compact links are `[2,2,2]` and Spread links are `[4,4,4]`. Keep `CLOSE_THRESHOLD = 2`. Thresholds 2 and 3 classify both shapes identically (Compact Close, Spread Stretched); 1 or less makes Compact Stretched, and 4 or more makes Spread Close. No observable state distinguishes 2 from 3, so the assigned default stays. Compact now sits exactly on the inclusive threshold; record this sensitivity for later tuning (P06 Shelter and P07 Impale depend on it).
+
+**Cell kinds and `ENEMY_CELLS` (proposed export).** The twelve states use exactly 12 cells: all six `S` cells and the six corners `T[0], T[2], …, T[10]`. The remaining 7 cells are never Brood cells: the centre and the six ring-2 edge cells `T[1], T[3], …, T[11]` = `(1,1), (-1,2), (-2,1), (-1,-1), (1,-2), (2,-1)`. P02 exports these as a frozen `ENEMY_CELLS` table, centre first and then the edge cells in clockwise `T` order, so that P08 content and P11 record validation check placement against one geometric source. P02 does not choose which enemy stands where (P08 owns placement).
+
+**Required contract change.** "Brood never overlap and never occupy the centre. Spread Brood and Compact Ugallu and Girtablilu occupy ring 2. Compact Pazuzu occupies ring 1. Every Compact pair is adjacent" becomes: "Brood never overlap and never occupy an `ENEMY_CELLS` cell. Compact Brood occupy ring 1 at alternating indices, every pair at distance 2. Spread Brood occupy ring-2 corners, every pair at distance 4. Each Brood's Spread cell is twice its Compact cell."
+
+**Amended acceptance criteria.** Criterion 2's coordinate expectations use the table above. Criterion 4 (links) uses `[2,2,2]` Close and `[4,4,4]` Stretched at threshold 2, with Compact Stretched at threshold 1 and Spread Close at threshold 4. All other criteria are unchanged.
+
+**Rejected alternatives.** Keeping the TR sector-aligned Compact (superseded by the user). A Compact on ring 1 at adjacent cells (`S[o], S[o+1], S[o+2]`) is not a triangle around the centre and would leave one Brood without a radial corner on Expand. Letting enemies stand on unused Brood cells (an unoccupied ring-1 cell or corner) would block maneuvers for some orientations and need a collision rule, which the brief excludes.
 
 ## Amendment TR (2026-10-04) — two-ring board
 

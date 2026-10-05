@@ -10,6 +10,17 @@ Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](..
 
 Task `P11` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
 
+**Amended 2026-10-05:** rules-version bump and enemy-cell validation for the ring formation; see [Amendment RF](#amendment-rf-2026-10-05--rules-version-and-enemy-cells).
+
+## Amendment RF (2026-10-05) — rules version and enemy cells
+
+**Status: design amendment, not yet implemented.** Trigger: [P02 Amendment RF](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells), [P05 Amendment RF](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-reach-from-enemy-tiles) and [P08 Amendment RF](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles). Execution: [Ring formation task](2026-10-05-c6399cb6-poc-001-ring-formation.md).
+
+- The ring formation changes geometry, protection, targeting and the serialized enemy shape, so bump `RUN_RULES_VERSION` to `poc-001-rules-v2/patrol-v2/p07-v1`. `RECORD_VERSION` stays 1: the record envelope is unchanged, and the rules version identifies the state semantics.
+- The state validator requires each enemy's `cell`: a valid hex, one of P02 `ENEMY_CELLS`, and distinct from the other enemies' cells. It also requires `patrolRules.enemyReach` as a nonnegative safe integer, in both the snapshot and the record configuration.
+- Records with rules version `poc-001-rules-v1/patrol-v1/p07-v1`, including the nine 2026-10-05 AI playtest exports, are rejected with the explicit unsupported-rules-version error. They stay replayable at their embedded build revision `552f2b1`. No migration is added.
+- The boss gate stays **HOLD**; this amendment adds no human evidence.
+
 ## Smallest useful outcome
 
 A tester can export one exact patrol attempt, a developer can replay it against the same rules, and a review can distinguish actual decisions/defects from enthusiasm or speculation. A negative finding is a valid hand-back; this plan does not require declaring the combat successful.

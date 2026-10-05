@@ -8,6 +8,8 @@ Authority: [brief Directional boss and Implementation order](../../docs/prototyp
 
 **Amended 2026-10-04 (two-ring board):** see the TR note under Fixture and inputs.
 
+**Amended 2026-10-05 (ring formation, boss tile):** see the RF note under Fixture and inputs.
+
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P12` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
@@ -27,6 +29,14 @@ Proposed `foundry-v1`: one boss at `(0,0)` with HP 42, facing 0, two-point front
 At each announcement declare two ordered attacks: first a turnable fixed-area sweep for 5 damage in the frontal mask; then a marked splash for 3 damage with radius 2, cycling living targets in `[girtablilu,pazuzu,ugallu]`. Before announcing rounds after the first, advance boss facing one clockwise step from its current facing. No automatic turning occurs later at impact. These values and cadence are experimental and must be versioned if changed.
 
 *Amendment TR (2026-10-04, two-ring board):* the boss at `(0,0)` uses the view-only centre anchor (accepted user decision, 2026-10-04); its exact placement is not a rule. The user expects bosses "in the middle" but "won't be completely centered", and encounter layout is an open experiment question ([brief Open decisions](../../docs/prototypes/poc-001-linked-formation.md#open-decisions)). Protection and the sweep stay encounter-centred through P05, so the boss's cell has no rule effect. An off-centre boss with rule meaning would need its own mask proposal (P05 stop condition) and is not authorized here. On the [two-ring masks](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-tr-2026-10-04--two-ring-board), the frontal sweep and protection cover six cells, sectors `f` and `f+1` across rings 1–2. That is still one third of the Brood cells. Compact orientation `o` lies in one sector, so a facing-zero sweep hits Compact at orientations 0 and 1, as before. The facing cadence, the Crosswind interaction and the splash radius (2: all of Compact, the target only in Spread) need no change. Re-check the "one rotation solves every turn" risk during the gate review, not by assumption.
+
+*Amendment RF (2026-10-05, ring formation and enemies on tiles):* the centre is now the boss tile and is never occupied by Brood (user decision, [brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)). The Foundry Mechanism stands on `(0,0)`, a real tile. Its front is P05 `frontCells((0,0), f)`, which equals the delivered `frontMask(f)`, so its sweep and protection masks are unchanged. The formation around it changed (P02 RF):
+
+- Compact now places one Brood in each of sectors `o`, `o+2` and `o+4`. A two-sector sweep therefore always hits exactly one Brood, in either shape, and Expand/Contract never change which. The TR statement that a facing-zero sweep hits all of Compact at orientations 0 and 1 is superseded.
+- The marked blast's radius-2 splash still reaches all three Compact Brood (pairs at distance 2) and only the target in Spread.
+- Every Brood is within two steps of the centre in both shapes (1 in Compact, 2 in Spread), so reach never restricts a centre boss's marks.
+
+The gate review must re-check the "one rotation solves every turn" risk against this geometry: rotation now chooses who is swept rather than escaping the sweep. Ordinary enemies sharing the board with the boss are not authorized here. The plan stays blocked by the HOLD gate.
 
 ## Contracts and decisions
 

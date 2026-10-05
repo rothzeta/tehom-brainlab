@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**Implemented, independently reviewed (no findings), accepted and locally delivered.** [Implementation evidence](../mailbox/two-ring-board/implementer.md); [independent review](../mailbox/two-ring-board/reviewer.md). Written 2026-10-04 against BASE `0a48098ff439bc84df06f5f8e965531d69e0dba2` (local master content with P01–P06 and the Compact triangle delivered). The Coordinator assigns the owner. The task owner is a POC 001 Implementer, who also owns local integration unless assigned otherwise.
+**Implemented, independently reviewed (no findings), accepted and locally delivered.** *2026-10-05: its Compact mapping (family A) and the view-only centre enemy anchor are superseded by the user's ring-formation decision; see the [Ring formation task](2026-10-05-c6399cb6-poc-001-ring-formation.md). The 19-cell board, `T`/`S` tables and corner Spread stand.* [Implementation evidence](../mailbox/two-ring-board/implementer.md); [independent review](../mailbox/two-ring-board/reviewer.md). Written 2026-10-04 against BASE `0a48098ff439bc84df06f5f8e965531d69e0dba2` (local master content with P01–P06 and the Compact triangle delivered). The Coordinator assigns the owner. The task owner is a POC 001 Implementer, who also owns local integration unless assigned otherwise.
 
 Authority: the user's two-ring decision of 2026-10-04, recorded in the [brief's Decision record](../prototypes/poc-001-linked-formation.md#decision-record). The arena is the centre plus rings 1 and 2 (19 cells). The middle is enemy and boss space. Compact is the true triangle "tight against" the middle, and Spread is "wide around" on the outer ring. Enemy placement is deliberately not fixed. The design is specified in its owning plans:
 

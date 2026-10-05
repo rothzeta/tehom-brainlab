@@ -6,11 +6,23 @@
 
 Authority: the [brief's deterministic combat requirement, Shelter description, and Open decisions](../../docs/prototypes/poc-001-linked-formation.md). Fallen-slot behavior, simultaneous-hit ordering, and terminal precedence are unresolved there; this plan proposes explicit local defaults. See the [index](README.md) for draft/ADR authority.
 
-**Amended 2026-10-04:** reviewed against the Compact triangle; no rule change. See [Amendment CT](#amendment-ct-2026-10-04--compact-triangle). Reviewed again against the two-ring board; no rule change. See [Amendment TR](#amendment-tr-2026-10-04--two-ring-board).
+**Amended 2026-10-04:** reviewed against the Compact triangle; no rule change. See [Amendment CT](#amendment-ct-2026-10-04--compact-triangle). Reviewed again against the two-ring board; no rule change. See [Amendment TR](#amendment-tr-2026-10-04--two-ring-board). Reviewed against the ring formation and enemies on tiles (2026-10-05); no rule change. See [Amendment RF](#amendment-rf-2026-10-05--ring-formation-and-enemies-on-tiles).
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P06` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
+
+## Amendment RF (2026-10-05) — ring formation and enemies on tiles
+
+**Status: assessed, no contract change.** Trigger: [brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record), [P02 Amendment RF](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells) and [P05 Amendment RF](2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-reach-from-enemy-tiles). Execution: [Ring formation task](2026-10-05-c6399cb6-poc-001-ring-formation.md).
+
+P06 reads geometry only through P05 selectors and P02 links. Hand-checking `tests/damage.test.ts` with each fixture enemy on the centre cell (which reproduces the delivered encounter-centred protection):
+
+- The facing-0 Warder still protects Censer against Ugallu at Compact orientation 0 (Ugallu stands on `S0`, inside the centre front). At Compact orientation 2 Ugallu stands on `S2`, outside it.
+- Compact pairs are at distance 2, which is Close at threshold 2, so Shelter eligibility, its threshold-0 failure and the Spread Stretched case keep their values. A radius-2 splash on Compact Girtablilu still reaches all three Brood.
+- Fallen-slot, cancellation and terminal behaviour do not depend on geometry.
+
+The only required test edit is adding the required enemy `cell` to fixtures (task exception D1). Mitigation amounts and stacking are unchanged. Compact now sits exactly on the Close threshold, so lowering `closeThreshold` below 2 in a fixture would make Compact Shelter ineligible.
 
 ## Amendment TR (2026-10-04) — two-ring board
 

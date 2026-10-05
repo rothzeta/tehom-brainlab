@@ -10,9 +10,22 @@ Authority: [prototype First implementation slice](../../poc-001-linked-formation
 
 **Amended 2026-10-04 (later):** the lab renders the 19-cell two-ring board; see [Amendment TR](#amendment-tr-2026-10-04--two-ring-board). Not yet implemented.
 
+**Amended 2026-10-05:** the lab shows the ring-1 Compact triangle; see [Amendment RF](#amendment-rf-2026-10-05--ring-formation). No lab code change is expected. Not yet implemented.
+
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P04` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
+
+## Amendment RF (2026-10-05) — ring formation
+
+**Status: assessed; no lab code change expected; not yet implemented.** Trigger: the user's ring-formation decision ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)) and [P02 Amendment RF](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells). Execution: [Ring formation task](2026-10-05-c6399cb6-poc-001-ring-formation.md).
+
+- The lab derives every token, link and ghost from P02, so it shows the new Compact (three ring-1 cells around the empty centre, links of distance 2) without a code change. The delivered spacing (120 px), stage and legend are unchanged.
+- The existing browser check compares the rendered positions, links and ghosts with core output and clicks the empty centre. It is expected to pass unedited. Its contraction message "include ring-one Pazuzu" now describes all three Brood; it is a label, not an assertion.
+- Compact link labels sit on the three long sides of the triangle around the centre. If a label covers a token or the centre click target, fix the presentation, not the test.
+- The lab renders no enemies (unchanged).
+
+Additional evidence: screenshots of every Compact orientation and of an Expand ghost from Compact, inspected for readable labels and separated tokens.
 
 ## Amendment TR (2026-10-04) — two-ring board
 

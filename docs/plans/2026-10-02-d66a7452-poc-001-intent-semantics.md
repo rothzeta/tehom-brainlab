@@ -10,9 +10,48 @@ Authority: [brief Round structure, Test abilities, and encounter descriptions](.
 
 **Amended 2026-10-04 (later):** sectors cover rings 1–2 of the two-ring board; see [Amendment TR](#amendment-tr-2026-10-04--two-ring-board). Not yet implemented.
 
+**Amended 2026-10-05:** enemies stand on tiles, and fronts, protection, reach and turnable areas are measured from each enemy's own tile; see [Amendment RF](#amendment-rf-2026-10-05--fronts-protection-and-reach-from-enemy-tiles). Not yet implemented.
+
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
 Task `P05` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
+
+## Amendment RF (2026-10-05) — fronts, protection and reach from enemy tiles
+
+**Status: design amendment, not yet implemented.** Trigger: the user decisions of 2026-10-05 ([brief Decision record](../../docs/prototypes/poc-001-linked-formation.md#decision-record)): enemies stand on real tiles, and each enemy's front, protection and reach derive from its own tile and facing. Geometry: [P02 Amendment RF](2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells). Execution: [Ring formation task](2026-10-05-c6399cb6-poc-001-ring-formation.md). This is the separate mask proposal that the TR "Enemy anchors" paragraph and this plan's stop condition require before enemy cells may carry rule meaning. It supersedes the TR statements that enemy cells carry no rule meaning and that protection is encounter-centred. The definitions below are the Architect's proposal; the user decided the principle, not these shapes.
+
+**Enemy cell.** `EnemyState` gains a required `cell: Hex`. Selectors read it; they do not validate placement. P08 content and P11 record validation check that each enemy stands on a distinct `ENEMY_CELLS` cell (P02). Unit fixtures may place an enemy on the centre, which reproduces the delivered encounter-centred behaviour exactly.
+
+**Front (proposed `frontCells(origin, facing)`).** Take the delivered six-cell `frontMask(facing)` in its order, add `origin` to each cell, and keep the cells that are on the board. At the centre this is exactly `frontMask(facing)`, so a centre (boss) enemy's front is unchanged. Elsewhere the front is the same 120° wedge within two steps of the enemy's tile, clipped at the board edge. Hand-checked examples for the proposed Warder tile `(1,-2)` (`T9`):
+
+- facing 0: `(2,-1), (2,-2), (1,0), (0,0), (1,-1)` (`T11, T10, S0, centre, S5`; one cell clipped);
+- facing 1: `(1,0), (0,0), (1,-1), (-1,0), (-1,-1), (0,-1)` (`S0, centre, S5, S3, T7, S4`);
+- facing 5: `(2,-1), (2,-2)` (`T11, T10`; four cells clipped).
+
+`sectorCells(s)` and `frontMask(f)` stay exported and unchanged: they are the centre-tile case. Any consumer that means "this enemy's front" must call `frontCells(enemy.cell, enemy.facing)`; no consumer may substitute `frontMask(enemy.facing)` for a non-centre enemy.
+
+**Protection.** `selectProtection` keeps its signature, reasons and ordering. A living source protects when the attacker's current cell lies in `frontCells(source.cell, source.facing)`. The per-source reason string `outside-sector` is kept for compatibility; it now means "outside that source's front".
+
+**Areas.** A fixed area keeps its stored cells; recipients are still the living Brood standing on them. `turnEnemy` turns each turnable area cell about the source's tile: `c` becomes `E + turn(c − E)`, where `E` is the source cell and `turn(q,r) = (-r,q+r)`. Anticlockwise remains five clockwise steps with one facing event. At the centre this is the delivered transform. Turned cells are not clipped or recomputed: a cell turned off the board has no recipients and is not drawn. Turning a clipped front therefore need not equal the next facing's clipped front; that equality holds only at the centre. The patrol declares no areas, so this matters for P12 and fixtures only.
+
+**Reach (proposed `broodInReach(context, enemyId, reach)`).** Returns the living Brood IDs, in roster order, whose current cell is within `reach` steps (inclusive) of the enemy's cell. A missing or fallen enemy returns an empty list. `reach` must be a nonnegative safe integer, or the call throws `RangeError`, like the other distance thresholds. P05 supplies the query only; P08 decides when it applies (at announcement) and the fallback. Brood contact attacks are not limited by reach: every living Brood still reaches every living enemy in all twelve states (P07 criterion 5).
+
+**What remains centre-based.** The formation's pivot (rotation and Expand/Contract act about the centre, P02), and the centre-tile case of fronts (`sectorCells`, `frontMask`) used by a centre enemy. Links, isolation, splash and marks are measured between Brood and are unaffected by enemy tiles.
+
+**Recipient and protection tables at the centre (changed by P02 RF).** Compact orientation `o` now places one Brood in each of sectors `o`, `o+2` and `o+4`, like Spread. A two-sector front from the centre therefore always contains exactly one Brood, in both shapes, and Expand/Contract never change which:
+
+- Fixture area (facing-zero front from the centre): Compact `[U, U, P, P, G, G]`; Spread `[U, U, P, P, G, G]` (unchanged).
+- Turned area (facing one): Compact `[G, U, U, P, P, G]`; Spread `[G, U, U, P, P, G]` (unchanged).
+- A centre Warder at facing 0 protects exactly the fixture-area recipients.
+
+**Marks, splash and isolation.** A mark on Girtablilu anchors at `S[(o+2) mod 6]` in Compact and `T[(2o+4) mod 12]` in Spread. Keep `SPLASH_RADIUS = 2`: Compact pairs are at distance 2, so a splash on any Compact Brood still reaches all three, and Spread pairs at distance 4 still isolate the target. Radii 2 and 3 behave identically; radius 1 would now reach only the target in both shapes (a P08 tuning lever, not chosen here). Isolation and active links are unchanged: Compact has no isolated Brood while two or more live, and every living Spread Brood is isolated.
+
+**Amended acceptance criteria (additions; criteria 1–6 stand, evaluated with the RF mapping and enemies on the centre unless stated).**
+
+- RF-1. `frontCells((0,0), f)` equals `frontMask(f)` element by element for every facing. `frontCells` at the three examples above equals the listed cells in order, and never contains an off-board cell or the origin.
+- RF-2. With a Warder on `(1,-2)` at facing 0 protecting Censer, exactly the Brood standing on the facing-0 cells above are protected, across all twelve states; a Crosswind turn changes the protected set to the facing-1 or facing-5 cells.
+- RF-3. Crosswind on an enemy at `(1,-2)` turns a stored turnable area about `(1,-2)`; for example the single cell `(2,0)` turns clockwise to `(-1,1)`. Marks and other areas are unchanged.
+- RF-4. `broodInReach` returns roster-ordered living Brood within the inclusive distance, excludes fallen Brood, returns empty for a missing or fallen enemy, and rejects invalid reach values with `RangeError`.
 
 ## Amendment TR (2026-10-04) — two-ring board
 

@@ -1,6 +1,6 @@
 # POC 001 — Linked formation
 
-**Status:** specified experiment; P01–P06 and the Compact triangle are locally delivered on the radius-3 board (see [CURRENT](../CURRENT.md)). The two-ring board (2026-10-04) is specified but not implemented. Combat and playtesting have not started.
+**Status:** specified experiment. Delivered state is recorded in [CURRENT](../CURRENT.md); this paragraph does not restate it. AI-directed playtests of the delivered patrol were recorded on 2026-10-05 ([reports](../mailbox/ai-playtest-20261005/)); they are not human playtests. The ring formation and enemies on tiles (user decision, 2026-10-05; see [Decision record](#decision-record)) are specified in the [ring-formation task](../plans/2026-10-05-c6399cb6-poc-001-ring-formation.md) and not yet implemented.
 
 **Basis:** the POC accepted in the TEHOM planning conversation, 2 October 2026. Initial tuning and unresolved mechanics are identified below rather than presented as playtest findings.
 
@@ -19,31 +19,48 @@ The experiment tests whether three Brood attacking individually but moving as a 
 | Abilities | Two per Brood; six total |
 | Maneuvers | Rotate left, rotate right, expand/contract |
 | Legal configurations | Two shapes times six orientations |
-| Ordinary encounter | Warder, Censer, Harrier patrol |
+| Ordinary encounter | Warder, Censer, Harrier patrol, each standing on its own outer-ring edge tile *(user decision, 2026-10-05)* |
 | Boss | One Foundry Mechanism |
 | Presentation | Labelled tokens and generated geometry first |
 | Technology target | TypeScript + Phaser + Vite + Vitest; no backend |
 
 ## Formation rules
 
-Brood occupy the two rings around the centre. The outer ring is ring 2 (12 cells) and the inner ring is ring 1 (6 cells). Spread uses the outer ring only; Compact places one Brood on ring 1, just inside the other two. The middle is enemy and boss space. The encounter centre is fixed and does not change when a target is selected or defeated. Sectors, fronts and protection are measured from that fixed centre, not from enemy tokens.
+This is still mostly a Darkest Dungeon game, not an XCOM game *(user, 2026-10-05)*. Position works like Darkest Dungeon ranks: where each Brood stands relative to each enemy changes who can be protected against, who can be marked and which shared maneuver is worth spending. It is not a puzzle-movement game. The only movement is the shared formation maneuver; there is no individual movement, and enemies never move.
 
-Exact enemy placement is deliberately not fixed. Bosses stand "in the middle" but need not be exactly centred, and encounter layout is one of the questions this POC explores (open experiment question, see [Open decisions](#open-decisions)). By accepted user decision (2026-10-04), enemies are drawn as a cluster at the centre cell `(0,0)`, a view-only anchor with no rule meaning, until encounter layout is explored.
+The board is the centre plus two rings: ring 1 (6 cells, table `S`) and ring 2 (12 cells, table `T`, whose even indices are corners and odd indices are the single edge cell between two corners). Its cells divide into two fixed kinds:
 
-- **Compact:** "tight against" the middle. A true triangle of three mutually adjacent cells: two Brood on the outer ring (ring 2) and one on ring 1, just inside them. All three links are distance 1. Ugallu and Girtablilu hold the outer cells; Pazuzu is the inward Brood. *(Accepted user decision, 2026-10-04; replaces "three consecutive outer-ring cells". See [Decision record](#decision-record).)* On the two-ring board the triangle cannot be mirror-symmetric about a side. By accepted user decision (2026-10-04), it fills one encounter sector: Ugallu on an outer corner cell, Girtablilu on the next outer cell clockwise, and Pazuzu on the ring-1 cell inside Ugallu.
-- **Spread:** "wide around" the middle. Three outer-ring (ring 2) positions exactly 120 degrees apart. By accepted user decision (2026-10-04), these are the outer ring's corner cells, the widest choice (pairwise distance 4).
-- **Rotate:** turn the entire formation one 60-degree step clockwise or anticlockwise.
-- **Expand / contract:** change shape while preserving the Brood's clockwise order around the formation's own centre and the formation's orientation.
+- **Brood cells** (12): every ring-1 cell and the six ring-2 corners. Only Brood stand here.
+- **Enemy cells** (7): the six ring-2 edge cells and the centre. Only enemies stand here. The centre is the boss tile; the ordinary patrol does not use it.
 
-Expansion separates the Brood around the encounter. Ugallu stays on its corner cell, Girtablilu moves along the outer ring, and Pazuzu steps out from ring 1 to the outer ring; contraction reverses this. No Brood ever occupies the centre cell. There is no independent movement, squad translation, pursuit, pathfinding, collision resolution, opportunity attack, or damage from crossing a telegraph during a maneuver. Only destination states determine the initial rules.
+No Brood ever occupies the centre or an edge cell, and no enemy ever occupies a Brood cell. Maneuvers are therefore never blocked, and there is no collision rule. *(The centre rule is a user decision, 2026-10-05. Keeping enemies off Brood cells is the Architect's recommendation in the [ring-formation design](../plans/2026-10-05-c6399cb6-poc-001-ring-formation.md), provisional until the user's next manual test.)*
 
-The exact experimental coordinate mapping and reversible shape transitions are encoded in the [P02 implementation](../../poc-001-linked-formation/README.md#formation-algebra-p02) and tested against the [plan fixture](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md). All twelve labelled states are retained even when Spread occupied-cell sets coincide. The delivered code implements the Compact triangle on the superseded radius-3 board ([Compact triangle task](../plans/2026-10-04-fb4bf201-poc-001-compact-triangle.md)). The two-ring mapping is specified in the [P02 two-ring amendment](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-tr-2026-10-04--two-ring-board) and the [two-ring board task](../plans/2026-10-04-d005e5f4-poc-001-two-ring-board.md), and is not yet implemented. The browser lab shows formations only; combat has not been added.
+- **Compact:** "around the rotation point" (user, 2026-10-05). The Brood stand on alternating ring-1 cells: Ugallu `S[o]`, Girtablilu `S[o+2]`, Pazuzu `S[o+4]`. They form a triangle around the empty centre, every pair at distance 2. *(User decision, 2026-10-05; supersedes the sector-aligned triangle of 2026-10-04.)*
+- **Spread:** "wide around" the middle. Each Brood stands on the ring-2 corner directly behind its Compact cell: Ugallu `T[2o]`, Girtablilu `T[2o+4]`, Pazuzu `T[2o+8]`, pairwise distance 4. These are the same corner cells as before.
+- **Rotate:** turn the whole triangle one 60-degree step clockwise or anticlockwise around the centre.
+- **Expand / contract:** Expand moves every Brood one radial step outward, from `S[k]` to the corner `T[2k]` behind it. Contract reverses this. Orientation, roster identity and the clockwise order Ugallu → Girtablilu → Pazuzu around the centre are preserved.
+
+There is no independent movement, squad translation, pursuit, pathfinding, collision resolution, opportunity attack, or damage from crossing a telegraph during a maneuver. Only destination states determine the rules.
+
+The exact mapping, all twelve labelled states and their reversibility are in the [P02 ring-formation amendment](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells). All twelve labelled states are retained even where occupied-cell sets coincide (Compact and Spread orientations `o`, `o+2` and `o+4` share cells with different labels).
+
+### Enemies on tiles
+
+By user decision (2026-10-05), every enemy stands on a real tile, and each enemy's front, protection and reach derive from its own tile and facing. The formation's position relative to each enemy therefore matters, through the shared maneuvers only.
+
+- **Front:** an enemy facing `f` watches the same six-cell wedge that a centre enemy would, carried to its own tile and clipped to the board. A centre (boss) enemy keeps exactly the delivered encounter-centred front.
+- **Protection:** a Warder protects its ward against non-bypassing attacks from Brood standing in the Warder's own front.
+- **Reach:** an enemy may announce its marked attack only against a living Brood within two steps of its tile. If none is in reach, it may mark any living Brood. This reading of "reach", the value 2 and the fallback are the Architect's provisional defaults (open question RF-Q1 in the [ring-formation task](../plans/2026-10-05-c6399cb6-poc-001-ring-formation.md#open-questions-with-applied-defaults)). Reach is checked once, when intentions are announced. Marks still follow their creature until impact, and a squad maneuver never cancels an announced mark.
+- **Areas:** a turnable area turns around its source's tile.
+- **Unchanged:** every Brood contact attack still reaches every enemy wherever it stands; links, isolation and splash are measured between Brood; rotation and Expand/Contract still pivot on the centre.
+
+The default patrol layout and its rationale are in the [P08 ring-formation amendment](../plans/2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles). Rule details are in the [P05 ring-formation amendment](../plans/2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-reach-from-enemy-tiles).
 
 ### Links
 
-All three links remain visible. The initial test threshold is Close at two hex steps or less and Stretched beyond that. Compact should make all links Close (each is distance 1); Spread should make them Stretched (each is distance 4 on the two-ring board).
+All three links remain visible. The initial test threshold is Close at two hex steps or less and Stretched beyond that. Compact makes all links Close (each is distance 2); Spread makes them Stretched (each is distance 4).
 
-This first version deliberately tests shared formation stances, not independently adjustable links or asymmetric formations. The threshold is provisional, not balanced.
+This first version deliberately tests shared formation stances, not independently adjustable links or asymmetric formations. The threshold is provisional, not balanced. Compact now sits exactly on the threshold, so a threshold below 2 would make Compact Stretched.
 
 ## Round structure
 
@@ -69,13 +86,13 @@ These are provisional test kits, not final character designs.
 | Girtablilu | **Sting:** damage one enemy | **Impale:** stronger strike that ignores directional protection while both links are Stretched |
 | Pazuzu | **Gale:** modest damage bypassing directional protection | **Crosswind:** turn one enemy's facing and associated directional intention by one orientation step |
 
-Basic contact attacks can reach enemies in the central engagement area, with a lunge-and-return animation. They do not require literal tile adjacency and do not move the attacker permanently.
+Basic contact attacks can reach every enemy wherever it stands, with a lunge-and-return animation. They do not require literal tile adjacency and do not move the attacker permanently. *(2026-10-05: enemies now stand on tiles; this contact reach is unchanged.)*
 
 Directional protection can reduce attack effectiveness without making ordinary contact attacks universally illegal. Every Brood should retain a worthwhile contribution in either shape, though its ideal action or preferred target may be unavailable.
 
 ## Ordinary patrol — build first
 
-**Warder:** protects another enemy against attacks from a marked frontal sector. Rotation or Crosswind can change attack access.
+**Warder:** protects another enemy against attacks from Brood standing in its own front, measured from its tile. Rotation or Crosswind can change attack access.
 
 **Censer:** marks a Brood and later damages that creature plus nearby Brood. The mark follows its target. Spreading reduces splash; rotating a compact formation does not remove the mark.
 
@@ -84,6 +101,8 @@ Directional protection can reduce attack effectiveness without making ordinary c
 The intended question is: which threat do I solve with formation, and which do I solve with abilities and target priority?
 
 Replay this patrol with a healthy party, wounded Ugallu, and wounded Girtablilu. Damage values and targeting rules require testing; the proposed composition is not yet demonstrated to be balanced.
+
+Since 2026-10-05 the patrol stands on three alternating ring-2 edge tiles, one on each side of the triangle: Warder `(1,-2)`, Censer `(-2,1)`, Harrier `(1,1)`. All three presets use this one layout, so the wounded comparisons stay comparable. A layout clustered on one side is the documented next scenario, not part of this round. The layout, facings and reach are provisional P08 content ([P08 ring-formation amendment](../plans/2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles)).
 
 ## Directional boss — build second
 
@@ -136,13 +155,40 @@ The first six formation checks are implemented and pass in the P02 candidate (90
 
 ## Open decisions
 
-Numeric balance, sector masks, enemy intention tie-breaking, the definition of isolation, and how formation behaves after a Brood falls must be specified before calling the combat loop complete. The Compact triangle (see [Decision record](#decision-record)) puts one Brood on the inner Brood ring (ring 1 on the two-ring board); by accepted user decision (2026-10-04), it is covered by sector-based areas, sweeps and protection fronts like the outer cells of its sector.
+Numeric balance, enemy intention tie-breaking, the definition of isolation, and how formation behaves after a Brood falls must be specified before calling the combat loop complete. The 2026-10-05 decisions below replace the earlier inward-Pazuzu exposure question: every Compact Brood is on ring 1, and fronts are measured from each enemy's tile.
 
-**Open experiment question: encounter layout.** Where enemies stand, whether a boss is exactly centred, and whether an enemy's cell should ever carry rule meaning (for example which sector counts as its front, or whether it may stand on an empty ring-1 cell) are deliberately unresolved. This POC exists to explore them. Until then the centre cell is the view-only enemy anchor, drawn as a cluster (accepted user decision, 2026-10-04), and sectors and protection stay encounter-centred. P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
+**Encounter layout (partly resolved 2026-10-05).** Enemies now stand on tiles, and their cells carry rule meaning (user decision, 2026-10-05). Ordinary enemies use ring-2 edge cells and the centre is the boss tile. Still open as experiment questions: other patrol layouts (for example clustered on one side), whether a boss ever stands off the centre, and the reach value. P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
 
 ## Decision record
 
-**2026-10-04 — Two-ring arena (accepted; source: user decision, 2026-10-04).** For this POC the arena has only two rings around the centre, not three: "i dont see what three would bring." The user's clarification:
+**2026-10-05 — Ring formation and enemies on tiles (accepted; source: user decision, 2026-10-05).** After three AI playtesters won all nine attempts ([reports](../mailbox/ai-playtest-20261005/)), the user added two findings. The user's words, lightly cleaned:
+
+> The triangle should be spread on one ring, and extend should mean going to the other ring. So compact should be on the first ring, extend on the other ring. … It would mean that they would always be around the rotation point, because in their compact stance there would be the center tile that is always unoccupied, which would work well if we put a boss type enemy in there from time to time. The second problem I found is why are the enemies not on tiles but seemingly floating around? So in my heart, this is still mostly a Darkest Dungeon game rather than an XCOM game, which is why it's not a puzzle movement game, although I do want a little bit of movement impacting the game.
+
+The user confirmed these decisions:
+
+1. **Formation.** Compact puts the Brood on alternating ring-1 cells, Ugallu `S[o]`, Girtablilu `S[o+2]`, Pazuzu `S[o+4]`: a triangle around the centre with every pair at distance 2. Expand moves each Brood one radial step outward to the ring-2 corner behind it, giving the corner triangle at distance 4; Contract reverses this. Rotation turns the triangle around the centre. The centre is never occupied by Brood; it is reserved for an occasional boss-type enemy. This supersedes the sector-aligned Compact (`T[2o], T[2o+1], S[o]`) and the inward-Pazuzu slot of 2026-10-04. Spread stays on the ring-2 corners, and Close threshold 2 is kept.
+2. **Enemies stand on real tiles**, replacing the view-only centre anchor of 2026-10-04.
+3. **Rules follow tiles.** Each enemy's front, protection and reach derive from its own tile and facing, so the formation's position relative to each enemy matters. The only movement is the shared maneuvers: no individual movement and no puzzle movement.
+4. **Enemy placement** was delegated to the Architect for a proposal.
+
+The intent is Darkest-Dungeon-style positional ranks, not tactical movement. Position should change who is protected against, who can be marked and which maneuver is worth its allowance, without turning maneuvers into a movement puzzle.
+
+The Architect's proposals, provisional until the user's next manual test, are: enemies never stand on Brood cells (the ring-2 edges and the centre are enemy cells); fronts are the delivered six-cell wedge carried to the enemy's tile; reach is a two-step targeting limit applied at announcement; and the patrol stands on three alternating edge tiles. The computed layout argument, rule details and open questions are in the [ring-formation task](../plans/2026-10-05-c6399cb6-poc-001-ring-formation.md) and its owning amendments ([P02](../plans/2026-10-02-2e228a2b-poc-001-formation-algebra.md#amendment-rf-2026-10-05--ring-formation-and-enemy-cells), [P05](../plans/2026-10-02-d66a7452-poc-001-intent-semantics.md#amendment-rf-2026-10-05--fronts-protection-and-reach-from-enemy-tiles), [P08](../plans/2026-10-02-dc6612ec-poc-001-patrol-round-loop.md#amendment-rf-2026-10-05--enemies-on-tiles)).
+
+Orientation zero, screen convention with vertical coordinates increasing downward (`W`, `C`, `H` are the patrol's edge tiles, `·` an empty cell, `◦` the empty centre):
+
+```
+Compact 0                     Spread 0
+      ·   W   ·                     P   W   ·
+    ·   P   ·   ·                 ·   ·   ·   ·
+  ·   ·   ◦   U   ·             ·   ·   ◦   ·   U
+    C   G   ·   H                 C   ·   ·   H
+      ·   ·   ·                     G   ·   ·
+U-G 2, U-P 2, G-P 2           U-G 4, U-P 4, G-P 4
+```
+
+**2026-10-04 — Two-ring arena (accepted; source: user decision, 2026-10-04).** *Formation note: the Compact placement and enemy anchor in this entry are superseded by the 2026-10-05 entry above; the two-ring board itself stands.* For this POC the arena has only two rings around the centre, not three: "i dont see what three would bring." The user's clarification:
 
 > some bosses will be in the midlle and a strategy will be to go wide around them vs thigt agains them, so i guess they wont be completly centered, as for encounters, thats what this pos is trying to figure out right
 
