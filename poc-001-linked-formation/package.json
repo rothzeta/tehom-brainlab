@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "test:unit": "vitest run",
     "build": "bun scripts/prepare-assets.mjs && vite build",
-    "preview": "vite preview --host 0.0.0.0 --strictPort"
+    "preview": "vite preview --host 0.0.0.0 --strictPort",
+    "test:browser": "bun scripts/browser-checks.mjs"
   },
   "dependencies": {
     "phaser": "4.2.1"

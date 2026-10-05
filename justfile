@@ -51,3 +51,7 @@ poc-001-build *args:
 # POC 001: preview.
 poc-001-preview *args:
     @./poc-001-linked-formation/bin/run preview "$@"
+
+# POC 001: browser checks.
+poc-001-test-browser *args:
+    @./poc-001-linked-formation/bin/run test-browser "$@"

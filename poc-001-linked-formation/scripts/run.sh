@@ -5,8 +5,8 @@ cd "$prototype_root"
 . ./runtime.env
 command_name=${1:-}
 case "$command_name" in
-  install|dev|typecheck|test|build|preview) shift ;;
-  *) printf '%s\n' 'P01: expected install/dev/typecheck/test/build/preview' >&2; exit 2 ;;
+  install|dev|typecheck|test|build|preview|test-browser) shift ;;
+  *) printf '%s\n' 'P01: expected install/dev/typecheck/test/build/preview/test-browser' >&2; exit 2 ;;
 esac
 if [ "$command_name" = install ] && [ ! -f bun.lock ]; then
   printf '%s\n' 'P01: committed bun.lock required for frozen install' >&2
@@ -22,6 +22,10 @@ case "$port" in
 esac
 if [ "$port" -gt 65535 ] || { [ "$port" -eq 0 ] && { [ "$command_name" = dev ] || [ "$command_name" = preview ]; }; }; then
   printf '%s\n' 'P01: POC001_PORT must be between 1 and 65535' >&2; exit 2
+fi
+# CDP uses locally installed Chrome. Application preview still uses the Docker wrapper.
+if [ "$command_name" = test-browser ]; then
+  exec sh ./scripts/toolchain.sh "$command_name" "$@"
 fi
 case "${POC001_MODE:-docker}" in
   host)

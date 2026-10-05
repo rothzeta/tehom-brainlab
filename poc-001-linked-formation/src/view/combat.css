@@ -1,0 +1,23 @@
+#patrol { max-width: 1230px; margin: auto; padding: 14px 20px; }
+.patrol-columns { display: grid; grid-template-columns: 620px 1fr; gap: 20px; }
+#patrol #board-stage { width: 620px; height: 500px; }
+#patrol .board-panel > h2, #patrol .board-panel > p:not(.legend) { padding: 0 12px; }
+#patrol .brood-token { width: 84px; font-size: 12px; }
+#patrol .brood-token > span:last-child { font-size: 10px; white-space: nowrap; }
+#patrol .emblem { width: 34px; height: 34px; }
+#patrol .emblem img { width: 24px; height: 24px; }
+#patrol [data-fallen="true"] { opacity: .5; }
+#patrol .ghost { width: 92px; height: 74px; }
+#patrol aside h2 { margin: 8px 0 4px; }
+#patrol button { padding: 5px 7px; font-size: 12px; }
+#patrol #actors, #patrol #abilities, #patrol #targets { display: flex; flex-wrap: wrap; gap: 4px; margin: 5px 0; }
+#patrol .setup { display: flex; align-items: end; gap: 8px; }
+#patrol .setup label { flex: 1; }
+#patrol #intentions { padding-left: 20px; font-size: 12px; margin: 4px 0; }
+#patrol #protection, #patrol #selection, #patrol #links, #patrol #shelters { font-size: 12px; min-height: 0; }
+#patrol #allowance { min-height: 0; margin: 4px 0; }
+#patrol #feedback { font-size: 12px; }
+#patrol #projection { margin: 10px 0; padding: 7px 12px; border: 1px solid #607785; border-radius: 6px; font-size: 12px; color: #e7ce9b; }
+#patrol #projection p { margin: 3px 0; }
+#patrol #events { font-size: 12px; }
+#patrol [aria-pressed="true"] { outline: 1px solid #fff; }
