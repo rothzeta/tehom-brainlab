@@ -308,7 +308,7 @@ a human playtest.
 
 ## Reproducible attempts (P11)
 
-On `?mode=patrol`, **Export attempt (JSON)** downloads the current attempt locally,
+On `?play=patrol`, **Export attempt (JSON)** downloads the current attempt locally,
 including an empty, partial or terminal attempt. Restart and preset changes begin
 a fresh record. Only commands accepted by the P10 adapter are appended; selections,
 previews, unavailable controls, stale confirmations and feedback-lock duplicates

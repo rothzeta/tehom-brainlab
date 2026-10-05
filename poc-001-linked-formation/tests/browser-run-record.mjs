@@ -80,7 +80,7 @@ try {
   await cdp('Runtime.enable'); await cdp('Page.enable');
   await cdp('Emulation.setDeviceMetricsOverride', { width: 1280, height: 800, deviceScaleFactor: 1, mobile: false });
   await cdp('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: output });
-  await cdp('Page.navigate', { url: `${baseUrl}?mode=patrol&placeholder=1` });
+  await cdp('Page.navigate', { url: `${baseUrl}?play=patrol&placeholder=1` });
   await waitFor('document.querySelector("#patrol")?.dataset.revision==="0"');
   const historical = JSON.parse(await readFile(new URL('../../docs/mailbox/p08-patrol-round-loop/traces.json', import.meta.url), 'utf8'));
   for (const start of ['healthy', 'wounded-ugallu', 'wounded-girtablilu']) {
@@ -125,6 +125,30 @@ try {
         buildRevision: record.buildRevision, file: `${start}-${strategy}.json` });
     }
   }
+  // Selections/previews and native attempts on disabled controls never become accepted inputs.
+  await preset('healthy');
+  await click('[data-actor="ugallu"]'); await click('[data-ability="claw"]'); await click('[data-target="warder"]');
+  const selected = await exported('selection-only.json');
+  equal(selected.acceptedCommands, [], 'selected ability is not an accepted command');
+  equal(selected.events, [], 'selection emits no gameplay events');
+  await click('#cancel');
+  const maneuver = { kind: 'maneuver', maneuver: 'clockwise', expectedRevision: 0 };
+  const moved = applyCommand(selected.initialState, maneuver); check(moved.ok, 'controlled maneuver accepted');
+  await click('[data-maneuver="clockwise"]');
+  check(await evaluate(`document.querySelector('[data-maneuver="anticlockwise"]').disabled`), 'feedback lock blocks duplicate');
+  await click('[data-maneuver="anticlockwise"]');
+  await waitFor('document.querySelector("#patrol").dataset.busy==="false"');
+  equal(await evaluate(`document.querySelector('[data-maneuver="clockwise"]').dataset.reason`), 'maneuver-used', 'second maneuver explicitly unavailable');
+  await click('[data-maneuver="clockwise"]');
+  const rejected = await exported('rejected-input.json');
+  equal(rejected.acceptedCommands.map(e => e.command), [maneuver], 'busy and rejected activations are absent');
+  equal(rejected.finalState, moved.state, 'rejected activations preserve state');
+  equal(rejected.events, moved.events, 'rejected activations preserve event stream');
+  await click('#reset');
+  const reset = await exported('reset-after-rejection.json');
+  equal(reset.acceptedCommands, [], 'reset after accepted/rejected inputs starts clean');
+  equal(reset.events, [], 'reset after inputs clears event stream');
+  equal(reset.initialState, reset.finalState, 'reset records the new initial state');
   equal(exceptions, [], 'no uncaught browser exceptions');
   await writeFile(join(output, 'summary.json'), JSON.stringify({ ok: true, assertions, automated: true, runs }, null, 2));
   console.log(JSON.stringify({ ok: true, assertions, automated: true, runs, output }));
