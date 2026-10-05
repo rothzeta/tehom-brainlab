@@ -268,20 +268,36 @@ and core front masks remain readable with `&placeholder=1` or the placeholder
 checkbox. Placeholder mode makes no token-image requests; failed images retain
 labelled geometry. Credits and the bundled license remain visible.
 
-After `just poc-001-build`, run all browser checks with local Bun 1.4.2 and Chrome:
+Run all four browser checks with local Bun 1.4.2 on PATH, installed prototype
+dependencies (`just poc-001-install`), Docker, and an executable Chrome:
 
 ```sh
+just poc-001-test-browser
+# Optional explicit override:
 POC001_CHROME=/path/to/chrome-headless-shell just poc-001-test-browser
 ```
 
-The browser wrapper starts/stops the default Docker preview on port 4173 and
-runs the unchanged `browser-lab.mjs`, unchanged `browser-preview.mjs`, and new
-`browser-patrol.mjs` in sequence through the prototype-local `test:browser`
-script. The CDP driver uses host Chrome/Bun; application serving and application
-checks use the Docker wrapper. No browser dependency is added. Put Bun on PATH.
-Optional arguments are `CHROME_PATH OUTPUT_DIRECTORY [BASE_URL]`; supplying a
-base URL uses an already-running server. `POC001_BROWSER_PORT` chooses the
-wrapper-owned preview port. Output defaults to a fresh OS temporary directory.
+Chrome discovery uses an explicit `CHROME_PATH` argument or `POC001_CHROME`
+first (the argument takes precedence), then the highest executable numeric
+Playwright version at
+`${PLAYWRIGHT_BROWSERS_PATH:-$HOME/.cache/ms-playwright}/chromium_headless_shell-*/chrome-headless-shell-linux64/chrome-headless-shell`,
+then `chrome-headless-shell`, `google-chrome`, `google-chrome-stable`, `chromium`,
+and `chromium-browser` on PATH, in that order. Only executable files qualify;
+an invalid explicit override fails. The runner prints the selected binary and
+reason. If none is found, it lists the search locations and override instructions.
+It adds no dependencies and never downloads a browser.
+
+The browser runner always rebuilds through the existing pinned Docker wrapper
+before starting the default Docker preview on port 4173, so code changes cannot
+silently leave the checks using an old production bundle. It starts/stops that
+preview and runs `browser-lab.mjs`, `browser-preview.mjs`, `browser-patrol.mjs`,
+and `browser-run-record.mjs` in sequence through the prototype-local `test:browser`
+script. The CDP driver uses host Chrome/Bun; application build and serving use
+Docker. Optional arguments remain `CHROME_PATH [OUTPUT_DIRECTORY] [BASE_URL]`;
+supplying a base URL uses an already-running server and skips the local build
+and preview. The caller is responsible for that server's build freshness.
+`POC001_BROWSER_PORT` chooses the wrapper-owned preview port. Output defaults
+to a fresh OS temporary directory, and its path is printed before checks start.
 Individual scripts take the same Chrome/output/base-URL arguments.
 
 Activation belongs to its control: a focused maneuver keeps its own command when
