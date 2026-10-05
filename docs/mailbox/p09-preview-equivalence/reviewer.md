@@ -1,27 +1,26 @@
 task: P09-review
 status: complete
-outcome: Request changes; two blocking findings, zero optional findings.
+outcome: R1 and R2 resolved at aac8068; approve with zero remaining blocking or optional findings.
 baseline: '35586e8'
-reviewed_revision: 63b567ba2b92262624c6cb4cf6332091b7009dea
-tested_revision: d88a4d8bdb83ec5bd2461453843acec802c5d1db
+reviewed_revision: aac806868a211997258ca75fca52554f4ce01641
+tested_revision: aac806868a211997258ca75fca52554f4ce01641
 artifacts:
   - docs/mailbox/p09-preview-equivalence/reviewer.md
   - docs/mailbox/p09-preview-equivalence/assignment-reviewer.md
+  - docs/mailbox/p09-preview-equivalence/assignment-rereview.md
 verification:
-  - "Docker full suite: exit 0, 427 tests in 10 files; 972 matrix comparisons, each repeated."
+  - "Re-review Docker full suite at aac8068: exit 0, 431 tests in 10 files; 972 matrix comparisons, each repeated."
   - "Docker typecheck and build: exit 0."
   - "P04 browser: exit 0, 177 assertions, 18 captures, zero exceptions."
   - "P09 browser: exit 0, 24 assertions, two captures, zero exceptions; both screenshots inspected."
-  - "Docker boundary probes: exit 0; reproduced R1 and demonstrated R2's valid tuning scenario."
+  - "Re-review Docker boundary probes: exit 0; R1 exact immediate/forecast equality and immutability, R2 radius4 projection matches the public selector."
   - "Technical-content identity, unchanged existing tests and candidate whitespace checks: exit 0."
   - "Handoff validator: exit 0, ok true, no diagnostics."
 review:
-  - "Independent source and contract review completed; request changes."
+  - "Independent re-review completed; R1 and R2 resolved, approve with no remaining findings."
 discoveries:
-  - "Default fixtures pass; invalid selector tuning can throw before the real forecast rejection is returned."
-blockers:
-  - "R1: accepted immediate commands can throw in previewFacts instead of returning a preview with a rejected forecast."
-  - "R2: a browser assertion freezes provisional default splash recipients."
+  - "Fact snapshots now expose availability; consumers must check before and after availability before interpreting change lists."
+blockers: []
 
 Author: P09 Reviewer. Authority: unchanged [assignment](assignment-reviewer.md), [P09 plan](../../plans/2026-10-02-d28ae958-poc-001-preview-equivalence.md), [policy](../../../.agents/policy.md), [ADR-0006](../../adr/0006-contract-invariants-and-black-box-testing.md), [testing skill](../../../.agents/skills/ruach-testing/SKILL.md), and [handoff skill](../../../.agents/skills/ruach-handoff/SKILL.md).
 
@@ -120,3 +119,55 @@ assert.deepEqual(selectRecipients(commit.state, censer,
 ```
 
 Report validation establishes only schema/revision correctness. No human playtest, browser matrix, mobile verification, audio integration, P10 controls or rebuilt browser tuning variation was performed. Disposable probe/browser outputs remain in `/tmp`; all durable unique finding evidence is in this report. Assignment SHA-256 before/after: `9078e37a7bd414a9052c0fc8fb8bf75c043ed139fe4608f2a97a074429e408fc`. No protected documents, generated agent resources, plans or ADRs were edited; no merge, push, rebase, branch or worktree deletion occurred.
+
+## Re-review of R1/R2 at aac8068
+
+P09 Reviewer, 2026-10-05 UTC. Authority: unchanged [re-review assignment](assignment-rereview.md). **Verdict: approve; R1 and R2 resolved. Remaining findings: zero blocking, zero optional. No new material findings.** The preceding findings, acceptance assessment and verification describe the original review at `63b567b`; they remain historical evidence. This section and the updated leading YAML describe the fixed combined candidate.
+
+Reviewed fix range: `61aac67..aac806868a211997258ca75fca52554f4ce01641`, exactly four technical files: core preview, its FormationLab consumer, P09 unit tests, and the P09 browser probe. The starting branch head was `eb24a939acf8022c345607de5803344f229aae05`, whose technical content is identical; it adds only the fix assignment/report. I read that handoff, inspected the complete fix and materially affected consumers, then temporarily checked out the exact `aac8068` revision for all final application, browser and probe checks. After stopping the preview server, I restored `p09-preview-equivalence` at `eb24a93` to record this re-review. No source/test edits were made.
+
+### R1 disposition — resolved
+
+[preview.ts:65](../../../poc-001-linked-formation/src/core/preview.ts#L65) wraps actual selector derivation: a selector `RangeError` yields `{available:false, reason}`. It does not validate rule values separately, substitute tuning, change the real command acceptance, or manufacture a forecast rejection. Other error classes still propagate. Immediate state/events/deltas and the real end-phase result remain independent of fact availability. Change lists are guarded by both fact snapshots' availability. [FormationLab.ts:159](../../../poc-001-linked-formation/src/view/FormationLab.ts#L159) uses the same discriminant and displays facts as unavailable rather than interpreting empty change lists as known absence; immediate HP and forecast outcome remain displayed independently. This is a small projection-boundary fix with no alternate rules path.
+
+The original Docker probe now returns accepted immediate previews and typed `invalid-amount` forecasts for all three negative rule overrides. A strengthened independent probe compares exact immediate state/events and the entire real forecast transition against separate `applyCommand` calls, checks repeated equality on deeply frozen state/command input, recursively verifies frozen output, and verifies unchanged live bytes. All checks passed. `warderDamage:-1` retains available facts; `splashRadius:-1` and `closeThreshold:-1` expose unavailable before/after facts.
+
+Coverage is adequate for the finding. [preview.test.ts:237](../../../poc-001-linked-formation/tests/preview.test.ts#L237) covers all three rule cases and repeated frozen input; additional tests cover an installed Shelter's invalid `damageRules.closeThreshold` and invalid facing in protection selection while the real immediate and end-phase transitions both accept. The latter confirms that selector unavailability cannot invent a rejection. Normal matrix/golden tests now explicitly require available facts, preserving their original behavior assertions. The full suite includes all 18 P09 tests, with no existing P01–P08 test edits.
+
+### R2 disposition — resolved
+
+[browser-preview.mjs:102](../../../poc-001-linked-formation/tests/browser-preview.mjs#L102) derives every threat's kind, anchor and recipients from the independent real committed snapshot through `selectRecipients` and stored `patrolRules.splashRadius`. It compares the whole DOM threat paragraph, so missing, extra or wrong displayed recipients fail; it never imports the preview module as its oracle. The adjacent link and ability assertions also derive expected output from public selectors/legality rather than provisional constants. The fix adds only DOM paragraph collection to the test snapshot and no production debug controls, query flags or mutable state surface.
+
+The requested valid radius4 variation again produced all three Spread recipients. The strengthened probe also checked that the actual preview's Censer intention, cells, reason and recipients exactly match that independent public selector result. The revised browser comparator consumes this same stored-radius selector result, so it no longer requires the original radius2 recipient list. The default browser execution passed the exact whole-paragraph assertions. A rebuilt browser with changed defaults was not run; tuning independence is established here by source inspection and the headless variation, not claimed as an additional browser execution.
+
+### Exact re-review verification
+
+All final checks below ran with `HEAD` exactly `aac806868a211997258ca75fca52554f4ce01641`. Docker remained the application runner with pinned Bun1.4.2; browser checks used the established host Bun/Chrome tooling. Dependencies were present; no install was needed. A preliminary full suite at the starting evidence-only `eb24a93` also passed 431 tests; the full suite was then rerun at the exact assigned revision and only that final execution is used below.
+
+| Exact command | Exit / result |
+| --- | --- |
+| `git diff --exit-code aac8068 eb24a93 -- poc-001-linked-formation` | 0; identical technical content. |
+| `git diff --check 61aac67..aac8068` | 0. |
+| `git diff --exit-code 35586e8 aac8068 -- poc-001-linked-formation/tests ':!poc-001-linked-formation/tests/preview.test.ts' ':!poc-001-linked-formation/tests/browser-preview.mjs'` | 0; all original tests unchanged. |
+| `just poc-001-test` | 0; 431 tests in 10 files: preview18, patrol48, abilities87, damage48, intents77, commands37, formation92, view19, assets3, smoke2. Matrix972/666 accepted/306 rejected, each repeated. |
+| `just poc-001-typecheck` | 0; `tsc --noEmit`. |
+| `just poc-001-build` | 0; 9 assets, 23 modules; JS1,409.04kB/gzip368.41kB, CSS3.21kB/gzip1.27kB; existing large-bundle warning. |
+| `just poc-001-preview` | Docker server ready on localhost:4173; stopped with Ctrl-C, exit130, after browser verification. |
+| `/home/metatron/.bun/bin/bun poc-001-linked-formation/tests/browser-lab.mjs /home/metatron/.cache/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-linux64/chrome-headless-shell /tmp/p09-rereview-p04-browser` | 0; 177 assertions, 12 fixtures, 3 modes, 18 captures, zero uncaught exceptions; two deliberately blocked image requests. |
+| `/home/metatron/.bun/bin/bun poc-001-linked-formation/tests/browser-preview.mjs /home/metatron/.cache/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-linux64/chrome-headless-shell /tmp/p09-rereview-preview-browser` | 0; 24 assertions, two captures, zero uncaught exceptions. |
+| `docker run --rm --init --user "$(id -u):$(id -g)" --volume /opt/dev/tehom-brainlab-p09/poc-001-linked-formation:/app:ro --volume /tmp/p09-review-probe.ts:/probe.ts:ro --workdir /app oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895 bun /probe.ts` | 0; original R1 probe and radius4 variation rerun, no preview exceptions. |
+| `docker run --rm --init --user "$(id -u):$(id -g)" --volume /opt/dev/tehom-brainlab-p09/poc-001-linked-formation:/app:ro --volume /tmp/p09-rereview-probe.ts:/probe.ts:ro --workdir /app oven/bun:1.4.2@sha256:9114c058aeae42162ee16dd5084b95fe9473970bb6bcb5b232ab1630f0546895 bun /probe.ts` | 0; exact transition equality, frozen output, repeated frozen-input checks, unchanged live bytes and radius4 projection equality. |
+| `docker ps --filter publish=4173 --format '{{.ID}} {{.Ports}}'` | 0; no remaining preview container. |
+| `sha256sum docs/mailbox/p09-preview-equivalence/assignment-rereview.md` | 0; unchanged `b3ff849ba9640dd5e9505181feeb3ff55e72a4bc94d74077a5b41c4d834613b8`. |
+| `/home/metatron/.bun/bin/bun .agents/skills/ruach-handoff/scripts/validate.ts docs/mailbox/p09-preview-equivalence/reviewer.md --repo /opt/dev/tehom-brainlab-p09` | 0; `ok:true`, no diagnostics, all revision references resolved. |
+
+Strengthened probe assertions, in addition to the original logic retained above: `preview.ok`, deep equality of immediate state/events, deep equality of the forecast transition after removing only `kind`, `condition` and `enemyEvents`, empty forecast enemy events, correct fact availability, `Object.isFrozen` recursively on every returned object, a second identical preview, and unchanged frozen-input serialization. For radius4 it deep-compares the full Censer threat to `{intention, ...selectRecipients(independentCommit, intention, storedRadius)}`. Probe output:
+
+```json
+{"field":"warderDamage","exactImmediateMatch":true,"exactForecastMatch":true,"unchangedFrozenInput":true}
+{"field":"splashRadius","exactImmediateMatch":true,"exactForecastMatch":true,"unchangedFrozenInput":true}
+{"field":"closeThreshold","exactImmediateMatch":true,"exactForecastMatch":true,"unchangedFrozenInput":true}
+{"radius":4,"recipients":["ugallu","girtablilu","pazuzu"],"previewMatchesPublicSelector":true}
+```
+
+Both independently generated P09 screenshots were opened and visually inspected: destinations still match commit, the condition/disclosure is legible, and commit clears the preview/forecast. Browser captures and raw probes remain outside the repository in `/tmp`; this section preserves their unique review evidence. Browser execution used the default fixture; invalid-tuning DOM rendering was inspected in source rather than exercised through a new production debug surface. Other original review limitations still apply. No merge, push, rebase or protected-document change occurred. The report and unchanged re-review assignment are the only new review artifacts; the creating commit SHA is returned in the terminal handoff.
