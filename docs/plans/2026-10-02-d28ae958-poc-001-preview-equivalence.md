@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**P09. Draft; not implemented or verified.** Depends on [P04](2026-10-02-9d81c6df-poc-001-formation-lab.md) and [P08](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md), including their core prerequisites. Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
+**P09. Implemented, independently reviewed (R1/R2 fixed and re-reviewed; no remaining findings), accepted, locally delivered.** [Implementation](../mailbox/p09-preview-equivalence/implementer.md), [fix](../mailbox/p09-preview-equivalence/fix.md), [review](../mailbox/p09-preview-equivalence/reviewer.md). Depends on [P04](2026-10-02-9d81c6df-poc-001-formation-lab.md) and [P08](2026-10-02-dc6612ec-poc-001-patrol-round-loop.md), including their core prerequisites. Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 Authority: [AGENTS](../../AGENTS.md), [prototype architectural boundary](../../poc-001-linked-formation/README.md), and [brief Presentation requirements](../../docs/prototypes/poc-001-linked-formation.md). This extends the early formation-only preview, not a second rules implementation. The [index](README.md) and local ADRs below establish formatting authority.
 
