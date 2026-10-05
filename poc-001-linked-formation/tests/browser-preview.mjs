@@ -7,6 +7,9 @@ import assert from 'node:assert/strict';
 import { createPatrol } from '../src/content/patrol.ts';
 import { applyCommand } from '../src/core/transition.ts';
 import { formationPositions } from '../src/core/formation.ts';
+import { activeLinks, selectRecipients } from '../src/core/intents.ts';
+import { ABILITIES } from '../src/content/brood.ts';
+import { abilityLegality } from '../src/core/abilities.ts';
 
 const [chromePath, outputPath, baseUrl = 'http://localhost:4173/'] = process.argv.slice(2);
 assert(chromePath && outputPath, 'CHROME and OUTPUT required');
@@ -59,6 +62,7 @@ try {
   }
   const snapshot = () => evaluate(`(()=>({revision:Number(document.querySelector('#formation-lab').dataset.revision),
     panel:document.querySelector('#combat-preview').textContent,
+    facts:[...document.querySelectorAll('#combat-preview p')].map(e=>e.textContent),
     readout:document.querySelector('#preview-readout').textContent,
     positions:[...document.querySelectorAll('.brood-token')].map(e=>({brood:e.dataset.brood,cell:{q:Number(e.dataset.q),r:Number(e.dataset.r)}})),
     ghosts:[...document.querySelectorAll('.ghost')].map(e=>({brood:e.dataset.brood,cell:{q:Number(e.dataset.q),r:Number(e.dataset.r)}}))}))()`);
@@ -90,10 +94,33 @@ try {
   check(preview.panel.includes(`Immediate: ${hp(committed.state)} · ${committed.state.phase}.`), 'immediate HP/phase equal real commit');
   check(preview.panel.includes(`If end phase now: ${hp(ended.state)} · ${ended.state.phase}.`), 'labelled forecast HP/phase equal real end phase');
   check(preview.panel.includes('Remaining player choices are excluded.'), 'forecast discloses exact condition');
-  check(preview.panel.includes('Destination links:') && preview.panel.includes('stretched'), 'destination links shown');
+  const links = activeLinks(committed.state, committed.state.patrolRules.closeThreshold);
+  equal(preview.facts.find(line => line.startsWith('Destination links:')),
+    `Destination links: ${links.map(link => `${link.from.brood} ↔ ${link.to.brood} ${link.state}`).join('; ')}.`,
+    'destination links match public selector and stored threshold');
   check(preview.panel.includes('Protection gained:') && preview.panel.includes('lost:'), 'protection changes shown');
-  check(preview.panel.includes('Mark patrol:1:censer at (-2,2) → girtablilu'), 'mark anchor and exact splash recipients shown');
-  check(preview.panel.includes('Abilities enabled: Impale'), 'enabled ability shown');
+  const threats = committed.state.declaredIntentions.map(intention => ({ intention,
+    ...selectRecipients(committed.state, intention, committed.state.patrolRules.splashRadius) }));
+  equal(preview.facts.find(line => line.startsWith('Threats:')),
+    `Threats: ${threats.map(entry => `${entry.intention.kind === 'fixed-area' ? 'Area' : 'Mark'} ${entry.intention.id} at ${entry.cells.map(cell => `(${cell.q},${cell.r})`).join(', ')} → ${entry.recipientIds.join(', ') || entry.reason}`).join('; ')}.`,
+    'all declared anchors and exact recipients match public selector and stored radius');
+  const changes = enabled => {
+    const names = state.brood.flatMap(actor => Object.entries(ABILITIES)
+      .filter(([, definition]) => definition.brood === actor.brood)
+      .flatMap(([abilityId]) => (abilityId === 'shelter' ? state.brood : state.enemies)
+        .flatMap(target => (abilityId === 'crosswind' ? ['clockwise', 'anticlockwise'] : [undefined])
+          .flatMap(direction => {
+            const request = { actorId: actor.id, abilityId, targetId: target.id,
+              ...(direction ? { direction } : {}) };
+            const before = abilityLegality(state, { ...request, expectedRevision: state.revision });
+            const after = abilityLegality(committed.state, { ...request, expectedRevision: committed.state.revision });
+            return before.ok !== after.ok && after.ok === enabled
+              ? [abilityId[0].toUpperCase()+abilityId.slice(1)] : [];
+          }))));
+    return [...new Set(names)].join(', ') || 'none';
+  };
+  equal(preview.facts.find(line => line.startsWith('Abilities enabled:')),
+    `Abilities enabled: ${changes(true)}; disabled: ${changes(false)}.`, 'ability changes match public legality');
   await capture('preview.png');
   await click('[data-maneuver="expand"]'); const actual = await snapshot();
   equal(actual.positions, preview.ghosts, 'actual native commit matches preview destinations');

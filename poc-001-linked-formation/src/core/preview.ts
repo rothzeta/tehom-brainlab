@@ -28,7 +28,7 @@ function freeze<T>(value: T): T {
 }
 
 /** Selector facts only. No damage, targeting, geometry or legality rules live here. */
-export function previewFacts(state: GameState) {
+function deriveFacts(state: GameState) {
   const positions = formationPositions(state.formation);
   if (!combat(state)) return { positions, links: formationLinks(state.formation),
     protections: [], shelters: [], threats: [], abilities: [] };
@@ -61,7 +61,17 @@ export function previewFacts(state: GameState) {
     abilities,
   };
 }
+/** A selector rejection makes facts unavailable; it cannot reject the real command. */
+export function previewFacts(state: GameState) {
+  try {
+    return { available: true as const, ...deriveFacts(state) };
+  } catch (error) {
+    if (!(error instanceof RangeError)) throw error;
+    return { available: false as const, reason: error.message };
+  }
+}
 export type PreviewFacts = ReturnType<typeof previewFacts>;
+type AvailablePreviewFacts = Extract<PreviewFacts, { available: true }>;
 
 export type PhaseForecast<State extends GameState> =
   | { readonly kind: 'terminal' | 'unavailable'; readonly condition: typeof FORECAST_CONDITION;
@@ -85,10 +95,11 @@ export type CommandPreview<State extends GameState = GameState> = PreviewIdentit
         readonly deltas: readonly { readonly entityId: string; readonly hpBefore: number;
           readonly hpAfter: number; readonly statusesBefore: readonly string[];
           readonly statusesAfter: readonly string[] }[];
-        readonly protectionGained: PreviewFacts['protections'];
-        readonly protectionLost: PreviewFacts['protections'];
-        readonly abilitiesEnabled: PreviewFacts['abilities'];
-        readonly abilitiesDisabled: PreviewFacts['abilities'];
+        /** Change lists are available only when both fact snapshots are available. */
+        readonly protectionGained: AvailablePreviewFacts['protections'];
+        readonly protectionLost: AvailablePreviewFacts['protections'];
+        readonly abilitiesEnabled: AvailablePreviewFacts['abilities'];
+        readonly abilitiesDisabled: AvailablePreviewFacts['abilities'];
         /** Real events explain HP, lifecycle, status, and facing changes. */
         readonly explanations: readonly GameplayEvent[];
       };
@@ -119,14 +130,18 @@ export function previewCommand<State extends GameState>(
       ? [] : [{ entityId: entity.id, hpBefore: old.hp, hpAfter: entity.hp,
         statusesBefore: old.statuses, statusesAfter: entity.statuses }];
   });
-  const protectionChanged = (from: PreviewFacts, to: PreviewFacts) => to.protections.filter((entry) =>
-    entry.protected && !from.protections.some((old) => old.actorId === entry.actorId
-      && old.targetId === entry.targetId && old.protected));
-  const abilityChanged = (enabled: boolean) => after.abilities.filter((entry) =>
-    entry.legality.ok === enabled && before.abilities.some((old) =>
+  const protectionChanged = (from: PreviewFacts, to: PreviewFacts) => {
+    if (!from.available || !to.available) return [];
+    return to.protections.filter((entry) => entry.protected && !from.protections.some((old) =>
+      old.actorId === entry.actorId && old.targetId === entry.targetId && old.protected));
+  };
+  const abilityChanged = (enabled: boolean) => {
+    if (!before.available || !after.available) return [];
+    return after.abilities.filter((entry) => entry.legality.ok === enabled && before.abilities.some((old) =>
       old.request.actorId === entry.request.actorId && old.request.abilityId === entry.request.abilityId
       && old.request.targetId === entry.request.targetId && old.request.direction === entry.request.direction
       && old.legality.ok !== enabled));
+  };
   let forecast: PhaseForecast<State>;
   if (result.state.phase === 'victory' || result.state.phase === 'defeat') {
     forecast = { kind: 'terminal', condition: FORECAST_CONDITION, events: [] };

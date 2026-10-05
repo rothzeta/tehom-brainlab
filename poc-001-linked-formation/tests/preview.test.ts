@@ -8,6 +8,7 @@ import type { Command, GameplayEvent } from '../src/core/commands';
 import type { CombatState } from '../src/core/state';
 import { createInitialState } from '../src/core/state';
 import { previewCommand, previewValidity } from '../src/core/preview';
+import type { CommandPreview } from '../src/core/preview';
 import { applyCommand } from '../src/core/transition';
 import { LabSession, MANEUVERS } from '../src/view/lab-state';
 
@@ -19,6 +20,12 @@ const rules: PatrolRules = { warderDamage: 5, censerDamage: 0, harrierDamage: 0,
   isolatedHarrierDamage: 0, splashRadius: 2, closeThreshold: 2,
   damageRules: { directionalReduction: 2, shelterReduction: 2, closeThreshold: 2 } };
 const damageEvents = (events: readonly GameplayEvent[]) => events.filter((event) => event.type === 'damage-applied');
+function availableFacts(preview: Extract<CommandPreview, { ok: true }>) {
+  const { before, after } = preview.projection;
+  expect(before.available).toBe(true); expect(after.available).toBe(true);
+  if (!before.available || !after.available) throw new Error('Expected selector facts for a valid fixture');
+  return { before, after };
+}
 function attack(state: CombatState, targetId: string, rawDamage: number): Command {
   return { kind: 'attack', expectedRevision: state.revision, eventId: 'controlled-hit',
     sourceId: 'ugallu', recipientIds: [targetId], rawDamage, bypassProtection: true };
@@ -55,6 +62,7 @@ describe('P09 preview / real transition equivalence', () => {
           expect(preview.events).toEqual(committed.events);
           if (preview.ok) {
             accepted++;
+            availableFacts(preview);
             if (preview.forecast.kind === 'transition') {
               const ended = applyCommand(structuredClone(committed.state), {
                 kind: 'endPhase', expectedRevision: committed.state.revision });
@@ -126,17 +134,18 @@ describe('P09 independent recipient and impact fixtures', () => {
       declaredIntentions: [{ id: 'warder-hit', sourceId: 'warder', kind: 'marked-hit' as const, targetId: 'girtablilu' }] });
     const preview = previewCommand(state, { kind: 'maneuver', maneuver: 'expand', expectedRevision: state.revision }, 1);
     expect(preview.ok).toBe(true); if (!preview.ok) return;
-    expect(preview.projection.before.shelters[0]?.eligible).toBe(true);
-    expect(preview.projection.after.shelters[0]?.eligible).toBe(false);
+    const facts = availableFacts(preview);
+    expect(facts.before.shelters[0]?.eligible).toBe(true);
+    expect(facts.after.shelters[0]?.eligible).toBe(false);
     const impale = preview.projection.abilitiesEnabled.find((entry) => entry.request.abilityId === 'impale')!;
     expect(impale.legality.ok).toBe(true);
-    expect(preview.projection.before.abilities.find((entry) => entry.request.actorId === impale.request.actorId
+    expect(facts.before.abilities.find((entry) => entry.request.actorId === impale.request.actorId
       && entry.request.abilityId === 'impale' && entry.request.targetId === impale.request.targetId)?.legality)
       .toEqual({ ok: false, error: { code: 'illegal-ability' } });
     const command: Command = { kind: 'useAbility', expectedRevision: preview.state.revision,
       actorId: impale.request.actorId, abilityId: 'impale', targetId: impale.request.targetId };
     expect(applyCommand(structuredClone(preview.state), command).ok).toBe(true);
-    expect(preview.projection.after.positions).toEqual([
+    expect(facts.after.positions).toEqual([
       { brood: 'ugallu', cell: { q: 2, r: 0 } }, { brood: 'girtablilu', cell: { q: -2, r: 2 } },
       { brood: 'pazuzu', cell: { q: 0, r: -2 } },
     ]);
@@ -156,10 +165,11 @@ describe('P09 independent recipient and impact fixtures', () => {
     const state = frozen({ ...base, enemies: base.enemies.map((enemy) => enemy.id === 'warder' ? { ...enemy, hp: 2 } : enemy) });
     const preview = previewCommand(state, attack(state, 'warder', 2), 1);
     expect(preview.ok).toBe(true); if (!preview.ok) return;
+    const facts = availableFacts(preview);
     expect(preview.state.protections).toEqual([]);
     expect(preview.projection.protectionLost.map((entry) => entry.actorId)).toEqual(['ugallu', 'girtablilu', 'pazuzu']);
     expect(preview.events).toContainEqual({ type: 'intention-cancelled', intentionId: 'patrol:1:warder', reason: 'source-fallen' });
-    expect(preview.projection.after.threats.some((entry) => entry.intention.sourceId === 'warder')).toBe(false);
+    expect(facts.after.threats.some((entry) => entry.intention.sourceId === 'warder')).toBe(false);
     expect(preview.forecast.kind).toBe('transition');
     if (preview.forecast.kind === 'transition') {
       expect(preview.forecast.events.some((event) => event.type === 'attack-settled' && event.sourceId === 'warder')).toBe(false);
@@ -177,9 +187,10 @@ describe('P09 independent recipient and impact fixtures', () => {
     const preview = previewCommand(state, { kind: 'useAbility', expectedRevision: 0, actorId: 'pazuzu',
       abilityId: 'crosswind', targetId: 'warder', direction: 'clockwise' }, 1);
     expect(preview.ok).toBe(true); if (!preview.ok) return;
+    const facts = availableFacts(preview);
     expect(preview.state.enemies.find(({ id }) => id === 'warder')?.facing).toBe(1);
     expect(preview.projection.protectionLost).toHaveLength(3);
-    expect(preview.projection.after.threats.map(({ intention, cells, recipientIds }) => ({ kind: intention.kind, cells, recipientIds }))).toEqual([
+    expect(facts.after.threats.map(({ intention, cells, recipientIds }) => ({ kind: intention.kind, cells, recipientIds }))).toEqual([
       { kind: 'fixed-area', cells: [{ q: 0, r: 2 }], recipientIds: [] },
       { kind: 'fixed-area', cells: [{ q: 2, r: 0 }], recipientIds: ['ugallu'] },
       { kind: 'marked-hit', cells: [{ q: 2, r: 0 }], recipientIds: ['ugallu'] },
@@ -192,8 +203,9 @@ describe('P09 independent recipient and impact fixtures', () => {
     const state = frozen({ ...base, brood: base.brood.map((entity) => entity.id === 'girtablilu' ? { ...entity, hp: 0 } : entity) });
     const preview = previewCommand(state, { kind: 'maneuver', expectedRevision: 0, maneuver: 'expand' }, 1);
     expect(preview.ok).toBe(true); if (!preview.ok) return;
-    expect(preview.projection.after.threats.find((entry) => entry.intention.sourceId === 'censer')).toMatchObject({ cells: [], recipientIds: [], reason: 'target-fallen' });
-    expect(preview.projection.after.abilities.filter((entry) => entry.request.actorId === 'girtablilu').every((entry) => !entry.legality.ok)).toBe(true);
+    const facts = availableFacts(preview);
+    expect(facts.after.threats.find((entry) => entry.intention.sourceId === 'censer')).toMatchObject({ cells: [], recipientIds: [], reason: 'target-fallen' });
+    expect(facts.after.abilities.filter((entry) => entry.request.actorId === 'girtablilu').every((entry) => !entry.legality.ok)).toBe(true);
     if (preview.forecast.kind === 'transition') expect(preview.forecast.events.some((event) => event.type === 'attack-settled' && event.sourceId === 'censer')).toBe(false);
   });
 
@@ -222,12 +234,65 @@ describe('P09 independent recipient and impact fixtures', () => {
     expect(base.phase).toBe('player');
   });
 
-  it('a rejected end-now forecast never presents successful consequences', () => {
+  it.each(['warderDamage', 'splashRadius', 'closeThreshold'] as const)(
+    'invalid %s preserves the accepted immediate result and the real rejected forecast', (field) => {
+      const state = frozen(createPatrol('healthy', { ...rules, [field]: -1 }));
+      const bytes = JSON.stringify(state);
+      const command: Command = { kind: 'maneuver', maneuver: 'expand', expectedRevision: 0 };
+      const immediate = applyCommand(structuredClone(state), command);
+      expect(immediate.ok).toBe(true); if (!immediate.ok) return;
+      const ended = applyCommand(structuredClone(immediate.state), {
+        kind: 'endPhase', expectedRevision: immediate.state.revision });
+      expect(ended).toMatchObject({ ok: false, events: [], error: { code: 'invalid-amount' } });
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const preview = previewCommand(state, command, 1);
+        expect(preview.ok).toBe(true); if (!preview.ok) return;
+        expect(preview.state).toEqual(immediate.state); expect(preview.events).toEqual(immediate.events);
+        expect(preview.forecast).toMatchObject({ kind: 'transition', ...ended, enemyEvents: [] });
+        expect(preview.projection.before.available).toBe(field === 'warderDamage');
+        expect(preview.projection.after.available).toBe(field === 'warderDamage');
+        expect(JSON.stringify(state)).toBe(bytes);
+      }
+    });
+
+  it('a protection-selector rejection cannot replace an accepted immediate or end-phase result', () => {
     const base = createPatrol('healthy', rules);
-    const preview = previewCommand(frozen({ ...base, patrolRules: { ...rules, warderDamage: -1 } }),
-      { kind: 'maneuver', maneuver: 'expand', expectedRevision: 0 }, 1);
+    // Maneuvers and patrol marked attacks do not validate directional protection facing.
+    const state = frozen({ ...base, enemies: base.enemies.map(enemy => enemy.id === 'warder'
+      ? { ...enemy, facing: 6 as typeof enemy.facing } : enemy) });
+    const bytes = JSON.stringify(state);
+    const command: Command = { kind: 'maneuver', maneuver: 'expand', expectedRevision: 0 };
+    const immediate = applyCommand(structuredClone(state), command);
+    expect(immediate.ok).toBe(true); if (!immediate.ok) return;
+    const ended = applyCommand(structuredClone(immediate.state), { kind: 'endPhase', expectedRevision: immediate.state.revision });
+    expect(ended.ok).toBe(true);
+    const preview = previewCommand(state, command, 1);
     expect(preview.ok).toBe(true); if (!preview.ok) return;
-    expect(preview.forecast).toMatchObject({ kind: 'transition', ok: false, events: [], enemyEvents: [], error: { code: 'invalid-amount' } });
+    expect(preview.state).toEqual(immediate.state); expect(preview.events).toEqual(immediate.events);
+    expect(preview.projection.before.available).toBe(false); expect(preview.projection.after.available).toBe(false);
+    expect(preview.forecast).toMatchObject({ kind: 'transition', ...ended });
+    expect(JSON.stringify(state)).toBe(bytes);
+  });
+
+  it('an invalid Shelter selector threshold preserves immediate equivalence and the real forecast rejection', () => {
+    const sheltered = applyCommand(createPatrol('healthy', rules), { kind: 'useAbility', expectedRevision: 0,
+      actorId: 'ugallu', abilityId: 'shelter', targetId: 'girtablilu' });
+    expect(sheltered.ok).toBe(true); if (!sheltered.ok) return;
+    const state = frozen({ ...sheltered.state, patrolRules: { ...rules,
+      damageRules: { ...rules.damageRules, closeThreshold: -1 } } });
+    const bytes = JSON.stringify(state);
+    const command: Command = { kind: 'maneuver', maneuver: 'expand', expectedRevision: state.revision };
+    const immediate = applyCommand(structuredClone(state), command);
+    expect(immediate.ok).toBe(true); if (!immediate.ok) return;
+    const preview = previewCommand(state, command, 1);
+    expect(preview.ok).toBe(true); if (!preview.ok) return;
+    expect(preview.state).toEqual(immediate.state); expect(preview.events).toEqual(immediate.events);
+    const ended = applyCommand(structuredClone(immediate.state), { kind: 'endPhase', expectedRevision: immediate.state.revision });
+    expect(ended).toMatchObject({ ok: false, events: [], error: { code: 'invalid-amount' } });
+    expect(preview.forecast).toMatchObject({ kind: 'transition', ...ended, enemyEvents: [] });
+    expect(preview.projection.before.available).toBe(false);
+    expect(preview.projection.after.available).toBe(false);
+    expect(JSON.stringify(state)).toBe(bytes);
   });
 });
 

@@ -155,11 +155,17 @@ export class FormationLab extends Phaser.Scene {
       if (preview?.ok) {
         const facts = preview.projection.after;
         lines.push(`Immediate: ${hp(preview.state)} · ${preview.state.phase}.`);
-        lines.push(`Destination links: ${facts.links.map((link) => `${link.from.brood} ↔ ${link.to.brood} ${link.state}`).join('; ')}.`);
-        lines.push(`Protection gained: ${preview.projection.protectionGained.map((entry) => `${entry.actorId} → ${entry.targetId}`).join(', ') || 'none'}; lost: ${preview.projection.protectionLost.map((entry) => `${entry.actorId} → ${entry.targetId}`).join(', ') || 'none'}.`);
-        lines.push(`Threats: ${facts.threats.map((entry) => `${entry.intention.kind === 'fixed-area' ? 'Area' : 'Mark'} ${entry.intention.id} at ${entry.cells.map((cell) => `(${cell.q},${cell.r})`).join(', ')} → ${entry.recipientIds.join(', ') || entry.reason}`).join('; ')}.`);
-        const abilityNames = (entries: typeof facts.abilities) => [...new Set(entries.map((entry) => title(entry.request.abilityId)))].join(', ') || 'none';
-        lines.push(`Abilities enabled: ${abilityNames(preview.projection.abilitiesEnabled)}; disabled: ${abilityNames(preview.projection.abilitiesDisabled)}.`);
+        const before = preview.projection.before;
+        if (before.available && facts.available) {
+          lines.push(`Destination links: ${facts.links.map((link) => `${link.from.brood} ↔ ${link.to.brood} ${link.state}`).join('; ')}.`);
+          lines.push(`Protection gained: ${preview.projection.protectionGained.map((entry) => `${entry.actorId} → ${entry.targetId}`).join(', ') || 'none'}; lost: ${preview.projection.protectionLost.map((entry) => `${entry.actorId} → ${entry.targetId}`).join(', ') || 'none'}.`);
+          lines.push(`Threats: ${facts.threats.map((entry) => `${entry.intention.kind === 'fixed-area' ? 'Area' : 'Mark'} ${entry.intention.id} at ${entry.cells.map((cell) => `(${cell.q},${cell.r})`).join(', ')} → ${entry.recipientIds.join(', ') || entry.reason}`).join('; ')}.`);
+          const abilityNames = (entries: typeof facts.abilities) => [...new Set(entries.map((entry) => title(entry.request.abilityId)))].join(', ') || 'none';
+          lines.push(`Abilities enabled: ${abilityNames(preview.projection.abilitiesEnabled)}; disabled: ${abilityNames(preview.projection.abilitiesDisabled)}.`);
+        } else {
+          const reason = !facts.available ? facts.reason : !before.available ? before.reason : '';
+          lines.push(`Preview facts unavailable: ${reason}.`);
+        }
         const forecast = preview.forecast;
         lines.push(forecast.kind === 'transition' ? forecast.ok
           ? `${forecast.condition}: ${hp(forecast.state)} · ${forecast.state.phase}. Remaining player choices are excluded.`
