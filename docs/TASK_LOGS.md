@@ -985,3 +985,24 @@ Part of the "implement up to p11" request. Worktree `/opt/dev/tehom-brainlab-p09
 **Delivery.** Master fast-forwarded from `35586e8` to `86e0da36`. At that revision, delivered and tested: 431 tests, typecheck and build exit 0, and prototype and assets equal `aac8068`. A second fast-forward to `f60afc5` added the delivery report. See the [delivery record](mailbox/p09-preview-equivalence/delivery.md).
 
 **Cleanup.** Panes `w2G:p2J` and `p2K` closed. Worktree `/opt/dev/tehom-brainlab-p09` removed. Branch kept. No push.
+
+## 2026-10-05 P10 playable patrol
+
+Part of the request to "implement up to p11". Worktree `/opt/dev/tehom-brainlab-p10`, branch `p10-playable-patrol`, BASE `767f46c`. The Coordinator ran no checks itself, and every handoff passed the validator.
+
+**Implementation.**
+- `p10-impl` (`gpt-6.1-sol-high`, pane `w2G:p2M`) produced candidate `353dac7e`.
+- Files: `src/view/CombatScene.ts`, text controls and readouts, `main.ts` routing, `tests/browser-patrol.mjs`, a browser aggregate script, a thin root recipe `poc-001-test-browser`, and the README. No new dependencies.
+- Results: 434 tests, typecheck and build passed, and the browser suite passed 2,419 assertions ([implementer report](mailbox/p10-playable-patrol/implementer.md)).
+
+**Review.** `p10-review` (pane `w2G:p2N`, `7580a67`) raised two blocking findings:
+- R1: `CombatScene.ts:86` confirmed any pending maneuver. With focus on clockwise and hover on Expand, Enter executed Expand.
+- R2: `browser-patrol.mjs:182-187` compared historical final HP under uncontrolled current defaults.
+
+Fix `dfeaadeb` binds each activation to its own command identity, adds focus/hover regression tests, and makes the trace assertions tuning-independent. Results: 440 tests passed, 3,110 browser assertions passed, and a Censer-damage-2 probe passed ([fix](mailbox/p10-playable-patrol/fix.md)). The re-review (`a7e422d`) approved with no remaining findings.
+
+**Delivery.** Master fast-forwarded `767f46c` → `fab9c7d8` (delivered and tested: 440 tests, typecheck, build and `test-browser` exit 0; prototype, assets and justfile equal `dfeaade`) → `956f435` (the delivery report commit). See the [delivery record](mailbox/p10-playable-patrol/delivery.md).
+
+**Cleanup.** Panes `w2G:p2M` and `p2N` closed. Worktree removed; branch kept. No push and no human playtest.
+
+**Process note.** P07, P09 and P10 each had a blocking review for test assertions that froze provisional defaults, even though every assignment prohibited it. The reviewers' default-override probes caught each one.
