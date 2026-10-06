@@ -66,9 +66,23 @@ try {
     await cdp('Input.dispatchKeyEvent', { type: 'keyUp', key, code, windowsVirtualKeyCode: virtual, nativeVirtualKeyCode: virtual });
   }
   async function snapshot() {
-    return evaluate(`(()=>({live:document.querySelector('#live-readout').textContent,revision:Number(document.querySelector('#formation-lab').dataset.revision),used:document.querySelector('#formation-lab').dataset.maneuverUsed==='true',positions:[...document.querySelectorAll('.brood-token')].map(e=>({brood:e.dataset.brood,cell:{q:Number(e.dataset.q),r:Number(e.dataset.r)}})),ghosts:[...document.querySelectorAll('.ghost')].map(e=>({brood:e.dataset.brood,cell:{q:Number(e.dataset.q),r:Number(e.dataset.r)}})),links:[...document.querySelectorAll('#link-readout li')].map(e=>({text:e.textContent,state:e.dataset.state})),selected:document.querySelector('#selection').textContent,disabled:[...document.querySelectorAll('#maneuvers button')].filter(e=>e.disabled).length,allowance:document.querySelector('#allowance').textContent,preview:document.querySelector('#preview-readout').textContent}))()`);
+    return evaluate(`(()=>({live:document.querySelector('#live-readout').textContent,revision:Number(document.querySelector('#formation-lab').dataset.revision),rotationUsed:document.querySelector('#formation-lab').dataset.rotationUsed==='true',shapeChangeUsed:document.querySelector('#formation-lab').dataset.shapeChangeUsed==='true',positions:[...document.querySelectorAll('.brood-token')].map(e=>({brood:e.dataset.brood,cell:{q:Number(e.dataset.q),r:Number(e.dataset.r)}})),ghosts:[...document.querySelectorAll('.ghost')].map(e=>({brood:e.dataset.brood,cell:{q:Number(e.dataset.q),r:Number(e.dataset.r)}})),links:[...document.querySelectorAll('#link-readout li')].map(e=>({text:e.textContent,state:e.dataset.state})),selected:document.querySelector('#selection').textContent,disabled:[...document.querySelectorAll('#maneuvers button')].filter(e=>e.disabled).length,allowance:document.querySelector('#allowance').textContent,preview:document.querySelector('#preview-readout').textContent}))()`);
   }
   async function capture(name) { const screenshot = await cdp('Page.captureScreenshot', { format: 'png' }); await writeFile(join(output, name), Buffer.from(screenshot.data, 'base64')); }
+  const disabledCount = (maneuver) => {
+    const committed = applyCommand(createInitialState(), { kind: 'maneuver', maneuver, expectedRevision: 0 }).state;
+    return ['clockwise','anticlockwise','expand','contract'].filter(next => !applyCommand(committed, { kind: 'maneuver', maneuver: next, expectedRevision: committed.revision }).ok).length;
+  };
+  async function expandAfterRotation(mode) {
+    await hover('[data-maneuver="expand"]'); const projected = await snapshot();
+    equal(projected.ghosts,formationPositions({shape:'spread',orientation:1}),`${mode}: shape allowance previews Spread after rotation`);
+    check(projected.rotationUsed && !projected.shapeChangeUsed,`${mode}: preview preserves both flags`);
+    await click('[data-maneuver="expand"]'); const committed = await snapshot();
+    equal(committed.positions,projected.ghosts,`${mode}: second category commits to preview ghosts`);
+    check(committed.rotationUsed && committed.shapeChangeUsed,`${mode}: both categories spent`);
+    equal(committed.disabled,['clockwise','anticlockwise','expand','contract'].length,`${mode}: all maneuvers unavailable after both categories spent`);
+    await click('[data-maneuver="contract"]'); equal(await snapshot(),committed,`${mode}: second shape click changes nothing`);
+  }
   const label = (value) => value[0].toUpperCase() + value.slice(1);
   await Promise.all([cdp('Page.enable'), cdp('Runtime.enable'), cdp('Network.enable')]);
   await cdp('Page.bringToFront');
@@ -90,7 +104,7 @@ try {
     const actual = await snapshot();
     equal(actual.positions, formationPositions(formation), 'labelled anchors match core');
     equal(actual.links, formationLinks(formation).map((link) => ({ state: link.state, text: `${label(link.from.brood)} ↔ ${label(link.to.brood)}: ${label(link.state)} (${link.distance})` })), 'all links match core');
-    equal(actual.revision, 0, 'fresh revision'); check(!actual.used, 'fresh allowance');
+    equal(actual.revision, 0, 'fresh revision'); check(!actual.rotationUsed && !actual.shapeChangeUsed, 'fresh allowance');
     equal(await evaluate(`[...document.querySelectorAll('#maneuvers button')].map(e=>({maneuver:e.dataset.maneuver,disabled:e.disabled}))`), ['clockwise','anticlockwise','expand','contract'].map((maneuver) => ({maneuver,disabled:!applyCommand({...createInitialState(),formation},{kind:'maneuver',expectedRevision:0,maneuver}).ok})), 'availability matches core');
     check(await evaluate(`[...document.querySelectorAll('.brood-token')].every(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=1280&&r.top>=0&&r.bottom<=800&&getComputedStyle(e.querySelector('img')).transform==='none'})`), 'tokens/labels on screen, images upright');
     for (const brood of ['ugallu', 'girtablilu', 'pazuzu']) {
@@ -102,15 +116,17 @@ try {
   await click('#reset');
   const initial = await snapshot();
   await hover('[data-maneuver="expand"]'); const preview = await snapshot();
-  equal(preview.positions, initial.positions, 'preview leaves live anchors unchanged'); equal(preview.live, initial.live, 'preview leaves live shape/revision unchanged'); check(!preview.used, 'preview leaves allowance');
+  equal(preview.positions, initial.positions, 'preview leaves live anchors unchanged'); equal(preview.live, initial.live, 'preview leaves live shape/revision unchanged'); check(!preview.rotationUsed && !preview.shapeChangeUsed, 'preview leaves allowance');
   equal(preview.ghosts, formationPositions({shape:'spread',orientation:0}), 'exact expansion destinations');
   await capture('expand-preview.png');
   await key('Escape','Escape',27); equal((await snapshot()).ghosts, [], 'Escape cancels preview');
   await evaluate(`document.querySelector('[data-maneuver="clockwise"]').focus()`);
   const rotationPreview = await snapshot(); equal(rotationPreview.ghosts, formationPositions({shape:'compact',orientation:1}), 'focus previews clockwise');
   await key('Enter','Enter',13); const rotation = await snapshot();
-  equal(rotation.positions, rotationPreview.ghosts, 'keyboard commit matches rotation preview'); equal(rotation.revision,1,'commit increments once'); check(rotation.used,'commit spends allowance'); equal(rotation.disabled,4,'second maneuver unavailable'); check(rotation.allowance.includes('Maneuver used'),'second maneuver explanation'); equal(rotation.ghosts,[],'commit clears ghosts');
-  await click('[data-maneuver="expand"]'); equal(await snapshot(),rotation,'disabled second click changes nothing');
+  equal(rotation.positions, rotationPreview.ghosts, 'keyboard commit matches rotation preview'); equal(rotation.revision,1,'commit increments once'); check(rotation.rotationUsed && !rotation.shapeChangeUsed,'commit spends only rotation'); equal(rotation.disabled,disabledCount('clockwise'),'availability matches core after rotation'); check(rotation.allowance.includes('Rotation: used') && rotation.allowance.includes('Shape change: available'),'separate allowance explanation'); equal(rotation.ghosts,[],'commit clears ghosts');
+  await click('[data-maneuver="anticlockwise"]'); equal(await snapshot(),rotation,'disabled second click changes nothing');
+  await capture('rotation-shape-available.png');
+  await expandAfterRotation('normal');
   await click('.brood-token[data-brood="ugallu"]'); check((await snapshot()).selected.includes('Ugallu'),'token selection works');
   await click('#reset'); equal(await snapshot(),initial,'reset restores all live/selection/preview readouts');
   await hover('[data-maneuver="expand"]'); const expansionPreview = await snapshot(); await click('[data-maneuver="expand"]');
@@ -136,7 +152,7 @@ try {
   const stage = await evaluate(`(()=>{const r=document.querySelector('#board-stage').getBoundingClientRect();return {x:r.x+380,y:r.y+295};})()`);
   await cdp('Input.dispatchMouseEvent',{type:'mousePressed',button:'left',clickCount:1,...stage});
   await cdp('Input.dispatchMouseEvent',{type:'mouseReleased',button:'left',clickCount:1,...stage});
-  const afterDrag = await snapshot(); equal(afterDrag.positions,beforeDrag.positions,'drag/empty click cannot move units'); equal(afterDrag.live,beforeDrag.live,'drag/empty click leaves combat revision/formation'); equal(afterDrag.used,beforeDrag.used,'drag leaves allowance');
+  const afterDrag = await snapshot(); equal(afterDrag.positions,beforeDrag.positions,'drag/empty click cannot move units'); equal(afterDrag.live,beforeDrag.live,'drag/empty click leaves combat revision/formation'); equal(afterDrag.rotationUsed,beforeDrag.rotationUsed,'drag leaves rotation allowance'); equal(afterDrag.shapeChangeUsed,beforeDrag.shapeChangeUsed,'drag leaves shape allowance');
   await click('#credits summary');
   for (const selector of ['#credits-file','#license-file']) equal(await evaluate(`fetch(document.querySelector('${selector}').href).then(r=>r.status)`),200,'bundled attribution accessible');
   await evaluate(`document.querySelector('#patrol-emblems').scrollIntoView({block:'end'})`);
@@ -149,15 +165,16 @@ try {
     await hover('[data-maneuver="expand"]'); const preview = await snapshot();
     equal(preview.positions,initial.positions,`${mode}: preview leaves live positions`);
     equal(preview.live,initial.live,`${mode}: preview leaves revision/shape`);
-    check(!preview.used,`${mode}: preview leaves allowance`);
+    check(!preview.rotationUsed && !preview.shapeChangeUsed,`${mode}: preview leaves allowance`);
     await click('#cancel'); equal((await snapshot()).ghosts,[],`${mode}: cancel`);
     await evaluate(`document.querySelector('[data-maneuver="clockwise"]').focus()`);
     const rotationPreview = await snapshot();
     await key('Enter','Enter',13); const rotation = await snapshot();
     equal(rotation.positions,rotationPreview.ghosts,`${mode}: rotation matches focus preview`);
-    equal(rotation.revision,1,`${mode}: rotation increments once`); check(rotation.used,`${mode}: allowance spent`);
-    equal(rotation.disabled,4,`${mode}: second maneuver unavailable`);
-    await click('[data-maneuver="expand"]'); equal(await snapshot(),rotation,`${mode}: disabled second click`);
+    equal(rotation.revision,1,`${mode}: rotation increments once`); check(rotation.rotationUsed && !rotation.shapeChangeUsed,`${mode}: only rotation spent`);
+    equal(rotation.disabled,disabledCount('clockwise'),`${mode}: availability matches core after rotation`);
+    await click('[data-maneuver="anticlockwise"]'); equal(await snapshot(),rotation,`${mode}: disabled second click`);
+    await expandAfterRotation(mode);
     await click('.brood-token[data-brood="ugallu"]'); check((await snapshot()).selected.includes('Ugallu'),`${mode}: labelled token selection`);
     await click('#reset'); equal(await snapshot(),initial,`${mode}: reset clears selection and ghosts`);
     await hover('[data-maneuver="expand"]'); const expansionPreview=await snapshot();
@@ -208,7 +225,7 @@ try {
   equal(captionFailures,[],'all destination captions fit the board without overlapping live emblems, names or other captions');
   equal(exceptions,[],'no uncaught browser exceptions'); check(failures.length>=1,'failed request actually exercised');
   await writeFile(join(output,'browser.json'),JSON.stringify({viewport:{width:1280,height:800},version,assertions,baseUrl,chromeFlags:chrome.spawnargs.slice(1),requests,failures,exceptions,trace},null,2)+'\n');
-  console.log(JSON.stringify({ok:true,assertions,fixtures:12,modes:['normal','placeholder','failed-image'],screenshots:19,exceptions:exceptions.length,failedRequests:failures.length,output}));
+  console.log(JSON.stringify({ok:true,assertions,fixtures:12,modes:['normal','placeholder','failed-image'],screenshots:20,exceptions:exceptions.length,failedRequests:failures.length,output}));
 } finally {
   socket?.close(); chrome.kill('SIGTERM');
   await new Promise((done)=>{if(chrome.exitCode!==null)done();else chrome.once('exit',done)});

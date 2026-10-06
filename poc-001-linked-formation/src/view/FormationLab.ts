@@ -16,7 +16,7 @@ const title = (value: string) => value[0]!.toUpperCase() + value.slice(1);
 export function createLabShell(parent: HTMLElement): void {
   parent.innerHTML = `
     <main id="formation-lab">
-      <header><div><h1>TEHOM — Formation Lab</h1><p>Inspect three linked Brood. One shared maneuver per fresh fixture.</p></div><span class="lab-tag">FORMATION ONLY</span></header>
+      <header><div><h1>TEHOM — Formation Lab</h1><p>Inspect three linked Brood. One rotation and one shape change per fresh fixture.</p></div><span class="lab-tag">FORMATION ONLY</span></header>
       <div class="lab-columns">
         <section aria-label="Formation board" class="board-panel">
           <div id="board-stage"><div id="board-canvas"></div><div id="ghosts" aria-hidden="true"></div><div id="tokens"></div></div>
@@ -122,14 +122,15 @@ export class FormationLab extends Phaser.Scene {
   private render(): void {
     const state = this.lab.state;
     this.root.dataset.revision = String(state.revision);
-    this.root.dataset.maneuverUsed = String(state.maneuverUsed);
+    this.root.dataset.rotationUsed = String(state.rotationUsed);
+    this.root.dataset.shapeChangeUsed = String(state.shapeChangeUsed);
     this.element('live-readout').textContent = `${title(state.formation.shape)} · orientation ${state.formation.orientation} · revision ${state.revision} · round ${state.round}`;
-    this.element('allowance').textContent = state.maneuverUsed ? 'Maneuver used. Select a fresh test fixture or reset the lab to maneuver again.' : 'Shared maneuver remaining: 1.';
+    this.element('allowance').textContent = `Rotation: ${state.rotationUsed ? 'used' : 'available'}. Shape change: ${state.shapeChangeUsed ? 'used' : 'available'}.`;
     for (const maneuver of MANEUVERS) {
       const result = this.lab.outcome(maneuver);
       const button = this.maneuverButtons.get(maneuver)!;
       button.disabled = !result.ok;
-      button.title = result.ok ? 'Preview, then commit once' : result.error.code === 'same-shape' ? `Already ${state.formation.shape}` : 'Shared maneuver already used';
+      button.title = result.ok ? 'Preview, then commit once' : result.error.code === 'same-shape' ? `Already ${state.formation.shape}` : `${maneuver === 'clockwise' || maneuver === 'anticlockwise' ? 'Rotation' : 'Shape change'} already used`;
       button.setAttribute('aria-describedby', 'allowance');
     }
     this.drawBoard();

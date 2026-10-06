@@ -62,7 +62,7 @@ afterEach(() => { assertions += expect.getState().assertionCalls; });
 afterAll(() => { console.info(`P06 damage assertions executed: ${assertions}`); });
 
 test('C1/AC1: ordinary raw five hit through the P03 boundary changes only HP and attack accounting', () => {
-  const state = fixture({ actedIds: ['pazuzu'], maneuverUsed: true });
+  const state = fixture({ actedIds: ['pazuzu'], rotationUsed: true, shapeChangeUsed: true });
   const before = structuredClone(state);
   const attack = packet();
   const result = accepted(applyCommand(state, attack));
@@ -136,7 +136,8 @@ test('AC2: expansion before impact invalidates Shelter and consumes it without r
   expect(hp(result.state, 'girtablilu')).toBe(5);
   expect(result.state.shelters).toEqual([]);
   expect(result.state.actedIds).toEqual(['ugallu']);
-  expect(result.state.maneuverUsed).toBe(true);
+  expect(result.state.rotationUsed).toBe(false);
+  expect(result.state.shapeChangeUsed).toBe(true);
   expect(result.events).toContainEqual({ type: 'shelter-consumed', shelterId: 'shelter-g', targetId: 'girtablilu', eligible: false });
 });
 
@@ -228,13 +229,14 @@ test('C3/AC5: Fallen keeps its labelled slot and budgets; actions, active links 
   const state = fixture({ brood: base.brood.map((entity) => ({ ...entity, hp: entity.id === 'ugallu' ? 2 : 10 })),
     declaredIntentions: [hit, { ...splash, targetId: 'ugallu' },
       { id: 'area', sourceId: 'warder', kind: 'fixed-area', cells: [{ q: 3, r: 0 }], turnable: false }],
-    actedIds: ['pazuzu'], maneuverUsed: true });
+    actedIds: ['pazuzu'], rotationUsed: true, shapeChangeUsed: true });
   const result = accepted(applyAttack(state, packet(), rules));
   expect(result.state.formation).toEqual(state.formation);
   expect(formationPositions(result.state.formation)).toEqual(formationPositions(state.formation));
   expect(result.state.brood.map(({ id, brood }) => [id, brood])).toEqual(state.brood.map(({ id, brood }) => [id, brood]));
   expect(result.state.actedIds).toEqual(['pazuzu']);
-  expect(result.state.maneuverUsed).toBe(true);
+  expect(result.state.rotationUsed).toBe(true);
+  expect(result.state.shapeChangeUsed).toBe(true);
   expect(activeLinks(result.state, 2).map(({ fromId, toId }) => [fromId, toId])).toEqual([['girtablilu', 'pazuzu']]);
   expect(isCloseLinked(result.state, 'ugallu', 'girtablilu', 2)).toBe(false);
   expect(result.state.declaredIntentions.map(({ id }) => id)).toEqual(['area']);
@@ -304,7 +306,7 @@ test('C3/AC6: simultaneous all-dead batch chooses defeat before victory', () => 
 
 test('C4/AC7: expiry removes unused Shelter once, increments one revision, and leaves round/phase/budgets intact', () => {
   const state = fixture({ phase: 'enemy', shelters: [shelter, { ...shelter, id: 'a', targetId: 'pazuzu' }],
-    actedIds: ['ugallu'], maneuverUsed: true });
+    actedIds: ['ugallu'], rotationUsed: true, shapeChangeUsed: true });
   const result = expireShelters(state);
   expect(result.state).toEqual({ ...state, shelters: [], revision: 1 });
   expect(result.events).toEqual([

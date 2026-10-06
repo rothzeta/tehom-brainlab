@@ -48,7 +48,8 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
   if (command.kind !== 'maneuver') return reject(state, 'invalid-command');
   const error = guard(state, command.expectedRevision);
   if (error) return reject(state, error);
-  if (state.maneuverUsed) return reject(state, 'maneuver-used');
+  const rotation = command.maneuver === 'clockwise' || command.maneuver === 'anticlockwise';
+  if (rotation ? state.rotationUsed : state.shapeChangeUsed) return reject(state, 'maneuver-used');
 
   let formation: Formation;
   switch (command.maneuver) {
@@ -65,7 +66,10 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
     default: return reject(state, 'invalid-command');
   }
   const next: GameState = {
-    ...state, formation, maneuverUsed: true, revision: state.revision + 1,
+    ...state, formation,
+    rotationUsed: rotation || state.rotationUsed,
+    shapeChangeUsed: !rotation || state.shapeChangeUsed,
+    revision: state.revision + 1,
   };
   return {
     ok: true, state: next,
@@ -111,7 +115,7 @@ function accountActorAction<State extends GameState>(
   if (!effect.ok) return rejectAction(effect.error.code);
   const next: State = {
     ...effect.state, round: state.round, formation: state.formation,
-    maneuverUsed: state.maneuverUsed,
+    rotationUsed: state.rotationUsed, shapeChangeUsed: state.shapeChangeUsed,
     actedIds: [...state.actedIds, actor.id], revision: state.revision + 1,
   };
   return {

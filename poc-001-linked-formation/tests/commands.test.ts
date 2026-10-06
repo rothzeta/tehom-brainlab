@@ -42,7 +42,7 @@ test('AC1: initial legal rotation spends only the shared maneuver and one revisi
   const command = freeze({ kind: 'maneuver', expectedRevision: 0, maneuver: 'clockwise' } as const);
   const result = accepted(applyCommand(state, command));
   expect(result.state).toEqual({
-    ...state, formation: { shape: 'compact', orientation: 1 }, maneuverUsed: true, revision: 1,
+    ...state, formation: { shape: 'compact', orientation: 1 }, rotationUsed: true, shapeChangeUsed: false, revision: 1,
   });
   expect(result.state.actedIds).toEqual([]);
   expect(result.events).toEqual([{
@@ -65,7 +65,9 @@ test.each<[Formation, Maneuver, Formation]>([
   const state = fixture({ formation, actedIds: ['girtablilu'] });
   const before = JSON.stringify(state);
   const result = accepted(applyCommand(state, freeze({ kind: 'maneuver', expectedRevision: 0, maneuver })));
-  expect(result.state).toEqual({ ...state, formation: destination, maneuverUsed: true, revision: 1 });
+  expect(result.state).toEqual({ ...state, formation: destination,
+    rotationUsed: maneuver === 'clockwise' || maneuver === 'anticlockwise',
+    shapeChangeUsed: maneuver === 'expand' || maneuver === 'contract', revision: 1 });
   expect(result.events).toEqual([{
     type: 'maneuver-applied', maneuver, formation: destination, revision: 1,
   }]);
@@ -77,7 +79,15 @@ test('AC2: second maneuver and replay of the first command cannot spend resource
   const first = accepted(applyCommand(fixture(), command));
   const state = freeze(first.state);
   const before = JSON.stringify(state);
-  rejected(applyCommand(state, { kind: 'maneuver', expectedRevision: 1, maneuver: 'expand' }), state, 'maneuver-used');
+  for (const maneuver of ['clockwise', 'anticlockwise'] as const) {
+    rejected(applyCommand(state, { kind: 'maneuver', expectedRevision: 1, maneuver }), state, 'maneuver-used');
+  }
+  const expanded = accepted(applyCommand(state, { kind: 'maneuver', expectedRevision: 1, maneuver: 'expand' }));
+  expect(expanded.state.rotationUsed).toBe(state.rotationUsed);
+  expect(expanded.state.shapeChangeUsed).toBe(true);
+  for (const maneuver of ['contract', 'expand'] as const) {
+    rejected(applyCommand(expanded.state, { kind: 'maneuver', expectedRevision: expanded.state.revision, maneuver }), expanded.state, 'maneuver-used');
+  }
   rejected(applyCommand(state, command), state, 'stale-revision');
   expect(JSON.stringify(state)).toBe(before);
 });
@@ -108,7 +118,7 @@ test('AC2: stale revision rejects a legal unused maneuver', () => {
 
 test.each(['useAbility', 'endPhase'] as const)('AC4: %s stays explicitly unsupported in every phase', (kind) => {
   for (const phase of ['player', 'enemy', 'victory', 'defeat'] as const) {
-    const state = fixture({ phase, maneuverUsed: true, actedIds: ['ugallu'] });
+    const state = fixture({ phase, rotationUsed: true, shapeChangeUsed: true, actedIds: ['ugallu'] });
     const before = JSON.stringify(state);
     const command: Command = kind === 'endPhase'
       ? { kind, expectedRevision: 99 }
@@ -151,7 +161,7 @@ function woundedFixture(overrides: Partial<GameState> = {}): GameState {
 }
 
 test('AC3/AC5: legal test effect runs once and accounts only its eligible living actor', () => {
-  const state = woundedFixture({ actedIds: ['pazuzu'], maneuverUsed: true });
+  const state = woundedFixture({ actedIds: ['pazuzu'], rotationUsed: true, shapeChangeUsed: true });
   const before = JSON.stringify(state);
   const first = accepted(applyActorAction(state, action, rules));
   expect(first.state).toEqual({
@@ -169,7 +179,8 @@ test('AC3/AC5: legal test effect runs once and accounts only its eligible living
   }, rules));
   expect(new Set(second.state.actedIds)).toEqual(new Set(['pazuzu', 'ugallu', 'girtablilu']));
   expect(second.state.revision).toBe(2);
-  expect(second.state.maneuverUsed).toBe(true);
+  expect(second.state.rotationUsed).toBe(true);
+  expect(second.state.shapeChangeUsed).toBe(true);
 });
 
 const guardedRules: ActionRules = {
@@ -233,13 +244,15 @@ test.each(['before', 'between', 'after'] as const)('C3: maneuver remains availab
   }));
   expect(maneuver.state.actedIds).toEqual(state.actedIds);
   expect(maneuver.state.revision).toBe(state.revision + 1);
-  expect(maneuver.state.maneuverUsed).toBe(true);
+  expect(maneuver.state.rotationUsed).toBe(true);
+  expect(maneuver.state.shapeChangeUsed).toBe(false);
   state = freeze(maneuver.state);
   for (const actor of state.brood.slice(count)) {
     const next = accepted(applyActorAction(state, {
       ...action, actorId: actor.id, targetId: actor.id, expectedRevision: state.revision,
     }, rules));
-    expect(next.state.maneuverUsed).toBe(true);
+    expect(next.state.rotationUsed).toBe(true);
+    expect(next.state.shapeChangeUsed).toBe(false);
     expect(next.state.actedIds).toContain(actor.id);
     state = freeze(next.state);
   }
@@ -252,7 +265,7 @@ test('AC5: fixture calls share no mutable nested collections or objects', () => 
   const second = createInitialState();
   expect(first).toEqual(second);
   expect(first).toMatchObject({ revision: 0, round: 1, phase: 'player',
-    formation: { shape: 'compact', orientation: 0 }, actedIds: [], maneuverUsed: false, intentions: [] });
+    formation: { shape: 'compact', orientation: 0 }, actedIds: [], rotationUsed: false, shapeChangeUsed: false, intentions: [] });
   expect(new Set(first.brood.map(({ id }) => id))).toEqual(new Set(['ugallu', 'girtablilu', 'pazuzu']));
   expect(first.brood.every(({ hp, maxHp, statuses, owner }) =>
     Number.isInteger(hp) && Number.isInteger(maxHp) && hp > 0 && hp <= maxHp

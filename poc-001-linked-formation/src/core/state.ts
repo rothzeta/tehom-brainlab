@@ -21,7 +21,8 @@ export interface GameState {
   readonly formation: Formation;
   readonly brood: readonly BroodState[];
   readonly actedIds: readonly string[];
-  readonly maneuverUsed: boolean;
+  readonly rotationUsed: boolean;
+  readonly shapeChangeUsed: boolean;
   readonly intentions: readonly string[];
 }
 
@@ -58,7 +59,8 @@ export function createInitialState(): GameState {
       id: brood, brood, owner: 'player', hp: 1, maxHp: 1, statuses: [],
     })),
     actedIds: [],
-    maneuverUsed: false,
+    rotationUsed: false,
+    shapeChangeUsed: false,
     intentions: [],
   };
 }

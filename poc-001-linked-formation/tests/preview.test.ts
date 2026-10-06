@@ -91,7 +91,7 @@ describe('P09 preview / real transition equivalence', () => {
 
   it('preserves rejection reasons across stale, spent, fallen, terminal, invalid and unsupported states', () => {
     const base = createPatrol('healthy', rules);
-    const fixtures = [base, { ...base, actedIds: ['ugallu'] }, { ...base, maneuverUsed: true },
+    const fixtures = [base, { ...base, actedIds: ['ugallu'] }, { ...base, rotationUsed: true, shapeChangeUsed: true },
       { ...base, phase: 'victory' as const }, { ...base, brood: base.brood.map((entity) =>
         entity.id === 'ugallu' ? { ...entity, hp: 0 } : entity) }];
     for (const state of fixtures) for (const command of [

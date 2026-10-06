@@ -338,9 +338,10 @@ try {
     check((await snapshot()).projection.includes('Close link lost'),'Shelter loss shown before spending maneuver');
     await key('Escape'); equal((await snapshot()).ghosts,[],'Escape cancels'); stateMatches(await snapshot(),state,'Escape no spend');
     state=await play(expand,state,true);
-    check((await evaluate(`document.querySelector('[data-maneuver="clockwise"]').dataset.reason`))==='maneuver-used','used maneuver reason');
+    check((await evaluate(`document.querySelector('[data-maneuver="contract"]').dataset.reason`))==='maneuver-used','used maneuver reason');
     check((await evaluate(`document.querySelector('[data-actor="ugallu"]').dataset.reason`))==='already-acted','used actor reason');
-    await click('[data-maneuver="clockwise"]'); stateMatches(await snapshot(),state,'used maneuver pointer rejected');
+    await click('[data-maneuver="contract"]'); stateMatches(await snapshot(),state,'used maneuver pointer rejected');
+    check(await evaluate(`!document.querySelector('[data-maneuver="clockwise"]').disabled`),'rotation remains enabled after expansion');
     state=await play({kind:'useAbility',actorId:'girtablilu',abilityId:'impale',targetId:'warder',expectedRevision:state.revision},state);
     await click('#reset'); state=createPatrol();
     // Protection changes from Crosswind are projected and committed by P09.

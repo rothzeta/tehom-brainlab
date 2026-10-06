@@ -11,7 +11,7 @@ import { applyCommand } from './transition';
 
 export const RECORD_VERSION = 1;
 // Bump for any semantic change to geometry, legality, resolution or event ordering.
-export const RUN_RULES_VERSION = `poc-001-rules-v2/${PATROL_VERSION}/${BROOD_RULES_VERSION}`;
+export const RUN_RULES_VERSION = `poc-001-rules-v3/${PATROL_VERSION}/${BROOD_RULES_VERSION}`;
 export const PROTOTYPE_ID = 'poc-001-linked-formation';
 export type RecordedCommand = Exclude<Command, { kind: 'attack' }>;
 export interface RunRecord {
@@ -63,13 +63,14 @@ function strings(value: unknown, path: string): asserts value is string[] {
   requireValue(Array.isArray(value) && value.every(id) && new Set(value).size === value.length, path);
 }
 function state(value: unknown, path: string): asserts value is PatrolState {
-  fields(value, ['revision', 'round', 'phase', 'formation', 'brood', 'actedIds', 'maneuverUsed', 'intentions',
+  fields(value, ['revision', 'round', 'phase', 'formation', 'brood', 'actedIds', 'rotationUsed', 'shapeChangeUsed', 'intentions',
     'patrolVersion', 'patrolRules', 'enemies', 'protections', 'shelters', 'resolvedAttackIds', 'declaredIntentions'], path);
   requireValue(integer(value.revision) && integer(value.round) && value.round > 0, `${path}.revision/round`);
   requireValue(['player', 'enemy', 'victory', 'defeat'].includes(value.phase as string), `${path}.phase`);
   fields(value.formation, ['shape', 'orientation'], `${path}.formation`);
   try { validateFormation(value.formation); } catch { fail(`malformed ${path}.formation`); }
-  requireValue(typeof value.maneuverUsed === 'boolean', `${path}.maneuverUsed`);
+  requireValue(typeof value.rotationUsed === 'boolean', `${path}.rotationUsed`);
+  requireValue(typeof value.shapeChangeUsed === 'boolean', `${path}.shapeChangeUsed`);
   requireValue(value.patrolVersion === PATROL_VERSION, `${path}.patrolVersion`);
   patrolRules(value.patrolRules, `${path}.patrolRules`);
   for (const name of ['brood', 'enemies', 'protections', 'shelters', 'declaredIntentions']) requireValue(Array.isArray(value[name]), `${path}.${name}`);

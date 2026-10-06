@@ -1,6 +1,7 @@
 import { afterAll, afterEach, expect, test } from 'vitest';
 import { abilityLegality, applyAbility } from '../src/core/abilities';
-import { createPatrol } from '../src/content/patrol';
+import { BROOD_RULES_VERSION } from '../src/content/brood';
+import { PATROL_VERSION, createPatrol } from '../src/content/patrol';
 import { formationPositions, formations } from '../src/core/formation';
 import { boardCells, ENEMY_CELLS, hexDistance } from '../src/core/hex';
 import { frontCells, frontMask } from '../src/core/sectors';
@@ -118,22 +119,26 @@ test.each(['missing','fractional','off-board','brood','duplicate'] as const)('RF
 });
 
 test('RF: new version replays tile snapshots and explicitly rejects old rules', () => {
-  expect(RUN_RULES_VERSION).toBe('poc-001-rules-v2/patrol-v2/p07-v1');
+  expect(RUN_RULES_VERSION).toBe(`poc-001-rules-v3/${PATROL_VERSION}/${BROOD_RULES_VERSION}`);
   const initial = createPatrol('healthy', rules);
   let record = createRunRecord(initial, 'healthy');
   for (const maneuver of ['expand','clockwise'] as const) {
     // New round resets the allowance through the real transition.
-    if (record.finalState.maneuverUsed) {
+    if (maneuver === 'clockwise' ? record.finalState.rotationUsed : record.finalState.shapeChangeUsed) {
       const command = { kind: 'endPhase' as const, expectedRevision: record.finalState.revision };
       record = appendAcceptedCommand(record, command, applyCommand(record.finalState, command));
     }
     const command = { kind: 'maneuver' as const, maneuver, expectedRevision: record.finalState.revision };
     record = appendAcceptedCommand(record, command, applyCommand(record.finalState, command));
   }
+  const end = { kind: 'endPhase' as const, expectedRevision: record.finalState.revision };
+  record = appendAcceptedCommand(record, end, applyCommand(record.finalState, end));
   const replayed = replayRun(JSON.stringify(record));
   expect(replayed.state).toEqual(record.finalState); expect(replayed.events).toEqual(record.events);
   const old = { ...record, rulesVersion: 'poc-001-rules-v1/patrol-v1/p07-v1' };
   expect(() => parseRunRecord(JSON.stringify(old))).toThrow(/unsupported rules version/);
+  expect(() => parseRunRecord(JSON.stringify({ ...record, rulesVersion: 'poc-001-rules-v2/patrol-v2/p07-v1' })))
+    .toThrow('unsupported rules version: poc-001-rules-v2/patrol-v2/p07-v1');
   const centre = createRunRecord({ ...initial, enemies: initial.enemies.map((enemy, index) => index === 0
     ? { ...enemy, cell: { q: 0, r: 0 } } : enemy) }, 'healthy');
   expect(parseRunRecord(JSON.stringify(centre)).initialState.enemies[0]!.cell).toEqual({ q: 0, r: 0 });

@@ -59,7 +59,7 @@ test.each<PatrolPreset>(['healthy', 'wounded-ugallu', 'wounded-girtablilu'])('AC
   expect(state).toEqual(another);
   expect(state).not.toBe(another);
   expect(state).toMatchObject({ revision: 0, round: 1, phase: 'player',
-    formation: { shape: 'compact', orientation: 0 }, actedIds: [], maneuverUsed: false, shelters: [], resolvedAttackIds: [] });
+    formation: { shape: 'compact', orientation: 0 }, actedIds: [], rotationUsed: false, shapeChangeUsed: false, shelters: [], resolvedAttackIds: [] });
   for (const brood of state.brood) {
     expect(brood.maxHp).toBe(PATROL_HP[brood.brood]);
     expect(brood.hp).toBe(preset === 'wounded-ugallu' && brood.brood === 'ugallu' ? WOUNDED_HP.ugallu
@@ -142,7 +142,7 @@ test.each(['compact', 'spread'] as const)('AC3/5: %s selects splash and isolatio
   expect(result.events.filter((e) => e.type === 'attack-settled').map((e) => e.type === 'attack-settled' ? e.sourceId : '')).toEqual(['warder', 'censer', 'harrier']);
   expect(result.events.filter((e) => e.type === 'attack-settled')).toMatchObject(PATROL_ORDER.map(() => ({ revision: moved.revision + 1 })));
   expect(result.state.revision).toBe(moved.revision + 1);
-  expect(result.state).toMatchObject({ phase: 'player', round: 2, actedIds: [], maneuverUsed: false });
+  expect(result.state).toMatchObject({ phase: 'player', round: 2, actedIds: [], rotationUsed: false, shapeChangeUsed: false });
   expect(marks(result.state)).toEqual({ warder: 'ugallu', censer: 'pazuzu', harrier: 'ugallu' });
   expect(end(moved)).toEqual(result);
 });
@@ -188,9 +188,9 @@ test('AC5: each hit settles death before the next enemy; a fallen mark fizzles w
 test('AC5: terminal defeat stops remaining resolution, does not reset budgets or announce', () => {
   const base = fixture();
   const state = fixture({ brood: base.brood.map((b) => ({ ...b, hp: b.id === 'ugallu' ? 1 : 0 })),
-    actedIds: ['ugallu'], maneuverUsed: true });
+    actedIds: ['ugallu'], rotationUsed: true, shapeChangeUsed: true });
   const result = accepted(end(state));
-  expect(result.state).toMatchObject({ phase: 'defeat', round: 1, revision: 1, actedIds: ['ugallu'], maneuverUsed: true });
+  expect(result.state).toMatchObject({ phase: 'defeat', round: 1, revision: 1, actedIds: ['ugallu'], rotationUsed: true, shapeChangeUsed: true });
   expect(result.events.filter((e) => e.type === 'attack-settled')).toHaveLength(1);
   expect(result.events.filter((e) => e.type === 'combat-ended')).toEqual([{ type: 'combat-ended', outcome: 'defeat' }]);
   expect(result.events.some((e) => e.type === 'intentions-announced' || e.type === 'round-started')).toBe(false);
@@ -228,9 +228,9 @@ test('AC5: P06 Shelter is consumed on the first qualifying round hit', () => {
   expect(result.state.shelters).toEqual([]);
 });
 test.each([{ actedIds: [] }, { actedIds: ['ugallu'] }, { actedIds: ['ugallu', 'girtablilu', 'pazuzu'] }])('AC6: unused actions are forfeited and never banked: %j', ({ actedIds }) => {
-  const state = fixture({ actedIds, maneuverUsed: actedIds.length > 0 });
+  const state = fixture({ actedIds, rotationUsed: actedIds.length > 0, shapeChangeUsed: actedIds.length > 0 });
   const result = accepted(end(state));
-  expect(result.state).toMatchObject({ round: 2, actedIds: [], maneuverUsed: false });
+  expect(result.state).toMatchObject({ round: 2, actedIds: [], rotationUsed: false, shapeChangeUsed: false });
   const acted = accepted(applyCommand(result.state, { kind: 'useAbility', expectedRevision: result.state.revision,
     actorId: 'ugallu', abilityId: 'shelter', targetId: 'girtablilu' })).state;
   rejected(applyCommand(acted, { kind: 'useAbility', expectedRevision: acted.revision,

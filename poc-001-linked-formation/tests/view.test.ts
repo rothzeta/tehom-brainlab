@@ -36,13 +36,23 @@ describe('P04 formation inspection and command contracts', () => {
     expect(committed).toEqual(expected);
     expect(lab.positions).toEqual(destinations);
     expect(lab.preview).toBeUndefined();
-    expect(lab.state.maneuverUsed).toBe(true);
+    const rotation = maneuver === 'clockwise' || maneuver === 'anticlockwise';
+    expect(lab.state.rotationUsed).toBe(rotation);
+    expect(lab.state.shapeChangeUsed).toBe(!rotation);
     expect(lab.state.revision).toBe(before.revision + 1);
     for (const second of MANEUVERS) {
-      const rejected = lab.commit(second);
-      expect(rejected.ok).toBe(false);
-      if (!rejected.ok) expect(rejected.error.code).toBe('maneuver-used');
-      expect(lab.state).toEqual(committed.state);
+      // Restore the committed snapshot before each independent probe.
+      lab.reset(); lab.selectFixture(before.formation); lab.commit(maneuver);
+      const expectedSecond = applyCommand(committed.state, {
+        kind: 'maneuver', expectedRevision: committed.state.revision, maneuver: second,
+      });
+      const result = lab.commit(second);
+      expect(result).toEqual(expectedSecond);
+      if ((second === 'clockwise' || second === 'anticlockwise') === rotation) {
+        expect(result.ok).toBe(false);
+        if (!result.ok) expect(result.error.code).toBe('maneuver-used');
+      }
+      expect(lab.state).toEqual(result.state);
     }
   });
 

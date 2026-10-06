@@ -33,7 +33,7 @@ export function createCombatShell(parent: HTMLElement): void {
       <h2>Player actions</h2><div id="actors"></div><div id="abilities"></div>
       <div id="targets" aria-label="Ability targets"></div><p id="selection"></p>
       <div class="secondary"><button id="confirm">Confirm ability</button><button id="cancel">Cancel (Esc)</button></div>
-      <h2>Shared maneuver</h2><div id="maneuvers"></div><p id="allowance"></p>
+      <h2>Maneuvers</h2><div id="maneuvers"></div><p id="allowance"></p>
       <button id="end-phase"></button><p id="feedback" aria-live="polite"></p>
       <label class="placeholder"><input id="placeholder" type="checkbox"> Placeholder mode — labels only</label>
       <details id="history"><summary>Last action and enemy resolution</summary><ol id="events"></ol></details>
@@ -196,7 +196,7 @@ export class CombatScene extends Phaser.Scene {
       const result = this.session.project({ kind: 'maneuver', expectedRevision: state.revision, maneuver });
       this.availability(this.maneuvers.get(maneuver)!, locked ?? (result.ok ? undefined : result.error.code));
     }
-    this.el('allowance').textContent = state.maneuverUsed ? 'Shared maneuver used for this round.' : 'One shared maneuver available.';
+    this.el('allowance').textContent = `Rotation: ${state.rotationUsed ? 'used' : 'available'}. Shape change: ${state.shapeChangeUsed ? 'used' : 'available'}.`;
     const unused = state.brood.filter(entity => entity.hp > 0 && !state.actedIds.includes(entity.id)).length;
     const end = this.el<HTMLButtonElement>('end-phase'); end.dataset.label = `End phase (${unused} actions unused)`;
     const endPreview = this.session.project({ kind: 'endPhase', expectedRevision: state.revision });

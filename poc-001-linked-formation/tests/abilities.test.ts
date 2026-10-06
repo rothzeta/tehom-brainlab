@@ -87,7 +87,8 @@ test.each<[AbilityId, string, number]>([
   expect(result.state.brood).toEqual(state.brood);
   expect(result.state.formation).toEqual(state.formation);
   expect(result.state.actedIds).toEqual([action.actorId]);
-  expect(result.state.maneuverUsed).toBe(false);
+  expect(result.state.rotationUsed).toBe(false);
+  expect(result.state.shapeChangeUsed).toBe(false);
   expect(result.state.revision).toBe(1);
   expect(result.state.phase).toBe('player');
   expect(result.events.filter((event) => event.type === 'damage-applied')).toMatchObject([
@@ -138,7 +139,8 @@ test('AC3: Shelter installs one status on a living Close ally, with one actor co
   ]);
   expect(result.state.revision).toBe(1);
   expect(result.state.actedIds).toEqual(['ugallu']);
-  expect(result.state.maneuverUsed).toBe(false);
+  expect(result.state.rotationUsed).toBe(false);
+  expect(result.state.shapeChangeUsed).toBe(false);
   expect(result.state.brood).toEqual(state.brood);
   expect(result.state.enemies).toEqual(state.enemies);
 });
@@ -197,7 +199,8 @@ test.each([false, true])('AC3 dispatcher: Shelter mitigation requires Close at i
   else expect(hp(hit.state, 'girtablilu')).toBeGreaterThan(hp(unshielded.state, 'girtablilu'));
   expect(hit.state.shelters).toEqual([]);
   expect(hit.state.actedIds).toEqual(current.actedIds);
-  expect(hit.state.maneuverUsed).toBe(current.maneuverUsed);
+  expect(hit.state.rotationUsed).toBe(current.rotationUsed);
+  expect(hit.state.shapeChangeUsed).toBe(current.shapeChangeUsed);
   expect(hit.state.revision).toBe(current.revision + 1);
   expect(hit.events.filter((event) => event.type === 'shelter-consumed')).toMatchObject([{ eligible: !expand }]);
   expect(current).toEqual(before);
@@ -216,7 +219,8 @@ test('AC3 dispatcher: Shelter mitigates the blast that fells its source and is c
   expect(hp(hit.state, 'pazuzu')).toBe(hp(unshielded.state, 'pazuzu'));
   expect(hit.state.shelters).toEqual([]);
   expect(hit.state.actedIds).toEqual(['ugallu']);
-  expect(hit.state.maneuverUsed).toBe(false);
+  expect(hit.state.rotationUsed).toBe(false);
+  expect(hit.state.shapeChangeUsed).toBe(false);
   expect(hit.state.revision).toBe(sheltered.revision + 1);
   expect(hit.events.filter((event) => event.type === 'shelter-consumed')).toMatchObject([{ eligible: true }]);
 });
@@ -254,7 +258,8 @@ test.each<[TurnDirection, Orientation, Orientation]>([
   expect(result.state.enemies.map(({ hp }) => hp)).toEqual([20, 20, 20]);
   expect(result.state.actedIds).toEqual(['pazuzu']);
   expect(result.state.revision).toBe(1);
-  expect(result.state.maneuverUsed).toBe(false);
+  expect(result.state.rotationUsed).toBe(false);
+  expect(result.state.shapeChangeUsed).toBe(false);
   expect(state).toEqual(before);
 });
 
@@ -308,7 +313,7 @@ test.each(['acted', 'impersonated', 'defeated-target', 'unknown-actor', 'foreign
               : condition === 'stale' ? 'stale-revision'
                 : ['enemy-phase', 'victory', 'defeat'].includes(condition) ? 'wrong-phase' : 'illegal-target';
     const state = fixture({ actedIds: condition === 'acted' ? ['ugallu'] : ['pazuzu'],
-      maneuverUsed: true, revision: condition === 'stale' ? 1 : 0,
+      rotationUsed: true, shapeChangeUsed: true, revision: condition === 'stale' ? 1 : 0,
       phase: condition === 'enemy-phase' ? 'enemy' : condition === 'victory' ? 'victory'
         : condition === 'defeat' ? 'defeat' : 'player',
       enemies: base.enemies.map((enemy) => condition === 'defeated-target' && enemy.id === 'censer'
@@ -350,7 +355,8 @@ test('AC7/C4: attack, maneuver, attack uses the changed formation and one revisi
   const state = fixture({ formation: { shape: 'compact', orientation: 1 } });
   const first = accepted(applyAbility(state, request('claw'), rules)).state;
   expect(hp(first, 'censer')).toBe(18);
-  expect(first.maneuverUsed).toBe(false);
+  expect(first.rotationUsed).toBe(false);
+  expect(first.shapeChangeUsed).toBe(false);
   const moved = accepted(applyCommand(freeze(first),
     { kind: 'maneuver', expectedRevision: 1, maneuver: 'clockwise' })).state;
   expect(moved.formation).toEqual({ shape: 'compact', orientation: 2 });
@@ -359,7 +365,8 @@ test('AC7/C4: attack, maneuver, attack uses the changed formation and one revisi
   expect(hp(second.state, 'censer')).toBe(14);
   expect(second.state.revision).toBe(3);
   expect(second.state.actedIds).toEqual(['ugallu', 'girtablilu']);
-  expect(second.state.maneuverUsed).toBe(true);
+  expect(second.state.rotationUsed).toBe(true);
+  expect(second.state.shapeChangeUsed).toBe(false);
   rejected(dispatch(second.state, request('claw', { expectedRevision: 3 })), second.state, 'already-acted');
 });
 
@@ -378,7 +385,8 @@ test('AC7: shared maneuver still works after all three abilities in a nontermina
   for (const abilityId of ['claw', 'sting', 'gale'] as const) {
     state = accepted(dispatch(state, request(abilityId, { expectedRevision: state.revision }))).state;
     expect(state.phase).toBe('player');
-    expect(state.maneuverUsed).toBe(false);
+    expect(state.rotationUsed).toBe(false);
+  expect(state.shapeChangeUsed).toBe(false);
   }
   const moved = accepted(applyCommand(state, { kind: 'maneuver', expectedRevision: 3, maneuver: 'expand' })).state;
   expect(moved.revision).toBe(4);

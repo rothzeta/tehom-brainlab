@@ -81,7 +81,7 @@ export function endPatrolPhase(state: PatrolState, expectedRevision: number): Co
   events.push(...expired.events, { type: 'enemy-phase-ended', round: state.round });
   if (next.phase === 'enemy') {
     next = announcePatrol({ ...next, round: state.round + 1, phase: 'player',
-      actedIds: [], maneuverUsed: false });
+      actedIds: [], rotationUsed: false, shapeChangeUsed: false });
     events.push({ type: 'round-started', round: next.round },
       { type: 'intentions-announced', round: next.round, intentions: next.declaredIntentions });
   }
