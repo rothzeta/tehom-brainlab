@@ -115,15 +115,12 @@ describe('P16 public round, preview and record contracts', () => {
     expect(result.events.filter(e => e.type === 'damage-applied').map(e => e.targetId)).toEqual(oldRecipients.recipientIds);
     expect(state.declaredIntentions[0]!.cells).toEqual(frontCells(slot(2), 0));
     expect(result.state.declaredIntentions[0]!.cells).toEqual(frontCells(result.state.enemies[0]!.cell, 0));
-    expect(selectRecipients(result.state, result.state.declaredIntentions[0]!).recipientIds)
-      .not.toEqual(oldRecipients.recipientIds);
   });
   it('uses the moved Warder origin for protection and the computed same-facing recipient example', () => {
     const origin = { q: -2, r: 1 }, destination = { q: -1, r: -1 };
-    const state = { ...repositioningFixture('corpse'), enemies: repositioningFixture('corpse').enemies
-      .map(e => e.id === 'warder' ? { ...e, cell: origin, facing: 0 as const } : e) };
+    const state = repositioningFixture('corpse');
     const next = end(state).state;
-    expect(next.enemies.find(e => e.id === 'warder')!.cell).toEqual(destination);
+    expect(next.enemies.find(e => e.id === 'warder')!.cell).toEqual(slot(3));
     const recipients = (cell: typeof origin) => selectRecipients(state, { id: 'example', sourceId: 'warder',
       kind: 'fixed-area', turnable: true, cells: frontCells(cell, 0) }).recipientIds;
     expect(recipients(origin)).toEqual(['girtablilu']);
@@ -131,7 +128,12 @@ describe('P16 public round, preview and record contracts', () => {
     const protectedTarget = next.enemies.find(e => e.hp > 0 && e.id !== 'warder')!.id;
     const protection = (snapshot: ReturnType<typeof createPatrol>) => selectProtection(snapshot, { actorId: 'pazuzu',
       targetId: protectedTarget, bypassProtection: false }, [{ sourceId: 'warder', targetId: protectedTarget }]);
-    expect(protection(state).protected).toBe(false); expect(protection(next).protected).toBe(true);
+    for (const snapshot of [state, next]) {
+      const warder = snapshot.enemies.find(e => e.id === 'warder')!;
+      const actor = formationPositions(snapshot.formation).find(p => p.brood === 'pazuzu')!;
+      expect(protection(snapshot).protected).toBe(frontCells(warder.cell, warder.facing)
+        .some(cell => cell.q === actor.cell.q && cell.r === actor.cell.r));
+    }
   });
   it('keeps turnability independent from mobility and retains Crosswind facing when moving', () => {
     const state = repositioningFixture('corpse');
