@@ -151,9 +151,9 @@ Use `?play=patrol`, `?play=crucible` and `?play=collector`, plus the formation l
 
 **Crucible (P15).**
 
-7. Phase one: watch the inner pulse (ring 1) and the turnable sector. Try X-H1: Expand once and stay Spread at an even orientation. Does any primary attack land?
+7. Phase one: watch the inner pulse (ring 1) and the turnable sector. The boss turns only when it declares a sector, so the safe orientation shifts every second round (X-H1). Does reacting to it feel like choosing a rank, or like a chore? Did you ever Crosswind the boss instead of rotating (X-H5)?
 8. Push the boss to half HP. Does the pending indicator appear, with the current attacks unchanged? Does phase two start at the next announcement?
-9. Phase two: the outer pulse plus splash, and the fork. Is Compact plus one rotation enough every round (X-H2)?
+9. Phase two: the outer pulse plus splash, and the fork. Does staying Compact while rotating away from the fork every second round hold up (X-H2)? Did you ever need both maneuvers in one round?
 10. Which Brood is in the boss's self-guard front? Did you Crosswind the boss?
 
 **Collector (P17).**
@@ -169,7 +169,7 @@ Use `?play=patrol`, `?play=crucible` and `?play=collector`, plus the formation l
 16. Was holding formation ever right?
 17. Would removing the maneuvers remove decisions you value?
 
-**Next.** Which first: the Crucible cadence lever (X-H1), budget limits, tuning, the flank patrol layout, or ability-specific reach?
+**Next.** Which first: budget limits, tuning, the flank patrol layout, or ability-specific reach?
 
 ## Review corrections to the draft (2026-10-06)
 

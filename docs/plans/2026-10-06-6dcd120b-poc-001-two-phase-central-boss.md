@@ -9,6 +9,7 @@ Authority: the user's decisions of 2026-10-06 ([brief Decision record](../protot
 - This encounter replaces the unimplemented [P12 directional boss](2026-10-02-a18d7fe6-poc-001-directional-boss.md), which is superseded.
 - The user lifted the P11 boss gate by explicit decision. The historical P11 gate stays **HOLD**; it is not marked PASS.
 - HP, damage, patterns, the phase threshold ("phase two starts at 50% boss HP, from the next declaration") and the names are **provisional defaults, implemented as written**.
+- **Facing cadence (user decision, 2026-10-06, answering the Architect's Q1):** apply the lever. The facing advances only on beat-B (directional) declarations, so the safe orientation keeps shifting within a phase. This replaces the drafted one-step-per-announcement cadence.
 
 Standing direction: the centre is reserved for a boss; the Brood never walk.
 
@@ -67,7 +68,7 @@ Pattern: two declarations per announcement, primary (fixed area) before secondar
 | 2 B | `sectorCells(f)` and `sectorCells((f+2)%6)`, 4, turnable | Marked hit, 3 |
 
 - Marks pick the lowest living HP fraction at declaration, with roster-order ties. This is the Harrier's existing rule (exact integer cross products).
-- **Facing:** the creation announcement uses facing 0. Each later announcement first advances the current facing (including any Crosswind turn) one clockwise step, then declares.
+- **Facing (user decision, 2026-10-06):** the creation announcement uses facing 0. A beat-A announcement leaves the current facing unchanged. A beat-B announcement first advances the current facing (including any Crosswind turn) one clockwise step, then declares. Without Crosswind, beat-B facings in phase one are therefore 1, 2, 3, 4, 5, 0, … (announcements 2, 4, 6, …), and their parity alternates.
 - **Beat:** it alternates each announcement and resets to A at phase entry.
 
 ## Contracts and decisions
@@ -77,7 +78,7 @@ Pattern: two declarations per announcement, primary (fixed area) before secondar
 - The boss's cell never changes. Each declaration has one source, a unique event ID (`crucible:<round>:primary` and `crucible:<round>:secondary`) and ordered resolution: primary, then secondary.
 - Fixed areas stay on their cells through maneuvers. Marks follow their creature. A fallen mark fizzles and is never retargeted. A fallen boss resolves nothing.
 - Crosswind turns the boss's facing (which changes its self-guard front) and its turnable sector cells about `(0,0)`. Pulses and marks do not change.
-- **Phase boundary:** an HP drop to `phaseTwoAt` or below during the player phase changes nothing until the next announcement. The current declarations resolve unchanged. At that announcement the boss enters phase two once, emits one `boss-phase-changed` event, resets the beat to A, and keeps advancing its facing. There is no bonus turn, discarded attack, HP refill, damage cap or return to phase one. Death first means victory with no further attack.
+- **Phase boundary:** an HP drop to `phaseTwoAt` or below during the player phase changes nothing until the next announcement. The current declarations resolve unchanged. At that announcement the boss enters phase two once, emits one `boss-phase-changed` event, resets the beat to A, and keeps its current facing; the next beat-B declaration advances it from there. There is no bonus turn, discarded attack, HP refill, damage cap or return to phase one. Death first means victory with no further attack.
 - `phaseTwoPending(state)` (phase one, boss living, HP at or below `phaseTwoAt`) is one exported content selector, used by the announcement and by the view.
 - Both P13 allowances and the P14 kit apply unchanged.
 - Patrol behaviour, events, records and UI text stay identical.
@@ -134,8 +135,9 @@ Pattern: two declarations per announcement, primary (fixed area) before secondar
 5. Each phase has a reachable mechanical trace using both maneuver categories in one round, and another using Shelter or Crosswind instead of only damage. These are traces, not human evidence.
 6. The patrol still launches, plays, exports and replays unchanged. A Crucible reset creates clean state. Exported phase-crossing and phase-two-diagnostic attempts replay exactly with `just poc-001-replay`.
 7. The browser distinguishes non-turnable pulses, turnable sectors, creature-following marks, and pending versus active phase, without depending on animation timing. `?play=crucible` and the header links work with and without `placeholder=1`. Unknown `play` values open the lab.
-8. **Tuning is not frozen.** No new assertion pins a provisional value: 60, 30, 5, 4, 3, 2, the facing cadence or the beat table. Tests use explicit test-local rules or derive expectations from the encounter's own exported content. A content test may check that content exposes its documented values.
-9. All existing suites pass unedited.
+8. **Facing cadence (user decision).** A beat-A announcement leaves the facing unchanged; a beat-B announcement advances the current facing one clockwise step before declaring. Assert this as a relation from controlled starting facings: after a Crosswind in either direction, across phase entry, and from the phase-two diagnostic start. Do not assert absolute facings copied from a default run.
+9. **Tuning is not frozen.** No new assertion pins a provisional value: 60, 30, 5, 4, 3, 2 or the beat table. Tests use explicit test-local rules or derive expectations from the encounter's own exported content. A content test may check that content exposes its documented values.
+10. All existing suites pass unedited.
 
 ## Verification and hand-back
 
@@ -159,17 +161,18 @@ Durable report: as in [P13](2026-10-06-e8cec63d-poc-001-split-maneuver-budgets.m
 
 ## Balance hypotheses (computed; for the manual round)
 
-Computed by the Architect with a disposable script over all 12 formations and 6 facings. They describe the pattern as written; they are not decisions.
+Computed by the Architect with a disposable script over all 12 formations, 6 facings and phase entry at announcements 2–7, with the user's cadence (facing advances only on beat-B declarations). They describe the pattern as specified; they are not decisions.
 
-- **X-H1 — Phase one has a static answer.** Compact and Spread orientations `o`, `o+2`, `o+4` occupy one sector each, so one sector holds a Brood exactly when its parity matches the orientation. The facing advances one step per announcement and the beats alternate, so every beat-B sector has the same parity (facings 1, 3, 5, …). Spread at an even orientation is never hit by any phase-one primary: one Expand from the Compact 0 start answers the whole of phase one, and only the 3-damage marks land.
-- **X-H2 — Phase two has the same shape.** The outer pulse forces Compact. The fork's parity is fixed by the announcement at which phase two begins, so one Compact parity dodges every phase-two primary. Choosing it costs at most one rotation.
+- **X-H1 — Phase one no longer has a static answer.** Both shapes put one Brood in each of sectors `o`, `o+2`, `o+4`, so a single sector holds a Brood exactly when its parity matches the orientation. Beat-B facings are 1, 2, 3, 4, 5, 0, …, so their parity alternates, and every formation is hit by every other beat-B sector. No formation dodges all phase-one primaries (checked over 16 announcements). A player can still avoid every primary: Spread for the inner pulse, plus a rotation (or a Crosswind on the boss) before each beat-B attack after the first, so roughly every second round. From the Compact 0 start, 12 announcements need 1 shape change and 5 rotations. *(Before the user's decision, with one step per announcement, all beat-B facings were odd and Spread at an even orientation dodged the whole phase.)*
+- **X-H2 — Phase two forces rotation too.** The outer pulse forces Compact. The fork (`f` and `f+2`) hits two Brood or none by parity, and its parity alternates with each beat-B declaration as in phase one. Whatever announcement phase two begins at (2–7 checked, plus the diagnostic start), no formation dodges every phase-two primary. Over a whole fight with phase two entered at announcements 3–6, zero primary damage takes 2 shape changes and 6–7 rotations in 14–17 rounds.
+- **X-H2a — The split allowance is convenient, not required here.** In every case checked, a zero-damage path exists using only one maneuver category per round; the phase-entry Contract and the next rotation can fall in different rounds. Whether players use both in one round is a manual-round observation.
 - **X-H3 — Phase two beat A trades pulse for splash.** In Compact the radius-2 splash hits all three Brood (2 each); in Spread the pulse hits all three (5 each). Compact is clearly better.
-- **X-H4 — The self-guard always covers one Brood.** The front `frontCells((0,0), f)` holds exactly one Brood in every formation and facing (all 72 cases). Rotation or Crosswind chooses whose Claw, Sting or Impale is reduced; Gale bypasses.
-- **Lever, if X-H1 or X-H2 makes movement trivial in the manual round** (not applied; the user set the pattern as written): advance the facing only when a beat-B declaration is made. B-sector parity then alternates, so a static formation is hit every other B beat.
+- **X-H4 — The self-guard always covers one Brood.** The front `frontCells((0,0), f)` holds exactly one Brood in every formation and facing (all 72 cases). Rotation or Crosswind chooses whose Claw, Sting or Impale is reduced; Gale bypasses. The guard front now changes only on beat-B declarations, so it holds for two rounds at a time.
+- **X-H5 — Crosswind competes with rotation.** Turning the boss one step moves a declared sector or fork by one sector, flipping its parity. That dodges it for Pazuzu's action instead of a rotation, and it also shifts every later beat-B facing.
 
 ## Review corrections to the draft (2026-10-06)
 
-- Computed X-H1/X-H2: with the drafted cadence, a static formation dodges every primary attack in each phase. The pattern stays as written by user decision; the finding and lever are recorded.
+- Computed X-H1/X-H2: with the drafted cadence, a static formation dodged every primary attack in each phase. **2026-10-06, user decision:** apply the lever (facing advances only on beat-B declarations). Recomputed: no formation now dodges everything in either phase.
 - Added the consumers the draft missed, all of which would fail for a non-patrol encounter: the preview's patrol-only forecast and `patrolRules` facts, `transition.ts` dispatch on `patrolVersion`, the view's hard-coded `warder` lookup, and token images keyed by entity ID.
 - Decided encounter selection (`?play=`), the record codec chosen by rules version with no envelope change, Brood HP owned by P08, and the role-by-kind damage lookup.
 - The phase event is excluded from `enemyEvents`, so a forecast never reports next-round content as resolved damage.
