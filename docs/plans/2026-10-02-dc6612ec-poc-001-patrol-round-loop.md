@@ -12,6 +12,8 @@ Authority: [brief Ordinary patrol, Round structure, and wounded starting conditi
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
+**Amended 2026-10-06 (planned, not implemented):** [P13](2026-10-06-e8cec63d-poc-001-split-maneuver-budgets.md) resets both maneuver allowances at the round boundary. [P15](2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md) moves the end phase onto a shared skeleton with unchanged patrol events. [P16](2026-10-06-27ca8f17-poc-001-enemy-repositioning.md) adds a relocation step that patrol enemies never use. Patrol content (`patrol-v2`) is unchanged.
+
 Task `P08` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
 
 ## Amendment RF (2026-10-05) — enemies on tiles

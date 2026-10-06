@@ -12,6 +12,8 @@ Authority: [brief Presentation requirements, Round structure, and Ordinary patro
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
+**Amended 2026-10-06 (planned, not implemented):** [P15](2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md) and [P17](2026-10-06-79371edf-poc-001-roaming-boss-and-adds.md) add `?play=crucible` and `?play=collector` beside `?play=patrol`, with per-encounter presets. The patrol page keeps its controls and text.
+
 Task `P10` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
 
 ## Smallest useful outcome

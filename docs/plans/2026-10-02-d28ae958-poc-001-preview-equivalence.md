@@ -8,6 +8,8 @@ Authority: [AGENTS](../../AGENTS.md), [prototype architectural boundary](../../p
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
+**Amended 2026-10-06 (planned, not implemented):** [P15](2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md) computes the forecast for every registered encounter, not only the patrol, and excludes `boss-phase-changed` from `enemyEvents`. [P16](2026-10-06-27ca8f17-poc-001-enemy-repositioning.md) relocations appear in the forecast because it runs the real end phase.
+
 Task `P09` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
 
 **Amended 2026-10-05:** End-phase forecast defect B2; see [Amendment RF](#amendment-rf-2026-10-05--end-phase-forecast).

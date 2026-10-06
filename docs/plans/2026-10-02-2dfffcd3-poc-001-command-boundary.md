@@ -8,6 +8,8 @@ Authority: [prototype architecture](../../poc-001-linked-formation/README.md) an
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
+**Amended 2026-10-06 (planned, not implemented):** [P13](2026-10-06-e8cec63d-poc-001-split-maneuver-budgets.md) replaces the single shared maneuver allowance (`maneuverUsed`) with one rotation and one shape-change allowance per player phase. Rejection precedence and the `maneuver-used` code are kept.
+
 Task `P03` implementation owner: `P03-impl` Implementer; local integration/cleanup owner: Implementer, tasks `P03-merge`/`P03-cleanup`. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. Actual execution is recorded in [TASK_LOGS](../TASK_LOGS.md#2026-10-04-p03-command-boundary).
 
 ## Smallest useful outcome

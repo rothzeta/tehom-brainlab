@@ -2,61 +2,186 @@
 
 ## Status and authority
 
-P15, draft after P13/P14 in the [continuation](README-boss-experiments.md). The user requests an immobile central two-phase boss. This replaces the old unimplemented P12 design for the requested experiment; it does not mark the historical patrol gate PASS. Pattern details, name, numbers and threshold below are proposals.
+**P15. Accepted for implementation; not implemented.** Written 2026-10-06 as a draft by an external design review (draft PR #1, commit `71cc26c`), then checked against source and made executable by the Architect on 2026-10-06 ([design report](../mailbox/boss-experiments/architect.md)). Sequence: [plan index](README.md#boss-experiments-p13p17). Format: [ADR-0002](../adr/0002-plan-filenames.md), [ADR-0003](../adr/0003-implementation-plan-writing.md). Testing: [ADR-0006](../adr/0006-contract-invariants-and-black-box-testing.md).
+
+Authority: the user's decisions of 2026-10-06 ([brief Decision record](../prototypes/poc-001-linked-formation.md#decision-record)):
+
+- This encounter replaces the unimplemented [P12 directional boss](2026-10-02-a18d7fe6-poc-001-directional-boss.md), which is superseded.
+- The user lifted the P11 boss gate by explicit decision. The historical P11 gate stays **HOLD**; it is not marked PASS.
+- HP, damage, patterns, the phase threshold ("phase two starts at 50% boss HP, from the next declaration") and the names are **provisional defaults, implemented as written**.
+
+Standing direction: the centre is reserved for a boss; the Brood never walk.
+
+Task `P15`. Owner: a POC 001 Implementer, who also owns integration unless assigned otherwise. Prerequisites: delivered P13 and P14. Durable report: `docs/mailbox/p15-central-boss/implementer.md`.
 
 ## Smallest useful outcome
 
-A separately selectable, playable encounter places one boss at `(0,0)`, changes attack language in phase two and makes ring choice and angle observably affect outcomes. More HP or a new sprite on the existing marked-hit patrol does not satisfy this capability.
+A separately selectable, playable encounter places one boss, the Crucible, on `(0,0)`. It changes its attack language in phase two, and ring choice and angle observably change who is hit. The patrol stays playable and unchanged.
+
+A result fails acceptance if it:
+
+- adds more HP or a new sprite to the patrol's marked-hit pattern;
+- moves the boss, or adds a generic scripting system or second combat engine;
+- changes patrol behaviour, events or records;
+- edits an existing test (none are excepted; see below), or freezes provisional tuning in a new assertion.
 
 ## Starting source and ownership
 
-Baseline `70b6ede002e6a09e31522d1343d29796672dfb28`, followed by P13/P14. Existing owners: `src/core/rounds.ts`, `sectors.ts`, `intents.ts`, `abilities.ts`, `preview.ts`, `run-record.ts`, and `src/content/patrol.ts` in the prototype. `endPatrolPhase` validates one declaration per patrol source and cannot simply accept a two-attack boss. Run records are currently patrol-specific. Propose `src/content/central-boss.ts` for the fixture and a small explicit encounter dispatch; share proven primitives without a generic scripting system. Owner and integration Implementer are unassigned. Existing patrol remains a selectable encounter.
+Inspected at `71cc26c`, within `poc-001-linked-formation/`. Every source fact below was read from code:
+
+| File | Current behaviour | Change |
+|---|---|---|
+| `src/core/transition.ts` | `endPhase` reaches `endPatrolPhase` only if the state has `patrolVersion` and `patrolRules`; other combat snapshots get `unsupported-command` | Dispatch `endPhase` through the encounter registry; non-encounter snapshots keep `unsupported-command` |
+| `src/core/rounds.ts` | `endPatrolPhase` rejects more than one declaration per source and any source outside `PATROL_ORDER`, then resolves by `PATROL_ORDER` | Extract one shared end-phase skeleton (below); patrol keeps its validation, order, damage and announcement |
+| new `src/core/encounters.ts` | — | An explicit registry keyed by encounter ID: factory and presets, state recognition, end phase, the rules the preview needs, and the record codec |
+| new `src/content/crucible.ts` | — | `CRUCIBLE_VERSION = 'crucible-v1'`, HP, rules, pattern table, factory, announcement, `phaseTwoPending` |
+| `src/core/preview.ts` | The forecast runs only for `patrol(state)`. Facts read `state.patrolRules` for splash radius and Close threshold | Use the registry for both. Exclude `boss-phase-changed` from `enemyEvents`, like `intentions-announced` |
+| `src/core/run-record.ts` | Patrol-only: `fixtureId` is a patrol preset, `configuration` has `patrolRules`, the state validator demands `patrolVersion`/`patrolRules` | Choose the encounter codec by `rulesVersion`; the patrol codec is unchanged |
+| `src/main.ts` | `?play=patrol` opens combat; anything else opens the lab | `?play=patrol` or `?play=crucible` opens combat for that encounter |
+| `src/view/patrol-session.ts` | Fixed `createPatrol` factory and patrol preset | Encounter-aware factory and record; the patrol constructor and behaviour are unchanged |
+| `src/view/CombatScene.ts` | Title "TEHOM — Patrol"; patrol-only presets; the protection line reads `enemies.find(id === 'warder')!`, which would crash with no Warder; token image path is `tokens/${entity id}.svg` | Per-encounter title, presets and links; protection line per protection source; emblem lookup through content; boss phase indicator; turnability labels |
+| `README.md` (prototype) | No boss | A Crucible section; P08/P09/P10/P11 notes on the registry, forecast and records |
+
+Unchanged and protected: `src/core/{hex,formation,sectors,intents,damage,lifecycle,abilities,state,commands,smoke}.ts`, `src/content/{patrol,brood}.ts` (patrol content and the kit), `src/view/{FormationLab,lab-state,projection}.ts`, `scripts/`, `bin/`, `package.json`, `bun.lock`, configs, `justfile`, `assets/`, `docs/` outside this task's report. If one must change, stop and report why.
 
 ## Fixture and inputs
 
-Working name: the Crucible. Use the existing Foundry Mechanism emblem and labelled placeholders. Proposed boss HP 60, threshold 30, anchored centre, turnable facing, self directional protection reduction 2. Brood use their existing maximum HP. Provide phase-one start and a clearly labelled phase-two diagnostic start; the latter is not a completed first phase. Enumerate all twelve RF formations and six facings.
+Working name **the Crucible**. Entity ID `crucible`, displayed "Crucible", drawn with the existing `foundry-mechanism` emblem through a content emblem map. No new art.
 
-Proposed two-beat pattern per phase, primary attack before secondary:
+| Item | Provisional default (as written) |
+|---|---|
+| Boss | HP 60, cell `(0,0)`, facing 0, rotatable (Crosswind may turn it), never mobile |
+| Self-guard | Protection relation `crucible → crucible`, using the encounter's `damageRules.directionalReduction` (default 2) |
+| Phase two | When the boss is living with `hp ≤ 30` (`phaseTwoAt`) at an announcement |
+| Brood | The P08 Brood HP (`PATROL_HP`: Ugallu 18, Girtablilu 14, Pazuzu 14), imported, not copied; Compact orientation 0 |
+| Presets | `phase-one` (fresh); `phase-two-diagnostic`: boss at `phaseTwoAt` HP, already in phase two, round 1, labelled "Phase two — diagnostic start", not a completed phase one |
+| Splash radius, Close threshold | P05/P02 defaults, copied into `crucibleRules` at creation, like `patrolRules` |
 
-- Phase 1 beat A: all ring-1 cells, 5 damage, non-turnable; then a marked hit for 3.
-- Phase 1 beat B: one encounter-centred sector at facing f, 5 damage, turnable; then a marked hit for 3.
-- Phase 2 beat A: all ring-2 cells, 5 damage, non-turnable; then a marked splash for 2, radius 2.
-- Phase 2 beat B: sectors f and `(f+2)%6`, 4 damage, turnable; then a marked hit for 3.
+Pattern: two declarations per announcement, primary (fixed area) before secondary (mark). Beats alternate A, B, A, B.
 
-Marks select the lowest living HP fraction at declaration, with roster-order ties. First facing is zero; subsequent announcements advance the current facing one clockwise step. Reset the beat index at phase entry. These are deliberately small deterministic test patterns, not final balance. Do not use a two-adjacent-sector centre sweep as proof of reduced victim count: it always covers one member of a complete equilateral formation.
+| Phase, beat | Primary | Secondary |
+|---|---|---|
+| 1 A | Inner pulse: all ring-1 cells (`RING_ONE`), 5, not turnable | Marked hit, 3 |
+| 1 B | `sectorCells(f)`, 5, turnable | Marked hit, 3 |
+| 2 A | Outer pulse: all ring-2 cells (`RING_TWO`), 5, not turnable | Marked splash, 2, radius 2 |
+| 2 B | `sectorCells(f)` and `sectorCells((f+2)%6)`, 4, turnable | Marked hit, 3 |
+
+- Marks pick the lowest living HP fraction at declaration, with roster-order ties. This is the Harrier's existing rule (exact integer cross products).
+- **Facing:** the creation announcement uses facing 0. Each later announcement first advances the current facing (including any Crosswind turn) one clockwise step, then declares.
+- **Beat:** it alternates each announcement and resets to A at phase entry.
 
 ## Contracts and decisions
 
-**Required:** boss cell never changes; each declaration has an unambiguous source, event ID, ordered damage and fixed-area/mark semantics. Give the player a complete response phase. Keep P13 independent budgets and P14 control. Attacks from a fallen source do not resolve.
+### Required contracts
 
-**Proposed phase boundary:** crossing 50% HP sets a pending phase-two transition. Finish the already announced enemy response unchanged; enter phase two only before the next announcement. Do not grant a bonus boss turn, discard an attack, refill HP, cap incoming damage or replace a visible telegraph mid-player-phase. Death supersedes a pending transition. Emit phase change once; no return to phase one.
+- The boss's cell never changes. Each declaration has one source, a unique event ID (`crucible:<round>:primary` and `crucible:<round>:secondary`) and ordered resolution: primary, then secondary.
+- Fixed areas stay on their cells through maneuvers. Marks follow their creature. A fallen mark fizzles and is never retargeted. A fallen boss resolves nothing.
+- Crosswind turns the boss's facing (which changes its self-guard front) and its turnable sector cells about `(0,0)`. Pulses and marks do not change.
+- **Phase boundary:** an HP drop to `phaseTwoAt` or below during the player phase changes nothing until the next announcement. The current declarations resolve unchanged. At that announcement the boss enters phase two once, emits one `boss-phase-changed` event, resets the beat to A, and keeps advancing its facing. There is no bonus turn, discarded attack, HP refill, damage cap or return to phase one. Death first means victory with no further attack.
+- `phaseTwoPending(state)` (phase one, boss living, HP at or below `phaseTwoAt`) is one exported content selector, used by the announcement and by the view.
+- Both P13 allowances and the P14 kit apply unchanged.
+- Patrol behaviour, events, records and UI text stay identical.
 
-The primary radial attack cannot be deflected by Crosswind. Turnable sectors and self-guard can be turned. The secondary mark follows its creature. Masks, protection and outcome previews come from the same reducers/selectors as resolution.
+### Encounter selection (decision)
 
-Extend encounter-aware state/dispatch/record validation narrowly. Bump schema/rules versions and reject incompatible records explicitly; do not retain a patrol source whitelist in the boss path. Record phase, beat, encounter ID, tuning and declaration order so both phases replay.
+- **Routes:** `?play=patrol` (unchanged) and `?play=crucible`; P17 adds `?play=collector`. Any other `play` value, or none, opens the formation lab, as today. `?placeholder=1` composes with each.
+- The combat header links to the other encounters and to the lab, keeping `placeholder=1`. Switching encounter is a full navigation, so a scene's tokens never change set.
+- The preset selector lists only the current encounter's presets. Restart recreates the same encounter and preset.
+- The lab keeps its twelve fixtures and `?preview=patrol`. No new `?preview=` value is added: the lab renders no enemies, so boss previews live on the combat route.
+- Browser tests reach diagnostic boss states through intercepted test pages under `tests/browser/`, as P10 does for the patrol, never through product routes.
+
+### Proposed implementation (Architect)
+
+- **State.** `CrucibleState` is `CombatState` plus `crucibleVersion`, `crucibleRules`, `bossPhase: 1 | 2`, and `beat`. `beat` is the beat of the current declarations. Resolution looks up damage by `(bossPhase, beat)` and the declaration's kind: fixed area is primary, a mark is secondary. `Intention` needs no damage field.
+- **Shared end-phase skeleton** in `rounds.ts`, used by patrol and Crucible:
+  1. Guards (revision, phase, version, rules, declarations), each delegated to the encounter.
+  2. `enemy-phase-started`, then lifecycle.
+  3. Resolve declarations in the encounter's order, stopping at a terminal outcome. Damage comes from the encounter.
+  4. Shelter expiry, then `enemy-phase-ended`.
+  5. If nonterminal: reset `actedIds` and both P13 flags, advance the round, announce, emit `round-started`, the encounter's announcement events (`boss-phase-changed`), then `intentions-announced`.
+  6. One public revision.
+
+  Patrol keeps `PATROL_ORDER` lookup and its existing checks. **The skeleton is acceptable only if every patrol suite passes unedited.**
+- **Registry.** A plain object keyed by `'patrol' | 'crucible'`, consulted by `transition.ts`, `preview.ts`, `run-record.ts`, the session and the view. No plugin loading, no generic intention scripting.
+- **View.** The protection line becomes one `· <Source> facing N` entry per protection source, so the patrol text stays exactly `· Warder facing N`. The `#intentions` list adds "turnable" or "not turnable" to fixed-area entries and keeps the existing "fixed cells" / "follows creature" words. The preview panel's `Threats:` line format is unchanged. A phase indicator shows "Phase 1", "Phase 2", or "Phase two begins at the next announcement" from `phaseTwoPending`.
+
+### Record compatibility (decision)
+
+- `RECORD_VERSION` stays `1`, and the envelope keys are unchanged. `rulesVersion` selects the encounter codec:
+  - `poc-001-rules-v3/patrol-v2/p14-v1`: patrol, unchanged from P14, so P14 patrol records stay replayable;
+  - `poc-001-rules-v3/crucible-v1/p14-v1`: Crucible, with `fixtureId` `phase-one` or `phase-two-diagnostic`, `configuration` `{ crucibleRules, abilityRules }`, and state fields `crucibleVersion`, `crucibleRules`, `bossPhase`, `beat`.
+- Keep the `RUN_RULES_VERSION` export as the patrol string. Add the Crucible string beside it.
+- `createRunRecord(initialState, fixtureId, buildRevision?, rules?)` keeps its signature and infers the encounter from the state.
+- Unknown rules versions keep the existing `unsupported rules version: …` error. Nothing is migrated.
 
 ## Implementation checkpoints
 
-P15-1: introduce the explicit central-boss fixture and two-declaration turn adapter while preserving patrol regressions.
+1. **P15.C1 — Skeleton and registry.** Extract the shared end-phase skeleton, add the registry, and route `transition.ts` and `preview.ts` through it, with patrol only. Run the full unit suite. Every patrol, preview and record test passes unedited before any Crucible code.
+2. **P15.C2 — Crucible headless.** Content, factory, announcement, phase boundary, end phase, records. New focused tests over all twelve formations and six facings, with explicit test-local rules.
+3. **P15.C3 — Browser.** Route, header links, presets, title, emblem map, phase indicator, turnability labels, the per-source protection line. Intercepted fixtures for the threshold and kill cases. Build, run the browser suite, inspect screenshots.
+4. **P15.C4 — Contracts and full verification.** README; export and replay a phase-crossing attempt and a phase-two-diagnostic attempt; run all verification bare at one candidate revision.
 
-P15-2: implement phase boundary, masks, mark choice, ordered resolution and failure/terminal cases headlessly.
+## Required test updates (explicit exception)
 
-P15-3: expose the encounter, phase indicator, masks, control previews and reset/record/replay through the actual browser.
+**None.** The encounter is additive. Every existing test file is expected to pass unedited, including `tests/patrol-session.test.ts` (the patrol constructor is unchanged), `tests/browser-patrol.mjs` (the patrol header, presets, intention text, `Threats:` line and `Warder facing` text are unchanged) and `tests/rf-contracts.test.ts` (the patrol rules version is unchanged in P15). If an existing test fails, stop and report the assertion and its cause. Do not edit it.
 
 ## Acceptance criteria
 
-1. Across every legal player action and reset, the living boss stays at `(0,0)`; Crosswind may turn its facing without relocation.
-2. Expansion changes inner-pulse exposure; contraction changes outer-pulse exposure. A narrow sector/fork fixture has different recipient sets under rotation. Exact masks are asserted over all labelled formations.
-3. Crossing the threshold preserves current declarations, enters phase two at the next announcement and changes the pattern once. Killing the boss instead ends combat without an extra attack.
-4. Both attacks resolve in the displayed order; secondary marks, Shelter consumption and terminal interruption match the forecast.
-5. Each phase has a reachable trace with both maneuver categories used in the same round and another trace that uses protection/control rather than only damaging abilities. These are mechanical traces, not human evidence.
-6. The patrol still launches; boss resets create clean state; exported phase-crossing and direct phase-two attempts replay exactly, including events.
-7. Browser presentation distinguishes radial masks, turnable sectors, creature-following marks and pending/active phase without depending on animation timing.
+1. Across every legal player action, Crosswind and reset, the living boss stays at `(0,0)`. Crosswind turns its facing and turnable sectors but never its cell.
+2. Over all twelve labelled formations, the inner pulse hits all three living Brood in Compact and none in Spread, and the outer pulse is the reverse. `sectorCells(f)` hits one Brood in formations whose orientation parity matches `f` and none otherwise; the `f, f+2` fork hits two or none by the same parity. Assert these as relations derived from the formation and pulse geometry (P02/P05 selectors), not as a copied table.
+3. Crossing `phaseTwoAt` during the player phase keeps the current declarations, enters phase two at the next announcement with one `boss-phase-changed`, and changes the pattern once. Killing the boss instead ends combat with no further attack, and no phase event is emitted.
+4. Both declarations resolve in order. Secondary marks, Shelter consumption and terminal interruption match the "If end phase now" forecast exactly. The forecast's `enemyEvents` excludes the next announcement and `boss-phase-changed`.
+5. Each phase has a reachable mechanical trace using both maneuver categories in one round, and another using Shelter or Crosswind instead of only damage. These are traces, not human evidence.
+6. The patrol still launches, plays, exports and replays unchanged. A Crucible reset creates clean state. Exported phase-crossing and phase-two-diagnostic attempts replay exactly with `just poc-001-replay`.
+7. The browser distinguishes non-turnable pulses, turnable sectors, creature-following marks, and pending versus active phase, without depending on animation timing. `?play=crucible` and the header links work with and without `placeholder=1`. Unknown `play` values open the lab.
+8. **Tuning is not frozen.** No new assertion pins a provisional value: 60, 30, 5, 4, 3, 2, the facing cadence or the beat table. Tests use explicit test-local rules or derive expectations from the encounter's own exported content. A content test may check that content exposes its documented values.
+9. All existing suites pass unedited.
 
 ## Verification and hand-back
 
-Use existing root test/typecheck/build/browser recipes and replay exports; add focused boss/phase fixtures. Report exact commands, actual results, baseline changes, masks, damage tuning, captures of both phases and criterion mapping at `docs/mailbox/p15-central-boss/implementer.md`. Record human observations separately, especially automatic expand/rotate routines and whether accepting damage ever feels useful.
+Run from the repository root at one candidate revision, **bare** (no `POC001_CHROME`, `CHROME_PATH` or other override):
+
+- `just poc-001-test`, `just poc-001-typecheck`, `just poc-001-build`
+- `just poc-001-test-browser` (report the selected Chrome binary and why)
+- `just poc-001-replay` on a phase-crossing Crucible export, a phase-two-diagnostic export and a patrol export
+- `git diff --check <BASE>..HEAD` and `git diff --exit-code <BASE>..HEAD --` over the protected paths
+
+Screenshot inspection:
+
+- Crucible start, with the inner pulse shown as not turnable and the mark;
+- phase-one beat B sector, with the turnable label;
+- the pending-phase indicator after a threshold-crossing hit;
+- phase-two outer pulse and fork;
+- the patrol start, unchanged;
+- one placeholder-mode capture.
+
+Durable report: as in [P13](2026-10-06-e8cec63d-poc-001-split-maneuver-budgets.md#verification-and-hand-back), plus the computed mask table, actual tuning, and both phases' captures. Record human observations separately.
+
+## Balance hypotheses (computed; for the manual round)
+
+Computed by the Architect with a disposable script over all 12 formations and 6 facings. They describe the pattern as written; they are not decisions.
+
+- **X-H1 — Phase one has a static answer.** Compact and Spread orientations `o`, `o+2`, `o+4` occupy one sector each, so one sector holds a Brood exactly when its parity matches the orientation. The facing advances one step per announcement and the beats alternate, so every beat-B sector has the same parity (facings 1, 3, 5, …). Spread at an even orientation is never hit by any phase-one primary: one Expand from the Compact 0 start answers the whole of phase one, and only the 3-damage marks land.
+- **X-H2 — Phase two has the same shape.** The outer pulse forces Compact. The fork's parity is fixed by the announcement at which phase two begins, so one Compact parity dodges every phase-two primary. Choosing it costs at most one rotation.
+- **X-H3 — Phase two beat A trades pulse for splash.** In Compact the radius-2 splash hits all three Brood (2 each); in Spread the pulse hits all three (5 each). Compact is clearly better.
+- **X-H4 — The self-guard always covers one Brood.** The front `frontCells((0,0), f)` holds exactly one Brood in every formation and facing (all 72 cases). Rotation or Crosswind chooses whose Claw, Sting or Impale is reduced; Gale bypasses.
+- **Lever, if X-H1 or X-H2 makes movement trivial in the manual round** (not applied; the user set the pattern as written): advance the facing only when a beat-B declaration is made. B-sector parity then alternates, so a static formation is hit every other B beat.
+
+## Review corrections to the draft (2026-10-06)
+
+- Computed X-H1/X-H2: with the drafted cadence, a static formation dodges every primary attack in each phase. The pattern stays as written by user decision; the finding and lever are recorded.
+- Added the consumers the draft missed, all of which would fail for a non-patrol encounter: the preview's patrol-only forecast and `patrolRules` facts, `transition.ts` dispatch on `patrolVersion`, the view's hard-coded `warder` lookup, and token images keyed by entity ID.
+- Decided encounter selection (`?play=`), the record codec chosen by rules version with no envelope change, Brood HP owned by P08, and the role-by-kind damage lookup.
+- The phase event is excluded from `enemyEvents`, so a forecast never reports next-round content as resolved damage.
 
 ## Non-goals and stop conditions
 
-No adds, movement, arena enlargement, boss invulnerability, three-phase tree or new art requirement. If every beat has one effortless universal answer, record it as a design result and adjust declared pattern/tuning separately rather than silently restricting maneuvers. If phase transition or replay invalidates a telegraph, stop before P16 integration.
+Out of scope: adds, enemy movement, arena changes, boss invulnerability, a third phase, new art, and patrol retuning.
+
+Stop and report when:
+
+- any existing test fails;
+- the shared skeleton cannot preserve patrol events exactly (then keep patrol's end phase separate and report);
+- a phase transition or replay invalidates a visible telegraph (stop before P16).
+
+If every beat has one effortless universal answer in automated traces, record it as a design result. Do not silently restrict maneuvers.

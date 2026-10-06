@@ -14,6 +14,8 @@ Authority: [brief Round structure, Test abilities, and encounter descriptions](.
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
+**Amended 2026-10-06 (planned, not implemented):** [P16](2026-10-06-27ca8f17-poc-001-enemy-repositioning.md) lets designated enemies change tile between rounds, so fronts follow the new tile. [P17](2026-10-06-79371edf-poc-001-roaming-boss-and-adds.md) adds an optional `range` to a protection relation (an ability-specific support range, not a generic reach rule).
+
 Task `P05` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
 
 ## Amendment RF (2026-10-05) — fronts, protection and areas from enemy tiles

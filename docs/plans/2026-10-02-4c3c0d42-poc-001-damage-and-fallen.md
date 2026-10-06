@@ -10,6 +10,8 @@ Authority: the [brief's deterministic combat requirement, Shelter description, a
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
+**Amended 2026-10-06 (planned, not implemented):** [P14](2026-10-06-6a0ebcdc-poc-001-tactical-kit-revision.md) raises the default Shelter reduction to 4 and makes a self-Shelter effective without a link. [P17](2026-10-06-79371edf-poc-001-roaming-boss-and-adds.md) makes victory require only objective enemies (default: every enemy).
+
 Task `P06` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
 
 ## Amendment RF (2026-10-05) — ring formation and enemies on tiles

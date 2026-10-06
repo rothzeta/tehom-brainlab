@@ -1,6 +1,6 @@
 # POC 001 — Linked formation
 
-**Status:** specified experiment. Delivered state is recorded in [CURRENT](../CURRENT.md); this paragraph does not restate it. AI-directed playtests of the delivered patrol were recorded on 2026-10-05 ([reports](../mailbox/ai-playtest-20261005/)); they are not human playtests. The ring formation and enemies on tiles (user decision, 2026-10-05; see [Decision record](#decision-record)) are specified in the [ring-formation task](../plans/2026-10-05-c6399cb6-poc-001-ring-formation.md) and not yet implemented.
+**Status:** specified experiment. Delivered state is recorded in [CURRENT](../CURRENT.md); this paragraph does not restate it. AI-directed playtests of the delivered patrol were recorded on 2026-10-05 ([reports](../mailbox/ai-playtest-20261005/)); they are not human playtests. The ring formation and enemies on tiles (user decision, 2026-10-05; see [Decision record](#decision-record)) are specified in the [ring-formation task](../plans/2026-10-05-c6399cb6-poc-001-ring-formation.md), which is now delivered. The 2026-10-06 boss experiments (user decision; see [Decision record](#decision-record)) are specified in P13–P17 ([plan index](../plans/README.md#boss-experiments-p13p17)) and are not yet implemented.
 
 **Basis:** the POC accepted in the TEHOM planning conversation, 2 October 2026. Initial tuning and unresolved mechanics are identified below rather than presented as playtest findings.
 
@@ -17,16 +17,16 @@ The experiment tests whether three Brood attacking individually but moving as a 
 | Arena | Central hex plus two surrounding rings: 19 cells *(accepted user decision, 2026-10-04; replaces three rings and 37 cells. See [Decision record](#decision-record).)* |
 | Party | Ugallu, Girtablilu, Pazuzu |
 | Abilities | Two per Brood; six total |
-| Maneuvers | Rotate left, rotate right, expand/contract |
+| Maneuvers | Rotate left, rotate right, expand/contract *(2026-10-06: one rotation and one shape change per player phase, each with its own allowance; P13)* |
 | Legal configurations | Two shapes times six orientations |
 | Ordinary encounter | Warder, Censer, Harrier patrol, each standing on its own outer-ring edge tile *(user decision, 2026-10-05)* |
-| Boss | One Foundry Mechanism |
+| Boss | ~~One Foundry Mechanism~~ *(superseded 2026-10-06 by user decision)*: two boss experiments, the anchored two-phase Crucible on the centre (P15) and the roaming Collector with a Warder and a Censer (P17) |
 | Presentation | Labelled tokens and generated geometry first |
 | Technology target | TypeScript + Phaser + Vite + Vitest; no backend |
 
 ## Formation rules
 
-This is still mostly a Darkest Dungeon game, not an XCOM game *(user, 2026-10-05)*. Position works like Darkest Dungeon ranks: where each Brood stands relative to each enemy changes who can be protected against and which shared maneuver is worth spending. Reach is ability-specific and will be designed later with the abilities. It is not a puzzle-movement game. The only movement is the shared formation maneuver; there is no individual movement, and enemies never move.
+This is still mostly a Darkest Dungeon game, not an XCOM game *(user, 2026-10-05)*. Position works like Darkest Dungeon ranks: where each Brood stands relative to each enemy changes who can be protected against and which shared maneuver is worth spending. Reach is ability-specific and will be designed later with the abilities. It is not a puzzle-movement game. The only Brood movement is the shared formation maneuver; there is no individual movement. *(2026-10-06, user decision: designated enemies may relocate between rounds along the six edge slots (P16); the Brood still never walk, and the central boss never moves.)*
 
 The board is the centre plus two rings: ring 1 (6 cells, table `S`) and ring 2 (12 cells, table `T`, whose even indices are corners and odd indices are the single edge cell between two corners). Its cells divide into two fixed kinds:
 
@@ -66,11 +66,11 @@ This first version deliberately tests shared formation stances, not independentl
 
 1. Enemies announce intentions.
 2. The player activates each Brood once, in a chosen order.
-3. The player may use one shared formation maneuver before, between, or after those activations.
+3. The player may use one shared formation maneuver before, between, or after those activations. *(2026-10-06: one rotation and one shape change, in either order; P13.)*
 4. Surviving enemies resolve their intentions.
 5. Begin the next round.
 
-The initial maneuver has its own once-per-round allowance and does not consume a Brood's ability action. It cannot be banked. Remaining in the current formation is valid.
+The initial maneuver has its own once-per-round allowance and does not consume a Brood's ability action. It cannot be banked. Remaining in the current formation is valid. *(2026-10-06: the single allowance is split into a rotation allowance and a shape-change allowance, both refreshing every player phase; provisional default, P13.)*
 
 Area attacks stay committed to marked cells. Targeted attacks follow their marked creature. Preview and presentation must distinguish them.
 
@@ -82,8 +82,8 @@ These are provisional test kits, not final character designs.
 
 | Brood | Reliable action | Tactical action |
 |---|---|---|
-| Ugallu | **Claw:** damage one enemy | **Shelter:** reduce the next hit against one Close-linked ally; the link must still be Close at impact |
-| Girtablilu | **Sting:** damage one enemy | **Impale:** stronger strike that ignores directional protection while both links are Stretched |
+| Ugallu | **Claw:** damage one enemy | **Shelter:** reduce the next hit against one Close-linked ally; the link must still be Close at impact *(2026-10-06, P14: reduces by 4; may target Ugallu itself, with no link needed; no stacking)* |
+| Girtablilu | **Sting:** damage one enemy | **Impale:** stronger strike that ignores directional protection while both links are Stretched *(2026-10-06, P14: keeps 6 damage but no longer ignores protection; needs at least one living partner, with every link to a living partner Stretched)* |
 | Pazuzu | **Gale:** modest damage bypassing directional protection | **Crosswind:** turn one enemy's facing and associated directional intention by one orientation step |
 
 Basic contact attacks can reach every enemy wherever it stands, with a lunge-and-return animation. They do not require literal tile adjacency and do not move the attacker permanently. *(2026-10-05: enemies now stand on tiles; this contact reach is unchanged.)*
@@ -106,6 +106,8 @@ Since 2026-10-05 the patrol stands on three alternating ring-2 edge tiles, one o
 
 ## Directional boss — build second
 
+*Superseded 2026-10-06 by user decision (see [Decision record](#decision-record)). P12 was never implemented. Two boss experiments replace it: the Crucible ([P15](../plans/2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md)) and the Collector ([P17](../plans/2026-10-06-79371edf-poc-001-roaming-boss-and-adds.md)). The text below is retained as history.*
+
 The Foundry Mechanism tests directional protection, a committed sweep across marked sectors, and a marked-target blast that splashes nearby Brood. Do not add a phase tree or large ability library.
 
 The encounter should create competition between rotating, spreading, maintaining protection, and spending an individual action on Crosswind. If rotating once solves every turn, revise the boss rather than treating it as proof of the combat model.
@@ -124,7 +126,7 @@ Previews must run the same rules as committed commands without mutating live sta
 2. Build the one-screen board with selectable placeholders and maneuver previews.
 3. Add deterministic actions, intentions, damage, and the ordinary patrol.
 4. Test the patrol under different starting conditions and record observations.
-5. Add the directional boss only after ordinary combat produces useful decisions.
+5. Add the directional boss only after ordinary combat produces useful decisions. *(2026-10-06: the user lifted this gate by explicit decision after the manual RF round; see [Decision record](#decision-record).)*
 6. Reintroduce a small exposure/attrition pressure and compare with a fair Apex/Shadow reference.
 
 ## Acceptance questions
@@ -146,7 +148,7 @@ A fair comparison must preserve the original model's own strengths: Glare pressu
 - Rotation followed by its inverse restores state.
 - Expansion and contraction preserve identity, order, and orientation.
 - The initial link threshold produces the intended Compact and Spread states.
-- Each living Brood acts at most once per player phase; only one shared maneuver is allowed.
+- Each living Brood acts at most once per player phase; only one shared maneuver is allowed. *(2026-10-06: at most one rotation and one shape change; P13.)*
 - Area intentions remain location-bound while targeted intentions retain their target.
 - Shelter checks the link when damage resolves, not only when applied.
 - Preview leaves original state unchanged and agrees with the committed transition.
@@ -160,6 +162,33 @@ Numeric balance, enemy intention tie-breaking, the definition of isolation, and 
 **Encounter layout (partly resolved 2026-10-05).** Enemies now stand on tiles, and their cells carry rule meaning (user decision, 2026-10-05). Ordinary enemies use ring-2 edge cells and the centre is the boss tile. Still open as experiment questions: other patrol layouts (for example clustered on one side), whether a boss ever stands off the centre, and ability-specific reach (to be designed with the abilities). P02 resolves exact coordinate presets and initial Close threshold two as experimental defaults, documented with sources in its [handoff](../mailbox/p02-formation-algebra/implementer.md); they remain provisional rather than playtest findings. Record later initial values as experimental defaults.
 
 ## Decision record
+
+**2026-10-06 — Boss experiments, split maneuvers and kit revision (accepted; source: user decision, 2026-10-06).** After playing the delivered RF build, the user reported: "the proto is fine, the patrols and their attack pattern did not require making use of movement." The cause is confirmed in source: patrol targeting never reads positions. The Warder marks the first living Brood in roster order, the Censer cycles, and the Harrier picks the lowest HP ratio. An external design review proposed a continuation (draft PR #1, commit `71cc26c`, written from source inspection only). The user accepted it with these decisions:
+
+1. **Adopt P13–P17 as the roadmap; P12 is superseded.** The directional boss will not be built separately. The user lifted the P11 boss gate by explicit decision, based on their manual RF round. The historical P11 gate stays **HOLD** and is not marked PASS.
+2. **Build all of P13–P17 before the user's next manual round.**
+3. **The drafts' numbers are provisional defaults**, implemented as written and kept in their owning content/core modules. Tests must not freeze them:
+   - one rotation plus one shape change per player phase, both refreshing every round;
+   - Shelter reduces by 4 and may target self;
+   - Impale keeps 6 damage and loses its protection bypass, and is no longer tied to exactly two living partners;
+   - phase two starts at 50% boss HP, from the next declaration;
+   - the drafts' HP, damage, patterns, the six-slot route and the add composition.
+
+This changes the accepted POC scope in three ways:
+
+- **Bosses.** Two boss experiments replace the one directional boss: the Crucible, anchored on the centre with two phases ([P15](../plans/2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md)), and the Collector, roaming the edge slots with a Warder and a Censer ([P17](../plans/2026-10-06-79371edf-poc-001-roaming-boss-and-adds.md)).
+- **Enemy movement.** Designated enemies may relocate between rounds ([P16](../plans/2026-10-06-27ca8f17-poc-001-enemy-repositioning.md)), replacing "enemies never move".
+- **Maneuvers.** The single shared allowance is split ([P13](../plans/2026-10-06-e8cec63d-poc-001-split-maneuver-budgets.md)), and the kit is revised ([P14](../plans/2026-10-06-6a0ebcdc-poc-001-tactical-kit-revision.md)).
+
+Standing direction is unchanged: Darkest Dungeon rather than XCOM; the Brood never walk individually and move only through the shared maneuvers; the centre is reserved for a boss; there is no generic reach rule.
+
+The Architect's provisional choices are in the plans and the [index](../plans/README.md#boss-experiments-p13p17): encounter routes `?play=crucible` and `?play=collector`; old attempt records rejected rather than migrated; the Collector add facings. The Architect also computed findings for the user's next round:
+
+- With the drafted facing cadence, a static formation dodges every Crucible primary attack in each phase.
+- The Collector's ward blinks in and out of range on alternate rounds.
+- Its sweep can always be dodged with one maneuver.
+
+The round's checklist is in [P17](../plans/2026-10-06-79371edf-poc-001-roaming-boss-and-adds.md#combined-manual-test-checklist-user-round-after-p17).
 
 **2026-10-05 — Ring formation and enemies on tiles (accepted; source: user decision, 2026-10-05).** After three AI playtesters won all nine attempts ([reports](../mailbox/ai-playtest-20261005/)), the user added two findings. The user's words, lightly cleaned:
 

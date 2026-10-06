@@ -2,6 +2,8 @@
 
 ## Status and authority
 
+**Superseded by user decision, 2026-10-06. Never implemented.** After playing the RF build, the user found that "the patrols and their attack pattern did not require making use of movement". The user adopted P13–P17 as the roadmap ([brief Decision record](../prototypes/poc-001-linked-formation.md#decision-record), [index](README.md#boss-experiments-p13p17)). The Foundry Mechanism's role passes to two experiments: the anchored two-phase Crucible ([P15](2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md)) and the roaming Collector with adds ([P17](2026-10-06-79371edf-poc-001-roaming-boss-and-adds.md)). Do not implement this plan as a separate boss. The user lifted the boss gate by explicit decision; the P11 gate record stays HOLD and is not marked PASS. The text below is retained as history.
+
 **P12. Draft; conditionally blocked, not implemented or verified.** Depends on [P11](2026-10-02-825a6700-poc-001-reproducible-playtests.md) with an explicit **open** boss gate and the playable/core outputs of [P10](2026-10-02-e7c77542-poc-001-playable-patrol.md). Baseline: `79f9498051df0281e6e9d3c904e9eee32f014873`.
 
 Authority: [brief Directional boss and Implementation order](../../docs/prototypes/poc-001-linked-formation.md). Do not execute merely because the earlier code compiles. The boss numbers/pattern below are a proposed test fixture, not an approved final boss. See the [index](README.md) and local ADRs below for authority.

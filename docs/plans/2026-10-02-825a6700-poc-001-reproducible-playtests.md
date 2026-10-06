@@ -8,6 +8,8 @@ Authority: [existing playtest template](../../docs/playtests/TEMPLATE.md), [brie
 
 Delivery sequence: [P01–P12 index](README.md). Governing format: [ADR-0002](../adr/0002-plan-filenames.md) and [ADR-0003](../adr/0003-implementation-plan-writing.md).
 
+**Amended 2026-10-06:** the user lifted the boss gate by explicit decision after their manual RF round. The recorded gate below stays **HOLD** and is not marked PASS. Planned, not implemented: [P13](2026-10-06-e8cec63d-poc-001-split-maneuver-budgets.md) and [P14](2026-10-06-6a0ebcdc-poc-001-tactical-kit-revision.md) bump the rules version, and [P15](2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md) selects per-encounter record codecs by rules version. `RECORD_VERSION` stays 1, and old records are rejected explicitly ([index](README.md#records-and-rules-versions-decision)).
+
 Task `P11` owner and integration owner: POC 001 implementer, currently unassigned. This plan is one standalone task; its sequential checkpoints inherit the prerequisites, affected components, acceptance criteria, verification, and hand-back defined here. Checkpoint identifiers remain stable on edits. The Coordinator records actual execution in [TASK_LOGS](../TASK_LOGS.md) from the implementer's mailbox handoff; no execution evidence exists yet.
 
 **Amended 2026-10-05:** rules-version bump and enemy-cell validation for the ring formation; see [Amendment RF](#amendment-rf-2026-10-05--rules-version-and-enemy-cells).
