@@ -1,5 +1,6 @@
 // Host Chrome/CDP driver; the application is served by the ordinary Docker wrapper.
 import { spawn } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
 import { constants } from 'node:fs';
 import { access, mkdtemp, readdir, stat } from 'node:fs/promises';
 import { homedir, tmpdir } from 'node:os';
@@ -61,12 +62,29 @@ const output = suppliedOutput !== undefined ? resolve(suppliedOutput) : await mk
 console.log(`Browser output: ${output}`);
 const port = process.env.POC001_BROWSER_PORT ?? '4173';
 const url = suppliedUrl ?? `http://localhost:${port}/`;
+const scripts = (await readdir('tests')).filter(name => /^browser-.*\.mjs$/.test(name)).sort();
+if (!scripts.length) throw new Error('No browser harnesses found in tests/browser-*.mjs');
 let server;
+let serverFinished;
+let previewError;
+const containerName = `poc-001-browser-${randomUUID()}`;
+const harnesses = [];
 const pause = ms => new Promise(done => setTimeout(done, ms));
-async function run(script, directory) {
-  const child = spawn(process.execPath, [script, chrome, join(output, directory), url], { stdio: 'inherit' });
-  const code = await new Promise((done, fail) => { child.on('error', fail); child.on('exit', done); });
-  if (code !== 0) throw new Error(`${script}: exit ${code}`);
+async function run(name) {
+  const script = join('tests', name);
+  const directory = name === 'browser-run-record.mjs' ? 'records' : name.slice('browser-'.length, -'.mjs'.length);
+  console.log(`Running ${script}`);
+  const child = spawn(process.execPath, [script, chrome, join(output, directory), url], { stdio: ['inherit', 'pipe', 'inherit'] });
+  let stdout = '';
+  child.stdout.on('data', data => { stdout += data; process.stdout.write(data); });
+  const code = await new Promise((done, fail) => { child.on('error', fail); child.on('close', done); });
+  if (code !== 0) throw new Error(`${script}: exit ${code ?? child.signalCode}`);
+  const summary = stdout.split('\n').map(line => {
+    try { return JSON.parse(line); } catch { return null; }
+  }).findLast(value => value?.ok === true && Number.isSafeInteger(value.assertions) && value.assertions >= 0);
+  if (!summary) throw new Error(`${script}: missing assertion-count summary`);
+  console.log(`${script}: ${summary.assertions} assertions passed`);
+  return { script, assertions: summary.assertions };
 }
 try {
   if (!suppliedUrl) {
@@ -75,25 +93,36 @@ try {
     const build = spawn('./bin/run', ['build'], { stdio: 'inherit', env: dockerEnv });
     const code = await new Promise((done, fail) => { build.on('error', fail); build.on('exit', done); });
     if (code !== 0) throw new Error(`Build exited ${code}; preview was not started`);
-    server = spawn('./bin/run', ['preview'], { stdio: ['ignore', 'pipe', 'pipe'], env: dockerEnv, detached: true });
+    server = spawn('./bin/run', ['preview'], {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env: { ...dockerEnv, POC001_CONTAINER_NAME: containerName },
+    });
+    server.on('error', error => { previewError = error; });
+    // Subscribe before readiness polling so teardown cannot miss an early exit.
+    serverFinished = new Promise(done => server.once('close', done));
     let ready = false, announced = false;
     server.stdout.on('data', data => { process.stdout.write(data); if(data.toString().includes('Local:')) announced=true; });
     server.stderr.on('data', data => process.stderr.write(data));
     for (let attempt = 0; attempt < 150; attempt++) {
-      if (server.exitCode !== null) throw new Error(`Preview exited ${server.exitCode}`);
+      if (previewError) throw previewError;
+      if (server.exitCode !== null || server.signalCode !== null) throw new Error(`Preview exited ${server.exitCode ?? server.signalCode}`);
       try { if (announced && (await fetch(url)).ok) { ready = true; break; } } catch {}
       await pause(100);
     }
     if (!ready) throw new Error('Preview did not become ready');
   }
-  await run('tests/browser-lab.mjs', 'lab');
-  await run('tests/browser-preview.mjs', 'preview');
-  await run('tests/browser-patrol.mjs', 'patrol');
-  await run('tests/browser-run-record.mjs', 'records');
-  console.log(JSON.stringify({ ok: true, scripts: 4, output }));
+  for (const script of scripts) harnesses.push(await run(script));
 } finally {
-  if (server && server.exitCode === null) {
-    process.kill(-server.pid, 'SIGINT');
-    await new Promise(done => server.once('exit', done));
+  if (server && !previewError && server.exitCode === null && server.signalCode === null) {
+    // Stop only our container. Sending SIGINT to the attached Docker process
+    // group intentionally produced exit 130 during otherwise successful runs.
+    console.log(`Stopping browser preview container ${containerName}`);
+    const stop = spawn('docker', ['stop', '-t', '5', containerName], { stdio: 'inherit' });
+    const code = await new Promise((done, fail) => { stop.on('error', fail); stop.on('close', done); });
+    if (code !== 0) throw new Error(`Preview cleanup exited ${code ?? stop.signalCode}`);
+    await serverFinished;
   }
 }
+const assertions = harnesses.reduce((total, harness) => total + harness.assertions, 0);
+console.log(`Browser total: ${assertions} assertions passed across ${harnesses.length} harnesses`);
+console.log(JSON.stringify({ ok: true, scripts: harnesses.length, assertions, harnesses, output }));

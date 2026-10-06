@@ -266,7 +266,7 @@ Every enemy uses its core tile and the same projection as the Brood. Living enem
 checkbox. Placeholder mode makes no token-image requests; failed images retain
 labelled geometry. Credits and the bundled license remain visible.
 
-Run all four browser checks with local Bun 1.4.2 on PATH, installed prototype
+Run every browser harness with local Bun 1.4.2 on PATH, installed prototype
 dependencies (`just poc-001-install`), Docker, and an executable Chrome:
 
 ```sh
@@ -288,9 +288,23 @@ It adds no dependencies and never downloads a browser.
 The browser runner always rebuilds through the existing pinned Docker wrapper
 before starting the default Docker preview on port 4173, so code changes cannot
 silently leave the checks using an old production bundle. It starts/stops that
-preview and runs `browser-lab.mjs`, `browser-preview.mjs`, `browser-patrol.mjs`,
-and `browser-run-record.mjs` in sequence through the prototype-local `test:browser`
-script. The CDP driver uses host Chrome/Bun; application build and serving use
+preview and discovers every `tests/browser-*.mjs` harness, running them in filename
+order against that one shared server through the prototype-local `test:browser`
+script. It reports each harness's assertion count and the combined total, then
+exits 0 after successful checks and cleanup; a failing harness exits nonzero.
+Cleanup stops only the runner's uniquely named Docker container.
+Current coverage is:
+
+- `browser-lab.mjs`: formation lab, maneuvers, selection, artwork and image fallback.
+- `browser-preview.mjs`: patrol command previews and committed outcomes.
+- `browser-patrol.mjs`: playable patrol, controls, outcomes and formation regressions.
+- `browser-run-record.mjs`: native attempt export and replay for all patrol presets.
+- `browser-p14-kit.mjs`: revised kit, self-Shelter and protected Impale.
+- `browser-crucible.mjs`: Crucible routes, phase changes, placeholders and exports.
+- `browser-repositioning.mjs`: relocation previews and shared-tile enemy selection.
+- `browser-collector.mjs`: Collector, route blocking, local threats, kit and exports.
+
+The CDP driver uses host Chrome/Bun; application build and serving use
 Docker. Optional arguments remain `CHROME_PATH [OUTPUT_DIRECTORY] [BASE_URL]`;
 supplying a base URL uses an already-running server and skips the local build
 and preview. The caller is responsible for that server's build freshness.
@@ -360,8 +374,7 @@ P11 resolves its schema and evidence defaults explicitly:
 
 `tests/run-record.test.ts` verifies explicit P08 winning/forfeit traces, stored
 alternate tuning, all factory starts, reset/rejection and specific failures.
-`test-browser` adds `browser-run-record.mjs` after the three P01–P10
-browser scripts. It uses native controls and actual downloaded files for all
+`test-browser` includes `browser-run-record.mjs`. It uses native controls and actual downloaded files for all
 three presets, compares against current transitions, and checks reset and rejected
 inputs without fixing provisional outcomes. Browser output stays in the supplied
 scratch directory. These runs are automated, not human playtests.
@@ -428,7 +441,7 @@ ordered resolution, forecasts, records and clean resets with explicit test-local
 rules. `tests/browser-crucible.mjs` exercises both routes, phase crossing,
 placeholders, native exports and intercepted threshold/kill fixtures. Run it
 against the ordinary preview with `bun tests/browser-crucible.mjs CHROME OUTPUT
-[BASE_URL]` from this directory; the existing browser runner stays unchanged.
+[BASE_URL]` from this directory, or with the full `just poc-001-test-browser` check.
 These traces establish mechanics, not human judgments about balance or enjoyment.
 
 ## Enemy relocation (P16)
@@ -499,7 +512,8 @@ meaning and version strings. Live commands, previews and default records use the
 boss encounter's configured directional reduction.
 
 Run `just poc-001-test tests/collector.test.ts` for controlled contract traces.
-The additive browser harness runs separately from the unchanged standard runner:
+The browser harness is included in `just poc-001-test-browser`. To run it alone
+against an already-built ordinary preview:
 
 ```sh
 cd poc-001-linked-formation

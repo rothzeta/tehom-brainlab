@@ -65,6 +65,10 @@ case "${POC001_MODE:-docker}" in
         set -- "$BUN_IMAGE" sh ./scripts/toolchain.sh "$@"
       fi
     fi
+    # A managed browser preview gets an isolated identity for targeted cleanup.
+    if [ "$command_name" = preview ] && [ -n "${POC001_CONTAINER_NAME:-}" ]; then
+      set -- --name "$POC001_CONTAINER_NAME" "$@"
+    fi
     exec docker run --rm --init --user "$(id -u):$(id -g)" \
       --env HOME=/tmp --env BUN_INSTALL_CACHE_DIR=/tmp/bun-cache \
       --env "POC001_PORT=$port" --env "VITE_POC001_BUILD_REVISION=$VITE_POC001_BUILD_REVISION" --volume "$prototype_root:/app" \
