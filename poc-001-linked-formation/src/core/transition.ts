@@ -6,11 +6,21 @@ import type { ActorAction, Command, CommandResult, ErrorCode } from './commands'
 import type { BroodState, GameState } from './state';
 import type { CombatState } from './state';
 import { applyAttack } from './damage';
-import { applyAbility } from './abilities';
+import { applyAbility, DEFAULT_ABILITY_RULES } from './abilities';
+import type { AbilityRules } from './abilities';
 import { isAbilityId } from '../content/brood';
 import type { PatrolState } from '../content/patrol';
 import type { EncounterState } from './encounters';
 import { encounterFor } from './encounters';
+
+/** Crucible owns its self-guard amount; other P14 ability rules retain their defaults. */
+export function commandAbilityRules(state: GameState): AbilityRules {
+  const encounter = encounterFor(state);
+  return encounter?.id === 'crucible' ? { ...DEFAULT_ABILITY_RULES,
+    damageRules: { ...DEFAULT_ABILITY_RULES.damageRules,
+      directionalReduction: encounter.rules(state as EncounterState).damageRules.directionalReduction } }
+    : DEFAULT_ABILITY_RULES;
+}
 
 function reject(state: GameState, code: ErrorCode): CommandResult {
   return { ok: false, state, events: [], error: { code } };
@@ -40,7 +50,7 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
   if (command.kind === 'useAbility' && isAbilityId(command.abilityId)
     && 'enemies' in state && 'declaredIntentions' in state && 'protections' in state
     && 'shelters' in state && 'resolvedAttackIds' in state) {
-    return applyAbility(state as CombatState, command);
+    return applyAbility(state as CombatState, command, commandAbilityRules(state));
   }
   // Unregistered abilities/basic lab snapshots retain P03's unsupported behavior.
   if (command.kind === 'useAbility' || command.kind === 'endPhase') {

@@ -11,6 +11,7 @@ import { selectRecipients } from '../src/core/intents.ts';
 import { applyCommand } from '../src/core/transition.ts';
 import { previewCommand } from '../src/core/preview.ts';
 import { replayRun } from '../src/core/run-record.ts';
+import { ENCOUNTERS } from '../src/core/encounters.ts';
 import { crucibleFixture } from './browser/crucible-fixtures.ts';
 
 const [chromePath, outputPath, baseUrl = 'http://localhost:4173/'] = process.argv.slice(2);
@@ -71,6 +72,12 @@ try {
     equal(actual.revision, state.revision, 'visible revision matches core');
     if (state.enemies.some(e => e.id === 'crucible')) {
       check(state.enemies[0].cell.q === 0 && state.enemies[0].cell.r === 0, 'boss anchored in core');
+      equal(actual.phase, phaseTwoPending(state) ? 'Phase two begins at the next announcement' : `Phase ${state.bossPhase}`, 'configured phase status visible');
+      for (const intention of state.declaredIntentions) {
+        check(actual.intentions.includes(intention.kind), 'configured intention kind visible');
+        check(actual.intentions.includes(intention.kind === 'fixed-area'
+          ? `fixed cells · ${intention.turnable ? 'turnable' : 'not turnable'}` : 'follows creature'), 'configured intention turnability visible');
+      }
     }
     equal(actual.hp, [...state.brood, ...state.enemies].map(({ id, hp }) => ({ id, hp })), 'visible HP matches core');
   }
@@ -125,12 +132,10 @@ try {
   await navigate('?play=crucible');
   let state = createCrucible(); matches(await snapshot(), state);
   equal((await snapshot()).phase, `Phase ${state.bossPhase}`, 'initial active phase visible');
-  check((await snapshot()).intentions.includes('not turnable') && (await snapshot()).intentions.includes('follows creature'), 'pulse and mark distinguished');
   check(await evaluate(`document.querySelector('[data-entity="crucible"] img').getAttribute('src').endsWith('foundry-mechanism.svg')`), 'existing boss emblem mapped');
   await capture('crucible-start.png');
-  // Play the ordinary product route through both phases, choosing geometry before attacking.
-  let crossed = false, sawFork = false;
-  for (let rounds = 0; rounds < 20 && state.phase === 'player'; rounds++) {
+  // Smoke two product rounds; phase reachability and victory pacing are tunable.
+  for (let rounds = 0; rounds < 2 && state.phase === 'player'; rounds++) {
     const declared = state.declaredIntentions.find(e => e.kind === 'fixed-area');
     const desired = declared && !declared.turnable ? ['compact', 'spread'].sort((a, b) =>
       selectRecipients({ ...state, formation: { ...state.formation, shape: a } }, declared).recipientIds.length
@@ -140,12 +145,6 @@ try {
     if (primary?.turnable && selectRecipients(state, primary).recipientIds.length) {
       state = await execute(state, { kind: 'maneuver', maneuver: 'clockwise' });
     }
-    if (primary?.turnable) {
-      check((await snapshot()).intentions.includes('fixed cells · turnable'), 'sector turnability visible');
-      if (state.bossPhase === 1) await capture('phase-one-sector.png');
-      else { sawFork = true; await capture('phase-two-fork.png'); }
-    }
-    if (state.bossPhase === 2 && primary && !primary.turnable) await capture('phase-two-outer.png');
     for (const [actorId, abilityId] of [['ugallu', 'claw'], ['girtablilu', state.formation.shape === 'spread' ? 'impale' : 'sting'], ['pazuzu', 'gale']]) {
       if (state.phase !== 'player') break;
       const probe = applyCommand(state, { kind: 'useAbility', expectedRevision: state.revision, actorId, abilityId, targetId: 'crucible' });
@@ -156,14 +155,11 @@ try {
       }
     }
     if (state.phase === 'player') {
-      const was = state.bossPhase;
       state = await execute(state, { kind: 'endPhase' });
-      if (was !== state.bossPhase) { crossed = true; await capture('phase-two-entry.png'); }
     }
   }
-  check(crossed && sawFork, 'ordinary play reaches both phases and the fork');
-  equal(state.phase, 'victory', 'ordinary attempt can finish');
-  await exportAttempt('phase-crossing.json', state);
+  check(['player', 'victory', 'defeat'].includes(state.phase), 'product attempt has a permitted outcome');
+  await exportAttempt('product-attempt.json', state);
   await click('#reset'); await settled(); matches(await snapshot(), createCrucible());
   equal((await snapshot()).phase, 'Phase 1', 'reset clears pending and active phase');
   await evaluate(`document.querySelector('#preset').value='phase-two-diagnostic';document.querySelector('#preset').dispatchEvent(new Event('change'))`);
@@ -178,8 +174,8 @@ try {
   for (const placeholder of [false, true]) {
     await navigate(`?play=crucible${placeholder ? '&placeholder=1' : ''}`);
     const suffix = placeholder ? '&placeholder=1' : '';
-    equal(await evaluate(`document.querySelector('header h1').textContent`), 'TEHOM — Crucible', 'boss title');
-    equal(await evaluate(`[...document.querySelectorAll('#preset option')].map(e=>e.value)`), ['phase-one', 'phase-two-diagnostic'], 'boss-only presets');
+    equal(await evaluate(`document.querySelector('header h1').textContent`), `TEHOM — ${ENCOUNTERS.crucible.title}`, 'boss title');
+    equal(await evaluate(`[...document.querySelectorAll('#preset option')].map(e=>e.value)`), ENCOUNTERS.crucible.presets.map(p => p.id), 'boss-only presets');
     const link = `header a[href="?play=patrol${suffix}"]`; await click(link);
     await waitFor(`document.querySelector('#patrol')?.dataset.revision==='0' && document.querySelector('header h1').textContent==='TEHOM — Patrol'`);
     matches(await snapshot(), createPatrol());
@@ -196,7 +192,7 @@ try {
   }
   await cdp('Page.navigate', { url: `${baseUrl}?play=unknown` });
   await waitFor(`!document.querySelector('#patrol') && !!document.querySelector('#formation-lab')`);
-  // Controlled threshold and kill snapshots are test-owned intercepted pages.
+  // Controlled phase, cadence, threshold and kill traces use test-owned intercepted pages.
   await navigate('?play=crucible');
   const stylesheet = await evaluate(`document.querySelector('link[rel="stylesheet"]').href`);
   const bundle = await Bun.build({ entrypoints: [new URL('./browser/crucible-fixture.ts', import.meta.url).pathname], target: 'browser', minify: true,
@@ -206,6 +202,44 @@ try {
   check(bundle.success, 'test-owned fixture compiles');
   document = `<html><head><meta charset="utf-8"><link rel="stylesheet" href="${stylesheet}"></head><body><div id="app"></div><script type="module">${(await bundle.outputs[0].text()).replaceAll('</script', '<\\/script')}</script></body></html>`;
   await cdp('Fetch.enable', { patterns: [{ urlPattern: '*/crucible-fixture*', resourceType: 'Document' }] });
+  await navigate('crucible-fixture?mode=trace'); state = crucibleFixture('trace');
+  equal((await snapshot()).phase, 'Phase 1', 'controlled trace starts in phase one');
+  state = await execute(state, { kind: 'maneuver', maneuver: 'expand' });
+  state = await execute(state, { kind: 'maneuver', maneuver: 'clockwise' });
+  state = await execute(state, { kind: 'useAbility', abilityId: 'shelter', actorId: 'ugallu', targetId: 'ugallu' });
+  state = await execute(state, { kind: 'useAbility', abilityId: 'crosswind', actorId: 'pazuzu', targetId: 'crucible', direction: 'anticlockwise' });
+  const phaseOneFacing = state.enemies[0].facing;
+  state = await execute(state, { kind: 'endPhase' });
+  equal(state.enemies[0].facing, (phaseOneFacing + 1) % 6, 'controlled B advances from turned facing');
+  check((await snapshot()).intentions.includes('fixed cells · turnable'), 'controlled sector turnability visible');
+  await capture('phase-one-sector.png');
+  state = await execute(state, { kind: 'useAbility', abilityId: 'gale', actorId: 'pazuzu', targetId: 'crucible' });
+  check(phaseTwoPending(state), 'controlled damage crosses threshold');
+  await capture('phase-pending.png');
+  const entryFacing = state.enemies[0].facing, entryHp = state.enemies[0].hp;
+  state = await execute(state, { kind: 'endPhase' });
+  equal(state.bossPhase, 2, 'controlled trace enters phase two');
+  equal(state.beat, 'A', 'entry resets beat');
+  equal(state.enemies[0].facing, entryFacing, 'entry retains turned facing');
+  equal(state.enemies[0].hp, entryHp, 'entry retains boss HP');
+  await capture('phase-two-entry.png');
+  await capture('phase-two-outer.png');
+  state = await execute(state, { kind: 'maneuver', maneuver: 'contract' });
+  state = await execute(state, { kind: 'maneuver', maneuver: 'anticlockwise' });
+  state = await execute(state, { kind: 'useAbility', abilityId: 'shelter', actorId: 'ugallu', targetId: 'ugallu' }, 'phase-two-shelter-preview.png');
+  state = await execute(state, { kind: 'useAbility', abilityId: 'crosswind', actorId: 'pazuzu', targetId: 'crucible', direction: 'clockwise' });
+  const phaseTwoFacing = state.enemies[0].facing;
+  state = await execute(state, { kind: 'endPhase' });
+  equal(state.enemies[0].facing, (phaseTwoFacing + 1) % 6, 'phase-two B advances from turned facing');
+  check((await snapshot()).intentions.includes('fixed cells · turnable'), 'controlled fork turnability visible');
+  await capture('phase-two-fork.png');
+  state = await execute(state, { kind: 'useAbility', abilityId: 'crosswind', actorId: 'pazuzu', targetId: 'crucible', direction: 'anticlockwise' });
+  const nextFacing = state.enemies[0].facing;
+  state = await execute(state, { kind: 'endPhase' });
+  equal(state.enemies[0].facing, nextFacing, 'A retains turned facing');
+  equal(state.rotationUsed || state.shapeChangeUsed, false, 'controlled round resets maneuver budgets');
+  equal(state.actedIds, [], 'controlled round resets actor budgets');
+  await exportAttempt('phase-crossing.json', state);
   for (const mode of ['threshold', 'kill']) {
     await navigate(`crucible-fixture?mode=${mode}`); state = crucibleFixture(mode);
     state = await execute(state, { kind: 'useAbility', abilityId: 'gale', actorId: 'pazuzu', targetId: 'crucible' }, `${mode}-preview.png`);

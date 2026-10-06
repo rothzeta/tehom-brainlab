@@ -1093,3 +1093,31 @@ The user left enemy placement to the Architect. On the Architect's open question
 - No push.
 
 **Process note.** Always give a full SHA in merge assignments.
+
+## 2026-10-06 Boss experiments: plans, P13 and P14
+
+**Input.** The user's manual RF round found that movement was never needed. The user then pasted an external design review (draft PR #1, branch `design/poc-001-boss-experiments-20261006` at `71cc26c`). Decisions:
+- adopt P13–P17 and supersede P12;
+- build all five before the next round;
+- treat the draft numbers as provisional defaults;
+- apply the Crucible facing lever (Architect Q1).
+
+**Design.** Architect `bx-architect` (`claude-opus-5.5-high`, pane `w2G:p20`, launch dir `/tmp/ruach-herdr-l2MVBt`) worked in worktree `/opt/dev/tehom-brainlab-boss`, branch `boss-experiments` from `71cc26c`. The upstream link to the remote design branch was removed. Output: `c596d69` (adoption, corrections, P12 supersession) and `5c3e614` (lever) ([report](mailbox/boss-experiments/architect.md)).
+
+**Implementation (in parallel).**
+- `p13-implementer` (`gpt-6.1-sol-high`, pane `w2G:p31`, worktree `-p13`) stopped on protected `tests/run-record.test.ts:75`, which encoded the old shared budget. The Coordinator authorised edit RR1, asserting the split contract. Bare checks passed at `5e39153` ([handoff](mailbox/p13-maneuver-budgets/implementer.md)).
+- `p14-implementer` (pane `w2G:p32`, worktree `-p14`) produced `a6cc85b` ([handoff](mailbox/p14-kit-revision/implementer.md)). One non-PTY browser run exited 130 after all suites passed; it did not recur.
+
+**Integration.** `p13-implementer` merged `boss-experiments` and then `p14-kit-revision`, giving combined revision `7904f9f`, keeping the v3/patrol-v2/p14-v1 version. Bare checks: 517 tests, typecheck, build, and two browser runs (4,985 assertions each, exit 0) ([integration](mailbox/p13-maneuver-budgets/integration.md)).
+
+**Review.** `p13p14-reviewer` (pane `w2G:p33`, worktree `-p13r`) passed `7904f9f` with no findings ([review](mailbox/p13-maneuver-budgets/reviewer.md), `fb50de9`).
+
+**Delivery.** Master fast-forwarded from `70b6ede` to `fb50de9`, then to `056bbc5` (delivery report) ([delivery](mailbox/p13-maneuver-budgets/delivery.md)). The prototype is identical to `7904f9f`.
+
+**Cleanup.**
+- Panes `p20`, `p31`, `p32` and `p33` closed; `/tmp/ruach-herdr-l2MVBt` removed (the Codex launches reported no temporary directory).
+- Worktrees `-boss`, `-p13`, `-p13r` and `-p14` removed. Branches `boss-experiments`, `p13-maneuver-budgets`, `p14-kit-revision` and `p13p14-review` kept.
+- P15 is running in parallel (pane `w2G:p34`, worktree `-p15`, branch `p15-crucible` from `6ebe170`).
+- No push.
+
+**Process note.** My integration assignment's example (Expand → Impale → Contract legal) was wrong: Expand and Contract share the shape-change allowance. The worker followed the plan correctly.
