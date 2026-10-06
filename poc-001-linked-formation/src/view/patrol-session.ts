@@ -1,3 +1,4 @@
+import type { EncounterState, EncounterPreset } from '../core/encounters';
 import { createPatrol } from '../content/patrol';
 import type { PatrolPreset, PatrolState } from '../content/patrol';
 import type { Command, GameplayEvent } from '../core/commands';
@@ -19,10 +20,10 @@ function controlIdentity(command: ControlCommand): string {
 }
 
 /** The existing P09 adapter owns all command submission and preview validity. */
-export class PatrolSession {
-  private preset: PatrolPreset = 'healthy';
+export class PatrolSession<State extends EncounterState = PatrolState, Preset extends EncounterPreset = PatrolPreset> {
+  private preset: Preset;
   private readonly adapter: LabSession;
-  private record: RunRecord;
+  private record: RunRecord<State>;
   private timer: ReturnType<typeof setTimeout> | undefined;
   private generation = 0;
   busy = false;
@@ -31,15 +32,17 @@ export class PatrolSession {
   message = 'Choose a Brood, ability and target. Confirm to act.';
 
   constructor(private readonly changed: () => void = () => {}, private readonly duration = 400,
-    private readonly factory: (preset: PatrolPreset) => PatrolState = createPatrol) {
+    private readonly factory: (preset: Preset) => State = createPatrol as unknown as (preset: Preset) => State,
+    initialPreset: Preset = 'healthy' as Preset, private readonly encounterTitle = 'patrol') {
+    this.preset = initialPreset;
     this.adapter = new LabSession(() => this.factory(this.preset));
     this.record = this.freshRecord();
   }
-  private freshRecord(): RunRecord {
+  private freshRecord(): RunRecord<State> {
     return createRunRecord(this.state, this.preset, import.meta.env?.VITE_POC001_BUILD_REVISION || 'unknown');
   }
   exportRecord(): string { return JSON.stringify(this.record, null, 2); }
-  get state(): PatrolState { return this.adapter.state as PatrolState; }
+  get state(): State { return this.adapter.state as State; }
   project(command: Command): CommandPreview { return this.adapter.previewCommand(command); }
   preview(command: Command): void {
     if (this.busy) return;
@@ -71,12 +74,12 @@ export class PatrolSession {
     }, this.duration);
     this.changed();
   }
-  reset(preset = this.preset): void {
+  reset(preset: Preset = this.preset): void {
     this.generation += 1;
     if (this.timer !== undefined) clearTimeout(this.timer);
     this.timer = undefined; this.preset = preset; this.adapter.reset();
     this.record = this.freshRecord();
     this.busy = false; this.pending = undefined; this.events = [];
-    this.message = 'Fresh patrol. Choose a Brood, ability and target.'; this.changed();
+    this.message = `Fresh ${this.encounterTitle}. Choose a Brood, ability and target.`; this.changed();
   }
 }

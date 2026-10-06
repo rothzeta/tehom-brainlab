@@ -9,6 +9,7 @@ import { expireShelters, settleLifecycle } from './lifecycle';
 import type { CombatState } from './state';
 
 export type RoundEvent =
+  | { readonly type: 'boss-phase-changed'; readonly sourceId: string; readonly before: 1; readonly after: 2; readonly round: number }
   | { readonly type: 'enemy-phase-started'; readonly round: number }
   | { readonly type: 'enemy-phase-ended'; readonly round: number }
   | { readonly type: 'round-started'; readonly round: number }
@@ -54,23 +55,40 @@ export function endPatrolPhase(state: PatrolState, expectedRevision: number): Co
     || new Set(state.declaredIntentions.map(({ sourceId }) => sourceId)).size !== state.declaredIntentions.length) {
     return reject('invalid-command');
   }
+  return endEncounterPhase(state, expectedRevision, {
+    intentions: (snapshot) => PATROL_ORDER.flatMap(sourceId =>
+      snapshot.declaredIntentions.filter(entry => entry.sourceId === sourceId)),
+    damage: (snapshot, intention) => intention.sourceId === 'warder' ? rules.warderDamage
+      : intention.sourceId === 'censer' ? rules.censerDamage
+        : intention.kind !== 'fixed-area' && isIsolated(snapshot, intention.targetId, rules.closeThreshold)
+          ? rules.isolatedHarrierDamage : rules.harrierDamage,
+    rules, announce: snapshot => ({ state: announcePatrol(snapshot), events: [] }),
+  });
+}
+
+/** Encounters own guards, ordering, damage and announcements; lifecycle stays shared. */
+export function endEncounterPhase<State extends CombatState>(state: State, expectedRevision: number, encounter: {
+  intentions: (state: State) => readonly Intention[];
+  damage: (state: State, intention: Intention) => number;
+  rules: { splashRadius: number; damageRules: import('./damage').DamageRules };
+  announce: (state: State) => { state: State; events: readonly GameplayEvent[] };
+}): CommandResult<State> {
+  const reject = (code: ErrorCode): CommandResult<State> => ({ ok: false, state, events: [], error: { code } });
+  if (expectedRevision !== state.revision) return reject('stale-revision');
+  if (state.phase !== 'player') return reject('wrong-phase');
   const events: GameplayEvent[] = [{ type: 'enemy-phase-started', round: state.round }];
   const started = settleLifecycle(state, { ...state, phase: 'enemy' });
-  let next: PatrolState = { ...state, ...started.state };
+  let next: State = { ...state, ...started.state };
   events.push(...started.events);
-  for (const sourceId of PATROL_ORDER) {
+  for (const intention of encounter.intentions(next)) {
     if (next.phase === 'victory' || next.phase === 'defeat') break;
-    const intention = next.declaredIntentions.find((entry) => entry.sourceId === sourceId);
-    if (!intention) continue;
-    const selected = selectRecipients(next, intention, rules.splashRadius);
+    const sourceId = intention.sourceId;
+    const selected = selectRecipients(next, intention, encounter.rules.splashRadius);
     if (selected.reason !== 'resolved') continue;
-    const rawDamage = sourceId === 'warder' ? rules.warderDamage
-      : sourceId === 'censer' ? rules.censerDamage
-        : intention.kind !== 'fixed-area' && isIsolated(next, intention.targetId, rules.closeThreshold)
-          ? rules.isolatedHarrierDamage : rules.harrierDamage;
+    const rawDamage = encounter.damage(next, intention);
     const hit = applyAttack(next, { kind: 'attack', expectedRevision: next.revision,
       eventId: intention.id, sourceId, recipientIds: selected.recipientIds,
-      rawDamage, bypassProtection: false }, rules.damageRules);
+      rawDamage, bypassProtection: false }, encounter.rules.damageRules);
     if (!hit.ok) return reject(hit.error.code);
     // Every emitted hit belongs to the single public transition, never a second callback.
     next = { ...next, ...hit.state, revision: state.revision };
@@ -80,9 +98,10 @@ export function endPatrolPhase(state: PatrolState, expectedRevision: number): Co
   next = { ...next, ...expired.state };
   events.push(...expired.events, { type: 'enemy-phase-ended', round: state.round });
   if (next.phase === 'enemy') {
-    next = announcePatrol({ ...next, round: state.round + 1, phase: 'player',
+    const announcement = encounter.announce({ ...next, round: state.round + 1, phase: 'player',
       actedIds: [], rotationUsed: false, shapeChangeUsed: false });
-    events.push({ type: 'round-started', round: next.round },
+    next = announcement.state;
+    events.push({ type: 'round-started', round: next.round }, ...announcement.events,
       { type: 'intentions-announced', round: next.round, intentions: next.declaredIntentions });
   }
   next = { ...next, revision: state.revision + 1 };

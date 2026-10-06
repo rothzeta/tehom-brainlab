@@ -1,6 +1,7 @@
 import { ABILITIES } from '../content/brood';
 import type { AbilityId } from '../content/brood';
-import type { PatrolState } from '../content/patrol';
+import { encounterFor } from './encounters';
+import type { EncounterState } from './encounters';
 import { abilityLegality } from './abilities';
 import type { AbilityRequest, TurnDirection } from './abilities';
 import type { Command, CommandResult, ErrorCode, GameplayEvent } from './commands';
@@ -16,9 +17,6 @@ function combat(state: GameState): state is CombatState {
   return 'enemies' in state && 'declaredIntentions' in state && 'protections' in state
     && 'shelters' in state && 'resolvedAttackIds' in state;
 }
-function patrol(state: GameState): state is PatrolState {
-  return combat(state) && 'patrolVersion' in state && 'patrolRules' in state;
-}
 function freeze<T>(value: T): T {
   if (value && typeof value === 'object') {
     Object.values(value).forEach(freeze);
@@ -32,7 +30,7 @@ function deriveFacts(state: GameState) {
   const positions = formationPositions(state.formation);
   if (!combat(state)) return { positions, links: formationLinks(state.formation),
     protections: [], shelters: [], threats: [], abilities: [] };
-  const rules = patrol(state) ? state.patrolRules : undefined;
+  const rules = encounterFor(state)?.rules(state as EncounterState);
   const abilities = state.brood.flatMap((actor) =>
     (Object.keys(ABILITIES) as AbilityId[]).filter((id) => ABILITIES[id].brood === actor.brood)
       .flatMap((abilityId) => {
@@ -147,13 +145,13 @@ export function previewCommand<State extends GameState>(
     forecast = { kind: 'not-applicable', condition: FORECAST_CONDITION, events: [] };
   } else if (result.state.phase === 'victory' || result.state.phase === 'defeat') {
     forecast = { kind: 'terminal', condition: FORECAST_CONDITION, events: [] };
-  } else if (!patrol(result.state)) {
+  } else if (!encounterFor(result.state)) {
     forecast = { kind: 'unavailable', condition: FORECAST_CONDITION, events: [] };
   } else {
     const ended = transition<State>(structuredClone(result.state), { kind: 'endPhase',
       expectedRevision: result.state.revision });
     forecast = { kind: 'transition', condition: FORECAST_CONDITION, ...ended,
-      enemyEvents: ended.events.filter(({ type }) => type !== 'round-started' && type !== 'intentions-announced') };
+      enemyEvents: ended.events.filter(({ type }) => type !== 'round-started' && type !== 'intentions-announced' && type !== 'boss-phase-changed') };
   }
   return freeze({ ...identity, ...result, projection: { before, after, deltas,
     protectionGained: protectionChanged(before, after), protectionLost: protectionChanged(after, before),

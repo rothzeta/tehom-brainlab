@@ -1,6 +1,6 @@
 # POC 001 — Linked formation
 
-**Status: Playable patrol at `/?play=patrol`, alongside the default formation lab. P01–P03 accepted and locally delivered. P04 formation lab implemented, independently reviewed (no blocking findings; optional O1 open), accepted and locally delivered. [Evidence](../docs/mailbox/p04-formation-lab/implementer.md), [integration](../docs/mailbox/p04-formation-lab/integration.md), [review](../docs/mailbox/p04-formation-lab/reviewer.md). P05–P11 and RF are implemented, independently reviewed (no blocking findings), accepted and locally delivered. [RF implementation](../docs/mailbox/ring-formation/implementer.md), [fix](../docs/mailbox/ring-formation/fix.md), [review](../docs/mailbox/ring-formation/reviewer.md).**
+**Status: Playable patrol at `/?play=patrol` and the Crucible at `/?play=crucible`, alongside the default formation lab. P01–P03 accepted and locally delivered. P04 formation lab implemented, independently reviewed (no blocking findings; optional O1 open), accepted and locally delivered. [Evidence](../docs/mailbox/p04-formation-lab/implementer.md), [integration](../docs/mailbox/p04-formation-lab/integration.md), [review](../docs/mailbox/p04-formation-lab/reviewer.md). P05–P11 and RF are implemented, independently reviewed (no blocking findings), accepted and locally delivered. [RF implementation](../docs/mailbox/ring-formation/implementer.md), [fix](../docs/mailbox/ring-formation/fix.md), [review](../docs/mailbox/ring-formation/reviewer.md).**
 
 Test whether rotating, expanding, and contracting three linked Brood creates interesting ordinary combat decisions. The [design brief](../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../docs/adr/0004-repository-and-poc-direction.md) describe the experiment. P01 supplies the browser harness, P02 the pure geometry, and P03 the command boundary. P04 renders the inspection and maneuver lab. P05–P09 supply combat rules and previews, P10 the playable patrol, and P11 local attempt export and replay.
 
@@ -169,7 +169,7 @@ Enemies use the provisional alternating `PATROL_LAYOUT`, shared by all presets: 
 
 `announcePatrol(state)` is a pure, trusted scheduling helper, without revision/budget changes. It announces surviving enemies in `PATROL_ORDER=[warder,censer,harrier]`. Warder marks the first living player Brood in roster order. Censer starts at round-indexed `[girtablilu,pazuzu,ugallu]`, scanning forward for a living candidate. Harrier marks the lowest current/max HP ratio, comparing integer cross products exactly, with roster-order ties. At current defaults the healthy first marks are Ugallu/Girtablilu/Ugallu; wounded Ugallu changes Harrier to Ugallu, wounded Girtablilu changes it to Girtablilu. Declarations use occurrence identities `patrol:<round>:<source>` and update the legacy string `intentions` labels at announcement. Typed `declaredIntentions` are authoritative during play. A command never silently retargets; Fallen marks cancel through P06.
 
-`applyCommand(patrol,{kind:'endPhase',expectedRevision})` calls `endPatrolPhase` in `src/core/rounds.ts`, resolving enemy phase and the next announcement atomically. Player actions may be forfeited. The command advances public revision **once**, including all its P06 hits and Shelter expiry. Each `attack-settled.revision` identifies that same public revision. A stale command returns `stale-revision`; enemy/terminal phase returns `wrong-phase`. Invalid version/declaration shape returns `invalid-command`, invalid numeric rules return `invalid-amount`, and P06 failures retain their codes. Every rejection returns the original state and empty events, including a late hit failure. Basic lab and non-patrol combat snapshots keep `unsupported-command` for `endPhase`.
+`applyCommand(patrol,{kind:'endPhase',expectedRevision})` calls `endPatrolPhase` in `src/core/rounds.ts`, resolving enemy phase and the next announcement atomically. Player actions may be forfeited. The command advances public revision **once**, including all its P06 hits and Shelter expiry. Each `attack-settled.revision` identifies that same public revision. A stale command returns `stale-revision`; enemy/terminal phase returns `wrong-phase`. Invalid version/declaration shape returns `invalid-command`, invalid numeric rules return `invalid-amount`, and P06 failures retain their codes. Every rejection returns the original state and empty events, including a late hit failure. Basic lab and unregistered combat snapshots keep `unsupported-command` for `endPhase`. P15 dispatches registered encounters through `src/core/encounters.ts` and the shared end-phase skeleton; patrol guards, damage, announcement and event order remain unchanged.
 
 At impact Warder hits its mark for3, Censer resolves a radius2 marked splash for3, and Harrier hits for4 or7 if isolated **then**. P05 selects recipients/isolation; P06 settles each hit, deaths, cancellations, protection removal and terminal checks before the next enemy. Defeated enemies do not act, cancelled marks do not retarget, terminal outcome stops remaining attacks. Remaining Shelter expires after enemy resolution, even on terminal outcome. A surviving encounter advances one round, resets each living actor's availability (`actedIds=[]`) and both maneuver allowances (`rotationUsed=false`, `shapeChangeUsed=false`), then announces new marks. Budgets do not bank. HP, formation, facing and attack identity history persist. Terminal states retain their round/budgets and receive no announcement.
 
@@ -210,7 +210,7 @@ No preview spends live budgets or delivers events to a live event/audio consumer
 The provisional P09 projection choice is an isolated real transition plus existing
 P02/P05/P07 selectors, as proposed by the P09 plan; there is no parallel damage
 calculator. The conditional forecast is labelled **If end phase now** and runs
-P08's real `endPhase` on another copy of the immediate candidate. Its `state` and
+the registered encounter's real `endPhase` on another copy of the immediate candidate. Its `state` and
 `events` are the complete real result; `enemyEvents` excludes next-round
 announcements and round start. Unchosen player actions are excluded. A terminal
 candidate for another command has `kind:'terminal'` and no forecast events; formation-only and plain
@@ -322,7 +322,7 @@ a human playtest.
 
 ## Reproducible attempts (P11)
 
-On `?play=patrol`, **Export attempt (JSON)** downloads the current attempt locally,
+On `?play=patrol` or `?play=crucible`, **Export attempt (JSON)** downloads the current attempt locally,
 including an empty, partial or terminal attempt. Restart and preset changes begin
 a fresh record. Only commands accepted by the P10 adapter are appended; selections,
 previews, unavailable controls, stale confirmations and feedback-lock duplicates
@@ -356,7 +356,7 @@ P11 resolves its schema and evidence defaults explicitly:
 | Player command kinds only: maneuver, useAbility, endPhase | P10 controls; raw internal attack commands cannot be exported as player inputs. Each enemy requires a valid `cell` from `ENEMY_CELLS`, distinct from all other enemy cells. Unknown fields, malformed payloads and invalid numeric rules fail rather than being corrected. |
 | Filename `poc-001-attempt.json`, formatted UTF-8 JSON | P11 local export default; a fixed name carries no person identifier or timestamp. Rename downloads to preserve multiple attempts. |
 | Observations outside the record; no optional text fields, identities or wall-clock timestamps | P11 allows separately entered observations; the existing playtest template keeps observations, tester explanations and interpretation distinct without collecting personal data. |
-| Boss gate **HOLD** until actual human attempts support an independent review opening it | P11 gate contract: absent/inconclusive evidence cannot open the gate. Automated verification establishes reproducibility, not enjoyment or comparative combat value. |
+| Historical P11 gate **HOLD**; boss work authorized by user decision on 2026-10-06 | The user accepted P13–P17 and superseded P12. This lifts the boss-work restriction without turning the historical P11 finding into PASS. Automated verification establishes mechanics and reproducibility. |
 
 `tests/run-record.test.ts` verifies explicit P08 winning/forfeit traces, stored
 alternate tuning, all factory starts, reset/rejection and specific failures.
@@ -368,5 +368,65 @@ scratch directory. These runs are automated, not human playtests.
 
 The [P11 evidence artifact](../docs/playtests/2026-10-05-poc-001-p11-automated.md)
 records the build/conditions and HOLD gate. No fair Apex/Shadow comparison or
-production-combat selection has been completed. Human attempts and independent
-Reviewer confirmation remain necessary before boss work is authorized.
+production-combat selection has been completed. The user authorized boss work on 2026-10-06 and accepted P13–P17; the historical
+HOLD remains recorded. The next human round follows P17.
+
+
+## The Crucible (P15)
+
+Open `/?play=crucible` for a separate encounter with one anchored centre boss.
+The header links to the patrol and formation lab, preserving `placeholder=1`.
+Each encounter lists only its own presets; restarting creates fresh state for the
+selected encounter and preset. Unknown `play` values still open the lab, and
+`?preview=patrol` remains the lab's only combat preview fixture.
+
+The Crucible uses the existing Foundry Mechanism emblem. Its provisional defaults
+are 60 HP, facing 0, self-guard reduction 2, and phase two at 30 HP. Brood HP is
+imported from `PATROL_HP`. The boss never moves; Crosswind turns its facing,
+self-guard front and declared turnable sectors about `(0,0)`.
+
+| Phase / beat | Primary fixed area | Secondary creature-following mark |
+| --- | --- | --- |
+| 1 / A | Inner ring pulse, 5 damage, not turnable | Marked hit, 3 damage |
+| 1 / B | Facing sector, 5 damage, turnable | Marked hit, 3 damage |
+| 2 / A | Outer ring pulse, 5 damage, not turnable | Marked splash, 2 damage, radius 2 |
+| 2 / B | Facing sector and sector two steps clockwise, 4 damage, turnable | Marked hit, 3 damage |
+
+Marks choose the lowest living HP fraction with roster-order ties. Each round
+resolves primary before secondary, with unique `crucible:<round>:primary` and
+`crucible:<round>:secondary` identities. A fallen mark fizzles; a dead boss attacks
+no further. Fixed areas stay on declared cells through maneuvers, while marks
+follow their creature. The intention list distinguishes fixed cells and their
+turnability from creature-following marks.
+
+Beats alternate A/B. Only a B announcement advances the current facing one
+clockwise step before declaring, including after a Crosswind turn. A declarations
+keep the facing. Crossing the threshold during player actions leaves the shown
+attacks intact. At the next announcement, `phaseTwoPending` enters phase two,
+emits one `boss-phase-changed`, resets to A and keeps the facing, without extra
+turns or HP refill. The view distinguishes pending from active phase. The
+`phase-two-diagnostic` preset starts at the threshold in phase two, round one;
+it does not represent completing phase one.
+
+`createCrucible(preset?, rules?)` captures all provisional inputs in
+`crucibleRules`, including the pattern table. The registry in
+`src/core/encounters.ts` supplies factories, presets, recognition, round handling,
+preview rules and record-codec identity. Both encounters use the same public
+command boundary and round lifecycle. Forecasts use the real end phase and omit
+next-round announcement events, including the boss phase change, from
+`enemyEvents`. P13 allowances and the P14 kit apply unchanged.
+
+The record envelope remains version 1. `rulesVersion` selects the encounter
+codec: patrol retains `poc-001-rules-v3/patrol-v2/p14-v1`; Crucible uses
+`poc-001-rules-v3/crucible-v1/p14-v1`, its own preset IDs, configuration
+`{ crucibleRules, abilityRules }`, and captured `bossPhase`/`beat`. The actual
+serialized start remains authoritative. Export and `just poc-001-replay` work for
+either encounter; unknown versions are explicitly rejected without migration.
+
+Additive `tests/crucible.test.ts` protects geometry, cadence, phase boundaries,
+ordered resolution, forecasts, records and clean resets with explicit test-local
+rules. `tests/browser-crucible.mjs` exercises both routes, phase crossing,
+placeholders, native exports and intercepted threshold/kill fixtures. Run it
+against the ordinary preview with `bun tests/browser-crucible.mjs CHROME OUTPUT
+[BASE_URL]` from this directory; the existing browser runner stays unchanged.
+These traces establish mechanics, not human judgments about balance or enjoyment.
