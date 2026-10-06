@@ -182,7 +182,29 @@ The [review](mailbox/ring-formation/reviewer.md) found 0 blocking findings. Its 
 - **Review:** independent, no blocking or optional findings. Default-change probes (Shelter, Impale) broke no tests.
 - See [P13](mailbox/p13-maneuver-budgets/implementer.md), [P14](mailbox/p14-kit-revision/implementer.md), [integration](mailbox/p13-maneuver-budgets/integration.md), [review](mailbox/p13-maneuver-budgets/reviewer.md) and [delivery](mailbox/p13-maneuver-budgets/delivery.md).
 
-**In progress.** P15 (Crucible) is being implemented on branch `p15-crucible`. P16 and P17 follow.
+**Delivered: P15 Crucible** (`?play=crucible`), with code identical to reviewed `4523be2`.
+- The boss is anchored at the centre and has two phases. Phase two starts at the next declaration after the 50% threshold.
+- Its facing advances only before sector declarations (the user's lever).
+- Review requested two fixes: R1, the configured self-guard reduction was ignored; R2, a browser test was coupled to fight pacing. Both were fixed and re-reviewed clean.
+- See [implementer](mailbox/p15-crucible/implementer.md), [fix](mailbox/p15-crucible/fix.md), [review](mailbox/p15-crucible/reviewer.md) and [delivery](mailbox/p15-crucible/delivery.md).
+
+**Delivered: P16 enemy relocation**, with code identical to reviewed `d8a30c6`.
+- Mobile enemies move between rounds along the reserved edge slots. The Brood still only use the shared maneuvers.
+- Review found nothing. See [implementer](mailbox/p16-repositioning/implementer.md), [integration](mailbox/p16-repositioning/integration.md), [review](mailbox/p16-repositioning/reviewer.md) and [delivery](mailbox/p16-repositioning/delivery.md).
+
+**Delivered: P17 Collector** (`?play=collector`), with code identical to reviewed `7df00d0`.
+- The Collector is a roaming boss, joined by a Warder (ranged ward) and a Censer. Victory comes when the objective is met.
+- The Coordinator authorised one exception: `transition.ts` applies the configured reduction for the Crucible or the Collector.
+- The review had one optional finding: the plan's checklist line 142 means "lab: Reset; patrol: next round". The plan text is left unedited.
+- Implementer finding: in controlled comparisons, Spread dominates the Collector (R-H4).
+- See [implementer](mailbox/p17-collector/implementer.md), [review](mailbox/p17-collector/reviewer.md) and [delivery](mailbox/p17-collector/delivery.md).
+
+**Browser runner.** `just poc-001-test-browser` now runs every `tests/browser-*.mjs` harness (8 harnesses, 5,987 assertions) against one preview.
+- The task-owned container is stopped by name, replacing the SIGINT to the process group that caused the occasional exit 130.
+- Expected shutdown is now labelled instead of printed as an error.
+- Reviewed and re-reviewed clean. See [implementer](mailbox/test-browser-all/implementer.md), [review](mailbox/test-browser-all/reviewer.md) and [delivery](mailbox/test-browser-all/delivery.md).
+
+**State.** Local master is at `51bf5d2`. 581 unit tests pass. The user's manual round is next; its checklist is in the [P17 plan](plans/2026-10-06-79371edf-poc-001-roaming-boss-and-adds.md#combined-manual-test-checklist-user-round-after-p17).
 
 ## Verification and limits
 

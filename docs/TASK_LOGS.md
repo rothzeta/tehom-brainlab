@@ -1121,3 +1121,40 @@ The user left enemy placement to the Architect. On the Architect's open question
 - No push.
 
 **Process note.** My integration assignment's example (Expand → Impale → Contract legal) was wrong: Expand and Contract share the shape-change allowance. The worker followed the plan correctly.
+
+## 2026-10-06 Boss experiments: P15, P16, P17 and browser runner
+
+**P15 Crucible.**
+- `p15-implementer` (pane `w2G:p34`, worktree `-p15`, base `6ebe170`) stopped at `f08f473`: unchanged `browser-patrol.mjs:120` failed because turnability text had leaked into the patrol `Threats:` line.
+- The Coordinator authorised the one-line restoration, giving `e685c3c`. A non-PTY browser run exited 130; a PTY run exited 0.
+- `p15-reviewer` (pane `p35`, worktree `-p15r`) requested changes:
+  - R1: the configured self-guard reduction was ignored in dispatch and records;
+  - R2: the Crucible browser test was coupled to the default pacing.
+- `p15-fix` (pane `p37`) fixed both at `4523be2`; four default-mutation probes passed. The re-review approved (`ed62bc2`).
+- Delivery: master merged the docs-only master commits (`79f0549`), then fast-forwarded to `69c56ad`.
+
+**P16 relocation.**
+- `p16-implementer` (pane `p36`, worktree `-p16`, base `7537d0b`) delivered `b1fab75`. A busy port 4173 caused a wait of about 12 minutes, coordinated without stopping the other worker.
+- It merged delivered P15 at `d8a30c6` with no conflicts (565 tests). `p16-reviewer` (pane `p38`) passed it with no findings (`3adff66`).
+- Master fast-forwarded to `b1130e7`.
+
+**P17 Collector.**
+- `p17-implementer` (pane `p39`, worktree `-p17`, base `9abd506`) stopped at `2b5c95f`: the P15 fix hard-coded the Crucible in `commandAbilityRules`, which the plan protects.
+- The Coordinator authorised extending it to the Collector. Result `7df00d0`: 581 tests, 4,985 browser assertions plus 379 from the Collector harness, and five tuning probes.
+- `p17-reviewer` (pane `p3A`) passed it with one optional plan-wording finding (O1, left unedited) (`6a6b54e`).
+- Master merged the docs (`2837871`), then reached `ac0d384`.
+
+**Browser runner.**
+- `tball-implementer` (pane `p3B`, worktree `-tball`, base `6414332`) made `0fca278`: discovery of all 8 harnesses, one shared preview, and a container stop by name.
+- The cause of exit 130 was the deliberate SIGINT to the process group at teardown. Three non-PTY runs and one PTY run exited 0, and the forced-failure run exited 1.
+- `tball-reviewer` (pane `p3C`) found one optional issue: the misleading "preview exited with code 143" line. It was fixed at `796e833` and re-reviewed clean (`3545b20`).
+- Master reached `51bf5d2` via `b0142c9`.
+
+**Cleanup.**
+- Panes `p34`–`p39` and `p3A`–`p3C` closed. The Codex launches reported no temporary directories.
+- Worktrees `-p15`, `-p15r`, `-p16`, `-p16r`, `-p17`, `-p17r`, `-tball` and `-tballr` removed. Their branches are kept.
+- No leftover `poc-001-browser-` containers. No push.
+
+**Process notes.**
+- Parallel bare browser runs contend for port 4173. Workers waited rather than override the port.
+- Starting the next plan on the unreviewed candidate saved time; each later merge of review fixes was conflict-free.
