@@ -1,8 +1,8 @@
 import { ABILITIES, isAbilityId } from '../content/brood';
 import type { ActorAction, CommandResult, ErrorCode } from './commands';
-import { applyAttack, DEFAULT_DAMAGE_RULES } from './damage';
+import { applyAttack, DEFAULT_DAMAGE_RULES, shelterEligible } from './damage';
 import type { DamageRules } from './damage';
-import { activeLinks, isCloseLinked, turnEnemy } from './intents';
+import { activeLinks, turnEnemy } from './intents';
 import { actorActionError, applyCombatActorAction } from './transition';
 import type { CombatState } from './state';
 
@@ -60,7 +60,8 @@ export function abilityLegality(
     : action.direction !== undefined) return reject('invalid-command');
   if (action.abilityId === 'shelter') {
     if (state.shelters.some(({ id }) => id === abilityEffectId(state, action))) return reject('invalid-command');
-    return isCloseLinked(state, actor.id, action.targetId, rules.damageRules.closeThreshold)
+    if (state.shelters.some(({ targetId }) => targetId === action.targetId)) return reject('illegal-target');
+    return shelterEligible(state, { sourceId: actor.id, targetId: action.targetId }, rules.damageRules.closeThreshold)
       ? { ok: true } : reject('illegal-target');
   }
   const target = state.enemies.find(({ id, hp }) => id === action.targetId && hp > 0);
@@ -77,7 +78,7 @@ export function abilityLegality(
       && entity.owner === 'player' && entity.hp > 0);
     const links = activeLinks(state, rules.damageRules.closeThreshold)
       .filter((link) => link.fromId === actor.id || link.toId === actor.id);
-    if (partners.length !== 2 || links.length !== 2 || links.some(({ state }) => state !== 'stretched')) {
+    if (partners.length === 0 || links.length !== partners.length || links.some(({ state }) => state !== 'stretched')) {
       return reject('illegal-ability');
     }
   }

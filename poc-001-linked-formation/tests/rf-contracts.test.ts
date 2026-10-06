@@ -1,6 +1,7 @@
 import { afterAll, afterEach, expect, test } from 'vitest';
 import { abilityLegality, applyAbility } from '../src/core/abilities';
-import { createPatrol } from '../src/content/patrol';
+import { BROOD_RULES_VERSION } from '../src/content/brood';
+import { createPatrol, PATROL_VERSION } from '../src/content/patrol';
 import { formationPositions, formations } from '../src/core/formation';
 import { boardCells, ENEMY_CELLS, hexDistance } from '../src/core/hex';
 import { frontCells, frontMask } from '../src/core/sectors';
@@ -118,7 +119,7 @@ test.each(['missing','fractional','off-board','brood','duplicate'] as const)('RF
 });
 
 test('RF: new version replays tile snapshots and explicitly rejects old rules', () => {
-  expect(RUN_RULES_VERSION).toBe('poc-001-rules-v2/patrol-v2/p07-v1');
+  expect(RUN_RULES_VERSION).toBe(`poc-001-rules-v2/${PATROL_VERSION}/${BROOD_RULES_VERSION}`);
   const initial = createPatrol('healthy', rules);
   let record = createRunRecord(initial, 'healthy');
   for (const maneuver of ['expand','clockwise'] as const) {
