@@ -2,41 +2,46 @@ task: P15-review
 role: reviewer
 worker: p15-reviewer
 status: complete
-outcome: "Request changes: configured Crucible self-guard mitigation is ignored; additive browser assertions constrain provisional tuning."
+outcome: "Approve re-reviewed candidate: R1 and R2 resolved; no remaining material findings or fix-diff regressions identified."
 baseline: 6ebe1703c94c2bdb404fd3bcdcfa212336a18b7c
-reviewed_revision: e685c3cf24f1b997fcc2cd71cad76bdada4f95f0
-tested_revision: e685c3cf24f1b997fcc2cd71cad76bdada4f95f0
-execution_revision: 7537d0bddc5d5409b116a3ad4919bf02cb1e7a36
+review_baseline: 6bd8d3c68f986ec145a89d14f6a9a2457a9e07aa
+reviewed_revision: 4523be2ef4c6b317f3b09fb26b39d126b1673641
+tested_revision: 4523be2ef4c6b317f3b09fb26b39d126b1673641
+execution_revision: bdadfb23260e9e3a1777b7610d65012174c70ee7
+previous_reviewed_revision: e685c3cf24f1b997fcc2cd71cad76bdada4f95f0
+previous_execution_revision: 7537d0bddc5d5409b116a3ad4919bf02cb1e7a36
 artifacts:
   - docs/mailbox/p15-crucible/assignment-reviewer.md
   - docs/mailbox/p15-crucible/reviewer.md
-  - /tmp/p15-review-browser-isolated
-  - /tmp/p10-browser-tnOx7y
-  - /tmp/p15-review-tuning
-blocking_findings:
-  - "R1 (P2), poc-001-linked-formation/src/core/transition.ts:43: createCrucible with directionalReduction 1 still applies reduction 2 to frontal Claw. Required fix: honor the encounter self-guard rule consistently in live commands, previews and record configuration/replay, preserving patrol and P14 ability damage."
-  - "R2 (P2), poc-001-linked-formation/tests/browser-crucible.mjs:164: changing only phaseTwoAt 30 to 5 causes a false failure when victory precedes the first phase-two fork. Required fix: use controlled test-owned rules/states for required traces and derive product-route expectations from content without requiring default fight pacing or the provisional beat table."
+  - docs/mailbox/p15-crucible/fix.md
+  - /tmp/p15-rereview-browser
+  - /tmp/p10-browser-uwkcGo
+  - /tmp/p15-rereview-tuning/results.json
+blocking_findings: []
 optional_findings: []
 verification:
-  - "just poc-001-test: sandbox attempt exit 1 (Docker unavailable); escalated pre-install attempt exit 127 (vitest missing); after just poc-001-install exit 0, bare rerun exit 0, 537/537 tests in 17 files."
-  - "just poc-001-typecheck: exit 0."
-  - "just poc-001-test-browser: exit 0, 4985 assertions across four suites, zero browser exceptions; no exit-130 shutdown in this run."
-  - "just poc-001-build: exit 0, existing large-bundle warning."
-  - "bun tests/browser-crucible.mjs CHROME /tmp/p15-review-browser http://localhost:4173/: exit 1 during navigation, after native exports; unchanged isolated rerun with output /tmp/p15-review-browser-isolated exit 0, 330 assertions and 11 screenshots. Exact Chrome path and commands below."
-  - "just poc-001-replay on phase-crossing and diagnostic exports from each browser run: all four invocations exit 0; 26 commands/100 events/victory and 4 commands/15 events/player respectively. Nonempty healthy patrol export replay exit 0, 14 commands/71 events/victory."
-  - "Four independent scratch default mutations: Crucible unit tests exit 0 (20/20 each), builds exit 0 each; browser HP and damage probes exit 0, threshold and pattern probes exit 1 at the noncontractual fork assertion."
-  - "bun /tmp/p15-review-extra.ts: exit 0; reproduced R1 and passed 6048 immediate/forecast comparisons including 504 phase entries. bun /tmp/p15-review-trace.ts: exit 0; confirmed valid victory traces behind R2."
-  - "Existing-test preservation, protected-path preservation, implementation equality between candidate and execution HEAD, and git diff --check: exit 0. Commands below."
-  - "Inspected eleven required screenshot views across the two Crucible runs; phase status, turnability, telegraphs, encounter controls and placeholder labels readable."
-  - "bun .agents/skills/ruach-handoff/scripts/validate.ts docs/mailbox/p15-crucible/reviewer.md --repo /opt/dev/tehom-brainlab-p15r: first exit 2 (missing validator dependencies); after frozen skill install exit 0, ok true."
+  - "Re-review just poc-001-test: exit 0, 538 tests in 17 files."
+  - "Re-review just poc-001-typecheck: exit 0."
+  - "Re-review just poc-001-build: exit 0, existing large-bundle warning."
+  - "Re-review just poc-001-test-browser: exit 0, 4985 assertions across four suites, zero browser exceptions; no shutdown exit 130."
+  - "Re-review Crucible harness: exit 0, 474 assertions and 11 screenshots, zero uncaught exceptions. Exact invocation below."
+  - "just poc-001-replay /tmp/p15-rereview-browser/phase-crossing.json: exit 0, 14 commands, 51 events, revision 14, round 5, player with boss phase 2."
+  - "just poc-001-replay /tmp/p15-rereview-browser/product-attempt.json: exit 0, 9 commands, 33 events, revision 9, round 3, player."
+  - "Four independent scratch default mutations: all unit/build/browser exits 0/0/0; 21 Crucible tests and 474 browser assertions per mutation."
+  - "bun /tmp/p15-rereview-extra.ts: exit 0, corrected original self-guard reproducer and 6048 preview comparisons including 504 phase entries."
+  - "bun /tmp/p15-rereview-guard.ts: exit 0, 108 live/preview/replay cases and 36 explicit ability-rule override cases; patrol record defaults unchanged."
+  - "Fix diff checks, pre-P15 test and protected-path preservation, candidate/execution prototype equality: exit 0."
+  - "Inspected seven required screenshot views from the re-review harness; phases, turnability and telegraphs remain readable."
+  - "Handoff validator command: exit 0, ok true; exact command and results recorded below."
 review:
-  - "Independent review complete; request changes for R1 and R2. No production code or tests modified."
+  - "Re-review complete: approve 4523be2ef4c6b317f3b09fb26b39d126b1673641. Original R1 and R2 resolved; no remaining blocking or optional findings."
 discoveries:
-  - "All existing tests and protected paths match the base. Bare browser discovery selected Playwright headless shell 1223."
-  - "The first additive browser run encountered a navigation error; unchanged isolated rerun passed. Cause unconfirmed; no product regression inferred."
-blockers:
-  - "R1: encounter self-guard configuration contract is not met."
-  - "R2: acceptance criterion 9 is not met by the additive browser harness."
+  - "R1 uses only the configured Crucible directional reduction; other ability rules and patrol defaults retain their prior behavior."
+  - "R2 preserves required controlled traces and native replay coverage while permitting product tuning. All four original mutation probes now pass."
+  - "Earlier review execution history and findings are preserved below as historical evidence; Re-review is the current verdict."
+blockers: []
+
+**Historical review:** the original review below concerns `e685c3c`. Its R1/R2 findings are resolved by the appended Re-review; the leading YAML describes the current candidate.
 
 Author: p15-reviewer. Assignment: [assignment-reviewer.md](assignment-reviewer.md). Contract: [P15](../../plans/2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md); design context: [Architect follow-up](../boss-experiments/architect.md#follow-up-q1-lever-2026-10-06); incoming evidence: [Implementer](implementer.md).
 
@@ -164,3 +169,94 @@ git diff --exit-code 6ebe170..e685c3c -- poc-001-linked-formation/src/core/{hex,
 Assignment SHA-256 before committing: `6202cb239f6ac2bdb10518941a557fe343c8bcf2dd7ec8d72e96f2e26546e9c3`. Only this reviewer report and the unchanged assignment are included in the review commit. No generated role/skill, plan or protected document edited. Fixes remain with the Implementer.
 
 The first handoff validator invocation exited 2 with `DEPENDENCY_UNAVAILABLE`, before schema/revision validation. Ran `bun install --frozen-lockfile` in `.agents/skills/ruach-handoff` (exit 0, six ignored packages, no tracked skill changes), then reran the exact assigned validator command successfully. The report-creating commit SHA is returned in the terminal handoff.
+
+## Re-review
+
+**Verdict: approve. R1 and R2 resolved; no remaining material findings, optional findings or identified regressions in the fix diff.**
+
+Re-review requested by the Coordinator in this session. Ran `git merge --ff-only p15-crucible` in the assigned worktree (exit 0), advancing `p15-review` from `6bd8d3c68f986ec145a89d14f6a9a2457a9e07aa` to the fix report commit `bdadfb23260e9e3a1777b7610d65012174c70ee7`. Reviewed the complete `6bd8d3c..4523be2ef4c6b317f3b09fb26b39d126b1673641` implementation diff, the affected surrounding code, and [fix.md](fix.md). Candidate `4523be2ef4c6b317f3b09fb26b39d126b1673641` and execution HEAD have identical prototype contents; the latter adds only fix assignment/report evidence. The explicit fast-forward instruction superseded the original assignment's no-merge restriction for this operation. No other merge or push performed.
+
+### Finding disposition and regression inspection
+
+**R1 resolved.** `src/core/transition.ts:17` now derives ability rules using only the Crucible's configured directional reduction. Live ability dispatch uses those rules; `src/core/run-record.ts:184` uses the same derivation for default record configuration. Preview uses the live dispatcher and replay uses serialized ability rules. Other P14 ability damage, Shelter/Close rules, explicit caller-supplied record overrides and the patrol branch remain unchanged.
+
+Reran the original public-command reproducer with encounter reduction 1: frontal Ugallu Claw emits raw damage 4, reduction **1**, damage **3**, boss HP **60 → 57**. The new regression asserts actual damage/HP, preview state/events, exported configuration and replay using explicit test-local HP/reduction. Independent supplemental checks covered reductions 0, 1 and 8, six facings, both presets and Claw/Sting/Gale: **108** live/preview/replay cases passed, including saturated reduction, unguarded attacks and Gale bypass. **36** explicit record-rule override/replay cases passed. Patrol's default record ability configuration still equals `DEFAULT_ABILITY_RULES`.
+
+The only changed existing P15 unit assertion setup chooses an unguarded Claw/Sting attacker for the threshold trace. This is justified: its explicit test reduction 8 now correctly absorbs a guarded Claw. The test retains declaration preservation, threshold entry, one phase event, retained HP/facing, next-B cadence and no-return assertions. All pre-P15 tests remain byte-for-byte unchanged.
+
+**R2 resolved.** `tests/browser-crucible.mjs` now treats the ordinary product route as a two-round smoke/export check, derives visible phase and intentions from state/content, and accepts player/victory/defeat outcomes. It no longer requires the default strategy to win or show a fork before victory. Mandatory phase crossing, pulse/sector/fork telegraphs, both maneuver categories, Shelter, both Crosswind directions, facing relations and budget resets remain covered by intercepted test-owned states using explicit rules and sufficient living HP. Controlled threshold and immediate-kill cases remain. The controlled phase-crossing export replays through the CLI.
+
+Both formerly failing tuning mutations now pass, alongside HP and damage changes. Browser coverage was moved to controlled inputs, not discarded. No changes to production boss content, the round skeleton, registry, view or patrol codec were necessary. The production fix is limited to ability dispatch and default record configuration.
+
+### Bare recipes and browser/replay verification
+
+All required recipes ran once from `/opt/dev/tehom-brainlab-p15r`, bare, with installed dependencies, no hand-set environment or Chrome overrides. The browser recipe began before the standalone build and built its own fresh production bundle. Docker/Chrome access used sandbox escalation; no automatic approval rejection occurred.
+
+| Exact command | Exit | Result |
+| --- | ---: | --- |
+| `just poc-001-test` | 0 | 538 tests in 17 files; original patrol/P14 suites unchanged. |
+| `just poc-001-typecheck` | 0 | TypeScript passed. |
+| `just poc-001-test-browser` | 0 | 197 + 24 + 4572 + 192 = 4985 assertions, zero browser exceptions; `/tmp/p10-browser-uwkcGo`. No shutdown exit 130 observed. |
+| `just poc-001-build` | 0 | Existing large-bundle warning only. |
+| `just poc-001-preview` | 143 | Served the standalone harness successfully; exit from deliberate cleanup afterward. |
+| `just poc-001-replay /tmp/p15-rereview-browser/phase-crossing.json` | 0 | 14 commands, 51 events, revision 14, round 5, player; boss phase 2. |
+| `just poc-001-replay /tmp/p15-rereview-browser/product-attempt.json` | 0 | 9 commands, 33 events, revision 9, round 3, player. |
+
+The bare runner selected `/home/metatron/.cache/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-linux64/chrome-headless-shell`, with reason **highest executable Playwright version (chromium_headless_shell-1223)**.
+
+From `/opt/dev/tehom-brainlab-p15r/poc-001-linked-formation`:
+
+```sh
+bun tests/browser-crucible.mjs /home/metatron/.cache/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-linux64/chrome-headless-shell /tmp/p15-rereview-browser http://localhost:4173/
+```
+
+Exit **0**, **474 assertions**, **11 screenshots**, zero uncaught exceptions; no retry needed. Product and diagnostic exports identify execution HEAD `bdadfb23260e9e3a1777b7610d65012174c70ee7`; the intercepted phase-crossing fixture records `buildRevision: unknown`, which is allowed by the record codec. Phase-crossing and product export CLI replays passed as above. The harness also replays every native export in-process.
+
+Opened `crucible-start.png`, `phase-one-sector.png`, `phase-pending.png`, `phase-two-outer.png`, `phase-two-fork.png`, `patrol-start.png` and `placeholder-patrol.png` from this run. Pending versus active phase, non-turnable pulses, turnable sectors/fork, creature-following marks, links/controls and placeholder labels are readable. These are automated captures inspected by the Reviewer, not human playtest or balance evidence.
+
+Stopped only the identified preview container mounted from this review worktree: `docker stop 74ab9b004c95f68dd543bff6e35e05b88e654eb39e6a9555e15b5cceea7b9f78` exited 0. Preview recipe exit 143 is recorded separately from test success.
+
+### Four default-mutation probes rerun independently
+
+Copied the revised prototype to `/tmp/p15-rereview-tuning/poc`, linked installed dependencies and sibling assets, and applied the same four mutations independently from its saved original content. `python3 /tmp/p15-rereview-probes.py` exited **0**. No production worktree files were mutated. From the scratch prototype, each case ran:
+
+```sh
+bun run --bun test:unit tests/crucible.test.ts
+bun run --bun build
+bun tests/browser-crucible.mjs /home/metatron/.cache/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-linux64/chrome-headless-shell /tmp/p15-rereview-tuning/NAME-browser http://localhost:4176/
+```
+
+| NAME | Independent default mutation | Unit exit / tests | Build exit | Browser exit / assertions |
+| --- | --- | --- | ---: | --- |
+| hp | `bossHp: 60` → `bossHp: 72` | 0 / 21 | 0 | 0 / 474 |
+| threshold | `phaseTwoAt: 30` → `phaseTwoAt: 5` | 0 / 21 | 0 | 0 / 474 |
+| damage | First `primaryDamage: 5` → `primaryDamage: 6` (phase-one A) | 0 / 21 | 0 | 0 / 474 |
+| pattern | Phase-two B `area: 'fork'` → `area: 'inner'` | 0 / 21 | 0 | 0 / 474 |
+
+All four browser runs had zero uncaught exceptions. Structured results: `/tmp/p15-rereview-tuning/results.json`; logs: `/tmp/p15-rereview-tuning/NAME-{unit,build,browser}.log`. A task-owned `bun run --bun preview --port 4176` served the rebuilt scratch bundles; its cleanup exit was **143**. Restored scratch content afterward; `cmp /tmp/p15-rereview-tuning/original-crucible.ts /tmp/p15-rereview-tuning/poc/src/content/crucible.ts` exited 0.
+
+### Supplemental checks, preservation and handoff
+
+`bun /tmp/p15-rereview-extra.ts` exited **0**: corrected original self-guard output plus the original **6048** public-boundary immediate/forecast equivalence comparisons, including **504** next-announcement phase entries. This covers both phases, shapes, orientations, facings and beats, available abilities/targets/directions including Crosswind, maneuver choices and threshold-adjacent HP. Complete state/events and filtered forecast enemyEvents matched real committed results.
+
+`bun /tmp/p15-rereview-guard.ts` exited **0**: the 108 mitigation/live/preview/replay and 36 explicit override cases described under R1; unchanged patrol record defaults. Supplemental scripts and their disposable evidence remain outside Git.
+
+Preservation commands below all exited **0** with no diff:
+
+```sh
+git diff --check 6bd8d3c..4523be2
+git diff --exit-code 4523be2..HEAD -- poc-001-linked-formation
+git diff --exit-code 6ebe170..4523be2 -- $(git ls-tree -r --name-only 6ebe170 poc-001-linked-formation/tests)
+git diff --exit-code 6ebe170..4523be2 -- poc-001-linked-formation/src/core/{hex,formation,sectors,intents,damage,lifecycle,abilities,state,commands,smoke}.ts poc-001-linked-formation/src/content/{patrol,brood}.ts poc-001-linked-formation/src/view/{FormationLab,lab-state,projection}.ts poc-001-linked-formation/scripts poc-001-linked-formation/bin poc-001-linked-formation/{package.json,bun.lock,runtime.env,tsconfig.json,vite.config.ts,vitest.config.ts,index.html} justfile assets docs/plans docs/adr docs/prototypes docs/CURRENT.md docs/TASK_LOGS.md
+git diff --exit-code HEAD -- poc-001-linked-formation
+```
+
+The original assignment remains unchanged, SHA-256 `6202cb239f6ac2bdb10518941a557fe343c8bcf2dd7ec8d72e96f2e26546e9c3`. Only this report is edited for the re-review commit. Historical evidence above is retained; its prior blocking findings are superseded by this disposition. No production/test changes, canonical-document edits or new manual gameplay evidence. No remaining unverified area affecting R1/R2 acceptance; no conclusion about balance or the separately tracked intermittent runner shutdown issue.
+
+Validation:
+
+```sh
+bun .agents/skills/ruach-handoff/scripts/validate.ts docs/mailbox/p15-crucible/reviewer.md --repo /opt/dev/tehom-brainlab-p15r
+```
+
+Exit **0**, `ok: true`, all current and historical revision fields resolved. The re-review report-creating SHA is returned in the terminal handoff.
