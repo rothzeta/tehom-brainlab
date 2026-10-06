@@ -5,13 +5,13 @@ import type { EncounterState, EncounterPreset } from './encounters';
 import { BROOD_RULES_VERSION, isAbilityId } from '../content/brood';
 import { PATROL_VERSION } from '../content/patrol';
 import type { PatrolState } from '../content/patrol';
-import { applyAbility, DEFAULT_ABILITY_RULES } from './abilities';
+import { applyAbility } from './abilities';
 import type { AbilityRules } from './abilities';
 import type { Command, CommandResult, GameplayEvent } from './commands';
 import { ROSTER, validateFormation } from './formation';
 import { ENEMY_CELLS, validateHex } from './hex';
 import type { Hex } from './hex';
-import { applyCommand } from './transition';
+import { applyCommand, commandAbilityRules } from './transition';
 
 export const RECORD_VERSION = 1;
 // Bump for any semantic change to geometry, legality, resolution or event ordering.
@@ -181,7 +181,7 @@ function equal(a: unknown, b: unknown): boolean {
   return a === b;
 }
 export function createRunRecord<State extends EncounterState>(initialState: State, fixtureId: EncounterPreset,
-  buildRevision = 'unknown', rules: AbilityRules = DEFAULT_ABILITY_RULES): RunRecord<State> {
+  buildRevision = 'unknown', rules: AbilityRules = commandAbilityRules(initialState)): RunRecord<State> {
   const encounter = encounterFor(initialState);
   if (!encounter) fail('unknown encounter');
   return copy({ recordVersion: RECORD_VERSION, prototypeId: PROTOTYPE_ID, buildRevision,

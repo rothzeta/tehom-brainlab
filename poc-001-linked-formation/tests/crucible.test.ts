@@ -11,6 +11,7 @@ import { selectRecipients, selectProtection } from '../src/core/intents';
 import { appendAcceptedCommand, createRunRecord, parseRunRecord, replayRun, RUN_RULES_VERSION, CRUCIBLE_RUN_RULES_VERSION } from '../src/core/run-record';
 import type { Command } from '../src/core/commands';
 import { PatrolSession } from '../src/view/patrol-session';
+import { DEFAULT_ABILITY_RULES } from '../src/core/abilities';
 
 // Explicit experimental inputs: tuning is permitted to change independently of these contracts.
 const rules: CrucibleRules = { bossHp: 90, phaseTwoAt: 45, splashRadius: 2, closeThreshold: 2,
@@ -42,6 +43,26 @@ const end = (state: CrucibleState) => run(state, { kind: 'endPhase' });
 const same = (a: { q: number; r: number }, b: { q: number; r: number }) => a.q === b.q && a.r === b.r;
 
 describe('Crucible contracts', () => {
+  it('uses configured self-guard reduction in live damage, preview and exported replay', () => {
+    const custom = { ...rules, damageRules: { ...rules.damageRules, directionalReduction: 1 } };
+    const state = createCrucible('phase-one', custom);
+    const command: Command = { kind: 'useAbility', expectedRevision: 0,
+      actorId: 'ugallu', abilityId: 'claw', targetId: 'crucible' };
+    const result = applyCommand(state, command);
+    expect(result.ok).toBe(true);
+    const damage = result.events.find(e => e.type === 'damage-applied');
+    expect(damage).toMatchObject({ targetId: 'crucible', rawDamage: DEFAULT_ABILITY_RULES.clawDamage,
+      directionalReduction: custom.damageRules.directionalReduction,
+      damage: DEFAULT_ABILITY_RULES.clawDamage - custom.damageRules.directionalReduction });
+    expect(result.state.enemies[0]!.hp).toBe(custom.bossHp - DEFAULT_ABILITY_RULES.clawDamage + custom.damageRules.directionalReduction);
+    const preview = previewCommand(state, command, 0);
+    expect(preview.state).toEqual(result.state); expect(preview.events).toEqual(result.events);
+    const record = appendAcceptedCommand(createRunRecord(state, 'phase-one'), command, result);
+    expect(record.configuration.abilityRules).toEqual({ ...DEFAULT_ABILITY_RULES,
+      damageRules: { ...DEFAULT_ABILITY_RULES.damageRules, directionalReduction: custom.damageRules.directionalReduction } });
+    const replay = replayRun(JSON.stringify(record));
+    expect(replay.state).toEqual(result.state); expect(replay.events).toEqual(result.events);
+  });
   it('derives pulse, sector, fork and self-guard masks over twelve formations and six facings', () => {
     for (const shape of ['compact', 'spread'] as const) for (const orientation of orientations) for (const facing of orientations) {
       const state = fixture(1, facing, shape, orientation), positions = formationPositions(state.formation);
@@ -155,7 +176,9 @@ describe('Crucible contracts', () => {
       state = { ...state, enemies: state.enemies.map(e => ({ ...e, hp: rules.phaseTwoAt + 1 })) };
       state = run(state, { kind: 'useAbility', abilityId: 'crosswind', actorId: 'pazuzu', targetId: 'crucible', direction }).state;
       const before = state;
-      const hit = run(state, { kind: 'useAbility', abilityId: 'claw', actorId: 'ugallu', targetId: 'crucible' });
+      const actorId = ['ugallu', 'girtablilu'].find(actorId => !selectProtection(state,
+        { actorId, targetId: 'crucible', bypassProtection: false }, state.protections).protected)!;
+      const hit = run(state, { kind: 'useAbility', abilityId: actorId === 'ugallu' ? 'claw' : 'sting', actorId, targetId: 'crucible' });
       state = hit.state;
       expect(phaseTwoPending(state)).toBe(true);
       expect(state.bossPhase).toBe(1);
