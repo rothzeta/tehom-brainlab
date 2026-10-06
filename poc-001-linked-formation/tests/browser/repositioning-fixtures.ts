@@ -9,7 +9,7 @@ export function repositioningFixture(mode = 'mobile'): PatrolState {
     splashRadius: 2, closeThreshold: 2,
     damageRules: { directionalReduction: 0, shelterReduction: 3, closeThreshold: 2 },
   });
-  return { ...state, enemies: state.enemies.map((enemy, index) => ({ ...enemy,
+  return { ...state, brood: state.brood.map(entity => ({ ...entity, hp: 40, maxHp: 40 })), enemies: state.enemies.map((enemy, index) => ({ ...enemy,
     cell: ENEMY_ROUTE[(index + 2) % ENEMY_ROUTE.length]!, facing: 0 as const,
     hp: mode === 'corpse' && index === 1 ? 0 : 20, maxHp: 20,
     mobile: index === 0, rotatable: index === 0,
