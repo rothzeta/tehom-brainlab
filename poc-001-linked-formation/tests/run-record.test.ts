@@ -71,10 +71,36 @@ test('session records only accepted confirmations; reset starts a clean attempt 
   expect(session.exportRecord()).toBe(fresh); const cached = session.pending!;
   session.confirm(); const accepted = session.exportRecord(); session.confirm(cached);
   expect(session.exportRecord()).toBe(accepted); vi.runAllTimers(); session.confirm(cached);
-  session.activate({ kind: 'maneuver', maneuver: 'expand', expectedRevision: session.state.revision });
-  expect(session.exportRecord()).toBe(accepted);
   expect(parseRunRecord(accepted).acceptedCommands.map(e => e.command)).toEqual([command]);
   expect(replayRun(accepted).state).toEqual(session.state);
+  const initial = parseRunRecord(fresh).initialState;
+  expect(session.state.rotationUsed).toBe(true);
+  expect(session.state.shapeChangeUsed).toBe(initial.shapeChangeUsed);
+  const expand = { kind: 'maneuver' as const, maneuver: 'expand' as const, expectedRevision: session.state.revision };
+  const expected = applyCommand(session.state, expand);
+  expect(expected.ok).toBe(true);
+  session.activate(expand);
+  expect(session.state).toEqual(expected.state);
+  const both = session.exportRecord();
+  const record = parseRunRecord(both);
+  expect(record.acceptedCommands.map(e => e.command)).toEqual([command, expand]);
+  expect(record.finalState.rotationUsed).toBe(session.state.rotationUsed);
+  expect(record.finalState.shapeChangeUsed).toBe(true);
+  expect(replayRun(both).state).toEqual(session.state);
+  expect(replayRun(both).events).toEqual(record.events);
+  vi.runAllTimers();
+  for (const maneuver of ['clockwise', 'anticlockwise', 'expand', 'contract'] as const) {
+    const probe = { kind: 'maneuver' as const, maneuver, expectedRevision: session.state.revision };
+    const rejected = applyCommand(session.state, probe);
+    expect(rejected.ok).toBe(false);
+    if (rejected.ok) throw new Error('Spent category accepted');
+    expect(rejected.error.code).toBe('maneuver-used');
+    session.activate(probe);
+    expect(session.message).toBe('Unavailable: maneuver-used.');
+    expect(session.exportRecord()).toBe(both);
+    expect(session.state).toEqual(record.finalState);
+    expect(session.events).toEqual(expected.events);
+  }
   session.reset('wounded-ugallu'); session.confirm(cached); vi.runAllTimers();
   const reset = parseRunRecord(session.exportRecord());
   expect(reset.fixtureId).toBe('wounded-ugallu'); expect(reset.acceptedCommands).toEqual([]);

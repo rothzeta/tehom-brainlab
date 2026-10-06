@@ -44,8 +44,9 @@ function patrol(): PatrolState {
 test.each(formations())('P13: both orders and rotation directions preserve labelled destinations in $shape $orientation', formation => {
   for (const direction of ['clockwise', 'anticlockwise'] as const) {
     const shapeChange = formation.shape === 'compact' ? 'expand' : 'contract';
-    for (const order of [[direction, shapeChange], [shapeChange, direction]]) {
-      let state = frozen({ ...createInitialState(), formation, actedIds: ['ugallu', 'pazuzu'] });
+    const orders: readonly (readonly Maneuver[])[] = [[direction, shapeChange], [shapeChange, direction]];
+    for (const order of orders) {
+      let state: GameState = frozen({ ...createInitialState(), formation, actedIds: ['ugallu', 'pazuzu'] });
       const initial = state;
       for (const maneuver of order) {
         const before = JSON.stringify(state);

@@ -386,7 +386,7 @@ test('AC7: shared maneuver still works after all three abilities in a nontermina
     state = accepted(dispatch(state, request(abilityId, { expectedRevision: state.revision }))).state;
     expect(state.phase).toBe('player');
     expect(state.rotationUsed).toBe(false);
-  expect(state.shapeChangeUsed).toBe(false);
+    expect(state.shapeChangeUsed).toBe(false);
   }
   const moved = accepted(applyCommand(state, { kind: 'maneuver', expectedRevision: 3, maneuver: 'expand' })).state;
   expect(moved.revision).toBe(4);
