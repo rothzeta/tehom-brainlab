@@ -149,6 +149,7 @@ function state(value: unknown, path: string, rulesVersion = RUN_RULES_VERSION): 
   for (const key of ['protections', 'shelters']) {
     const entries = value[key] as Record<string, unknown>[];
     for (const entry of entries) {
+      requireValue(object(entry), `${path}.${key} entry`);
       fields(entry, key === 'shelters' ? ['id', 'sourceId', 'targetId'] : ['sourceId', 'targetId', ...(collector && Object.hasOwn(entry, 'range') ? ['range'] : [])], `${path}.${key} entry`);
       if (key === 'protections' && Object.hasOwn(entry, 'range')) requireValue(integer(entry.range), `${path}.protections range`);
       requireValue(ids.includes(entry.sourceId) && ids.includes(entry.targetId)

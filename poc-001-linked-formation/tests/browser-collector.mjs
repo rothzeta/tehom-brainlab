@@ -88,6 +88,7 @@ try {
     equal(actual.hp, [...state.brood, ...state.enemies].map(({ id, hp }) => ({ id, hp })), 'visible HP matches core');
   }
   async function capture(name) {
+    await waitFor(`[...document.querySelectorAll('#tokens .emblem')].every(e=>['loaded','fallback','placeholder'].includes(e.dataset.art))`);
     const { cssContentSize: size } = await cdp('Page.getLayoutMetrics');
     const result = await cdp('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true,
       clip: { x: 0, y: 0, width: size.width, height: size.height, scale: 1 } });
@@ -199,10 +200,15 @@ try {
   equal(state.protections,[],'Warder death removes support');
   state=await execute(state,{kind:'endPhase'},'corpse-destination-preview.png');
   logRoute(state,'controlled'); await capture('corpse-after.png');
+  await exportAttempt('controlled-relocation.json',state);
+  // Use route-relative controlled placements so corpse reachability follows tunable content.
+  await navigate('collector-fixture?mode=corpse'); state=collectorFixture('corpse');
+  state=await execute(state,{kind:'endPhase'},'corpse-destination-preview.png');
+  await capture('corpse-after.png');
   equal(state.enemies.find(e=>e.id==='collector').cell,state.enemies.find(e=>e.id==='warder').cell,'boss occupies corpse cell');
   const hit=await evaluate(`(()=>{const token=document.querySelector('[data-entity=collector]');const r=token.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('[data-entity]')?.dataset.entity;})()`);
   equal(hit,'collector','live boss receives pointer above corpse');
-  await exportAttempt('controlled-relocation.json',state);
+  await exportAttempt('corpse-relocation.json',state);
   await navigate('collector-fixture?mode=in-range'); state=collectorFixture('in-range');
   const command={kind:'useAbility',actorId:'ugallu',abilityId:'claw',targetId:'collector'};
   const before=state; state=await execute(state,command,'configured-ward-preview.png');

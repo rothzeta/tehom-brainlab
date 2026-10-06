@@ -178,9 +178,10 @@ describe('Collector encounter', () => {
     expect(protection(start).checks.some(check => check.reason === 'out-of-range')).toBe(true);
     const next = end(start).state;
     expect(next.protections).toEqual(start.protections);
-    const source = next.enemies.find(enemy => enemy.id === 'warder')!;
+    const inRange = collectorFixture('in-range');
+    const source = inRange.enemies.find(enemy => enemy.id === 'warder')!;
     for (const formation of formations()) {
-      const state = { ...next, formation };
+      const state = { ...inRange, formation };
       for (const position of formationPositions(formation)) {
         expect(protection(state, position.brood).protected).toBe(frontCells(source.cell, source.facing).some(cell => same(cell, position.cell)));
       }

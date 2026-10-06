@@ -1,3 +1,4 @@
+import { ENEMY_ROUTE } from '../../src/core/enemy-movement';
 import { announceCollector, createCollector } from '../../src/content/collector';
 import type { CollectorPreset, CollectorRules, CollectorState } from '../../src/content/collector';
 
@@ -14,10 +15,10 @@ export function collectorFixture(mode = 'trace', preset: CollectorPreset = 'heal
     brood: state.brood.map(entity => ({ ...entity, hp: 100, maxHp: 100 })),
     enemies: [
       { id: 'warder', hp: mode === 'corpse' ? 0 : mode === 'trace' ? 1 : 30, maxHp: 30,
-        cell: { q: -2, r: 1 }, facing: 4, mobile: false, rotatable: true, objective: false },
-      { id: 'censer', hp: 30, maxHp: 30, cell: { q: 1, r: -2 }, facing: 0, mobile: false, rotatable: false, objective: false },
+        cell: mode === 'corpse' ? ENEMY_ROUTE[1]! : { q: -2, r: 1 }, facing: 4, mobile: false, rotatable: true, objective: false },
+      { id: 'censer', hp: 30, maxHp: 30, cell: mode === 'corpse' ? ENEMY_ROUTE[3]! : { q: 1, r: -2 }, facing: 0, mobile: false, rotatable: false, objective: false },
       { id: 'collector', hp: mode === 'kill' ? 1 : 90, maxHp: 90,
-        cell: mode === 'in-range' || mode === 'corpse' ? { q: -1, r: 2 } : { q: 1, r: 1 },
+        cell: mode === 'corpse' ? ENEMY_ROUTE[0]! : mode === 'in-range' ? { q: -1, r: 2 } : { q: 1, r: 1 },
         facing: 0, mobile: true, rotatable: true, objective: true },
     ],
     protections: mode === 'corpse' ? [] : [{ sourceId: 'warder', targetId: 'collector', range: 2 }],
