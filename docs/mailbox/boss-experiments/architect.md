@@ -21,7 +21,7 @@ artifacts:
 corrections:
   - "P13: the draft omitted src/core/transition.ts, which owns the allowance check, the spend and the actor-accounting copy. Error code maneuver-used and RECORD_VERSION 1 kept; the import-UI criterion replaced by the replay CLI's explicit error."
   - "P14: self-Shelter needs damage.ts impact eligibility, not only legality, plus the same function in preview facts. The default Shelter amount lives in DEFAULT_DAMAGE_RULES and changes patrol Shelter too. The no-stacking code is illegal-target, after the identity check. The roaming-rotatable case moved to P16."
-  - "P15: computed that the drafted facing cadence lets a static formation dodge every primary in each phase (X-H1/X-H2); kept as written, with the lever recorded. Added missed consumers: the patrol-only forecast and patrolRules facts in preview.ts, transition.ts dispatch on patrolVersion, the hard-coded warder lookup in CombatScene, and token images keyed by entity ID."
+  - "P15: computed that the drafted facing cadence lets a static formation dodge every primary in each phase (X-H1/X-H2); kept as written, with the lever recorded. Added missed consumers: the patrol-only forecast and patrolRules facts in preview.ts, transition.ts dispatch on patrolVersion, the hard-coded warder lookup in CombatScene, and token images keyed by entity ID. Follow-up 2026-10-06: the user applied the lever; P15 amended and recomputed."
   - "P16: no version bump is needed, as argued in the plan. Living-only occupancy needs a corpse-sharing hit-test rule. The diagnostic encounter is a test-only fixture."
   - "P17: Warder, Censer and boss facings were unspecified (defaults 4, 0, 0). Computed the route: with both adds alive the boss oscillates (1,1)/(-1,2) and the ward blinks. The sweep is always dodgeable with one maneuver. The victory predicate must live in settleLifecycle because replay calls applyAbility directly."
   - "All five: added affected-file tables, protected paths, ordered checkpoints, enumerated test exceptions (P13 and P14 only; P15–P17 none), suites expected to pass unedited, bare verification, screenshot lists and a no-frozen-tuning criterion."
@@ -30,7 +30,7 @@ record_compatibility: "Old records are rejected with 'unsupported rules version'
 encounter_selection: "?play=patrol|crucible|collector, chosen per page load; header links keep placeholder=1; per-encounter preset selector; other play values open the lab; no new ?preview= value; diagnostic boss states only through intercepted tests/browser fixtures."
 sequencing: "P13 → P14 → P15 → P16 → P17. P13∥P14 may run on separate branches (disjoint source owners; shared README, abilities.test.ts, CombatScene.ts and the rf-contracts literal, all with disjoint hunks), integrated one after the other with re-verification. P16.C1 may overlap P15. Everything else is sequential, because of run-record.ts, CombatScene.ts, rounds.ts, state.ts, encounters.ts and preview.ts."
 open_questions:
-  - "Q1 Crucible cadence makes a static answer per phase (X-H1/X-H2). Default: as written (user decision 3). Lever: advance facing only on beat-B declarations. Provisional; the user may want to know before the round."
+  - "Q1 RESOLVED (user decision, 2026-10-06): lever applied. The Crucible facing advances only on beat-B declarations. Recomputed: no formation dodges every primary in either phase. See Follow-up: Q1 lever."
   - "Q2 Collector facings. Default: Warder 4, Censer 0, boss 0 initially. Provisional."
   - "Q3 Encounter routes and presets. Default: ?play= as above. Provisional."
   - "Q4 Emblems. Default: Crucible and Collector both use foundry-mechanism with distinct labels. Provisional."
@@ -39,6 +39,7 @@ open_questions:
   - "Q7 Phase-two comparison. Default: living boss with hp ≤ phaseTwoAt (30). Provisional."
   - "Q8 Corpse cells. Default: a living token draws on top and stays selectable. Provisional."
 verification:
+  - "Follow-up: recomputed the Crucible with the lever (disposable script in session scratch): no static dodger in phase one (16 announcements) or in phase two (entry at announcements 2–7 and the diagnostic start); zero-damage paths and their maneuver counts; the self-guard front still holds one Brood in all 72 cases."
   - "Recomputed every geometric claim with a disposable Python script in session scratch (not committed): formation angles, 72 centre-front cases, pulse/sector/fork recipients over 12 formations, cadence parity, edge-slot distances, route oscillation, Warder front coverage, sweep dodgeability, same-facing origin examples."
   - "Link and anchor check script over all changed docs: only unresolved link was this report before it was written."
   - "git diff --check over the commit: clean (see report body)."
@@ -108,4 +109,30 @@ No player walking, generic reach, cooldowns, extra abilities, shared engine, new
 
 ## Readiness
 
-Ready for implementation. P13 and P14 can be assigned now; P15–P17 follow in order. No blockers. Open questions Q1–Q8 have provisional defaults already applied. Q1 is worth relaying to the user before their round.
+Ready for implementation. P13 and P14 can be assigned now; P15–P17 follow in order. No blockers. Q1 is resolved by user decision (see the follow-up below); Q2–Q8 have provisional defaults already applied.
+
+## Follow-up: Q1 lever (2026-10-06)
+
+**Decision (user, relayed by the Coordinator, 2026-10-06):** apply the lever. The Crucible's facing advances only on beat-B (directional) declarations, so the safe orientation keeps shifting within a phase. Q1 is resolved.
+
+**Changes:**
+
+- [P15](../../plans/2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md):
+  - the authority list records the user decision;
+  - the facing rule now says beat A leaves the facing unchanged and beat B advances it one clockwise step from the current facing, including after a Crosswind turn;
+  - the phase boundary keeps the current facing;
+  - new acceptance criterion 8 asserts the cadence as a relation from controlled starting facings, not as copied absolute facings; the old criteria 8–9 become 9–10;
+  - X-H1/X-H2 are restated, and X-H2a and X-H5 are added;
+  - the review-correction entry is updated.
+- [P17 checklist](../../plans/2026-10-06-79371edf-poc-001-roaming-boss-and-adds.md#combined-manual-test-checklist-user-round-after-p17) items 7 and 9, and the "Next" line, no longer offer the lever.
+- The [plan index](../../plans/README.md#boss-experiments-p13p17) and the [brief's decision record](../../prototypes/poc-001-linked-formation.md#decision-record) record the follow-up decision.
+
+**Recomputed** with a disposable script over 12 formations and 6 facings:
+
+- **Cadence.** Without Crosswind, phase-one beat-B facings are 1, 2, 3, 4, 5, 0 at announcements 2, 4, 6, …. Their parity alternates. Because each formation holds one Brood in sectors `o`, `o+2` and `o+4`, every formation is hit by every other beat-B sector.
+- **Phase one.** No formation dodges every primary over 16 announcements; before the lever, Spread at an even orientation did.
+- **Phase two.** The fork alternates parity the same way. No formation dodges every phase-two primary, for phase entry at announcements 2–7 and for the diagnostic start; before the lever, one Compact parity did.
+- **Is it still dodgeable?** Yes, by reacting. Avoiding every primary needs Spread in phase one and Compact in phase two (one shape change per phase), plus a rotation or a Crosswind on the boss before each beat-B attack after the first, about every second round. From Compact 0, phase one's 12 announcements take 1 shape change and 5 rotations. A whole fight with phase two entered at announcements 3–6 takes 2 shape changes and 6–7 rotations over 14–17 rounds.
+- **The split allowance.** A zero-damage path never needs both categories in one round (X-H2a), so for the Crucible the split is a convenience.
+- **Crosswind.** Turning the boss shifts a declared sector or fork by one, which flips its parity and also shifts later facings (X-H5).
+- **Self-guard.** The front still holds exactly one Brood in all 72 cases; it now changes only on beat-B declarations.

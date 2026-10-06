@@ -184,7 +184,7 @@ Standing direction is unchanged: Darkest Dungeon rather than XCOM; the Brood nev
 
 The Architect's provisional choices are in the plans and the [index](../plans/README.md#boss-experiments-p13p17): encounter routes `?play=crucible` and `?play=collector`; old attempt records rejected rather than migrated; the Collector add facings. The Architect also computed findings for the user's next round:
 
-- With the drafted facing cadence, a static formation dodges every Crucible primary attack in each phase.
+- With the drafted facing cadence, a static formation dodged every Crucible primary attack in each phase. **Follow-up decision (user, 2026-10-06):** apply the Architect's lever, so the Crucible's facing advances only on beat-B (directional) declarations and the safe orientation keeps shifting within a phase. Recomputed: no formation dodges everything in either phase ([P15](../plans/2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md#balance-hypotheses-computed-for-the-manual-round)).
 - The Collector's ward blinks in and out of range on alternate rounds.
 - Its sweep can always be dodged with one maneuver.
 

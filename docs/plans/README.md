@@ -112,6 +112,7 @@ The Architect checked each draft against source on 2026-10-06 and made it execut
 
 - **User decisions:**
   - two boss encounters, one central and two-phase, one roaming with adds;
+  - the Crucible's facing advances only on beat-B declarations (2026-10-06, answering the Architect's Q1);
   - only enemies relocate;
   - rotation and shape change are not mutually exclusive;
   - a small, tactically useful kit;
@@ -120,7 +121,7 @@ The Architect checked each draft against source on 2026-10-06 and made it execut
   - one rotation plus one shape change per player phase, both refreshing every round;
   - Shelter 4 and self-target;
   - Impale 6 without bypass, needing one living partner;
-  - Crucible HP 60, phase two at 30 from the next declaration, and its beat table and facing cadence;
+  - Crucible HP 60, phase two at 30 from the next declaration, and its beat table;
   - the six-slot route and between-round timing;
   - Collector HP, damage and add composition.
 
@@ -141,7 +142,7 @@ The Architect recomputed every geometric claim with a disposable script outside 
 - Impale combined 6 damage with bypass while Gale also bypasses. P14 removes Impale's bypass before adding systems. Shelter is strengthened as a test, not declared balanced, and one casualty no longer disables Impale.
 - Every-round allowances could make evasion effortless. Do not restore the shared allowance or add cooldowns before the manual round observes that.
 - Computed results for the manual round:
-  - [X-H1–X-H4](2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md#balance-hypotheses-computed-for-the-manual-round): with the drafted cadence, a static formation dodges every Crucible primary in each phase. A one-line lever is recorded but not applied.
+  - [X-H1–X-H4](2026-10-06-6dcd120b-poc-001-two-phase-central-boss.md#balance-hypotheses-computed-for-the-manual-round): with the drafted cadence, a static formation dodged every Crucible primary in each phase. On 2026-10-06 the user applied the lever (the facing advances only on beat-B declarations); recomputed, no formation now dodges everything.
   - [R-H1–R-H5](2026-10-06-79371edf-poc-001-roaming-boss-and-adds.md#balance-hypotheses-computed-for-the-manual-round): the Collector's ward blinks in and out of range on alternate rounds, and its sweep is always dodgeable with one maneuver.
 
 ### Sequencing and parallelism
