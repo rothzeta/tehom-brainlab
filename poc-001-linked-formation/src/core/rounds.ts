@@ -2,6 +2,7 @@ import { PATROL_ORDER, PATROL_VERSION } from '../content/patrol';
 import type { PatrolState } from '../content/patrol';
 import type { CommandResult, ErrorCode, GameplayEvent } from './commands';
 import { applyAttack } from './damage';
+import { relocateEnemies } from './enemy-movement';
 import { ROSTER } from './formation';
 import { isIsolated, selectRecipients } from './intents';
 import type { Intention } from './intents';
@@ -98,6 +99,9 @@ export function endEncounterPhase<State extends CombatState>(state: State, expec
   next = { ...next, ...expired.state };
   events.push(...expired.events, { type: 'enemy-phase-ended', round: state.round });
   if (next.phase === 'enemy') {
+    const relocated = relocateEnemies(next);
+    next = relocated.state;
+    events.push(...relocated.events);
     const announcement = encounter.announce({ ...next, round: state.round + 1, phase: 'player',
       actedIds: [], rotationUsed: false, shapeChangeUsed: false });
     next = announcement.state;

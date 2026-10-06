@@ -60,7 +60,7 @@ Dependencies, configuration, scripts, and lockfile stay local. `node_modules/` a
 
 Use `{ shape: 'compact' | 'spread', orientation: 0 | 1 | 2 | 3 | 4 | 5 }`. Every caller supplies an explicit formation; this module chooses no default initial state. Positions are `{brood, cell: {q,r}}` in `[ugallu, girtablilu, pazuzu]` order. For orientation `o`, Compact uses `S[o]`, `S[(o+2)%6]`, `S[(o+4)%6]`; Spread uses T indices `2o+[0,4,8]`, modulo 12. Compact is a ring-1 triangle around the empty centre, every pair at distance 2. Spread occupies the ring-2 corners, every pair at distance 4. At orientation zero Compact is `(1,0), (-1,1), (0,-1)` in roster order; Spread is `(2,0), (-2,2), (0,-2)`. Each Spread cell is twice that Brood's Compact cell, so Expand moves each Brood one radial step and Contract reverses it. Both shapes retain distinct labelled states when their unlabelled cell sets coincide. Clockwise adds one orientation modulo six; anticlockwise subtracts one. Expansion and contraction preserve orientation and identity; applying either to its destination shape keeps that shape.
 
-`ENEMY_CELLS` is frozen, centre first then clockwise ring-2 edges: `(0,0), (1,1), (-1,2), (-2,1), (-1,-1), (1,-2), (2,-1)`. It is disjoint from the twelve cells used by Brood across all formations. Enemies occupy distinct cells from this table, so they never block maneuvers. The centre is reserved for a future boss.
+`ENEMY_CELLS` is frozen, centre first then clockwise ring-2 edges: `(0,0), (1,1), (-1,2), (-2,1), (-1,-1), (1,-2), (2,-1)`. It is disjoint from the twelve cells used by Brood across all formations. Living enemies occupy distinct cells from this table, so they never block maneuvers. The centre is reserved for a future boss.
 
 The experimental convention uses downward-positive screen vertical coordinates. A compatible projection is `(q + r/2, sqrt(3)*r/2)`; `(-r,q+r)` is one clockwise 60-degree turn. Pixel scale and origin belong to the future renderer. Distance is `max(abs(dq),abs(dr),abs(dq+dr))`. The fixed centre is `(0,0)`, radius two, with no translation or independent movement (plan Fixture and Settled choices; brief Formation rules).
 
@@ -353,7 +353,7 @@ P11 resolves its schema and evidence defaults explicitly:
 | Fixture ID: `healthy`, `wounded-ugallu`, `wounded-girtablilu` | P08 factories; the actual serialized initial state is authoritative, including explicit experimental overrides. |
 | Configuration: all patrol numbers, all ability damage numbers, both mitigation rule sets | P08 state's `patrolRules` and P07 `DEFAULT_ABILITY_RULES` at attempt start. Capturing both prevents later provisional default changes from altering replay. Semantic ability ownership/bypass rules remain covered by the rules version. |
 | Initial state; accepted command + expected/resulting revision + ordered events per step; final state + ordered event list | P11 required exact replay and P10 accepted-command boundary. Step events locate the first divergence; the final summary proves state and overall event order. Snapshots are detached copies. Object-key ordering is immaterial. |
-| Player command kinds only: maneuver, useAbility, endPhase | P10 controls; raw internal attack commands cannot be exported as player inputs. Each enemy requires a valid `cell` from `ENEMY_CELLS`, distinct from all other enemy cells. Unknown fields, malformed payloads and invalid numeric rules fail rather than being corrected. |
+| Player command kinds only: maneuver, useAbility, endPhase | P10 controls; raw internal attack commands cannot be exported as player inputs. Each enemy requires a valid `cell` from `ENEMY_CELLS`, distinct from other living enemy cells when the enemy is alive. Optional boolean `mobile` and `rotatable` traits are independent; fallen enemies keep their last cell and may share it. Unknown fields, malformed payloads and invalid numeric rules fail rather than being corrected. |
 | Filename `poc-001-attempt.json`, formatted UTF-8 JSON | P11 local export default; a fixed name carries no person identifier or timestamp. Rename downloads to preserve multiple attempts. |
 | Observations outside the record; no optional text fields, identities or wall-clock timestamps | P11 allows separately entered observations; the existing playtest template keeps observations, tester explanations and interpretation distinct without collecting personal data. |
 | Historical P11 gate **HOLD**; boss work authorized by user decision on 2026-10-06 | The user accepted P13–P17 and superseded P12. This lifts the boss-work restriction without turning the historical P11 finding into PASS. Automated verification establishes mechanics and reproducibility. |
@@ -430,3 +430,32 @@ placeholders, native exports and intercepted threshold/kill fixtures. Run it
 against the ordinary preview with `bun tests/browser-crucible.mjs CHROME OUTPUT
 [BASE_URL]` from this directory; the existing browser runner stays unchanged.
 These traces establish mechanics, not human judgments about balance or enjoyment.
+
+## Enemy relocation (P16)
+
+Only enemies explicitly marked `mobile: true` relocate. The shipped patrol and
+Crucible remain stationary; P17 consumes this capability. `ENEMY_ROUTE` derives
+the six clockwise edge slots from `ENEMY_CELLS`. A mover tries the next clockwise
+slot, then the immediately counterclockwise slot, then stays. Living enemies
+block destinations; fallen enemies retain their identity and last cell without
+reserving it. Movers run in enemy-array order and see earlier moves. An off-route
+enemy stays. These are provisional defaults.
+
+The shared end phase resolves committed attacks, expires Shelters and emits
+`enemy-phase-ended`. Nonterminal combat then relocates survivors, resets both
+maneuver allowances and announces fresh intentions from the new tiles. Moves
+retain facing; Crosswind controls facing independently. Relocation never changes
+Brood coordinates or maneuver legality. `enemy-moved` and `enemy-move-blocked`
+events carry the round just ended, before `round-started`. Terminal combat emits
+no movement.
+
+End-phase previews use the real transition and show moved enemies' destination
+ghosts. Forecasts include movement events. A living token draws above a corpse
+and remains selectable at a shared cell. Records accept living-only distinctness
+and the optional boolean trait without a version bump: records accepted before
+P16 have no movement meaning and replay identically. New mobile records require
+a P16-or-later build.
+
+The diagnostic encounter lives only in `tests/browser/repositioning-fixtures.ts`,
+served by the intercepted additive `tests/browser-repositioning.mjs` harness.
+It adds no product route.

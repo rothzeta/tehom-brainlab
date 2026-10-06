@@ -178,6 +178,8 @@ export class CombatScene extends Phaser.Scene {
       button.setAttribute('aria-label', `${title(id)}, HP ${entity.hp}/${entity.maxHp}${enemy ? `, facing ${enemy.facing}` : ''}`);
       button.setAttribute('aria-pressed', String(this.actor === id || this.target === id));
       button.dataset.fallen = String(entity.hp <= 0);
+      // A living enemy can reuse a corpse's slot and must receive the pointer hit.
+      button.style.zIndex = entity.hp > 0 ? '1' : '0';
     }
     const controlsKey = JSON.stringify([state.revision, locked, this.actor, this.ability]);
     if (controlsKey !== this.controlsKey) {
@@ -254,6 +256,8 @@ export class CombatScene extends Phaser.Scene {
   private eventText(event: GameplayEvent): string {
     if (event.type === 'damage-applied') return `${title(event.targetId)}: HP ${event.hpBefore} → ${event.hpAfter} (${event.damage} damage; protection −${event.directionalReduction}, Shelter −${event.shelterReduction}).`;
     if (event.type === 'facing-changed') return `${title(event.sourceId)}: facing ${event.before} → ${event.after}.`;
+    if (event.type === 'enemy-moved') return `${title(event.sourceId)}: (${event.from.q},${event.from.r}) → (${event.to.q},${event.to.r}) between rounds.`;
+    if (event.type === 'enemy-move-blocked') return `${title(event.sourceId)} stays at (${event.cell.q},${event.cell.r}): ${event.reason}.`;
     if (event.type === 'attack-settled') return `${title(event.sourceId)} attack resolved.`;
     if (event.type === 'action-applied') return `${title(event.actorId)} used ${title(event.abilityId)} on ${title(event.targetId)}.`;
     return event.type.split('-').join(' ');
@@ -273,16 +277,29 @@ export class CombatScene extends Phaser.Scene {
         lines.push(`Protection gained: ${projection.protectionGained.map(pair).join('; ') || 'none'}; lost: ${projection.protectionLost.map(pair).join('; ') || 'none'}.`);
         lines.push(`Threats: ${projection.after.threats.map(entry => `${entry.intention.sourceId}: ${entry.intention.kind === 'fixed-area' ? 'fixed cells' : 'follows creature'} ${entry.cells.map(cell => `(${cell.q},${cell.r})`).join(',')} → ${entry.recipientIds.join(',') || entry.reason}`).join('; ')}.`);
       }
-      lines.push(...projection.explanations.filter(event => event.type === 'damage-applied' || event.type === 'facing-changed').map(event => this.eventText(event)));
+      lines.push(...projection.explanations.filter(event => event.type === 'damage-applied' || event.type === 'facing-changed'
+        || event.type === 'enemy-moved' || event.type === 'enemy-move-blocked').map(event => this.eventText(event)));
       const forecast = pending.forecast;
       if (forecast.kind !== 'not-applicable') lines.push(forecast.kind === 'transition' && forecast.ok ? `${forecast.condition}: ${hpText(forecast.state as EncounterState)} · ${forecast.state.phase}. Remaining player choices are excluded.` : `${forecast.condition}: ${forecast.kind === 'transition' && !forecast.ok ? `unavailable (${forecast.error.code})` : forecast.kind}.`);
     } else if (pending) lines.push(`Unavailable: ${pending.error.code}.`);
     this.el('projection').replaceChildren(...lines.map(line => Object.assign(document.createElement('p'), { textContent: line })));
-    this.el('ghosts').replaceChildren(...(pending?.ok && pending.projection.after.available ? pending.projection.after.positions.map(position => {
+    const ghosts = pending?.ok && pending.projection.after.available ? pending.projection.after.positions.map(position => {
       const ghost = document.createElement('span'); ghost.className = 'ghost'; ghost.dataset.brood = position.brood;
       ghost.dataset.q = String(position.cell.q); ghost.dataset.r = String(position.cell.r);
       const pixel = projectHex(position.cell, PROJECTION); ghost.style.left = `${pixel.x}px`; ghost.style.top = `${pixel.y}px`; return ghost;
-    }) : []));
+    }) : [];
+    if (pending?.ok && pending.command.kind === 'endPhase') {
+      for (const enemy of (pending.state as EncounterState).enemies.filter(enemy => enemy.hp > 0)) {
+        const previous = this.session.state.enemies.find(entry => entry.id === enemy.id)!;
+        if (previous.cell.q === enemy.cell.q && previous.cell.r === enemy.cell.r) continue;
+        const ghost = document.createElement('span'); ghost.className = 'ghost'; ghost.dataset.enemy = enemy.id;
+        ghost.dataset.q = String(enemy.cell.q); ghost.dataset.r = String(enemy.cell.r);
+        const label = document.createElement('span'); label.textContent = title(enemy.id); ghost.append(label);
+        const pixel = projectHex(enemy.cell, PROJECTION); ghost.style.left = `${pixel.x}px`; ghost.style.top = `${pixel.y}px`;
+        ghosts.push(ghost);
+      }
+    }
+    this.el('ghosts').replaceChildren(...ghosts);
   }
   private draw(facts: PreviewFacts): void {
     const graphics = this.graphics; graphics.clear(); this.el('board-stage').dataset.cells = String(boardCells().length);

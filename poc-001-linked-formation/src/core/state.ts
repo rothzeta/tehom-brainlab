@@ -28,6 +28,8 @@ export interface GameState {
 
 /** P06 combat data composes P03 snapshots and P05 selector inputs. */
 export interface CombatEnemy extends EnemyState {
+  /** Only explicitly mobile enemies relocate between rounds. */
+  readonly mobile?: boolean;
   /** Existing P05 enemies rotate by default; false explicitly disables Crosswind. */
   readonly rotatable?: boolean;
   readonly maxHp: number;

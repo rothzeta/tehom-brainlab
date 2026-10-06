@@ -111,19 +111,20 @@ function state(value: unknown, path: string, rulesVersion = RUN_RULES_VERSION): 
   const enemies = value.enemies as Record<string, unknown>[];
   for (const entity of enemies) {
     requireValue(object(entity), `${path}.enemy`);
-    const keys = ['id', 'hp', 'maxHp', 'cell', 'facing', ...(Object.hasOwn(entity, 'rotatable') ? ['rotatable'] : [])];
+    const keys = ['id', 'hp', 'maxHp', 'cell', 'facing',
+      ...['rotatable', 'mobile'].filter(key => Object.hasOwn(entity, key))];
     fields(entity, keys, `${path}.enemy`);
     fields(entity.cell, ['q', 'r'], `${path}.enemy cell`);
     const enemyCell = entity.cell;
     try { validateHex(enemyCell); } catch { fail(`malformed ${path}.enemy cell`); }
     requireValue(ENEMY_CELLS.some(cell => cell.q === enemyCell.q && cell.r === enemyCell.r), `${path}.enemy cell placement`);
     requireValue(id(entity.id) && integer(entity.facing) && entity.facing <= 5
-      && (!Object.hasOwn(entity, 'rotatable') || typeof entity.rotatable === 'boolean'), `${path}.enemy identity/facing`);
+      && ['rotatable', 'mobile'].every(key => !Object.hasOwn(entity, key) || typeof entity[key] === 'boolean'), `${path}.enemy identity/facing`);
   }
   if (boss) requireValue(enemies.length === 1 && enemies[0]!.id === 'crucible'
     && (enemies[0]!.cell as Hex).q === 0 && (enemies[0]!.cell as Hex).r === 0, `${path}.anchored boss`);
-  const enemyCells = enemies.map(entity => entity.cell as Hex);
-  requireValue(new Set(enemyCells.map(cell => `${cell.q},${cell.r}`)).size === enemies.length,
+  const enemyCells = enemies.filter(entity => (entity.hp as number) > 0).map(entity => entity.cell as Hex);
+  requireValue(new Set(enemyCells.map(cell => `${cell.q},${cell.r}`)).size === enemyCells.length,
     `${path}.enemy cells distinct`);
   const entities = [...brood, ...enemies];
   for (const entity of entities) requireValue(integer(entity.hp) && integer(entity.maxHp)
