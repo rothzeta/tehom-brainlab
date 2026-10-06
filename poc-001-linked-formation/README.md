@@ -1,6 +1,6 @@
 # POC 001 — Linked formation
 
-**Status: Playable patrol at `/?play=patrol` and the Crucible at `/?play=crucible`, alongside the default formation lab. P01–P03 accepted and locally delivered. P04 formation lab implemented, independently reviewed (no blocking findings; optional O1 open), accepted and locally delivered. [Evidence](../docs/mailbox/p04-formation-lab/implementer.md), [integration](../docs/mailbox/p04-formation-lab/integration.md), [review](../docs/mailbox/p04-formation-lab/reviewer.md). P05–P11 and RF are implemented, independently reviewed (no blocking findings), accepted and locally delivered. [RF implementation](../docs/mailbox/ring-formation/implementer.md), [fix](../docs/mailbox/ring-formation/fix.md), [review](../docs/mailbox/ring-formation/reviewer.md).**
+**Status: Playable patrol at `/?play=patrol`, the Crucible at `/?play=crucible` and the Collector at `/?play=collector`, alongside the default formation lab. P01–P03 accepted and locally delivered. P04 formation lab implemented, independently reviewed (no blocking findings; optional O1 open), accepted and locally delivered. [Evidence](../docs/mailbox/p04-formation-lab/implementer.md), [integration](../docs/mailbox/p04-formation-lab/integration.md), [review](../docs/mailbox/p04-formation-lab/reviewer.md). P05–P11 and RF are implemented, independently reviewed (no blocking findings), accepted and locally delivered. [RF implementation](../docs/mailbox/ring-formation/implementer.md), [fix](../docs/mailbox/ring-formation/fix.md), [review](../docs/mailbox/ring-formation/reviewer.md).**
 
 Test whether rotating, expanding, and contracting three linked Brood creates interesting ordinary combat decisions. The [design brief](../docs/prototypes/poc-001-linked-formation.md) and [direction ADR](../docs/adr/0004-repository-and-poc-direction.md) describe the experiment. P01 supplies the browser harness, P02 the pure geometry, and P03 the command boundary. P04 renders the inspection and maneuver lab. P05–P09 supply combat rules and previews, P10 the playable patrol, and P11 local attempt export and replay.
 
@@ -108,7 +108,7 @@ P05 supplies pure headless selectors in `src/core/intents.ts` and tile-based fro
 
 `turnEnemyClockwise(enemy,intentions)` returns `{ok:true,enemy,intentions,events}` with facing advanced modulo six and only that enemy's turnable fixed-area cells rotated about the source tile `E` by `E + turn(c − E)`, where the P02 axial transform is `turn(q,r) = (-r,q+r)`. Marks, other sources' areas, and non-turnable areas stay unchanged. Events are one `{type:'facing-changed',sourceId,before,after}`, followed by `{type:'intention-turned',intentionId,sourceId,beforeCells,afterCells}` for each changed declaration in input order. A fallen enemy returns `{ok:false,reason:'source-fallen',enemy,intentions,events:[]}`. `turnCellsClockwise(cells)` exports the centre transform; `turnCellsAboutClockwise(cells,origin)` exports the pivoted transform. Both preserve order. Turned areas are not clipped; off-board cells have no recipients and are not drawn. P07 owns Crosswind legality and action spending.
 
-`selectProtection(context,{actorId,targetId,bypassProtection},relations)` takes explicit `{sourceId,targetId}` Warder relations. Only living attackers, living protected enemies, and living sources qualify. The attacker's current cell, on either ring 1 or 2, must lie in the source's own `frontCells(source.cell,source.facing)`. Contact reach needs no enemy adjacency. There is no generic targeting-reach rule; ability-specific reach is deferred to later ability design. The result is `{protected,sourceIds,reason,checks}`; protecting sources are unique and sorted by ID, with no mitigation amount/stacking policy selected here. Global reasons are `actor-unavailable`, `target-unavailable`, `bypassed`, `protected`, or `unprotected`; per-source checks explain `source-missing`, `source-fallen`, `outside-sector`, or `protected`. Bypass ignores directional protection. P06/P07 own mitigation tuning.
+`selectProtection(context,{actorId,targetId,bypassProtection},relations)` takes explicit `{sourceId,targetId}` Warder relations. Only living attackers, living protected enemies, and living sources qualify. The attacker's current cell, on either ring 1 or 2, must lie in the source's own `frontCells(source.cell,source.facing)`. Contact reach needs no enemy adjacency. There is no generic targeting-reach rule; ability-specific reach is deferred to later ability design. The result is `{protected,sourceIds,reason,checks}`; protecting sources are unique and sorted by ID, with no mitigation amount/stacking policy selected here. Global reasons are `actor-unavailable`, `target-unavailable`, `bypassed`, `protected`, or `unprotected`; per-source checks explain `source-missing`, `source-fallen`, `outside-sector`, or `protected`. An optional nonnegative integer `range` measures source-to-ward hex distance; outside it the relation remains present and the per-source reason is `out-of-range`. Missing range preserves unlimited support. Bypass ignores directional protection. P06/P07 own mitigation tuning.
 
 `activeLinks(context,closeThreshold)` returns P02 links with `fromId`/`toId`, restricted to living endpoints, in roster-pair order. Close and stretched links both remain queryable; only Close links grant Close eligibility. `isCloseLinked(context,fromId,toId,closeThreshold)` is symmetric and false for self-links/fallen/missing endpoints. `isIsolated(context,broodId,closeThreshold)` means a living Brood has no other living Close neighbor; fallen/missing Brood return false. All three accept P02's explicit nonnegative safe integer threshold and default to `CLOSE_THRESHOLD = 2`.
 
@@ -128,7 +128,7 @@ All mitigation uses one pre-hit snapshot. P05 directional protection reduces raw
 
 Ordered events are `attack-settled` (identity/source/new revision), `damage-applied` per recipient (raw/reductions/final damage and before/after HP), `shelter-consumed`, then lifecycle events: `fallen`, `protection-removed`, `shelter-removed`, `intention-cancelled`, and `combat-ended`. Recipients, Shelter IDs, Fallen IDs and intention IDs use code-point lexical order; protection removals use source then target ID. Exact readonly event fields are exported as `DamageEvent`/`LifecycleEvent`, and are included in P03 `GameplayEvent`. Entity/declaration arrays retain their input order. Recipient iteration order and serialized replay yield identical settlement/events.
 
-`settleLifecycle(before,after)` is the trusted batch seam: it compares positive-to-zero HP transitions, removes effects with unavailable sources/targets, and uses P05 cancellation reasons for intentions. It preserves Brood identities, labelled slots and formation. P05 living selectors and P03 actor guards exclude Fallen entities; P02's geometric links still identify their inert slots. All Brood fallen yields `defeat`; otherwise all enemies fallen yields `victory`; otherwise combat continues. Defeat wins the synthetic all-dead case. Repeated settlement against the resulting snapshot emits no duplicate deaths or cancellations. This helper does not increment revision; the attack/ability caller owns accounting. Terminal command rejection preserves P03's existing error precedence (unsupported `useAbility`/`endPhase` remain explicit).
+`settleLifecycle(before,after)` is the trusted batch seam: it compares positive-to-zero HP transitions, removes effects with unavailable sources/targets, and uses P05 cancellation reasons for intentions. It preserves Brood identities, labelled slots and formation. P05 living selectors and P03 actor guards exclude Fallen entities; P02's geometric links still identify their inert slots. All Brood fallen yields `defeat`; otherwise all objective enemies fallen yields `victory` (enemies are objectives unless `objective: false`); otherwise combat continues. Defeat wins the synthetic all-dead case. Repeated settlement against the resulting snapshot emits no duplicate deaths or cancellations. This helper does not increment revision; the attack/ability caller owns accounting. Terminal command rejection preserves P03's existing error precedence (unsupported `useAbility`/`endPhase` remain explicit).
 
 `expireShelters(state)` is P08's explicit end-of-enemy-phase helper. It removes all remaining Shelters, emits `shelter-removed` events with reason `expired`, and advances revision once if any exist. A repeated call returns the same snapshot with no events or revision change. The helper leaves round, phase and budgets to P08 and does not enforce scheduling itself. All P06 functions accept deeply frozen inputs without mutation and expose serializable results. Run `just poc-001-test tests/damage.test.ts tests/intents.test.ts tests/commands.test.ts` for the focused contracts.
 
@@ -322,7 +322,7 @@ a human playtest.
 
 ## Reproducible attempts (P11)
 
-On `?play=patrol` or `?play=crucible`, **Export attempt (JSON)** downloads the current attempt locally,
+On `?play=patrol`, `?play=crucible` or `?play=collector`, **Export attempt (JSON)** downloads the current attempt locally,
 including an empty, partial or terminal attempt. Restart and preset changes begin
 a fresh record. Only commands accepted by the P10 adapter are appended; selections,
 previews, unavailable controls, stale confirmations and feedback-lock duplicates
@@ -459,3 +459,51 @@ a P16-or-later build.
 The diagnostic encounter lives only in `tests/browser/repositioning-fixtures.ts`,
 served by the intercepted additive `tests/browser-repositioning.mjs` harness.
 It adds no product route.
+
+
+## The Collector (P17)
+
+Open `/?play=collector` for an off-centre roaming boss and two stationary adds,
+with healthy and wounded Brood presets. The existing Foundry Mechanism emblem
+labels the Collector. All three enemies start present; there are no spawns.
+
+The Warder marks the first living Brood and protects the Collector while their
+hex distance is within its configured support range. Its front still determines
+which attackers meet protection. The readout shows facing, support distance and
+`in range` or `out-of-range`; killing the Warder removes the relation. This
+ability-specific support range does not limit player attack targets.
+
+The Censer's round-indexed living mark produces a splash. The Collector chooses
+the facing that covers the most living Brood from its actual tile; ties retain
+the current facing, then scan clockwise. Its local sweep stays committed through
+the response. Crosswind turns the stored sweep about that tile, or turns the
+Warder; neither ability relocates enemies. Reliable attacks retain broad access.
+
+End phase resolves Warder, Censer, then the boss. The shared P16 relocation moves
+only the living boss before the next declaration. Its destination ghost and fresh
+local threat appear in End-phase preview. At provisional defaults, the living
+Warder blocks the route so the ward alternates on and off; killing it frees its
+corpse tile. Both maneuver allowances reset each round.
+
+Boss death wins immediately in shared lifecycle settlement. Surviving adds retain
+HP and become disabled, without invented death events or further attacks.
+Killing both adds leaves the objective boss fight running.
+
+`createCollector(preset?, rules?)` captures HP, support range, damage and mitigation
+in `collectorRules`; exported layout and resolution order live in
+`src/content/collector.ts`. These are provisional experiment inputs. Collector
+records use `poc-001-rules-v3/collector-v1/p14-v1` and configuration
+`{ collectorRules, abilityRules }`; optional enemy `objective` and protection
+`range` are admitted only by this codec. Patrol and Crucible codecs keep their
+meaning and version strings. Live commands, previews and default records use the
+boss encounter's configured directional reduction.
+
+Run `just poc-001-test tests/collector.test.ts` for controlled contract traces.
+The additive browser harness runs separately from the unchanged standard runner:
+
+```sh
+cd poc-001-linked-formation
+bun tests/browser-collector.mjs /path/to/chrome /tmp/collector-browser http://localhost:4173/
+```
+
+The combined user round is in the [P17 plan](../docs/plans/2026-10-06-79371edf-poc-001-roaming-boss-and-adds.md#combined-manual-test-checklist-user-round-after-p17).

@@ -13,10 +13,10 @@ import type { PatrolState } from '../content/patrol';
 import type { EncounterState } from './encounters';
 import { encounterFor } from './encounters';
 
-/** Crucible owns its self-guard amount; other P14 ability rules retain their defaults. */
+/** Boss encounters own their guard amount; other P14 ability rules retain their defaults. */
 export function commandAbilityRules(state: GameState): AbilityRules {
   const encounter = encounterFor(state);
-  return encounter?.id === 'crucible' ? { ...DEFAULT_ABILITY_RULES,
+  return encounter?.id === 'crucible' || encounter?.id === 'collector' ? { ...DEFAULT_ABILITY_RULES,
     damageRules: { ...DEFAULT_ABILITY_RULES.damageRules,
       directionalReduction: encounter.rules(state as EncounterState).damageRules.directionalReduction } }
     : DEFAULT_ABILITY_RULES;

@@ -28,6 +28,8 @@ export interface GameState {
 
 /** P06 combat data composes P03 snapshots and P05 selector inputs. */
 export interface CombatEnemy extends EnemyState {
+  /** Enemies are victory objectives unless explicitly excluded. */
+  readonly objective?: boolean;
   /** Only explicitly mobile enemies relocate between rounds. */
   readonly mobile?: boolean;
   /** Existing P05 enemies rotate by default; false explicitly disables Crosswind. */

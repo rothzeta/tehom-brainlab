@@ -119,6 +119,8 @@ export function isIsolated(context: IntentContext, broodId: string, closeThresho
 export interface ProtectionRelation {
   readonly sourceId: string;
   readonly targetId: string;
+  /** Ability-specific source-to-ward distance; absent means unlimited support. */
+  readonly range?: number;
 }
 
 export interface ProtectionSelection {
@@ -128,7 +130,7 @@ export interface ProtectionSelection {
   readonly reason: 'actor-unavailable' | 'target-unavailable' | 'bypassed' | 'protected' | 'unprotected';
   readonly checks: readonly {
     readonly sourceId: string;
-    readonly reason: 'source-missing' | 'source-fallen' | 'outside-sector' | 'protected';
+    readonly reason: 'source-missing' | 'source-fallen' | 'out-of-range' | 'outside-sector' | 'protected';
   }[];
 }
 
@@ -138,6 +140,10 @@ export function selectProtection(
   attack: { readonly actorId: string; readonly targetId: string; readonly bypassProtection: boolean },
   relations: readonly ProtectionRelation[],
 ): ProtectionSelection {
+  if (relations.some(relation => relation.range !== undefined
+    && (!Number.isSafeInteger(relation.range) || relation.range < 0))) {
+    throw new RangeError('Protection range must be a nonnegative safe integer');
+  }
   const empty = (reason: ProtectionSelection['reason']): ProtectionSelection =>
     ({ protected: false, sourceIds: [], reason, checks: [] });
   const actor = livingPositions(context).find(({ id }) => id === attack.actorId);
@@ -152,6 +158,11 @@ export function selectProtection(
     const source = context.enemies.find(({ id }) => id === sourceId);
     if (!source) return { sourceId, reason: 'source-missing' };
     if (source.hp <= 0) return { sourceId, reason: 'source-fallen' };
+    const target = context.enemies.find(enemy => enemy.id === attack.targetId)!;
+    if (!relations.some(relation => relation.sourceId === sourceId && relation.targetId === target.id
+      && (relation.range === undefined || hexDistance(source.cell, target.cell) <= relation.range))) {
+      return { sourceId, reason: 'out-of-range' };
+    }
     return { sourceId, reason: frontCells(source.cell, source.facing).some((cell) => sameCell(cell, actor.cell))
       ? 'protected' : 'outside-sector' };
   });

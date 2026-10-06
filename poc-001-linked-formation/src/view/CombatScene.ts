@@ -1,3 +1,5 @@
+import type { CollectorPreset, CollectorState } from '../content/collector';
+import { hexDistance } from '../core/hex';
 import { ENCOUNTERS, EMBLEMS, encounterFor } from '../core/encounters';
 import type { EncounterId, EncounterPreset, EncounterState } from '../core/encounters';
 import { phaseTwoPending } from '../content/crucible';
@@ -65,7 +67,8 @@ export class CombatScene extends Phaser.Scene {
   private maneuvers = new Map<string, HTMLButtonElement>();
   constructor(factory?: typeof createPatrol);
   constructor(factory: (preset: CruciblePreset) => CrucibleState, encounterId: 'crucible');
-  constructor(factory: typeof createPatrol | ((preset: CruciblePreset) => CrucibleState) = createPatrol, encounterId: EncounterId = 'patrol') {
+  constructor(factory: (preset: CollectorPreset) => CollectorState, encounterId: 'collector');
+  constructor(factory: typeof createPatrol | ((preset: CruciblePreset) => CrucibleState) | ((preset: CollectorPreset) => CollectorState) = createPatrol, encounterId: EncounterId = 'patrol') {
     super('patrol');
     this.session = new PatrolSession<EncounterState, EncounterPreset>(() => this.render(), 400,
       factory as (preset: EncounterPreset) => EncounterState, ENCOUNTERS[encounterId].presets[0].id, encounterId);
@@ -178,6 +181,10 @@ export class CombatScene extends Phaser.Scene {
       button.setAttribute('aria-label', `${title(id)}, HP ${entity.hp}/${entity.maxHp}${enemy ? `, facing ${enemy.facing}` : ''}`);
       button.setAttribute('aria-pressed', String(this.actor === id || this.target === id));
       button.dataset.fallen = String(entity.hp <= 0);
+      if ('collectorVersion' in state && enemy) {
+        button.disabled = entity.hp <= 0 || state.phase === 'victory' || state.phase === 'defeat';
+        button.dataset.disabled = String(button.disabled);
+      }
       // A living enemy can reuse a corpse's slot and must receive the pointer hit.
       button.style.zIndex = entity.hp > 0 ? '1' : '0';
     }
@@ -251,7 +258,15 @@ export class CombatScene extends Phaser.Scene {
     }));
     const state = this.session.state;
     const sources = [...new Set(state.protections.map(entry => entry.sourceId))];
-    this.el('protection').textContent = `Protection: ${facts.protections.filter(entry => entry.protected).map(pair).join('; ') || 'none'}${sources.map(id => ` · ${title(id)} facing ${state.enemies.find(enemy => enemy.id === id)!.facing}`).join('')}`;
+    this.el('protection').textContent = `Protection: ${facts.protections.filter(entry => entry.protected).map(pair).join('; ') || 'none'}${sources.map(id => ` · ${title(id)} facing ${state.enemies.find(enemy => enemy.id === id)!.facing}`).join('')}${this.wardText(state)}`;
+  }
+  private wardText(state: EncounterState): string {
+    return state.protections.filter(relation => relation.range !== undefined).map(relation => {
+      const source = state.enemies.find(enemy => enemy.id === relation.sourceId)!;
+      const target = state.enemies.find(enemy => enemy.id === relation.targetId)!;
+      const distance = hexDistance(source.cell, target.cell);
+      return ` · ${title(source.id)} → ${title(target.id)} support: ${distance <= relation.range! ? 'in range' : 'out-of-range'} (${distance}/${relation.range})`;
+    }).join('');
   }
   private eventText(event: GameplayEvent): string {
     if (event.type === 'damage-applied') return `${title(event.targetId)}: HP ${event.hpBefore} → ${event.hpAfter} (${event.damage} damage; protection −${event.directionalReduction}, Shelter −${event.shelterReduction}).`;
@@ -271,6 +286,7 @@ export class CombatScene extends Phaser.Scene {
         : command.kind === 'maneuver' ? `Pending: ${MANEUVER_LABELS[command.maneuver]}.` : 'Pending: End phase.');
       const state = pending.state as EncounterState, projection = pending.projection;
       lines.push(`Immediate: ${hpText(state)} · ${state.phase}.`);
+      if ('collectorVersion' in state) lines.push(`Destination ward${this.wardText(state) || ': none'}.`);
       if (projection.after.available) {
         lines.push(`Destination links: ${projection.after.links.map(link => `${link.from.brood} ↔ ${link.to.brood} ${link.state}`).join('; ')}.`);
         lines.push(`Shelter: ${projection.after.shelters.map(entry => `${entry.sourceId} → ${entry.targetId}: ${entry.eligible ? 'eligible' : 'Close link lost'}`).join('; ') || 'none'}.`);

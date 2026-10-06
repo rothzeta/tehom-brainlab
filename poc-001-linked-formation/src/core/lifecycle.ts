@@ -48,7 +48,7 @@ export function settleLifecycle(before: CombatState, after: CombatState): Lifecy
   }
   // Empty living sets count as fallen. Defeat takes precedence in an all-dead batch.
   const phase = after.brood.every(({ hp, owner }) => owner !== 'player' || hp <= 0) ? 'defeat'
-    : after.enemies.every(({ hp }) => hp <= 0) ? 'victory' : after.phase;
+    : after.enemies.every(({ hp, objective }) => objective === false || hp <= 0) ? 'victory' : after.phase;
   if (phase !== after.phase && (phase === 'victory' || phase === 'defeat')) {
     events.push({ type: 'combat-ended', outcome: phase });
   }

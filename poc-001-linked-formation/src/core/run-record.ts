@@ -1,3 +1,5 @@
+import { COLLECTOR_VERSION, validCollectorRules } from '../content/collector';
+import type { CollectorRules, CollectorState } from '../content/collector';
 import { CRUCIBLE_VERSION, validCrucibleRules } from '../content/crucible';
 import type { CrucibleRules } from '../content/crucible';
 import { ENCOUNTERS, encounterFor } from './encounters';
@@ -17,15 +19,16 @@ export const RECORD_VERSION = 1;
 // Bump for any semantic change to geometry, legality, resolution or event ordering.
 export const RUN_RULES_VERSION = `poc-001-rules-v3/${PATROL_VERSION}/${BROOD_RULES_VERSION}`;
 export const CRUCIBLE_RUN_RULES_VERSION = `poc-001-rules-v3/${CRUCIBLE_VERSION}/${BROOD_RULES_VERSION}`;
+export const COLLECTOR_RUN_RULES_VERSION = `poc-001-rules-v3/${COLLECTOR_VERSION}/${BROOD_RULES_VERSION}`;
 export const PROTOTYPE_ID = 'poc-001-linked-formation';
 export type RecordedCommand = Exclude<Command, { kind: 'attack' }>;
 export interface RunRecord<State extends EncounterState = PatrolState> {
   readonly recordVersion: typeof RECORD_VERSION;
   readonly prototypeId: typeof PROTOTYPE_ID;
   readonly buildRevision: string; // exact commit or the explicit literal 'unknown'
-  readonly rulesVersion: typeof RUN_RULES_VERSION | typeof CRUCIBLE_RUN_RULES_VERSION;
+  readonly rulesVersion: typeof RUN_RULES_VERSION | typeof CRUCIBLE_RUN_RULES_VERSION | typeof COLLECTOR_RUN_RULES_VERSION;
   readonly fixtureId: EncounterPreset;
-  readonly configuration: (State extends PatrolState ? { readonly patrolRules: PatrolState['patrolRules'] } : { readonly crucibleRules: CrucibleRules }) & { readonly abilityRules: AbilityRules };
+  readonly configuration: (State extends PatrolState ? { readonly patrolRules: PatrolState['patrolRules'] } : State extends CollectorState ? { readonly collectorRules: CollectorRules } : { readonly crucibleRules: CrucibleRules }) & { readonly abilityRules: AbilityRules };
   readonly initialState: State;
   readonly acceptedCommands: readonly { readonly command: RecordedCommand; readonly revision: number;
     readonly events: readonly GameplayEvent[] }[];
@@ -70,6 +73,12 @@ function crucibleRules(value: unknown, path: string): void {
   }
   requireValue(validCrucibleRules(value as unknown as CrucibleRules), path);
 }
+function collectorRules(value: unknown, path: string): void {
+  fields(value, ['bossHp', 'warderHp', 'censerHp', 'wardRange', 'warderDamage', 'censerDamage',
+    'sweepDamage', 'splashRadius', 'closeThreshold', 'damageRules'], path);
+  damageRules(value.damageRules, `${path}.damageRules`);
+  requireValue(validCollectorRules(value as unknown as CollectorRules), path);
+}
 function codec(version: string) {
   return Object.values(ENCOUNTERS).find(encounter => version === `poc-001-rules-v3/${encounter.codec.version}/${BROOD_RULES_VERSION}`);
 }
@@ -83,8 +92,9 @@ function strings(value: unknown, path: string): asserts value is string[] {
 }
 function state(value: unknown, path: string, rulesVersion = RUN_RULES_VERSION): asserts value is EncounterState {
   const boss = rulesVersion === CRUCIBLE_RUN_RULES_VERSION;
+  const collector = rulesVersion === COLLECTOR_RUN_RULES_VERSION;
   fields(value, ['revision', 'round', 'phase', 'formation', 'brood', 'actedIds', 'rotationUsed', 'shapeChangeUsed', 'intentions',
-    ...(boss ? ['crucibleVersion', 'crucibleRules', 'bossPhase', 'beat'] : ['patrolVersion', 'patrolRules']), 'enemies', 'protections', 'shelters', 'resolvedAttackIds', 'declaredIntentions'], path);
+    ...(boss ? ['crucibleVersion', 'crucibleRules', 'bossPhase', 'beat'] : collector ? ['collectorVersion', 'collectorRules'] : ['patrolVersion', 'patrolRules']), 'enemies', 'protections', 'shelters', 'resolvedAttackIds', 'declaredIntentions'], path);
   requireValue(integer(value.revision) && integer(value.round) && value.round > 0, `${path}.revision/round`);
   requireValue(['player', 'enemy', 'victory', 'defeat'].includes(value.phase as string), `${path}.phase`);
   fields(value.formation, ['shape', 'orientation'], `${path}.formation`);
@@ -95,6 +105,9 @@ function state(value: unknown, path: string, rulesVersion = RUN_RULES_VERSION): 
     requireValue(value.crucibleVersion === CRUCIBLE_VERSION, `${path}.crucibleVersion`);
     requireValue([1, 2].includes(value.bossPhase as number) && ['A', 'B'].includes(value.beat as string), `${path}.bossPhase/beat`);
     crucibleRules(value.crucibleRules, `${path}.crucibleRules`);
+  } else if (collector) {
+    requireValue(value.collectorVersion === COLLECTOR_VERSION, `${path}.collectorVersion`);
+    collectorRules(value.collectorRules, `${path}.collectorRules`);
   } else {
     requireValue(value.patrolVersion === PATROL_VERSION, `${path}.patrolVersion`);
     patrolRules(value.patrolRules, `${path}.patrolRules`);
@@ -112,14 +125,14 @@ function state(value: unknown, path: string, rulesVersion = RUN_RULES_VERSION): 
   for (const entity of enemies) {
     requireValue(object(entity), `${path}.enemy`);
     const keys = ['id', 'hp', 'maxHp', 'cell', 'facing',
-      ...['rotatable', 'mobile'].filter(key => Object.hasOwn(entity, key))];
+      ...['rotatable', 'mobile', ...(collector ? ['objective'] : [])].filter(key => Object.hasOwn(entity, key))];
     fields(entity, keys, `${path}.enemy`);
     fields(entity.cell, ['q', 'r'], `${path}.enemy cell`);
     const enemyCell = entity.cell;
     try { validateHex(enemyCell); } catch { fail(`malformed ${path}.enemy cell`); }
     requireValue(ENEMY_CELLS.some(cell => cell.q === enemyCell.q && cell.r === enemyCell.r), `${path}.enemy cell placement`);
     requireValue(id(entity.id) && integer(entity.facing) && entity.facing <= 5
-      && ['rotatable', 'mobile'].every(key => !Object.hasOwn(entity, key) || typeof entity[key] === 'boolean'), `${path}.enemy identity/facing`);
+      && ['rotatable', 'mobile', ...(collector ? ['objective'] : [])].every(key => !Object.hasOwn(entity, key) || typeof entity[key] === 'boolean'), `${path}.enemy identity/facing`);
   }
   if (boss) requireValue(enemies.length === 1 && enemies[0]!.id === 'crucible'
     && (enemies[0]!.cell as Hex).q === 0 && (enemies[0]!.cell as Hex).r === 0, `${path}.anchored boss`);
@@ -136,7 +149,8 @@ function state(value: unknown, path: string, rulesVersion = RUN_RULES_VERSION): 
   for (const key of ['protections', 'shelters']) {
     const entries = value[key] as Record<string, unknown>[];
     for (const entry of entries) {
-      fields(entry, key === 'shelters' ? ['id', 'sourceId', 'targetId'] : ['sourceId', 'targetId'], `${path}.${key} entry`);
+      fields(entry, key === 'shelters' ? ['id', 'sourceId', 'targetId'] : ['sourceId', 'targetId', ...(collector && Object.hasOwn(entry, 'range') ? ['range'] : [])], `${path}.${key} entry`);
+      if (key === 'protections' && Object.hasOwn(entry, 'range')) requireValue(integer(entry.range), `${path}.protections range`);
       requireValue(ids.includes(entry.sourceId) && ids.includes(entry.targetId)
         && (key !== 'shelters' || id(entry.id)), `${path}.${key} references`);
     }
@@ -216,7 +230,7 @@ export function parseRunRecord(json: string): RunRecord<EncounterState> {
   requireValue(encounter.presets.some(preset => preset.id === value.fixtureId), 'fixtureId');
   const key = encounter.codec.rulesKey;
   fields(value.configuration, [key, 'abilityRules'], 'configuration');
-  (key === 'patrolRules' ? patrolRules : crucibleRules)(value.configuration[key], `configuration.${key}`);
+  (key === 'patrolRules' ? patrolRules : key === 'collectorRules' ? collectorRules : crucibleRules)(value.configuration[key], `configuration.${key}`);
   abilityRules(value.configuration.abilityRules, 'configuration.abilityRules');
   state(value.initialState, 'initialState', value.rulesVersion as string); state(value.finalState, 'finalState', value.rulesVersion as string);
   requireValue(value.initialState.revision === 0 && value.initialState.round === 1
