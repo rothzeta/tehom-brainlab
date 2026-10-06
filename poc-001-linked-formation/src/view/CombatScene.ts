@@ -30,7 +30,7 @@ export function createCombatShell(parent: HTMLElement): void {
     </section><aside aria-label="Patrol controls">
       <div class="setup"><label>Start a fresh patrol<select id="preset"><option value="healthy">Healthy</option><option value="wounded-ugallu">Wounded Ugallu</option><option value="wounded-girtablilu">Wounded Girtablilu</option></select></label><button id="reset">Restart patrol</button><button id="export-run">Export attempt (JSON)</button></div>
       <h2>Enemy intentions — resolution order</h2><ol id="intentions"></ol><p id="protection"></p><p id="shelters"></p><p id="links"></p>
-      <h2>Player actions</h2><div id="actors"></div><div id="abilities"></div>
+      <h2>Player actions</h2><div id="actors"></div><div id="abilities"></div><p id="ability-rule"></p>
       <div id="targets" aria-label="Ability targets"></div><p id="selection"></p>
       <div class="secondary"><button id="confirm">Confirm ability</button><button id="cancel">Cancel (Esc)</button></div>
       <h2>Maneuvers</h2><div id="maneuvers"></div><p id="allowance"></p>
@@ -191,6 +191,10 @@ export class CombatScene extends Phaser.Scene {
         this.previewOn(button, () => ({ kind: 'useAbility', ...entry.request })); return button;
       }));
     }
+    const selectedAbility = this.ability ? ABILITIES[this.ability] : undefined;
+    const amount = this.ability === 'shelter' ? `Reduce by up to ${state.patrolRules.damageRules.shelterReduction}.`
+      : selectedAbility && 'damage' in selectedAbility ? `Damage ${selectedAbility.damage}.` : '';
+    this.el('ability-rule').textContent = selectedAbility ? `${selectedAbility.summary} ${amount}`.trim() : '';
     this.el('selection').textContent = `Selected: ${this.actor ?? 'Brood'} / ${this.ability ?? 'ability'} / ${this.target ?? 'target'}${this.ability === 'crosswind' ? ` / ${this.direction}` : ''}. Selection spends no action.`;
     for (const maneuver of MANEUVERS) {
       const result = this.session.project({ kind: 'maneuver', expectedRevision: state.revision, maneuver });
@@ -231,6 +235,7 @@ export class CombatScene extends Phaser.Scene {
   }
   private eventText(event: GameplayEvent): string {
     if (event.type === 'damage-applied') return `${title(event.targetId)}: HP ${event.hpBefore} → ${event.hpAfter} (${event.damage} damage; protection −${event.directionalReduction}, Shelter −${event.shelterReduction}).`;
+    if (event.type === 'facing-changed') return `${title(event.sourceId)}: facing ${event.before} → ${event.after}.`;
     if (event.type === 'attack-settled') return `${title(event.sourceId)} attack resolved.`;
     if (event.type === 'action-applied') return `${title(event.actorId)} used ${title(event.abilityId)} on ${title(event.targetId)}.`;
     return event.type.split('-').join(' ');
@@ -250,6 +255,7 @@ export class CombatScene extends Phaser.Scene {
         lines.push(`Protection gained: ${projection.protectionGained.map(pair).join('; ') || 'none'}; lost: ${projection.protectionLost.map(pair).join('; ') || 'none'}.`);
         lines.push(`Threats: ${projection.after.threats.map(entry => `${entry.intention.sourceId}: ${entry.intention.kind === 'fixed-area' ? 'fixed cells' : 'follows creature'} ${entry.cells.map(cell => `(${cell.q},${cell.r})`).join(',')} → ${entry.recipientIds.join(',') || entry.reason}`).join('; ')}.`);
       }
+      lines.push(...projection.explanations.filter(event => event.type === 'damage-applied' || event.type === 'facing-changed').map(event => this.eventText(event)));
       const forecast = pending.forecast;
       if (forecast.kind !== 'not-applicable') lines.push(forecast.kind === 'transition' && forecast.ok ? `${forecast.condition}: ${hpText(forecast.state as PatrolSession['state'])} · ${forecast.state.phase}. Remaining player choices are excluded.` : `${forecast.condition}: ${forecast.kind === 'transition' && !forecast.ok ? `unavailable (${forecast.error.code})` : forecast.kind}.`);
     } else if (pending) lines.push(`Unavailable: ${pending.error.code}.`);

@@ -2,7 +2,7 @@ import type { CommandResult, ErrorCode, GameplayEvent } from './commands';
 import { CLOSE_THRESHOLD } from './formation';
 import { isCloseLinked, selectProtection } from './intents';
 import { compareIds, settleLifecycle } from './lifecycle';
-import type { CombatState } from './state';
+import type { CombatState, Shelter } from './state';
 
 export interface DamageRules {
   readonly directionalReduction: number;
@@ -12,7 +12,7 @@ export interface DamageRules {
 
 /** Provisional P06 mitigation; callers can explicitly supply experimental tuning. */
 export const DEFAULT_DAMAGE_RULES: DamageRules = Object.freeze({
-  directionalReduction: 2, shelterReduction: 2, closeThreshold: CLOSE_THRESHOLD,
+  directionalReduction: 2, shelterReduction: 4, closeThreshold: CLOSE_THRESHOLD,
 });
 
 export interface AttackCommand {
@@ -35,6 +35,17 @@ export type DamageEvent =
       readonly hpBefore: number; readonly hpAfter: number }
   | { readonly type: 'shelter-consumed'; readonly shelterId: string; readonly targetId: string;
       readonly eligible: boolean };
+
+/** Self needs a living player Brood; allied protection also needs Close at impact. */
+export function shelterEligible(
+  state: CombatState, shelter: Pick<Shelter, 'sourceId' | 'targetId'>,
+  closeThreshold = DEFAULT_DAMAGE_RULES.closeThreshold,
+): boolean {
+  const source = state.brood.find(({ id, owner, hp }) =>
+    id === shelter.sourceId && owner === 'player' && hp > 0);
+  return !!source && (shelter.sourceId === shelter.targetId
+    || isCloseLinked(state, shelter.sourceId, shelter.targetId, closeThreshold));
+}
 
 /** Same rejection envelope and revision discipline as P03; no action/phase dispatch. */
 export function applyAttack(
@@ -73,8 +84,7 @@ export function applyAttack(
     const directional = selectProtection(state, { actorId: source.id, targetId,
       bypassProtection: attack.bypassProtection }, state.protections).protected;
     const shelters = attack.rawDamage > 0 ? state.shelters.filter((shelter) => shelter.targetId === targetId) : [];
-    const eligible = shelters.filter(({ sourceId }) =>
-      isCloseLinked(state, sourceId, targetId, rules.closeThreshold));
+    const eligible = shelters.filter((shelter) => shelterEligible(state, shelter, rules.closeThreshold));
     const directionalReduction = directional ? Math.min(attack.rawDamage, rules.directionalReduction) : 0;
     const shelterReduction = eligible.length > 0
       ? Math.min(attack.rawDamage - directionalReduction, rules.shelterReduction) : 0;
@@ -89,7 +99,7 @@ export function applyAttack(
   for (const shelter of state.shelters.filter(({ id }) => consumed.has(id))
     .slice().sort((a, b) => compareIds(a.id, b.id))) {
     events.push({ type: 'shelter-consumed', shelterId: shelter.id, targetId: shelter.targetId,
-      eligible: isCloseLinked(state, shelter.sourceId, shelter.targetId, rules.closeThreshold) });
+      eligible: shelterEligible(state, shelter, rules.closeThreshold) });
   }
   const next: CombatState = {
     ...state, revision,

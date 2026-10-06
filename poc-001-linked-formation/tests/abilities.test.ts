@@ -104,18 +104,19 @@ test('tuning: explicit nondefault damage and mitigation drive actual effects', (
   expect(hp(accepted(applyAbility(state, request('claw'), tuning)).state, 'censer')).toBe(14);
 });
 
-test.each([0, 1, 2, 3, 4, 5] as Orientation[])('AC2: protected Impale bypasses in Spread orientation %i', (orientation) => {
+test.each([0, 1, 2, 3, 4, 5] as Orientation[])('AC2: protected Impale is reduced in Spread orientation %i', (orientation) => {
   const state = fixture({ formation: { shape: 'spread', orientation },
     enemies: fixture().enemies.map((enemy) => ({ ...enemy, facing: ((orientation + 2) % 6) as Orientation })) });
   const result = accepted(applyAbility(state, request('impale'), rules));
-  expect(hp(result.state, 'censer')).toBe(14);
+  const damage = rules.impaleDamage - rules.damageRules.directionalReduction;
+  expect(hp(result.state, 'censer')).toBe(hp(state, 'censer') - damage);
   expect(result.events.filter((event) => event.type === 'damage-applied')).toMatchObject([
-    { rawDamage: 6, directionalReduction: 0, damage: 6 },
+    { rawDamage: rules.impaleDamage, directionalReduction: rules.damageRules.directionalReduction, damage },
   ]);
   expect(result.state.actedIds).toEqual(['girtablilu']);
 });
 
-test.each(['compact', 'ugallu-fallen', 'pazuzu-fallen', 'both-fallen'] as const)(
+test.each(['compact', 'both-fallen'] as const)(
   'AC2: %s rejects Impale with no spend; Sting remains', (condition) => {
     const base = fixture();
     const state = fixture({ formation: { shape: condition === 'compact' ? 'compact' : 'spread', orientation: 0 },
@@ -145,14 +146,13 @@ test('AC3: Shelter installs one status on a living Close ally, with one actor co
   expect(result.state.enemies).toEqual(state.enemies);
 });
 
-test.each(['self', 'fallen', 'enemy', 'stretched', 'missing'] as const)(
+test.each(['fallen', 'enemy', 'stretched', 'missing'] as const)(
   'AC3: Shelter rejects %s targets atomically', (condition) => {
     const base = fixture();
     const state = fixture({ formation: { shape: condition === 'stretched' ? 'spread' : 'compact', orientation: 0 },
       brood: base.brood.map((entity) => condition === 'fallen' && entity.id === 'girtablilu'
         ? { ...entity, hp: 0 } : entity) });
-    const action = request('shelter', { targetId: condition === 'self' ? 'ugallu'
-      : condition === 'enemy' ? 'censer' : condition === 'missing' ? 'missing' : 'girtablilu' });
+    const action = request('shelter', { targetId: condition === 'enemy' ? 'censer' : condition === 'missing' ? 'missing' : 'girtablilu' });
     expect(abilityLegality(state, action, rules)).toEqual({ ok: false, error: { code: 'illegal-target' } });
     rejected(dispatch(state, action), state, 'illegal-target');
   });

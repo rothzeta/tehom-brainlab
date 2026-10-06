@@ -4,9 +4,9 @@ import type { PatrolState } from '../content/patrol';
 import { abilityLegality } from './abilities';
 import type { AbilityRequest, TurnDirection } from './abilities';
 import type { Command, CommandResult, ErrorCode, GameplayEvent } from './commands';
-import { DEFAULT_DAMAGE_RULES } from './damage';
+import { DEFAULT_DAMAGE_RULES, shelterEligible } from './damage';
 import { formationLinks, formationPositions } from './formation';
-import { activeLinks, isCloseLinked, selectProtection, selectRecipients } from './intents';
+import { activeLinks, selectProtection, selectRecipients } from './intents';
 import type { CombatState, GameState } from './state';
 import { applyCommand } from './transition';
 
@@ -54,7 +54,7 @@ function deriveFacts(state: GameState) {
         bypassProtection: false }, state.protections),
     }))),
     shelters: state.shelters.map((shelter) => ({ ...shelter,
-      eligible: isCloseLinked(state, shelter.sourceId, shelter.targetId,
+      eligible: shelterEligible(state, shelter,
         rules?.damageRules.closeThreshold ?? DEFAULT_DAMAGE_RULES.closeThreshold) })),
     threats: state.declaredIntentions.map((intention) => ({ intention,
       ...selectRecipients(state, intention, rules?.splashRadius) })),
