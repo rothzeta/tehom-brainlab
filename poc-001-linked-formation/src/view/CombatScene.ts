@@ -271,7 +271,7 @@ export class CombatScene extends Phaser.Scene {
         lines.push(`Destination links: ${projection.after.links.map(link => `${link.from.brood} ↔ ${link.to.brood} ${link.state}`).join('; ')}.`);
         lines.push(`Shelter: ${projection.after.shelters.map(entry => `${entry.sourceId} → ${entry.targetId}: ${entry.eligible ? 'eligible' : 'Close link lost'}`).join('; ') || 'none'}.`);
         lines.push(`Protection gained: ${projection.protectionGained.map(pair).join('; ') || 'none'}; lost: ${projection.protectionLost.map(pair).join('; ') || 'none'}.`);
-        lines.push(`Threats: ${projection.after.threats.map(entry => `${entry.intention.sourceId}: ${entry.intention.kind === 'fixed-area' ? `fixed cells · ${entry.intention.turnable ? 'turnable' : 'not turnable'}` : 'follows creature'} ${entry.cells.map(cell => `(${cell.q},${cell.r})`).join(',')} → ${entry.recipientIds.join(',') || entry.reason}`).join('; ')}.`);
+        lines.push(`Threats: ${projection.after.threats.map(entry => `${entry.intention.sourceId}: ${entry.intention.kind === 'fixed-area' ? 'fixed cells' : 'follows creature'} ${entry.cells.map(cell => `(${cell.q},${cell.r})`).join(',')} → ${entry.recipientIds.join(',') || entry.reason}`).join('; ')}.`);
       }
       lines.push(...projection.explanations.filter(event => event.type === 'damage-applied' || event.type === 'facing-changed').map(event => this.eventText(event)));
       const forecast = pending.forecast;
