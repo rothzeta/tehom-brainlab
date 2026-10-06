@@ -87,6 +87,7 @@ try {
     const amount = abilityId === 'shelter' ? `Reduce by up to ${state.patrolRules.damageRules.shelterReduction}.`
       : `Damage ${ABILITIES[abilityId].damage}.`;
     equal(actual.rule, `${ABILITIES[abilityId].summary} ${amount}`, 'rule line reads owners');
+    await writeFile(join(output, 'latest-selection.json'), JSON.stringify({ actual, preview }, null, 2));
     check(actual.preview.includes(`Immediate: ${hpText(preview.state)} · ${preview.state.phase}.`), 'immediate preview agrees');
     check(preview.forecast.kind === 'transition' && preview.forecast.ok, 'forecast available');
     check(actual.preview.includes(`If end phase now: ${hpText(preview.forecast.state)} · ${preview.forecast.state.phase}.`), 'forecast agrees');
@@ -129,7 +130,7 @@ try {
       builder.onLoad({ filter: /\.css$/ }, () => ({ contents: '', loader: 'js' }));
     } }] });
   check(bundle.success, 'test-owned fixture compiles');
-  document = `<html><head><link rel="stylesheet" href="${stylesheet}"></head><body><div id="app"></div><script type="module">${(await bundle.outputs[0].text()).replaceAll('</script', '<\\/script')}</script></body></html>`;
+  document = `<html><head><meta charset="utf-8"><link rel="stylesheet" href="${stylesheet}"></head><body><div id="app"></div><script type="module">${(await bundle.outputs[0].text()).replaceAll('</script', '<\\/script')}</script></body></html>`;
   await cdp('Fetch.enable', { patterns: [{ urlPattern: '*/p14-kit-fixture*', resourceType: 'Document' }] });
   for (const mode of ['protected', 'one-partner']) {
     await cdp('Page.navigate', { url: `${baseUrl}p14-kit-fixture?mode=${mode}` });
