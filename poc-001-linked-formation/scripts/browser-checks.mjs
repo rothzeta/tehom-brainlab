@@ -67,9 +67,17 @@ if (!scripts.length) throw new Error('No browser harnesses found in tests/browse
 let server;
 let serverFinished;
 let previewError;
+let stoppingPreview = false;
+const teardownStderr = [];
 const containerName = `poc-001-browser-${randomUUID()}`;
 const harnesses = [];
 const pause = ms => new Promise(done => setTimeout(done, ms));
+function checkPreview() {
+  if (previewError) throw previewError;
+  if (server && (server.exitCode !== null || server.signalCode !== null)) {
+    throw new Error(`Preview exited ${server.exitCode ?? server.signalCode}`);
+  }
+}
 async function run(name) {
   const script = join('tests', name);
   const directory = name === 'browser-run-record.mjs' ? 'records' : name.slice('browser-'.length, -'.mjs'.length);
@@ -102,25 +110,47 @@ try {
     serverFinished = new Promise(done => server.once('close', done));
     let ready = false, announced = false;
     server.stdout.on('data', data => { process.stdout.write(data); if(data.toString().includes('Local:')) announced=true; });
-    server.stderr.on('data', data => process.stderr.write(data));
+    server.stderr.on('data', data => {
+      if (stoppingPreview) teardownStderr.push(data);
+      else process.stderr.write(data);
+    });
     for (let attempt = 0; attempt < 150; attempt++) {
-      if (previewError) throw previewError;
-      if (server.exitCode !== null || server.signalCode !== null) throw new Error(`Preview exited ${server.exitCode ?? server.signalCode}`);
+      checkPreview();
       try { if (announced && (await fetch(url)).ok) { ready = true; break; } } catch {}
       await pause(100);
     }
     if (!ready) throw new Error('Preview did not become ready');
   }
-  for (const script of scripts) harnesses.push(await run(script));
+  for (const script of scripts) {
+    checkPreview();
+    harnesses.push(await run(script));
+    checkPreview();
+  }
 } finally {
   if (server && !previewError && server.exitCode === null && server.signalCode === null) {
     // Stop only our container. Sending SIGINT to the attached Docker process
     // group intentionally produced exit 130 during otherwise successful runs.
     console.log(`Stopping browser preview container ${containerName}`);
-    const stop = spawn('docker', ['stop', '-t', '5', containerName], { stdio: 'inherit' });
-    const code = await new Promise((done, fail) => { stop.on('error', fail); stop.on('close', done); });
-    if (code !== 0) throw new Error(`Preview cleanup exited ${code ?? stop.signalCode}`);
-    await serverFinished;
+    stoppingPreview = true;
+    let expectedSignalExit = false;
+    try {
+      const stop = spawn('docker', ['stop', '-t', '5', containerName], { stdio: 'inherit' });
+      const code = await new Promise((done, fail) => { stop.on('error', fail); stop.on('close', done); });
+      if (code !== 0) throw new Error(`Preview cleanup exited ${code ?? stop.signalCode}`);
+      await serverFinished;
+      expectedSignalExit = server.exitCode === 143;
+      if (server.exitCode !== 0 && !expectedSignalExit) {
+        throw new Error(`Preview exited ${server.exitCode ?? server.signalCode} during cleanup`);
+      }
+    } finally {
+      stoppingPreview = false;
+      const stderr = Buffer.concat(teardownStderr).toString();
+      // Filter only Bun's known diagnostic after a confirmed successful stop.
+      process.stderr.write(expectedSignalExit
+        ? stderr.replace(/^error: script "preview" exited with code 143(?:\r?\n|$)/gm, '')
+        : stderr);
+    }
+    console.log('Preview stopped (expected)');
   }
 }
 const assertions = harnesses.reduce((total, harness) => total + harness.assertions, 0);
