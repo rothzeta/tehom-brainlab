@@ -1,6 +1,6 @@
 # POC 002 — Component combat
 
-Prototype for the [component-combat experiment](../docs/prototypes/poc-002-component-combat.md): choosing which enemy function to remove, poison and Revelation, with parties of one to three and a three-fight gauntlet. Q01 delivers validated content, public contracts and a visible shell; Q02 adds headless rules, previews and fight records. Browser combat and selection wiring arrive in later checkpoints; the current canvas and screen labels are placeholders.
+Prototype for the [component-combat experiment](../docs/prototypes/poc-002-component-combat.md): choosing which enemy function to remove, poison and Revelation, with parties of one to three and a three-fight gauntlet. Q01 delivers validated content, public contracts and a visible shell; Q02 adds headless rules, previews and fight records. Q05 supplies playable battles through direct URLs. Default selection and gauntlet flow remain Q08 work; the default screen is still a placeholder.
 
 ## Run from the repository root
 
@@ -9,12 +9,12 @@ Docker is the default. The wrapper checks the daemon and uses the pinned Bun ima
 | Command | Checkpoint | Current behaviour |
 | --- | --- | --- |
 | `just poc-002-install` | Q01 | `bun install --frozen-lockfile` |
-| `just poc-002-dev` | Q01 | Development shell at http://localhost:5273 |
+| `just poc-002-dev` | Q01 | Development server at http://localhost:5273 |
 | `just poc-002-typecheck` | Q01 | Strict TypeScript check |
-| `just poc-002-test` | Q01–Q03, Q06, Q07 | Content, core, parity/hostile records, assets, wrapper, audio and art contract tests |
+| `just poc-002-test` | Q01–Q03, Q05–Q07 | Content, core, records, session/model, assets, wrapper, audio and art contract tests |
 | `just poc-002-build` | Q01 | Verify/copy assets and build `dist/` |
-| `just poc-002-preview` | Q01 | Built shell at http://localhost:4273 |
-| `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, host Chrome smoke check, temporary artifacts |
+| `just poc-002-preview` | Q01 | Built prototype at http://localhost:4273 |
+| `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, battle and smoke harnesses, temporary artifacts |
 | `just poc-002-replay FILE` | Q03 | Validate and replay a fight or gauntlet record |
 | `./poc-002-component-combat/bin/run sweep` | Q04 | Exit 2 naming Q04 until `scripts/sweep.ts` exists |
 | `./poc-002-component-combat/bin/run probe` | Q04 | Exit 2 naming Q04 until `scripts/probe.ts` exists |
@@ -25,7 +25,7 @@ Eight root recipes are available, including Q03 replay. Sweep and probe recipes 
 
 Chrome discovery checks the highest executable Playwright headless-shell cache version, then Chrome/Chromium on `PATH`. `POC002_CHROME` or the first `test-browser` argument can specify an executable; optional following arguments select an output directory and an existing base URL. No browser is downloaded automatically. The smoke harness uses a private Chrome profile and dynamic CDP port.
 
-Default URL: the Q08 selection placeholder. Example battle placeholder:
+Default URL: the Q08 selection placeholder. Play a battle through a direct URL:
 
 ```text
 http://localhost:5273/?screen=battle&encounter=warden&party=ugallu,girtablilu,anzu&start=primed
@@ -45,7 +45,7 @@ Content is structured as `brood`, `actions` (closed effects), `forms` (closed mo
 
 Public implementations available from Q02: `createFight`, `createGauntlet`, `applyCommand`, `previewCommand`, `legalActions`, `recordOf`, `parseRecord`, `replayRecord`. `CoreApi` gives their exact signatures. `applyCommand` accepts `unknown` so malformed commands can be rejected atomically. Damage event breakdowns carry raw, armor, Ward, Weakened, Rupture, Guard, Hold and actual pool removed. Rejection precedence is exported as `REJECTION_CODES`. `Preview.events` belongs to the selected command; `forecast` is the following `endPhase` result, or null after an ending command.
 
-View modules export final mount/art/audio signatures. `BattleSession` is the browser-free contract for Q05's future `src/view/session.ts`; `mountBattle` accepts null during scaffold/loading. Its options contain the shared Phaser game, audio, fight options and exit callback. `mountSelect` receives a `StartHandler` accepting a fight or gauntlet request. Q06 supplies synthesized audio cues; Q07 supplies labelled art descriptions and hit regions for Q05 to render; Q08 replaces selection and supplies gauntlet flow.
+View modules export final mount/art/audio signatures. `src/view/session.ts` implements the browser-free `BattleSession` contract; `mountBattle` accepts null to create a session for direct battle URLs. Its options contain the shared Phaser game, audio, fight options and exit callback. `mountSelect` receives a `StartHandler` accepting a fight or gauntlet request. Q06 supplies synthesized audio cues; Q07 supplies labelled art descriptions and hit regions for Q05 to render; Q08 replaces selection and supplies gauntlet flow.
 
 ## Headless combat core (Q02)
 
@@ -57,7 +57,7 @@ Commands carry `expectedRevision`. Rejections preserve state and return empty ev
 
 `recordOf` embeds the content, complete initial state, accepted commands with events/revisions, and final state. `parseRecord` checks the supported data format; `replayRecord` re-executes and compares ordered events, revisions and final state. Unfinished fights can be exported. Q03 supplies the replay CLI, full run/hostile corpus and size limits.
 
-Run `just poc-002-test` from the repository root for contract and seed parity checks. Contract tests use their own tuning; `fixtures/parity/seed-girtablilu-guard.json` and `seed-ugallu-warden.json` pin the brief's v1 witnesses with embedded content. Their events and final states replay exactly. This checkpoint supplies headless behavior; battle/selection/session wiring belongs to its UI checkpoints.
+Run `just poc-002-test` from the repository root for contract and seed parity checks. Contract tests use their own tuning; `fixtures/parity/seed-girtablilu-guard.json` and `seed-ugallu-warden.json` pin the brief's v1 witnesses with embedded content. Their events and final states replay exactly. Q02 supplies headless behavior; Q05 supplies battle/session wiring, while selection and gauntlet screens remain Q08 work.
 
 ## Records and replay (Q03)
 
@@ -86,6 +86,34 @@ and unfinished exports. Every record embeds frozen v1 content. Read
 `fixtures/parity/README.md` before intentionally authoring a new version; never
 edit parity JSON by hand. Negative fixtures live separately in `fixtures/hostile/`.
 Run `just poc-002-test` for all contract/parity/hostile checks.
+
+## Battle screen and sessions (Q05)
+
+Open a direct battle URL, for example:
+http://localhost:5273/?screen=battle&encounter=warden&party=ugallu,girtablilu,anzu&start=primed
+
+Choose an actor and Attack, Skills, Guard or Item, then a valid target. Preview
+shows command events, HP/Revelation/pool/Salve deltas and the following enemy
+phase/end of round through the real rules. Confirm commits exactly that command;
+End Phase also previews before Confirm. Invalid targets display a reason and
+cannot be confirmed. The event log contains committed events only.
+
+Select a component in its list or directly on the illustration; both highlight
+the same part. Invalid parts remain inspectable. Tab or arrows move focus,
+Enter/Space activates the focused control, and Escape goes Back. Hover does not
+change the keyboard selection. The surface uses 1280×720 logical geometry and
+scales with the Phaser canvas. Diagnostic panels scroll to expose all details.
+
+Audio starts muted. Unmute/Mute changes the shared player's setting; Credits
+opens the registered emblem attribution and source/license links. No imported
+audio or new assets are needed.
+
+`createSession(content, initialState, buildRevision?)` in `src/view/session.ts`
+implements the browser-free `BattleSession` contract. It supports immediate
+subscription, pure previews, real command commits and accepted-command records,
+including unfinished fights. Q08 supplies selection, gauntlet flow and download
+controls. `test-browser` includes two-way Warden/Scribe targeting, keyboard and
+focus/hover regression checks, preview/commit event parity and all seven fights.
 
 ## Synthesized audio (Q06)
 
