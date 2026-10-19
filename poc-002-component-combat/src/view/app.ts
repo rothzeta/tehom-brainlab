@@ -10,6 +10,7 @@ import type { StartHandler } from './select';
 /** One shared Phaser game/audio player across selection and complete attempts. */
 export function mountApp(root: HTMLElement): () => void {
   const content = loadContent(rawContent);
+  const buildRevision = import.meta.env.VITE_POC002_BUILD_REVISION || 'unknown';
   const title = document.createElement('h1'); title.textContent = 'TEHOM — Component Combat';
   const panel = document.createElement('section'); panel.setAttribute('aria-label', 'Combat screen');
   const stage = document.createElement('div'); stage.id = 'combat-canvas';
@@ -30,7 +31,7 @@ export function mountApp(root: HTMLElement): () => void {
   };
   const start: StartHandler = request => {
     dispose();
-    dispose = mountRun(panel, request, { content, game, audio, onExit });
+    dispose = mountRun(panel, request, { content, game, audio, onExit, buildRevision });
   };
   if (query.get('screen') === 'battle') {
     const encounter = content.encounters.find(e => e.id === (query.get('encounter') ?? 'guard'));
@@ -42,7 +43,7 @@ export function mountApp(root: HTMLElement): () => void {
       dispose = () => { panel.textContent = ''; };
     } else {
       const options: FightOptions = { encounterId: encounter.id, party, start: preset.id };
-      dispose = mountRun(panel, { kind: 'fight', ...options }, { content, game, audio, onExit });
+      dispose = mountRun(panel, { kind: 'fight', ...options }, { content, game, audio, onExit, buildRevision });
     }
   } else dispose = mountSelect(panel, start);
   return () => { dispose(); game.destroy(true); root.replaceChildren(); };
