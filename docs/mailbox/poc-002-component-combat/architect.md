@@ -6,6 +6,7 @@ source_baseline: 19af724
 candidate_revision: 6ae41af
 amendment_revision: dcd4b44
 amendment_2_revision: 835a09c
+amendment_3_revision: d887a98
 artifacts:
   - docs/adr/0007-poc-002-component-combat.md
   - docs/adr/README.md
@@ -196,3 +197,28 @@ This is a Coordinator-authorized brief amendment after the Q02 S1 stop (`docs/ma
 - **A2-12:** definitions of the Q04 harness signals: opening class, dominance, indifference, policy match, rare action, disabling first, Revoke every Saw, and cleanup.
 
 **Checks.** The link check found 0 missing links in the brief and plan; the reference to the Q02 report is given as a path because that branch is not merged. `git diff --check` was clean. Only these two files were staged, by name, after confirming that no merge was in progress. The handoff block, with `amendment_2_revision` added, was revalidated with the temporary-copy validator: exit 0, `ok: true`, `diagnostics: []`, all four revisions resolved.
+
+## Amendment 3 (2026-10-19): portable integer range
+
+This is a Coordinator-authorized brief amendment after review finding F2 (`docs/mailbox/poc-002-review/reviewer.md`, branch `p2-review`) and the P2-FIX1 S1 stop (`docs/mailbox/poc-002-fix1/implementer.md`, section "F2 — S1 stop", fix worktree at `cbcca91`). I read both and edited neither. Commit `d887a98` (`amendment_3_revision`) adds [Amendment A3](../../prototypes/poc-002-component-combat.md#amendment-a3-2026-10-19-portable-integer-range) to the brief, with tags inline in §2, §12 and §13.
+
+- **A3-1, content bounds (§12, new E52).** `loadContent` keeps its per-field range check. It now also rejects content unless six derived values are each at most 2³¹ − 1:
+  - B1: action raw, as the largest base or bolt amount plus every attack bonus listing the action.
+  - B2: the largest poison times the largest multiplier, and the largest poison plus the largest Envenom gain.
+  - B3: intent amount plus its modifiers plus every incoming bonus.
+  - B4: Revelation cap plus the largest single gain.
+  - B5: the sum of each enemy's pools, which bounds the ledger.
+  - B6: every duration is at least 1.
+
+  The bounds are conservative: no reduction is subtracted. They bound intermediate values as well as emitted ones, so a 32-bit C# port cannot overflow. Replay applies the same check to the embedded content. The reviewer's multiplier of 2147483647 fails B2. Computed on the committed v1 content with a scratch script, the largest value is 128 (B5, the Warden) and every duration is 2.
+- **A3-2, run counters (§2, new E53).** These counters have no content bound: the implementer showed that a fight against harmless dismantled enemies has no end. So an otherwise legal `act`, `endPhase` or `continue` that would set the revision, the round or a new expiry (round + duration − 1) above 2³¹ − 1 is rejected atomically with the new closed code **`limit-reached`**.
+  - **Precedence:** checked last, after `illegal-target`, and only against the command's actual result. A command that ends the battle before the next round is declared is therefore accepted.
+  - **Implementation and types:** implementations test the limit without 32-bit overflow. The code is appended to the end of `REJECTION_CODES`, an addition-only change under plan S3.
+  - **Previews:** a preview of such a command shows the rejection, and a forecast `endPhase` that would be rejected is returned as that rejection. This needs no new forecast case, because `Preview.forecast` is already a `CommandResult`.
+- **A3-3, snapshots (§2).** There is no new invariant and no headroom requirement. Any revision, round or expiry up to 2³¹ − 1 is valid in a complete initial state, and its commands stop where `limit-reached` applies. So a snapshot at revision 2³¹ − 1 has a valid record only with zero commands.
+
+Not chosen: wrapping, saturation, a round ceiling and ending combat automatically. Each would change play or event semantics. The rejection keeps §2's rule that an accepted command increments the revision exactly once, and changes nothing that v1 can reach in practice.
+
+**Plan.** Q01 acceptance 3 now requires a test-owned rejection for each of B1–B6, plus acceptance of v1. Q02 acceptance 7 now covers E01–E53. Q02 acceptance 1 already requires the §2 codes in precedence order, which includes `limit-reached`. Implementing these rules belongs to P2-FIX1. This amendment changes no code.
+
+**Checks.** The link check found 0 missing links in the brief and plan, and `git diff --check` was clean. The brief and plan were staged by name, then this report in a separate commit, each after confirming that no merge was in progress. The handoff block, with `amendment_3_revision` added, was revalidated with the temporary-copy validator.
