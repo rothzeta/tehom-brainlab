@@ -87,3 +87,7 @@ poc-002-preview *args:
 # POC 002: browser checks.
 poc-002-test-browser *args:
     @./poc-002-component-combat/bin/run test-browser "$@"
+
+# POC 002: replay a locally exported attempt.
+poc-002-replay *args:
+    @./poc-002-component-combat/bin/run replay "$@"

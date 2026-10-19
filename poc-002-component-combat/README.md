@@ -11,15 +11,15 @@ Docker is the default. The wrapper checks the daemon and uses the pinned Bun ima
 | `just poc-002-install` | Q01 | `bun install --frozen-lockfile` |
 | `just poc-002-dev` | Q01 | Development shell at http://localhost:5273 |
 | `just poc-002-typecheck` | Q01 | Strict TypeScript check |
-| `just poc-002-test` | Q01, Q02, Q06, Q07 | Content, core, seed parity, assets, wrapper, audio and art contract tests |
+| `just poc-002-test` | Q01–Q03, Q06, Q07 | Content, core, parity/hostile records, assets, wrapper, audio and art contract tests |
 | `just poc-002-build` | Q01 | Verify/copy assets and build `dist/` |
 | `just poc-002-preview` | Q01 | Built shell at http://localhost:4273 |
 | `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, host Chrome smoke check, temporary artifacts |
-| `./poc-002-component-combat/bin/run replay FILE` | Q03 | Exit 2 naming Q03 until `scripts/replay.ts` exists |
+| `just poc-002-replay FILE` | Q03 | Validate and replay a fight or gauntlet record |
 | `./poc-002-component-combat/bin/run sweep` | Q04 | Exit 2 naming Q04 until `scripts/sweep.ts` exists |
 | `./poc-002-component-combat/bin/run probe` | Q04 | Exit 2 naming Q04 until `scripts/probe.ts` exists |
 
-The seven Q01 root recipes are available now. Replay, sweep and probe recipes arrive with Q03/Q04; their wrapper commands above currently report the implementing checkpoint and exit 2.
+Eight root recipes are available, including Q03 replay. Sweep and probe recipes arrive with Q04; their wrapper commands above currently report the implementing checkpoint and exit 2.
 
 `POC002_MODE=host` explicitly selects host Bun; its version must match `.bun-version`. `POC002_PORT` overrides the dev/preview port. `POC002_BROWSER_PORT` overrides the browser preview port (default 4273); ports must be 1–65535. Browser containers use `poc-002-browser-` identities and are stopped after the check. POC 001 uses separate application ports. Concurrent POC 002 browser checks must wait for the shared default port.
 
@@ -58,6 +58,34 @@ Commands carry `expectedRevision`. Rejections preserve state and return empty ev
 `recordOf` embeds the content, complete initial state, accepted commands with events/revisions, and final state. `parseRecord` checks the supported data format; `replayRecord` re-executes and compares ordered events, revisions and final state. Unfinished fights can be exported. Q03 supplies the replay CLI, full run/hostile corpus and size limits.
 
 Run `just poc-002-test` from the repository root for contract and seed parity checks. Contract tests use their own tuning; `fixtures/parity/seed-girtablilu-guard.json` and `seed-ugallu-warden.json` pin the brief's v1 witnesses with embedded content. Their events and final states replay exactly. This checkpoint supplies headless behavior; battle/selection/session wiring belongs to its UI checkpoints.
+
+## Records and replay (Q03)
+
+Exported records embed their content, complete initial state, accepted commands
+with ordered events/revisions, and expected final state. Fight and whole-gauntlet
+records replay through the same rules API, including `continue` commands and
+run-wide revisions. Unfinished attempts in `player` or `between-fights` also export
+and replay; their outcome is the final phase.
+
+From the repository root:
+
+    just poc-002-replay poc-002-component-combat/fixtures/parity/gauntlet-win-trio-v1.json
+
+Input paths are relative to the caller's directory. Docker mounts the named input
+read-only and disables networking. Replay reads no files named by record content
+and executes no record text. The input cap is **8,388,608 UTF-8 bytes (8 MiB)**,
+including whitespace. Oversized inputs, unknown fields/versions/kinds/IDs, invalid
+integers, impossible states and rejected commands fail with a specific reason and
+exit 1. Success exits 0 and prints `commands`, `events` and `outcome`. Divergence
+identifies the first zero-based `commandIndex` and `events`, `revision` or
+`final-state`; a final-state mismatch uses the command count.
+
+The 24-record corpus in `fixtures/parity/` is the future C# parity gate: the two
+brief seeds, every encounter, every form, gauntlet win/defeat, five edge witnesses,
+and unfinished exports. Every record embeds frozen v1 content. Read
+`fixtures/parity/README.md` before intentionally authoring a new version; never
+edit parity JSON by hand. Negative fixtures live separately in `fixtures/hostile/`.
+Run `just poc-002-test` for all contract/parity/hostile checks.
 
 ## Synthesized audio (Q06)
 
