@@ -21,4 +21,4 @@ The [agent resources](../.agents/README.md) index the versioned technical skills
 
 [Agent work artifact conventions](SCHEMA.md#agent-work-artifacts) define Coordinator assignments and durable handoffs in `docs/mailbox/`; disposable working files stay outside the repository. Canonical designs and plans remain in this vault; handoffs reference them.
 
-The game-design documentation comes from the TEHOM Brainlab planning conversation of 2 October 2026. It does not replace the complete TEHOM project overview, which has not been copied into this repository. POC 001 is not playable, and no playtests have been recorded.
+The game-design documentation comes from the TEHOM Brainlab planning conversations of 2 October 2026 and, for POC 002, 19 October 2026 ([ADR-0007](adr/0007-poc-002-component-combat.md)). It does not replace the complete TEHOM project overview, which has not been copied into this repository. POC 001 is playable in the browser, and [playtests](playtests/README.md) records automated evidence. No human playtest report has been recorded yet. POC 002 is specified but not implemented. See [CURRENT](CURRENT.md) for delivered state.

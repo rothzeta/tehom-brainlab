@@ -1,4 +1,8 @@
-# POC 001 — bounded implementation plan index
+# Bounded implementation plan index
+
+*2026-10-19: this index now covers two independent prototypes. The POC 001 sections below are unchanged. POC 002 has its own section, [POC 002 — component combat (Q01–Q10)](#poc-002--component-combat-q01q10), at the end. Each prototype keeps one delivery sequence (ADR-0003).*
+
+**POC 001 — linked formation.** The sections from here through [Deliberately beyond this dozen](#deliberately-beyond-this-dozen) cover POC 001.
 
 *2026-10-06: P12 is superseded by user decision and P13–P17 (the boss experiments) are added. See [Boss experiments (P13–P17)](#boss-experiments-p13p17). The status summary below is the record as of 2026-10-05, retained as history; the execution map carries current status.*
 
@@ -191,3 +195,29 @@ For each executed plan, the Coordinator records a dated [task log entry](../TASK
 ## Deliberately beyond this dozen
 
 Glare/Revelation reintroduction, persistent attrition, a fair Apex/Shadow comparison, campaign structure, additional content, final art, and production-engine selection are not authorized by these plans or by P13–P17. They require later bounded work. The boss alone cannot establish that the new combat is better or that an audience prefers it.
+
+## POC 002 — component combat (Q01–Q10)
+
+**Status: proposed; not implemented.** One plan: [2026-10-19-db0bad72-poc-002-component-combat](2026-10-19-db0bad72-poc-002-component-combat.md), with stable checkpoint IDs Q01–Q10. Authority: [ADR-0007](../adr/0007-poc-002-component-combat.md) and the [POC 002 brief](../prototypes/poc-002-component-combat.md), whose numerical specification v1 is the only rules source. POC 002 is independent of POC 001: there are no imports and no shared code, and its patterns are copied with provenance.
+
+| ID | Checkpoint | Depends on | Status |
+| --- | --- | --- | --- |
+| Q01 | Scaffold, toolchain, content v1 and contracts | — | Proposed |
+| Q02 | Headless rules core: all content, commands, previews, gauntlet run, fight records | Q01 | Proposed |
+| Q03 | Records corpus, replay CLI, parity and hostile fixtures | Q02 | Proposed |
+| Q04 | Scenario sweep and policy probe harness | Q02 | Proposed |
+| Q05 | Phaser battle UI (1280×720, two-way component selection, keyboard) | Q02 | Proposed |
+| Q06 | Synthesized Web Audio cues | Q01 | Proposed |
+| Q07 | Placeholder art and hit regions | Q01 | Proposed |
+| Q08 | Selection screen, gauntlet flow and record export | Q02, Q05 | Proposed |
+| Q09 | Integrated verification and end-to-end browser harness | Q01–Q08 | Proposed |
+| Q10 | Human-test protocol template (docs only, not executed) | — | Proposed |
+
+**Parallelism:** owned paths are disjoint, so these checkpoints may run concurrently in separate worktrees:
+
+- Q02, Q06, Q07 and Q10, after Q01;
+- Q03, Q04 and Q05 (with Q06 and Q07 if they are still open), after Q02.
+
+Q08, then Q09, are sequential. The POC 002 integration owner (an Implementer assigned by the Coordinator) merges accepted checkpoints in dependency order. It also owns the root justfile `poc-002-*` recipes and the prototype README assembly. Proposed commands (`just poc-002-install|dev|typecheck|test|build|preview|test-browser|replay|sweep|probe`) do not exist until their checkpoint merges.
+
+Not included: running the external tests, the C# port and Godot (source 2 steps 5–7), retuning, purchased art and audio, and any POC 001 change.

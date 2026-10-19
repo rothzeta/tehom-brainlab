@@ -1,6 +1,6 @@
 # ADR-0004 — Repository and POC direction
 
-Status: agreed repository and experiment direction; individual decision dates and qualifications are retained below (2026-10-02–03). Amended by user decision, 2026-10-04 and 2026-10-06 (see Amendments).
+Status: agreed repository and experiment direction; individual decision dates and qualifications are retained below (2026-10-02–03). Amended by user decision, 2026-10-04 and 2026-10-06; cross-referenced to ADR-0007 on 2026-10-19 (see Amendments).
 
 ## Decision
 
@@ -80,3 +80,5 @@ Keep prototype source, tests, dependencies, container configuration, and run ins
 - **Movement.** Designated enemies may relocate between rounds. The Brood still have no individual walking and no squad translation; they reposition only through rotation and expansion/contraction.
 
 The other scope items stand: the 19-cell arena, two shapes, six orientations, three Brood with two abilities each, and one ordinary patrol, with the patrol first. The promotion rule is unchanged: neither boss is evidence that the combat should replace Apex/Shadow. Allowances, ability numbers, boss HP, patterns, the relocation route and the add composition are provisional test parameters. They are owned by the [brief's Decision record](../prototypes/poc-001-linked-formation.md#decision-record) and the [P13–P17 plans](../plans/README.md#boss-experiments-p13p17).
+
+**2026-10-19, cross-reference: POC 002 and the engine path.** [ADR-0007](0007-poc-002-component-combat.md) records the user's later direction. POC 002 is a separate combat-only prototype. The production path is Phaser/TypeScript for POC 002, then C#/.NET rules with Godot presentation, gated by recorded-battle parity. The TEHOM art specification is 32×32 exploration tiles, a 640×360 viewport and separate combat illustrations. Nothing in this record changes. The TypeScript + Phaser + Vite + Vitest target above remains POC 001's experiment target and is still not a production-engine commitment. The asset dimensions above remain POC 001 test parameters. The promotion rule still governs POC 001's formation model; POC 002 is not evidence for or against it.
