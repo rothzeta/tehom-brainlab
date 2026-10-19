@@ -28,7 +28,7 @@ Each prototype lives directly under the repository root, named `poc-NNN-short-na
 | Prototype | Question | Status |
 |---|---|---|
 | [001 — Linked formation](poc-001-linked-formation/README.md) | Do rotation and expansion create interesting combat decisions without useless character turns? | Playable in the browser: formation lab, patrol, Crucible and Collector (P01–P11 and P13–P17 delivered; P12 superseded). AI-directed and automated attempts recorded; no human playtest report yet |
-| [002 — Component combat](poc-002-component-combat/README.md) | Does choosing which enemy function to remove, against waiting for venom or spending Revelation, produce worthwhile decisions? | Playable direct battles (Q05), replay (Q03), sweep/probe (Q04), audio and art (Q06/Q07); selection and gauntlet UI pending |
+| [002 — Component combat](poc-002-component-combat/README.md) | Does choosing which enemy function to remove, against waiting for venom or spending Revelation, produce worthwhile decisions? | Playable battles and gauntlet with party selection and JSON export (Q08); replay (Q03), sweep/probe (Q04), audio and art (Q06/Q07) |
 
 The implementation target for POC 001 is TypeScript + Phaser + Vite + Vitest; P01 pins and verifies a prototype-local toolchain (see its README). POC 002 uses the same stack. The production direction is a later C#/.NET rules port with Godot presentation, gated by recorded-battle parity ([ADR-0007](docs/adr/0007-poc-002-component-combat.md)); no prototype stack commits the production game.
 
@@ -57,6 +57,6 @@ Open [`docs/`](docs/README.md) as an Obsidian vault. Its [schema](docs/SCHEMA.md
 
 Read the [POC 001 brief](docs/prototypes/poc-001-linked-formation.md), the [POC 002 brief](docs/prototypes/poc-002-component-combat.md), the direction ADRs ([0004](docs/adr/0004-repository-and-poc-direction.md), [0007](docs/adr/0007-poc-002-component-combat.md)), and the [asset register](assets/manifest.json).
 
-POC 001 is playable in the browser (patrol, Crucible and Collector), with formation rules, combat, previews, and exportable replayable attempts; see [CURRENT](docs/CURRENT.md#boss-experiments-p13p17). Automated and AI-directed browser evidence does not constitute a human playtest. POC 002 has playable direct battle URLs, previews and fight/gauntlet replay; selection and gauntlet screens are pending.
+POC 001 is playable in the browser (patrol, Crucible and Collector), with formation rules, combat, previews, and exportable replayable attempts; see [CURRENT](docs/CURRENT.md#boss-experiments-p13p17). Automated and AI-directed browser evidence does not constitute a human playtest. POC 002 has playable battles and gauntlet, party selection, previews, JSON export and fight/gauntlet replay.
 
 The follow-up [four-harness Coordinator trial](docs/mailbox/orchestrator-four-harness/results.md) compares Claude, Codex, OMP with Sonnet 5, and Agy with Gemini 3.8 Flash using the same canonical workflow and a durable worker-handoff contract. Its report separates delivery acceptance from role-boundary and lifecycle findings.

@@ -1,6 +1,6 @@
 # POC 002 — Component combat
 
-Prototype for the [component-combat experiment](../docs/prototypes/poc-002-component-combat.md): choosing which enemy function to remove, poison and Revelation, with parties of one to three and a three-fight gauntlet. Q01 delivers validated content, public contracts and a visible shell; Q02 adds headless rules, previews and fight records. Q05 supplies playable battles through direct URLs. Default selection and gauntlet flow remain Q08 work; the default screen is still a placeholder.
+Prototype for the [component-combat experiment](../docs/prototypes/poc-002-component-combat.md): choosing which enemy function to remove, poison and Revelation, with parties of one to three and a three-fight gauntlet. Q01 delivers validated content, public contracts and a visible shell; Q02 adds headless rules, previews and fight records. Q05 supplies playable battles; Q08 adds party/encounter selection, the complete gauntlet flow and JSON export of the current attempt.
 
 ## Run from the repository root
 
@@ -11,10 +11,10 @@ Docker is the default. The wrapper checks the daemon and uses the pinned Bun ima
 | `just poc-002-install` | Q01 | `bun install --frozen-lockfile` |
 | `just poc-002-dev` | Q01 | Development server at http://localhost:5273 |
 | `just poc-002-typecheck` | Q01 | Strict TypeScript check |
-| `just poc-002-test` | Q01–Q07 | Content, core, records, harness, session/model, assets, wrapper, audio and art contract tests |
+| `just poc-002-test` | Q01–Q08 | Content, core, records, harness, session/model, assets, wrapper, audio and art contract tests |
 | `just poc-002-build` | Q01 | Verify/copy assets and build `dist/` |
 | `just poc-002-preview` | Q01 | Built prototype at http://localhost:4273 |
-| `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, battle and smoke harnesses, temporary artifacts |
+| `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, battle, run and smoke harnesses, temporary artifacts |
 | `just poc-002-replay FILE` | Q03 | Validate and replay a fight or gauntlet record |
 | `just poc-002-sweep --quick` | Q04 | Search all 154 scenario cells and report signals |
 | `just poc-002-probe` | Q04 | Search Warden openings and compare fixed policies |
@@ -25,7 +25,7 @@ All ten root recipes are available. Sweep and probe report heuristic search evid
 
 Chrome discovery checks the highest executable Playwright headless-shell cache version, then Chrome/Chromium on `PATH`. `POC002_CHROME` or the first `test-browser` argument can specify an executable; optional following arguments select an output directory and an existing base URL. No browser is downloaded automatically. The smoke harness uses a private Chrome profile and dynamic CDP port.
 
-Default URL: the Q08 selection placeholder. Play a battle through a direct URL:
+The default page opens party/encounter/start selection and gauntlet launch. Direct battle URLs use the same attempt, export and reset controls:
 
 ```text
 http://localhost:5273/?screen=battle&encounter=warden&party=ugallu,girtablilu,anzu&start=primed
@@ -45,7 +45,7 @@ Content is structured as `brood`, `actions` (closed effects), `forms` (closed mo
 
 Public implementations available from Q02: `createFight`, `createGauntlet`, `applyCommand`, `previewCommand`, `legalActions`, `recordOf`, `parseRecord`, `replayRecord`. `CoreApi` gives their exact signatures. `applyCommand` accepts `unknown` so malformed commands can be rejected atomically. Damage event breakdowns carry raw, armor, Ward, Weakened, Rupture, Guard, Hold and actual pool removed. Rejection precedence is exported as `REJECTION_CODES`. `Preview.events` belongs to the selected command; `forecast` is the following `endPhase` result, or null after an ending command.
 
-View modules export final mount/art/audio signatures. `src/view/session.ts` implements the browser-free `BattleSession` contract; `mountBattle` accepts null to create a session for direct battle URLs. Its options contain the shared Phaser game, audio, fight options and exit callback. `mountSelect` receives a `StartHandler` accepting a fight or gauntlet request. Q06 supplies synthesized audio cues; Q07 supplies labelled art descriptions and hit regions for Q05 to render; Q08 replaces selection and supplies gauntlet flow.
+View modules export final mount/art/audio signatures. `src/view/session.ts` implements the browser-free `BattleSession` contract; `mountBattle` accepts null to create a session for direct battle URLs. Its options contain the shared Phaser game, audio, fight options and exit callback. `mountSelect` receives a `StartHandler` accepting a fight or gauntlet request. Q06 supplies synthesized audio cues; Q07 supplies labelled art descriptions and hit regions for Q05 to render; Q08 supplies selection, gauntlet flow and export controls.
 
 ## Headless combat core (Q02)
 
@@ -57,7 +57,7 @@ Commands carry `expectedRevision`. Rejections preserve state and return empty ev
 
 `recordOf` embeds the content, complete initial state, accepted commands with events/revisions, and final state. `parseRecord` checks the supported data format; `replayRecord` re-executes and compares ordered events, revisions and final state. Unfinished fights can be exported. Q03 supplies the replay CLI, full run/hostile corpus and size limits.
 
-Run `just poc-002-test` from the repository root for contract and seed parity checks. Contract tests use their own tuning; `fixtures/parity/seed-girtablilu-guard.json` and `seed-ugallu-warden.json` pin the brief's v1 witnesses with embedded content. Their events and final states replay exactly. Q02 supplies headless behavior; Q05 supplies battle/session wiring, while selection and gauntlet screens remain Q08 work.
+Run `just poc-002-test` from the repository root for contract and seed parity checks. Contract tests use their own tuning; `fixtures/parity/seed-girtablilu-guard.json` and `seed-ugallu-warden.json` pin the brief's v1 witnesses with embedded content. Their events and final states replay exactly. Q02 supplies headless behavior; Q05 supplies battle/session wiring; Q08 supplies selection and gauntlet screens.
 
 ## Records and replay (Q03)
 
@@ -145,6 +145,31 @@ Previews must not play cues. Audio never calls rules or changes combat state.
 `src/view/art/index.ts` supplies labelled enemy diagrams, non-overlapping part hit regions of at least 48×48 logical pixels, Brood portrait metadata, destroyed/shielded appearance descriptions and a code-drawn battle background. Ordinary enemy panels are 256×384; the Warden panel is 512×512. Draw and hit-region coordinates share a panel-local origin on the 1280×720 combat canvas. The Scribe's tongue and hand have regions larger than their shapes.
 
 Ugallu and Girtablilu use only the registered emblems prepared under `public/tehom/` by the SHA-verifying asset script. Anzû and enemies use labelled shapes. The art module exports `EMBLEM_SOURCES` for texture loading and `EMBLEM_CREDITS` for UI attribution. See [asset credits](../assets/CREDITS.md) and the [CC BY 3.0 license](../assets/licenses/game-icons-license.txt). No art asset or dependency was added. Q05 consumes these descriptions for rendering and part selection.
+
+## Selection, gauntlet and export (Q08)
+
+Open the default page to choose any party of one to three, one of seven encounters
+and a fresh, wounded or primed fight start. Start gauntlet uses a fresh party and
+the guard-scribe → guard-beast → warden sequence. Credits are reachable on selection
+and in battle. Native Tab/Enter controls work throughout; arrow keys traverse the
+attempt toolbar and battle controls.
+
+After each gauntlet victory, the summary shows carried HP, Revelation, permanent
+deaths and remaining Salves. Choose Continue to advance. Defeat ends the attempt;
+winning the last fight shows victory. One recording session covers the entire run.
+
+Export record downloads the complete current attempt as JSON at any time before
+Reset or Return to selection: before commands, during combat, after a death,
+between fights and at either final result. It embeds content, initial state,
+accepted commands/events/revisions including Continue, and the state at export.
+Replay unfinished exports the same way as completed ones:
+
+    just poc-002-replay /path/to/download.json
+
+Reset and Return to selection discard the attempt. The next launch has fresh
+state, no prior commands and no pending preview. Export first to retain a record.
+Direct `?screen=battle&encounter=…&party=…&start=…` URLs use the same export and reset
+controls.
 
 ## Assets and copied patterns
 
