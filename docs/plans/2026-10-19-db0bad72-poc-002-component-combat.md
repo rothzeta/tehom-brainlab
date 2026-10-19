@@ -261,6 +261,7 @@ Acceptance:
 1. Every party × encounter × start combination can be launched; a browser test samples all 7 parties and all 7 encounters.
 2. Gauntlet: three fights in brief §10 order. After each victory, HP, Revelation, deaths and Salve uses carry over, and the run proceeds only by `continue`. A defeat ends the run.
 3. Export saves the full record (fight or gauntlet) as JSON. A browser test exports a record after a short scripted gauntlet fight, and replays it with the core `replayRecord`.
+   *Amended 2026-10-19 (P2-DESIGN, Coordinator-authorized, from the Q10 report):* export is available **at any time** during the current attempt, until Reset or Return to selection. That covers a fight or a gauntlet, finished or unfinished, including after a Brood's death and in `between-fights`. The record contains every command accepted so far, and its `finalState` is the state at export (brief §12). Browser tests export an unfinished attempt after a Brood's death mid-gauntlet and in mid-fight, then replay each with `replayRecord`; the replayed state must equal the exported state.
 4. Reset returns to selection and starts a fresh record. No stale preview or state survives the reset (regression from POC 001 RF, B1).
 5. The credits are reachable from the selection screen.
 
