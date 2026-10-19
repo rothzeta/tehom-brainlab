@@ -11,7 +11,7 @@ Docker is the default. The wrapper checks the daemon and uses the pinned Bun ima
 | `just poc-002-install` | Q01 | `bun install --frozen-lockfile` |
 | `just poc-002-dev` | Q01 | Development shell at http://localhost:5273 |
 | `just poc-002-typecheck` | Q01 | Strict TypeScript check |
-| `just poc-002-test` | Q01 | Content, assets and wrapper contract tests |
+| `just poc-002-test` | Q01, Q07 | Content, assets, wrapper and art contract tests |
 | `just poc-002-build` | Q01 | Verify/copy assets and build `dist/` |
 | `just poc-002-preview` | Q01 | Built shell at http://localhost:4273 |
 | `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, host Chrome smoke check, temporary artifacts |
@@ -45,7 +45,13 @@ Content is structured as `brood`, `actions` (closed effects), `forms` (closed mo
 
 Public implementations planned for Q02/Q03: `createFight`, `createGauntlet`, `applyCommand`, `previewCommand`, `legalActions`, `recordOf`, `parseRecord`, `replayRecord`. `CoreApi` gives their exact signatures. `applyCommand` accepts `unknown` so malformed commands can be rejected atomically. Damage event breakdowns carry raw, armor, Ward, Weakened, Rupture, Guard, Hold and actual pool removed. Rejection precedence is exported as `REJECTION_CODES`. `Preview.events` belongs to the selected command; `forecast` is the following `endPhase` result, or null after an ending command.
 
-View stubs export final mount/art/audio signatures. `BattleSession` is the browser-free contract for Q05's future `src/view/session.ts`; `mountBattle` accepts null during scaffold/loading. Its options contain the shared Phaser game, audio, fight options and exit callback. `mountSelect` receives a `StartHandler` accepting a fight or gauntlet request. Q06 replaces silent audio; Q07 replaces empty enemy art with labelled shapes and hit regions; Q08 replaces selection and supplies gauntlet flow.
+View modules export final mount/art/audio signatures. `BattleSession` is the browser-free contract for Q05's future `src/view/session.ts`; `mountBattle` accepts null during scaffold/loading. Its options contain the shared Phaser game, audio, fight options and exit callback. `mountSelect` receives a `StartHandler` accepting a fight or gauntlet request. Q06 replaces silent audio; Q07 supplies labelled art descriptions and hit regions for Q05 to render; Q08 replaces selection and supplies gauntlet flow.
+
+## Placeholder art (Q07)
+
+`src/view/art/index.ts` supplies labelled enemy diagrams, non-overlapping part hit regions of at least 48×48 logical pixels, Brood portrait metadata, destroyed/shielded appearance descriptions and a code-drawn battle background. Ordinary enemy panels are 256×384; the Warden panel is 512×512. Draw and hit-region coordinates share a panel-local origin on the 1280×720 combat canvas. The Scribe's tongue and hand have regions larger than their shapes.
+
+Ugallu and Girtablilu use only the registered emblems prepared under `public/tehom/` by the SHA-verifying asset script. Anzû and enemies use labelled shapes. The art module exports `EMBLEM_SOURCES` for texture loading and `EMBLEM_CREDITS` for UI attribution. See [asset credits](../assets/CREDITS.md) and the [CC BY 3.0 license](../assets/licenses/game-icons-license.txt). No art asset or dependency was added. Q05 consumes these descriptions for rendering and part selection.
 
 ## Assets and copied patterns
 
