@@ -105,9 +105,11 @@ Target forms: a part `{enemy, part}`; an enemy `{enemy}` (Rupture Venom); an int
 
 Each accepted command increments the revision by exactly 1 and returns its ordered events. *(A2-4)* The revision is per run: it is never reset between gauntlet fights. Intent IDs are unique within a fight; the round restarts at 1 in each fight. A rejected command changes nothing, consumes nothing and returns no events. The rejection codes form a closed set, checked in this order:
 
-`invalid-command` (malformed) → `stale-revision` → `wrong-phase` → `unknown-actor` → `actor-dead` → `already-acted` → `unknown-action` → `action-unavailable` (not in the kit, blocked by a form or Pinned) → `no-item-uses` → `illegal-target`.
+`invalid-command` (malformed) → `stale-revision` → `wrong-phase` → `unknown-actor` → `actor-dead` → `already-acted` → `unknown-action` → `action-unavailable` (not in the kit, blocked by a form or Pinned) → `no-item-uses` → `illegal-target` → `limit-reached` *(A3-2)*.
 
 *(A2-3)* `invalid-command` covers only a structurally malformed command: an unknown command kind, a missing field or a wrong JSON type. `unknown-action` is an action ID absent from content. `action-unavailable` is an action outside the actor's kit, or blocked by a form or Pinned. `illegal-target` covers a target whose form does not match the action, an unknown enemy, part, intent or Brood ID, and any target that is invalid under §4–§9.
+
+*(A3-2)* `limit-reached` applies only to a command that passes every earlier check. Let L = 2³¹ − 1. The command is rejected if accepting it would set the revision, the round or a new expiry above L. An expiry is a transformation's `untilRound`, or the last round of Pinned or Clamped, each equal to round + duration − 1. The test uses the command's actual result, so a command whose resolution ends the battle before the next round is declared is not rejected because of the round. Implementations make the test without 32-bit overflow, for example as duration − 1 > L − round. No content rule can bound these counters, because a fight against dismantled ordinary enemies can last indefinitely (§8). The §12 content bounds keep every other integer at or below L. A preview of such a command shows the rejection. A forecast `endPhase` that would be rejected is returned as that rejection. *(A3-3)* An initial state needs no headroom below L: any revision, round or expiry up to L is valid, and the record's commands then simply stop where `limit-reached` applies.
 
 `endPhase` forfeits the unused actions of living Brood. It then resolves the enemy phase and the end of the round, and declares the next round, all within that one command.
 
@@ -308,6 +310,15 @@ This is source 2's Clamp → Saw → Choir cycle with the [P2] pulse. Destroying
 ### 12. Records and content (portable format) [C]
 
 - **Content** `combat-content.v1.json` (`schema: tehom-combat-content/1`, `contentVersion: poc-002-content-v1`) holds every number in §6–§10. It refers to the Brood, actions, forms, enemies, parts, intents with their schedules and targeting rules, encounters and the gauntlet by stable kebab-case IDs. Behaviours are a **closed enum** of kinds implemented by the rules: the action effects, intent kinds, targeting rules and form modifiers named in this specification. There are no scripts, expressions or plugins, and an unknown kind is a validation error. The exact field layout is fixed in plan checkpoint Q01 and frozen per content version.
+  *(A3-1) Portable arithmetic bounds.* Every content integer is at most L = 2³¹ − 1. Content is also rejected, with a validation error naming the failing bound, unless each derived value below is at most L. The values are computed from content alone and conservatively: every bonus that could apply is added, every alternative takes its largest value, and no reduction (armor, Ward, Weakened, Guard, Hold, a cap) is subtracted. Content that no actual run could push past L is still rejected if a bound fails.
+  - **B1 action damage:** for each action with a damage or Envenom effect, take the largest of its amount, its component amount and, for Stolen Bolt, every bolt amount. Add every attack bonus that lists the action.
+  - **B2 poison:** Pmax × Mmax, and Pmax plus the largest Envenom poison gain. Pmax is the largest Envenom poison cap or poison-set amount. Mmax is the largest Rupture Venom multiplier or venom-multiplier amount.
+  - **B3 intent damage:** for each intent, its amount plus all of its modifier amounts, plus every incoming-bonus amount in content.
+  - **B4 Revelation:** for each Brood, its cap plus the largest single Revelation gain in content, either an action cost or a Revelation rider.
+  - **B5 pools:** for each enemy, the sum of its part pools. This bounds the ledger.
+  - **B6 durations:** every form and rider `durationRounds` is at least 1.
+
+  B1–B5 bound every integer the rules derive from content, intermediate sums and products included, so a 32-bit signed implementation never overflows on them. HP, pools, healing, applied damage, poison, Revelation and Salve uses are already capped by their own maxima. Only the run counters depend on play, and §2 *(A3-2)* handles them. Replay applies the same check to the embedded content. The formulas and v1 numbers are unchanged: the largest v1 value is 128 (B5, the Warden), and every v1 duration is 2.
 - **Record** (`schema: tehom-combat-record/1`): `prototypeId`, `rulesVersion` (`poc-002-rules-v1`), `contentVersion`, `buildRevision` (a commit, or the literal `unknown`), the **embedded content**, the run descriptor (fight or gauntlet, encounters, party, start preset), a **complete `initialState`**, and `commands[]`, each `{command, revision, events[]}`. It ends with the expected **`finalState`**. Only accepted commands are recorded; rejection fixtures are separate test fixtures. Gauntlet records hold the whole run, `continue` commands included.
   *Amended 2026-10-19 (P2-DESIGN):* a record may be **unfinished**, exported before the battle or run ends. Its `finalState` is the state at export, in phase `player` or `between-fights`. Replay accepts it under the same rules, and reports the final phase in place of an outcome. Nothing in the record marks it as abandoned: whether the player then reset is not part of the record.
 - **Canonical rules for parity:** integers are nonnegative, safe and below 2³¹. Arrays are ordered and contractual: the events, the intents and the party. Objects are compared after parsing, with key order irrelevant. Strings are compared by code point. Replay never trusts expected output as input: it re-executes and compares each command's events, then the final state, and reports the first divergence.
@@ -368,6 +379,8 @@ This is source 2's Clamp → Saw → Choir cycle with the [P2] pulse. Destroying
 | E49 | Revoke the Saw, or the Clamp intent | Revoking the Saw leaves Clamped in place until it expires; revoking the Clamp means no Clamped is applied |
 | E50 | Ugallu dies while holding an ally | Later intents are not redirected; Hold ends with Ugallu |
 | E51 | The held ally dies before an intent that targets it | The intent is skipped (E05), not redirected: the target check (§3.3a) comes before the redirect (§3.3b) *(A2-11)* |
+| E52 | Content whose numbers are each in range but whose derived arithmetic is not (e.g. a Rupture Venom multiplier of 2147483647 with poison cap 6) | `loadContent` rejects it (§12 B1–B6), so it is never played. A record embedding it fails to parse *(A3-1)* |
+| E53 | An otherwise legal command would set the revision, round or a new expiry above 2³¹ − 1: any command at revision 2³¹ − 1; `endPhase` in round 2³¹ − 1 that does not end the battle; an action in that round that starts a transformation | `limit-reached`; nothing changes, no events. The same `endPhase` is accepted if the enemy phase or end of round ends the battle *(A3-2)* |
 
 ### Amendment A2 (2026-10-19): consistency rulings
 
@@ -387,6 +400,16 @@ Requested by the Coordinator after a Q02 S1 stop (the Q02 report `docs/mailbox/p
 | A2-10 | E24, E31 | Clamped Brood dies before the Saw; wording of "Clamped to the cap" | Split by timing (E24); E31 now says "capped", not "Clamped" |
 | A2-11 | new E51 | The held ally dies before an intent that targets it | The intent is skipped, not redirected |
 | A2-12 | Hypotheses and falsifiers | How Q04 computes its signals | Definitions added for opening class, dominance, indifference, policy match, rare action, disabling first, Revoke every Saw, and cleanup |
+
+### Amendment A3 (2026-10-19): portable integer range
+
+Requested by the Coordinator after review finding F2 (`docs/mailbox/poc-002-review/reviewer.md` on branch `p2-review`) and the S1 stop of fix P2-FIX1 (`docs/mailbox/poc-002-fix1/implementer.md`, branch at `cbcca91`). The rulings make every accepted run recordable within §12's range. No formula, ordering or v1 number changes, so the [tuning check](#tuning-check-v1) and the rules and content versions stand. Each changed passage carries its tag.
+
+| Tag | Section | Question | Ruling |
+| --- | --- | --- | --- |
+| A3-1 | §12, new E52 | How does content validation bound derived arithmetic, such as multipliers and additive bonuses? | Six conservative content bounds, B1–B6, each at most 2³¹ − 1; failing content is rejected by `loadContent` and in replay |
+| A3-2 | §2, new E53 | What happens when a legal command would push the revision, round or an expiry past 2³¹ − 1? | Atomic rejection with the new closed code `limit-reached`, checked last, after `illegal-target`. It is appended to the end of the rejection codes, an addition under plan stop condition S3 |
+| A3-3 | §2 | What initial-snapshot invariant applies near the boundary? | None beyond the existing range: no headroom is required, and commands stop at `limit-reached` |
 
 ## Tuning check (v1)
 
