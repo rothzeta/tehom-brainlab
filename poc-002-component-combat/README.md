@@ -11,7 +11,7 @@ Docker is the default. The wrapper checks the daemon and uses the pinned Bun ima
 | `just poc-002-install` | Q01 | `bun install --frozen-lockfile` |
 | `just poc-002-dev` | Q01 | Development shell at http://localhost:5273 |
 | `just poc-002-typecheck` | Q01 | Strict TypeScript check |
-| `just poc-002-test` | Q01, Q07 | Content, assets, wrapper and art contract tests |
+| `just poc-002-test` | Q01, Q06, Q07 | Content, assets, wrapper, audio and art contract tests |
 | `just poc-002-build` | Q01 | Verify/copy assets and build `dist/` |
 | `just poc-002-preview` | Q01 | Built shell at http://localhost:4273 |
 | `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, host Chrome smoke check, temporary artifacts |
@@ -45,7 +45,22 @@ Content is structured as `brood`, `actions` (closed effects), `forms` (closed mo
 
 Public implementations planned for Q02/Q03: `createFight`, `createGauntlet`, `applyCommand`, `previewCommand`, `legalActions`, `recordOf`, `parseRecord`, `replayRecord`. `CoreApi` gives their exact signatures. `applyCommand` accepts `unknown` so malformed commands can be rejected atomically. Damage event breakdowns carry raw, armor, Ward, Weakened, Rupture, Guard, Hold and actual pool removed. Rejection precedence is exported as `REJECTION_CODES`. `Preview.events` belongs to the selected command; `forecast` is the following `endPhase` result, or null after an ending command.
 
-View modules export final mount/art/audio signatures. `BattleSession` is the browser-free contract for Q05's future `src/view/session.ts`; `mountBattle` accepts null during scaffold/loading. Its options contain the shared Phaser game, audio, fight options and exit callback. `mountSelect` receives a `StartHandler` accepting a fight or gauntlet request. Q06 replaces silent audio; Q07 supplies labelled art descriptions and hit regions for Q05 to render; Q08 replaces selection and supplies gauntlet flow.
+View modules export final mount/art/audio signatures. `BattleSession` is the browser-free contract for Q05's future `src/view/session.ts`; `mountBattle` accepts null during scaffold/loading. Its options contain the shared Phaser game, audio, fight options and exit callback. `mountSelect` receives a `StartHandler` accepting a fight or gauntlet request. Q06 supplies synthesized audio cues; Q07 supplies labelled art descriptions and hit regions for Q05 to render; Q08 replaces selection and supplies gauntlet flow.
+
+## Synthesized audio (Q06)
+
+The six event-derived cues are hit, armor/Ward mitigation, component destruction,
+poison, Revelation and death. They use runtime Web Audio synthesis; no audio files
+or new licensed assets are loaded. The sound table is in `src/audio/index.ts`.
+
+Use one `createAudio()` player for the app session. It starts muted. Bind the mute
+control to `audio.setMuted(value)` and display `audio.muted`; the choice remains
+in effect across playback calls for that session. A pointer or keyboard gesture
+initializes/resumes Web Audio. Missing or blocked audio stays silent.
+
+Pass committed events to `audio.play(cuesFor(events))`. Each qualifying event
+contributes its cues, including hit plus armor for a partially mitigated hit.
+Previews must not play cues. Audio never calls rules or changes combat state.
 
 ## Placeholder art (Q07)
 
