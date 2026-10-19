@@ -146,7 +146,7 @@ Acceptance (contract tests with test-owned content, black-box through `applyComm
 4. Components (brief §4): no overflow into life; destruction cancels exactly that part's unresolved intents and releases its restraint; shielding and its removal; Ward; armor; magical and poison bypasses.
 5. Brood damage follows brief §4.3's order, including Guard ⌈d/2⌉, physical-only Hold −2, Weakened, Ugallu's Rupture +1 and the Saw's +14 on the actual recipient.
 6. Every row of brief §5, every action in §6 and §6.1, and every rule in §7 has at least one passing test, including crossing kind by gain source, the burn while transformed, expiry to ⌊cap/2⌋, victory reset, death without reset, and multiple crossings in roster order.
-7. Every edge case E01–E50 (brief §13) has a named test, except E45, which is tested in Q03.
+7. Every edge case E01–E51 (brief §13; E51 added 2026-10-19 by brief amendment A2) has a named test, except E45, which is tested in Q03.
 8. Enemy targeting rules (brief §8), including ledger ties and the Utter fallback, are tested with constructed states.
 9. Gauntlet: `continue` is valid only in `between-fights`; carried and reset fields follow brief §10; a defeat ends the run; a dead Brood stays dead.
 10. Preview equivalence: for every legal action in a representative set of states, `previewCommand(...).events` equals the `applyCommand` events, and the live state is unchanged.

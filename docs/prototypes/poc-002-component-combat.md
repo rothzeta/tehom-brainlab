@@ -34,7 +34,18 @@ A victory count cannot answer this. The evidence must show that the best choice 
 | H5 | Attrition creates continue-or-retry decisions | Gauntlet search: the trio loses, or every duo wins with more than 60% HP left | Testers restart after a death in the gauntlet rather than continue |
 | H6 | Component selection is usable at 1280×720 | Not automated (the browser harness checks that hit regions exist) | Small parts (tongue, hand) are mis-selected |
 
-Other automated warning signals: an action is used in fewer than 5% of searched decisions where it was designed to matter (Pincer, Hold, Anzû's Guard); a winning duo or trio line needs more than 10 rounds; every round-1 opening ties within 2 HP (the decision is indifferent); harmless-enemy cleanup lasts more than 2 rounds after the last threat is removed. Search is heuristic: a "loss" means no win was found, never that none exists.
+Other automated warning signals: an action is used in fewer than 5% of searched decisions where it was designed to matter (Pincer, Hold, Anzû's Guard); a winning duo or trio line needs more than 10 rounds; every round-1 opening ties within 2 HP (the decision is indifferent); harmless-enemy cleanup lasts more than 2 rounds after the last threat is removed.
+
+*Signal definitions for the Q04 harness (A2-12):*
+
+- **Opening class:** the single (enemy instance, part) that receives all of the round-1 direct damage. The class is `mixed` if more than one part does, and `control` if none does. A body counts as that enemy's core.
+- **Dominance:** one class is the best in at least 6 of the 7 parties for an encounter, and in each of those parties every other class loses or ends at least 10 HP worse. A party where no opening wins counts against dominance.
+- **Indifference:** in a party and encounter, every winning opening ends within 2 HP of the best.
+- **Policy matches search:** a fixed policy ends within 10% of the best searched surviving HP, or both lose, in at least 75% of the cells where it applies.
+- **Rare action:** in the best searched lines across the sweep, the action is under 5% of its Brood's actions in the cells containing that Brood.
+- **Disabling first:** Girtablilu's first action is Pincer on a component.
+- **Revoke every Saw:** every declared Saw in the line is revoked.
+- **Cleanup:** the number of rounds from the first round in which no living enemy declares a damaging intent, to victory. The Warden always declares the pulse, so its cleanup is 0. Search is heuristic: a "loss" means no win was found, never that none exists.
 
 ## Scope and non-goals
 
@@ -92,9 +103,11 @@ Commands, each carrying `expectedRevision`:
 
 Target forms: a part `{enemy, part}`; an enemy `{enemy}` (Rupture Venom); an intent `{intent}` (Revoke); a Brood `{brood}` (Hold, Salve); none (Guard).
 
-Each accepted command increments the revision by exactly 1 and returns its ordered events. A rejected command changes nothing, consumes nothing and returns no events. The rejection codes form a closed set, checked in this order:
+Each accepted command increments the revision by exactly 1 and returns its ordered events. *(A2-4)* The revision is per run: it is never reset between gauntlet fights. Intent IDs are unique within a fight; the round restarts at 1 in each fight. A rejected command changes nothing, consumes nothing and returns no events. The rejection codes form a closed set, checked in this order:
 
 `invalid-command` (malformed) → `stale-revision` → `wrong-phase` → `unknown-actor` → `actor-dead` → `already-acted` → `unknown-action` → `action-unavailable` (not in the kit, blocked by a form or Pinned) → `no-item-uses` → `illegal-target`.
+
+*(A2-3)* `invalid-command` covers only a structurally malformed command: an unknown command kind, a missing field or a wrong JSON type. `unknown-action` is an action ID absent from content. `action-unavailable` is an action outside the actor's kit, or blocked by a form or Pinned. `illegal-target` covers a target whose form does not match the action, an unknown enemy, part, intent or Brood ID, and any target that is invalid under §4–§9.
 
 `endPhase` forfeits the unused actions of living Brood. It then resolves the enemy phase and the end of the round, and declares the next round, all within that one command.
 
@@ -120,7 +133,7 @@ Round r starts at 1.
 4. **End of round.**
    - E1: poison ticks, in encounter order (§5).
    - E2: Girtablilu's transformation HP loss (§7).
-   - E3: outcome check.
+   - E3: outcome check. *(A2-1)* E1 and E2 form **one unit**: every tick and the E2 loss are applied before this single check, even if a tick kills the last enemy. If both sides are then at 0, the result is defeat (§3.5, E01).
    - E4: round-scoped statuses expire: Guard, Hold, Weakened, Ward, and Pinned or Clamped whose last round is r.
    - E5: transformations whose last round is r end; Revelation becomes ⌊cap/2⌋.
    - E6: the ledger rolls over.
@@ -160,6 +173,8 @@ Apply these steps in order:
 4. **Floor:** d = max(0, d).
 5. **Mitigation:** if the recipient is Guarding, d = ⌈d/2⌉. Otherwise, if the recipient is Ugallu with Hold active and the hit is physical, d = max(0, d − 2).
 
+*(A2-5)* Steps 2–5 apply only to enemy intent hits. A Revelation burn (§7) and Girtablilu's E2 loss are not hits: Weakened, Rupture +1, Guard and Hold do not change them, and they trigger no retaliation. The E2 loss is emitted as `brood-damaged`, with a `form` source.
+
 Riders (Revelation, Pinned, Clamped) apply only if the recipient survives the hit. Guard and Hold never reduce them **[A, from source 2]**. HP never goes below 0, and a Brood at 0 HP is dead.
 
 ### 5. Statuses
@@ -168,7 +183,7 @@ Riders (Revelation, Pinned, Clamped) apply only if the recipient survives the hi
 | --- | --- | --- | --- | --- |
 | Poison P | Enemy | Envenom | At E1: the body loses P, then P decreases by 1. P ≤ 6 | P reaches 0; enemy death; Rupture Venom sets P = 0 |
 | Weakened | Enemy | Envenom on a living part | −3 to each of that enemy's physical hits this round (all its physical intents). Reapplying does not stack | E4 of the round it was applied |
-| Ward | Enemy | Scribe's Inscribe | −3 to every direct physical or magical hit on any of its parts, retaliation included | Next declaration (the next Inscribe re-declares). Ends at once if the hand is destroyed, the Scribe dies or Inscribe is revoked. Wards never stack |
+| Ward | Enemy | Scribe's Inscribe | −3 to every direct physical or magical hit on any of its parts, retaliation included | E4 of the round it was declared; the next round's Inscribe declares it again *(A2-2)*. Ends at once if the hand is destroyed, the Scribe dies or Inscribe is revoked. Wards never stack |
 | Guard | Brood | Guard | Each hit: d = ⌈d/2⌉ | E4 |
 | Hold | Ugallu | Hold the Threshold | §6.1 | E4 |
 | Pinned | Brood | Guard's Pin, applied in round r | Through round r+1: cannot Guard and cannot use Hold; Ugallu cannot Hold for a Pinned ally | E4 of r+1; at once if the limb is destroyed or the Guard dies |
@@ -212,7 +227,7 @@ Every Brood also has **Guard** `guard`: until E4, each hit on it deals ⌈d/2⌉
 | Brood | Rapture (own crossing) | Rupture (imposed crossing) |
 | --- | --- | --- |
 | Ugallu | Claw and Rend +3 and ignore all armor (not Ward). Cannot Guard or use Hold | Cannot use Hold. Each enemy hit on Ugallu +1 |
-| Girtablilu | Envenom sets P = 6. Rupture Venom deals 3×P. Loses 2 HP at E2 | Envenom and Rupture Venom unavailable. Loses 3 HP at E2 |
+| Girtablilu | Envenom sets P = 6, instead of P + 3, under the same living-part condition *(A2-6)*. Rupture Venom deals 3×P. Loses 2 HP at E2 | Envenom and Rupture Venom unavailable. Loses 3 HP at E2 |
 | Anzû | Stolen Bolt deals 12. Revoke may target any declared intent, body-sourced ones included. Cannot Guard | Stolen Bolt and Revoke unavailable |
 
 A Guard or Hold already active when a form starts stays active until E4. "Cannot" restricts only choosing the action.
@@ -254,7 +269,7 @@ A destroyed part removes exactly its listed function. Its slots are skipped, nev
 | Part | Pool | Armor | Living | Function |
 | --- | --- | --- | --- | --- |
 | `core` (body) | life 60 | 0 | yes | Always targetable. **Pulse** `pulse`, every round, declared last: 1 magical to every Brood. Non-removable [P2]; only Anzû's Rapture can Revoke it for one round |
-| `clamp` | 20 | 3 | no | **Clamp** `clamp`, rounds with r mod 3 = 1: 4 physical + Clamped. Target: the highest Revelation (ties: the lowest current HP) |
+| `clamp` | 20 | 3 | no | **Clamp** `clamp`, rounds with r mod 3 = 1: 4 physical + Clamped. Target: the highest Revelation (ties: the lowest current HP); a transformed Brood counts at its cap *(A2-7)* |
 | `saw` | 30 | 3 | no | **Saw** `saw`, rounds with r mod 3 = 2: 6 physical, +14 if the actual recipient is Clamped. Target: the Clamped living Brood, else the highest current HP. A Saw hit consumes the recipient's Clamped status |
 | `choir` | 18 | 0 | yes | **Hymn** `hymn`, rounds with r mod 3 = 0: 3 magical to every Brood, then +4 Revelation each |
 
@@ -280,14 +295,14 @@ This is source 2's Clamp → Saw → Choir cycle with the [P2] pulse. Destroying
 - **Gauntlet** `gauntlet-v1`: fresh start, any party of one to three. The fights are `guard-scribe` → `guard-beast` → `warden`.
   - **Carried** between fights: each surviving Brood's HP and Revelation (after the victory reset of §7), deaths and remaining Salve uses.
   - **Reset** for each fight: round 1, statuses, poison, Wards, transformations, the ledger, intents and actions.
-  - After a victory with fights remaining, the phase is `between-fights` until a recorded `continue`. Dead Brood stay dead, and the fallen are shown but cannot act. There is no healing other than Salves.
+  - After a victory with fights remaining, the phase is `between-fights` until a recorded `continue`. *(A2-9)* The victory reset of §7 happens when the fight is won, and `continue` builds the next fight from the carried values. No `act` is valid between fights, so Salves cannot be used there. Dead Brood stay dead, and the fallen are shown but cannot act. There is no healing other than Salves.
   - A defeat in any fight ends the run in `defeat`. Winning fight 3 ends it in `victory`.
 
 ### 11. Information display and previews
 
 - **All numbers are visible** **[C]**: HP and max, Revelation and cap, part pools and armor, poison P, every status with its last round, Ward, transformations with `untilRound`, Salve uses and the round.
 - **Declared intents** are listed in resolution order, each with its source part, kind, target (or "all Brood"), damage type, base amount and conditional modifiers. Each also shows the expected damage computed through the real rules: the forecast below. Cancelled and revoked intents stay listed, struck through, with the reason.
-- **Preview:** selecting an action and target previews it by running the real transition on a cloned state. The preview shows the resulting events and deltas, and a forecast of the following enemy phase and end of round, run as `endPhase` on the clone. A preview never mutates live state. Committing the same command produces exactly the previewed events.
+- **Preview:** selecting an action and target previews it by running the real transition on a cloned state. The preview shows the resulting events and deltas, and a forecast of the following enemy phase and end of round, run as `endPhase` on the clone. A preview never mutates live state. Committing the same command produces exactly the previewed events. *(A2-8)* Previewing `endPhase` shows its own result, and its forecast is null. A preview whose result ends the battle also has a null forecast.
 - Invalid targets are shown as invalid, with the reason (shielded, destroyed, not a component, dead, Pinned).
 
 ### 12. Records and content (portable format) [C]
@@ -303,7 +318,7 @@ This is source 2's Clamp → Saw → Choir cycle with the [P2] pulse. Destroying
 | # | Case | Rule |
 | --- | --- | --- |
 | E01 | Enemy and party both reach 0 in one unit (e.g. Rupture Venom kills the last enemy, then a Revelation burn kills the last Brood) | Defeat |
-| E02 | Last enemy killed by retaliation or a poison tick | Immediate victory at the end of that unit (E1 → E3 for ticks) |
+| E02 | Last enemy killed by retaliation or a poison tick | Retaliation: victory at the end of that intent's unit. Poison tick: the remaining ticks and E2 still apply, then E3 decides; if E2 kills the last Brood, the result is defeat *(A2-1)* |
 | E03 | Overkill | Discarded. It never carries to another part, enemy or fight |
 | E04 | Component destroyed during the player phase | Its declared intents are cancelled before the enemy phase; the schedule does not shift; no substitute attack |
 | E05 | Declared target dies before its intent resolves | Intent skipped; no retargeting |
@@ -325,14 +340,14 @@ This is source 2's Clamp → Saw → Choir cycle with the [P2] pulse. Destroying
 | E21 | Weakened enemy uses a magical intent | No effect; magical intents ignore Weakened |
 | E22 | Weakened on Pin (2 − 3) | 0 damage; Pinned still applies if the recipient survives |
 | E23 | Two Pinned or Clamped Brood | Impossible: one Guard or Warden per encounter, Clamp only in r mod 3 = 1, expiring E4 of r+1 |
-| E24 | Clamp recipient dies before the Saw | The Saw targets the highest current HP at its declaration |
+| E24 | Clamp recipient dies before the Saw | Dies in the Clamp's round: the next round's Saw is declared at the highest current HP. Dies after the Saw is declared: the Saw is skipped (E05) *(A2-10)* |
 | E25 | Clamp destroyed between Clamp and Saw | Clamped released at once; the Saw keeps its declared target but gets no +14 |
 | E26 | Revelation crossing and death in the same unit | No transformation |
 | E27 | Area Revelation crosses several Brood | Each transforms, in roster order, after the intent resolves |
 | E28 | Revelation gain while transformed | HP loss equal to the gain; can kill; Guard does not reduce it |
 | E29 | A Brood transformed at victory | Transformation ends; Revelation = ⌊cap/2⌋, carried in the gauntlet |
 | E30 | Death while transformed | Transformation ends; no reset; the Brood stays dead for the run |
-| E31 | Revelation gain larger than the gap to the cap | Clamped to the cap; the excess is discarded (not burned) |
+| E31 | Revelation gain larger than the gap to the cap | Capped at the cap; the excess is discarded (not burned) |
 | E32 | Guard or Hold active when a form forbids it | Stays active until E4 |
 | E33 | Ugallu Rupture with Guard | +1 is added before halving |
 | E34 | Hold the Threshold on a Pinned ally, or while Ugallu is Pinned | `illegal-target` / `action-unavailable` |
@@ -352,6 +367,26 @@ This is source 2's Clamp → Saw → Choir cycle with the [P2] pulse. Destroying
 | E48 | A Pinned or Clamped Brood | Still acts normally; Pinned only blocks Guard and Hold |
 | E49 | Revoke the Saw, or the Clamp intent | Revoking the Saw leaves Clamped in place until it expires; revoking the Clamp means no Clamped is applied |
 | E50 | Ugallu dies while holding an ally | Later intents are not redirected; Hold ends with Ugallu |
+| E51 | The held ally dies before an intent that targets it | The intent is skipped (E05), not redirected: the target check (§3.3a) comes before the redirect (§3.3b) *(A2-11)* |
+
+### Amendment A2 (2026-10-19): consistency rulings
+
+Requested by the Coordinator after a Q02 S1 stop (the Q02 report `docs/mailbox/poc-002-q02/implementer.md`, on branch `p2-q02` at `49b442d`). Every ruling matches the tuning simulator's behaviour, so no number changes and the [tuning check](#tuning-check-v1) stands. Each changed passage carries its tag.
+
+| Tag | Section | Question | Ruling |
+| --- | --- | --- | --- |
+| A2-1 | §3.4, E02 | Does a poison tick that kills the last enemy win before E2? | No. E1 and E2 are one unit, checked once at E3, with defeat precedence. E02 is corrected |
+| A2-2 | §5 Ward, §3.4 E4 | Does the Ward end at E4 or at the next declaration? | At E4; the next round's Inscribe declares it again (no observable difference) |
+| A2-3 | §2 | Which code applies to a wrong target form, an unknown ID, or an action outside the kit? | `illegal-target` for target problems; `unknown-action` for an unknown ID; `action-unavailable` for an action outside the kit or blocked; `invalid-command` only for malformed structure |
+| A2-4 | §2 | Is the revision reset between gauntlet fights? Are intent IDs unique? | The revision runs for the whole run; intent IDs are unique within a fight |
+| A2-5 | §4.3 | Do Guard, Hold, Weakened and Rupture +1 apply to Revelation burns and E2 loss? How is E2 loss emitted? | No; they apply to enemy intent hits only, and burns trigger no retaliation. E2 loss is `brood-damaged` with a `form` source |
+| A2-6 | §7 | Does Girtablilu's Rapture Envenom set P = 6 unconditionally? | Only under Envenom's living-part condition |
+| A2-7 | §8.4 | Is a transformed Brood eligible as the Clamp's target? | Yes, counted at its cap |
+| A2-8 | §11 | What does a preview of `endPhase` forecast? | Its forecast is null; so is the forecast of a preview that ends the battle |
+| A2-9 | §10 | When do the gauntlet resets happen? Can a Salve be used between fights? | The victory reset happens at victory; `continue` builds the next fight. No `act` is valid between fights |
+| A2-10 | E24, E31 | Clamped Brood dies before the Saw; wording of "Clamped to the cap" | Split by timing (E24); E31 now says "capped", not "Clamped" |
+| A2-11 | new E51 | The held ally dies before an intent that targets it | The intent is skipped, not redirected |
+| A2-12 | Hypotheses and falsifiers | How Q04 computes its signals | Definitions added for opening class, dominance, indifference, policy match, rare action, disabling first, Revoke every Saw, and cleanup |
 
 ## Tuning check (v1)
 
