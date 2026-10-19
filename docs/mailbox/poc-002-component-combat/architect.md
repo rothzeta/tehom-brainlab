@@ -5,6 +5,7 @@ outcome: "ADR-0007, the POC 002 brief with a complete numerical specification v1
 source_baseline: 19af724
 candidate_revision: 6ae41af
 amendment_revision: dcd4b44
+amendment_2_revision: 835a09c
 artifacts:
   - docs/adr/0007-poc-002-component-combat.md
   - docs/adr/README.md
@@ -173,3 +174,25 @@ Coordinator-authorized follow-up, resolving the first discovery of the [Q10 repo
 - **Brief §12:** a dated note that a record may be unfinished. Its `finalState` is the state at export, in `player` or `between-fights`, and replay reports the final phase in place of an outcome.
 
 No rule, number or other checkpoint changes. The Q10 protocol's export instruction ("export first if the build allows it") still holds. Links and anchors in both edited files resolve (0 missing), and `git diff --cached --check` is clean. The handoff block, with `amendment_revision` added, was revalidated with the temporary-copy validator: exit 0, `ok: true`, `diagnostics: []`, and all three revisions resolved.
+
+## Amendment 2 (2026-10-19): end-of-round unit and consistency sweep
+
+This is a Coordinator-authorized brief amendment after the Q02 S1 stop (`docs/mailbox/poc-002-q02/implementer.md`, branch `p2-q02` at `49b442d`, read-only). Commit `835a09c` (`amendment_2_revision`) changes the brief, adding [Amendment A2](../../prototypes/poc-002-component-combat.md#amendment-a2-2026-10-19-consistency-rulings) with tags inline. It also updates plan Q02 acceptance 7 to cover E01–E51.
+
+**The Q02 question.** E1 poison and E2 Girtablilu's transformation HP loss are **one unit**, followed by a single outcome check at E3 with defeat precedence. A tick that kills the last enemy therefore does not pre-empt E2. If E2 kills the last Brood, the result is defeat. §3.4 stands and E02 was corrected. This is what the tuning simulator implemented, so no tuning changes and the simulator did not need rerunning.
+
+**Sweep.** I cross-checked §3 against §6–§10, the rules against E01–E50, the brief against plan Q02–Q08, and the brief against the Q01 contracts in `src/core/types.ts`, which already provide a `form` damage source and a null forecast. The remaining rulings:
+
+- **A2-2:** the Ward ends at E4, in agreement with §3.4.
+- **A2-3:** the scope of each rejection code for targets and actions.
+- **A2-4:** the revision runs for the whole gauntlet; intent IDs are unique within a fight.
+- **A2-5:** Guard, Hold, Weakened and Rupture +1 apply only to enemy intent hits, not to burns or E2 loss. E2 loss is emitted as `brood-damaged` with a `form` source.
+- **A2-6:** Girtablilu's Rapture Envenom keeps the living-part condition.
+- **A2-7:** a transformed Brood is eligible for the Clamp, counted at its cap.
+- **A2-8:** previewing `endPhase`, or a battle-ending command, gives a null forecast.
+- **A2-9:** the gauntlet reset timing; no `act` between fights.
+- **A2-10:** E24 is split by timing, and E31's wording is fixed.
+- **A2-11:** new E51: a held ally that dies before an intent targeting it means the intent is skipped, not redirected.
+- **A2-12:** definitions of the Q04 harness signals: opening class, dominance, indifference, policy match, rare action, disabling first, Revoke every Saw, and cleanup.
+
+**Checks.** The link check found 0 missing links in the brief and plan; the reference to the Q02 report is given as a path because that branch is not merged. `git diff --check` was clean. Only these two files were staged, by name, after confirming that no merge was in progress. The handoff block, with `amendment_2_revision` added, was revalidated with the temporary-copy validator: exit 0, `ok: true`, `diagnostics: []`, all four revisions resolved.
