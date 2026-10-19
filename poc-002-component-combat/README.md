@@ -1,6 +1,6 @@
 # POC 002 — Component combat
 
-Q01 scaffold for the [component-combat experiment](../docs/prototypes/poc-002-component-combat.md): choosing which enemy function to remove, poison and Revelation, with parties of one to three and a three-fight gauntlet. Q01 delivers validated content, public contracts and a visible shell. Playable rules and screens arrive in later checkpoints; the current canvas and screen labels are placeholders.
+Prototype for the [component-combat experiment](../docs/prototypes/poc-002-component-combat.md): choosing which enemy function to remove, poison and Revelation, with parties of one to three and a three-fight gauntlet. Q01 delivers validated content, public contracts and a visible shell; Q02 adds headless rules, previews and fight records. Browser combat and selection wiring arrive in later checkpoints; the current canvas and screen labels are placeholders.
 
 ## Run from the repository root
 
@@ -11,7 +11,7 @@ Docker is the default. The wrapper checks the daemon and uses the pinned Bun ima
 | `just poc-002-install` | Q01 | `bun install --frozen-lockfile` |
 | `just poc-002-dev` | Q01 | Development shell at http://localhost:5273 |
 | `just poc-002-typecheck` | Q01 | Strict TypeScript check |
-| `just poc-002-test` | Q01, Q06, Q07 | Content, assets, wrapper, audio and art contract tests |
+| `just poc-002-test` | Q01, Q02, Q06, Q07 | Content, core, seed parity, assets, wrapper, audio and art contract tests |
 | `just poc-002-build` | Q01 | Verify/copy assets and build `dist/` |
 | `just poc-002-preview` | Q01 | Built shell at http://localhost:4273 |
 | `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, host Chrome smoke check, temporary artifacts |
@@ -43,9 +43,21 @@ Bun **1.4.2**, Phaser **4.2.1**, TypeScript **7.0.2**, Vite **8.3.2**, Vitest **
 
 Content is structured as `brood`, `actions` (closed effects), `forms` (closed modifiers), `enemies` (parts and ordered intents), `encounters`, `gauntlets`, `starts` and `fightSalveUses`. Schedules use `every-round` or `modulo` with divisor/remainder and a match flag. Form/restraint durations count the application round: `untilRound = round + durationRounds - 1`. Array order preserves roster, encounter and declaration order. No expressions or executable content are accepted.
 
-Public implementations planned for Q02/Q03: `createFight`, `createGauntlet`, `applyCommand`, `previewCommand`, `legalActions`, `recordOf`, `parseRecord`, `replayRecord`. `CoreApi` gives their exact signatures. `applyCommand` accepts `unknown` so malformed commands can be rejected atomically. Damage event breakdowns carry raw, armor, Ward, Weakened, Rupture, Guard, Hold and actual pool removed. Rejection precedence is exported as `REJECTION_CODES`. `Preview.events` belongs to the selected command; `forecast` is the following `endPhase` result, or null after an ending command.
+Public implementations available from Q02: `createFight`, `createGauntlet`, `applyCommand`, `previewCommand`, `legalActions`, `recordOf`, `parseRecord`, `replayRecord`. `CoreApi` gives their exact signatures. `applyCommand` accepts `unknown` so malformed commands can be rejected atomically. Damage event breakdowns carry raw, armor, Ward, Weakened, Rupture, Guard, Hold and actual pool removed. Rejection precedence is exported as `REJECTION_CODES`. `Preview.events` belongs to the selected command; `forecast` is the following `endPhase` result, or null after an ending command.
 
 View modules export final mount/art/audio signatures. `BattleSession` is the browser-free contract for Q05's future `src/view/session.ts`; `mountBattle` accepts null during scaffold/loading. Its options contain the shared Phaser game, audio, fight options and exit callback. `mountSelect` receives a `StartHandler` accepting a fight or gauntlet request. Q06 supplies synthesized audio cues; Q07 supplies labelled art descriptions and hit regions for Q05 to render; Q08 replaces selection and supplies gauntlet flow.
+
+## Headless combat core (Q02)
+
+The deterministic combat API is exported from `src/core/index.ts`: `loadContent`, `createFight`, `createGauntlet`, `applyCommand`, `legalActions`, `previewCommand`, `recordOf`, `parseRecord` and `replayRecord`. The core implements all Brood actions, Salves, components, declared enemy intents, statuses and six Revelation forms from the brief, including Amendment A2. It has no renderer, audio, browser, clock, random or I/O dependencies.
+
+Commands carry `expectedRevision`. Rejections preserve state and return empty events; accepted commands return a new state, ordered events and one revision increment. Gauntlet revisions continue across fights. Between victories, `continue` builds the next fight using surviving HP/Revelation, permanent deaths and remaining Salves. Round-scoped state resets for the next fight.
+
+`previewCommand` uses the real dispatcher on a clone and forecasts the following `endPhase`; committing the same command produces identical events. An `endPhase` preview or a terminal result has no further forecast. `legalActions` shares the dispatcher validation.
+
+`recordOf` embeds the content, complete initial state, accepted commands with events/revisions, and final state. `parseRecord` checks the supported data format; `replayRecord` re-executes and compares ordered events, revisions and final state. Unfinished fights can be exported. Q03 supplies the replay CLI, full run/hostile corpus and size limits.
+
+Run `just poc-002-test` from the repository root for contract and seed parity checks. Contract tests use their own tuning; `fixtures/parity/seed-girtablilu-guard.json` and `seed-ugallu-warden.json` pin the brief's v1 witnesses with embedded content. Their events and final states replay exactly. This checkpoint supplies headless behavior; battle/selection/session wiring belongs to its UI checkpoints.
 
 ## Synthesized audio (Q06)
 
@@ -78,6 +90,6 @@ Patterns copied from `poc-001-linked-formation/` at **c82ec3c**:
 - `package.json`, `bun.lock`, `tsconfig.json`, `vite.config.ts`, `vitest.config.ts` and `.gitignore`: exact dependency pins, resolved lockfile graph, strict checking, build/test setup and generated-asset ignore. JSON package metadata records provenance; the version file and lockfile retain their machine-readable formats, with provenance here.
 - `scripts/prepare-assets.mjs` and `tests/asset-copy.test.ts`: bounded, hash-verified asset preparation and public-boundary verification (Q01 test name `q01-assets.test.ts`).
 - `scripts/browser-checks.mjs` and `tests/browser-lab.mjs`: Chrome discovery, production preview lifecycle and CDP harness pattern (Q01 test name `browser-smoke.mjs`).
-- `src/core/commands.ts`: atomic rejection result envelope, empty rejected events and expected revision seam, declared here in `types.ts` for Q02 implementation.
+- `src/core/commands.ts`: atomic rejection result envelope, empty rejected events and expected revision seam, declared in `types.ts` and implemented independently by Q02.
 
 These are independent copies; no POC 001 runtime imports or formation content are used.
