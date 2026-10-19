@@ -91,3 +91,11 @@ poc-002-test-browser *args:
 # POC 002: replay a locally exported attempt.
 poc-002-replay *args:
     @./poc-002-component-combat/bin/run replay "$@"
+
+# POC 002: sweep combat scenarios.
+poc-002-sweep *args:
+    @./poc-002-component-combat/bin/run sweep "$@"
+
+# POC 002: probe combat policies.
+poc-002-probe *args:
+    @./poc-002-component-combat/bin/run probe "$@"

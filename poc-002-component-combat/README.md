@@ -11,15 +11,15 @@ Docker is the default. The wrapper checks the daemon and uses the pinned Bun ima
 | `just poc-002-install` | Q01 | `bun install --frozen-lockfile` |
 | `just poc-002-dev` | Q01 | Development server at http://localhost:5273 |
 | `just poc-002-typecheck` | Q01 | Strict TypeScript check |
-| `just poc-002-test` | Q01–Q03, Q05–Q07 | Content, core, records, session/model, assets, wrapper, audio and art contract tests |
+| `just poc-002-test` | Q01–Q07 | Content, core, records, harness, session/model, assets, wrapper, audio and art contract tests |
 | `just poc-002-build` | Q01 | Verify/copy assets and build `dist/` |
 | `just poc-002-preview` | Q01 | Built prototype at http://localhost:4273 |
 | `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, battle and smoke harnesses, temporary artifacts |
 | `just poc-002-replay FILE` | Q03 | Validate and replay a fight or gauntlet record |
-| `./poc-002-component-combat/bin/run sweep` | Q04 | Exit 2 naming Q04 until `scripts/sweep.ts` exists |
-| `./poc-002-component-combat/bin/run probe` | Q04 | Exit 2 naming Q04 until `scripts/probe.ts` exists |
+| `just poc-002-sweep --quick` | Q04 | Search all 154 scenario cells and report signals |
+| `just poc-002-probe` | Q04 | Search Warden openings and compare fixed policies |
 
-Eight root recipes are available, including Q03 replay. Sweep and probe recipes arrive with Q04; their wrapper commands above currently report the implementing checkpoint and exit 2.
+All ten root recipes are available. Sweep and probe report heuristic search evidence; their flags are not balance gates.
 
 `POC002_MODE=host` explicitly selects host Bun; its version must match `.bun-version`. `POC002_PORT` overrides the dev/preview port. `POC002_BROWSER_PORT` overrides the browser preview port (default 4273); ports must be 1–65535. Browser containers use `poc-002-browser-` identities and are stopped after the check. POC 001 uses separate application ports. Concurrent POC 002 browser checks must wait for the shared default port.
 
@@ -86,6 +86,16 @@ and unfinished exports. Every record embeds frozen v1 content. Read
 `fixtures/parity/README.md` before intentionally authoring a new version; never
 edit parity JSON by hand. Negative fixtures live separately in `fixtures/hostile/`.
 Run `just poc-002-test` for all contract/parity/hostile checks.
+
+## Scenario sweep and policy probe (Q04)
+
+From the repository root run `just poc-002-sweep --quick` for all 147 party/encounter/start cells and seven gauntlets. Omit `--quick` for the default beam width 200; quick uses width 8. Both use depth 30 rounds per fight and an exhaustive solo opening prefix of four rounds. Override with `--width N`, `--depth N` and `--solo-depth 0..4`.
+
+`just poc-002-probe --encounter warden` enumerates distinct round-1 joint openings for all seven parties, with and without Salves, including action-order effects and forfeitures. Commuting equivalent openings are collapsed. Every opening continuation is searched with width 1 by default (`--probe-width N`); independent policy-reference fight/gauntlet searches use the main beam. Reports show best openings/classes and HP gaps, per-cell outcome/rounds/HP/Salves/action shares, six fixed-policy comparisons, and all falsification signals with triggering cells.
+
+Sweep's opening dominance/indifference analysis covers the named probe encounter; other encounters are beam samples. Every report states: heuristic search; a loss means no win was found. A best opening is relative to its continuation search, and flags are evidence rather than balance gates.
+
+`probe --breakpoints` independently applies ±1 and ±2 to every numeric content field and reports validation rejections plus fresh single-action exact/overkill breakpoints. Use `--json PATH` outside the repository for JSON. To persist JSON through Docker: `just poc-002-probe --json /dev/stdout > /tmp/poc002-probe.json`; the human report goes to stderr. Human reports can be captured with ordinary stdout redirection. No dependency or environment override is needed.
 
 ## Battle screen and sessions (Q05)
 
