@@ -59,3 +59,31 @@ poc-001-test-browser *args:
 # POC 001: replay a locally exported attempt.
 poc-001-replay *args:
     @./poc-001-linked-formation/bin/run replay "$@"
+
+# POC 002: install.
+poc-002-install *args:
+    @./poc-002-component-combat/bin/run install "$@"
+
+# POC 002: dev.
+poc-002-dev *args:
+    @./poc-002-component-combat/bin/run dev "$@"
+
+# POC 002: typecheck.
+poc-002-typecheck *args:
+    @./poc-002-component-combat/bin/run typecheck "$@"
+
+# POC 002: test.
+poc-002-test *args:
+    @./poc-002-component-combat/bin/run test "$@"
+
+# POC 002: build.
+poc-002-build *args:
+    @./poc-002-component-combat/bin/run build "$@"
+
+# POC 002: preview.
+poc-002-preview *args:
+    @./poc-002-component-combat/bin/run preview "$@"
+
+# POC 002: browser checks.
+poc-002-test-browser *args:
+    @./poc-002-component-combat/bin/run test-browser "$@"

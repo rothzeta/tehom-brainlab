@@ -8,18 +8,18 @@ Docker is the default. The wrapper checks the daemon and uses the pinned Bun ima
 
 | Command | Checkpoint | Current behaviour |
 | --- | --- | --- |
-| `./poc-002-component-combat/bin/run install` | Q01 | `bun install --frozen-lockfile` |
-| `./poc-002-component-combat/bin/run dev` | Q01 | Development shell at http://localhost:5273 |
-| `./poc-002-component-combat/bin/run typecheck` | Q01 | Strict TypeScript check |
-| `./poc-002-component-combat/bin/run test` | Q01 | Content, assets and wrapper contract tests |
-| `./poc-002-component-combat/bin/run build` | Q01 | Verify/copy assets and build `dist/` |
-| `./poc-002-component-combat/bin/run preview` | Q01 | Built shell at http://localhost:4273 |
-| `./poc-002-component-combat/bin/run test-browser` | Q01 | Fresh Docker build/preview, host Chrome smoke check, temporary artifacts |
+| `just poc-002-install` | Q01 | `bun install --frozen-lockfile` |
+| `just poc-002-dev` | Q01 | Development shell at http://localhost:5273 |
+| `just poc-002-typecheck` | Q01 | Strict TypeScript check |
+| `just poc-002-test` | Q01 | Content, assets and wrapper contract tests |
+| `just poc-002-build` | Q01 | Verify/copy assets and build `dist/` |
+| `just poc-002-preview` | Q01 | Built shell at http://localhost:4273 |
+| `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, host Chrome smoke check, temporary artifacts |
 | `./poc-002-component-combat/bin/run replay FILE` | Q03 | Exit 2 naming Q03 until `scripts/replay.ts` exists |
 | `./poc-002-component-combat/bin/run sweep` | Q04 | Exit 2 naming Q04 until `scripts/sweep.ts` exists |
 | `./poc-002-component-combat/bin/run probe` | Q04 | Exit 2 naming Q04 until `scripts/probe.ts` exists |
 
-The integration owner adds the root `just poc-002-*` recipes after merging the corresponding checkpoint. Until then use the wrapper directly.
+The seven Q01 root recipes are available now. Replay, sweep and probe recipes arrive with Q03/Q04; their wrapper commands above currently report the implementing checkpoint and exit 2.
 
 `POC002_MODE=host` explicitly selects host Bun; its version must match `.bun-version`. `POC002_PORT` overrides the dev/preview port. `POC002_BROWSER_PORT` overrides the browser preview port (default 4273); ports must be 1–65535. Browser containers use `poc-002-browser-` identities and are stopped after the check. POC 001 uses separate application ports. Concurrent POC 002 browser checks must wait for the shared default port.
 

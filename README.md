@@ -18,7 +18,7 @@ tehom-brainlab/
 ├── bin/                         # Executable CLI entry points
 ├── tools/                       # Supporting utility resources
 ├── poc-001-linked-formation/     # First independent combat experiment
-└── poc-002-component-combat/     # Planned: component-targeting combat (not yet created)
+└── poc-002-component-combat/     # Component-targeting combat scaffold (Q01)
 ```
 
 Each prototype lives directly under the repository root, named `poc-NNN-short-name/`. Its dependencies, source code, configuration, tests, and eventual run instructions belong inside that folder. There is no root application or mandatory package workspace.
@@ -28,13 +28,13 @@ Each prototype lives directly under the repository root, named `poc-NNN-short-na
 | Prototype | Question | Status |
 |---|---|---|
 | [001 — Linked formation](poc-001-linked-formation/README.md) | Do rotation and expansion create interesting combat decisions without useless character turns? | Playable in the browser: formation lab, patrol, Crucible and Collector (P01–P11 and P13–P17 delivered; P12 superseded). AI-directed and automated attempts recorded; no human playtest report yet |
-| [002 — Component combat](docs/prototypes/poc-002-component-combat.md) | Does choosing which enemy function to remove, against waiting for venom or spending Revelation, produce worthwhile decisions? | Specified ([ADR-0007](docs/adr/0007-poc-002-component-combat.md), [plan](docs/plans/2026-10-19-db0bad72-poc-002-component-combat.md)); not implemented |
+| [002 — Component combat](poc-002-component-combat/README.md) | Does choosing which enemy function to remove, against waiting for venom or spending Revelation, produce worthwhile decisions? | Q01 scaffold: validated content, public contracts and browser shell; playable rules and screens pending |
 
-The implementation target for POC 001 is TypeScript + Phaser + Vite + Vitest; P01 pins and verifies a prototype-local toolchain (see its README). POC 002 will use the same stack. The production direction is a later C#/.NET rules port with Godot presentation, gated by recorded-battle parity ([ADR-0007](docs/adr/0007-poc-002-component-combat.md)); no prototype stack commits the production game.
+The implementation target for POC 001 is TypeScript + Phaser + Vite + Vitest; P01 pins and verifies a prototype-local toolchain (see its README). POC 002 uses the same stack. The production direction is a later C#/.NET rules port with Godot presentation, gated by recorded-battle parity ([ADR-0007](docs/adr/0007-poc-002-component-combat.md)); no prototype stack commits the production game.
 
 Use Bun by default for JavaScript/TypeScript runtime and dependency management, with a local `bun.lock` per prototype. Prefer Docker for dependency isolation and reproducible tooling where useful. Keep prototype-specific container configuration, scripts, and executables inside that prototype.
 
-Run `just` to list repository commands and `just doctor` to inspect available tooling. The root justfile delegates to implementations in `scripts/` through executable entry points in `bin/`. `just export-tokens` runs the existing optional PNG exporter; see the [asset instructions](assets/README.md). Eight `just poc-001-*` recipes install, develop, typecheck, test, build, preview, run the browser checks, and replay an exported attempt; see the [prototype run instructions](poc-001-linked-formation/README.md). The `just poc-002-*` recipes are proposed and will be added as their [checkpoints](docs/plans/README.md#poc-002--component-combat-q01q10) land.
+Run `just` to list repository commands and `just doctor` to inspect available tooling. The root justfile delegates to implementations in `scripts/` through executable entry points in `bin/`. `just export-tokens` runs the existing optional PNG exporter; see the [asset instructions](assets/README.md). Eight `just poc-001-*` recipes install, develop, typecheck, test, build, preview, run the browser checks, and replay an exported attempt; see the [prototype run instructions](poc-001-linked-formation/README.md). Seven `just poc-002-*` recipes install, develop, typecheck, test, build, preview and run browser checks; see the [Q01 scaffold instructions](poc-002-component-combat/README.md). Later recipes arrive with their [checkpoints](docs/plans/README.md#poc-002--component-combat-q01q10).
 
 `just agent-routing resolve ROLE` resolves the portable model catalogs to redacted JSON argv; `just agent-routing start ROLE NAME` starts that role through Herdr with optional explicit `--route` and `--pane`. `just test-agent-routing` verifies launch boundaries using stubs. See [routing commands and prerequisites](docs/exploitation/agent-routing.md).
 
@@ -57,6 +57,6 @@ Open [`docs/`](docs/README.md) as an Obsidian vault. Its [schema](docs/SCHEMA.md
 
 Read the [POC 001 brief](docs/prototypes/poc-001-linked-formation.md), the [POC 002 brief](docs/prototypes/poc-002-component-combat.md), the direction ADRs ([0004](docs/adr/0004-repository-and-poc-direction.md), [0007](docs/adr/0007-poc-002-component-combat.md)), and the [asset register](assets/manifest.json).
 
-POC 001 is playable in the browser (patrol, Crucible and Collector), with formation rules, combat, previews, and exportable replayable attempts; see [CURRENT](docs/CURRENT.md#boss-experiments-p13p17). Automated and AI-directed browser evidence does not constitute a human playtest. POC 002 is specified but not implemented.
+POC 001 is playable in the browser (patrol, Crucible and Collector), with formation rules, combat, previews, and exportable replayable attempts; see [CURRENT](docs/CURRENT.md#boss-experiments-p13p17). Automated and AI-directed browser evidence does not constitute a human playtest. POC 002 has a Q01 scaffold; playable rules and screens are pending.
 
 The follow-up [four-harness Coordinator trial](docs/mailbox/orchestrator-four-harness/results.md) compares Claude, Codex, OMP with Sonnet 5, and Agy with Gemini 3.8 Flash using the same canonical workflow and a durable worker-handoff contract. Its report separates delivery acceptance from role-boundary and lifecycle findings.
