@@ -108,6 +108,12 @@ export function createAudio(): AudioPlayer {
 
   return {
     play(cues) {
+      try {
+        const observe = (globalThis as typeof globalThis & {
+          __POC002_AUDIO_TEST_OBSERVER__?: (cues: readonly Cue[]) => void;
+        }).__POC002_AUDIO_TEST_OBSERVER__;
+        if (cues.length && typeof observe === 'function') observe([...cues]);
+      } catch { /* Test observation must not interrupt a committed action. */ }
       if (muted || cues.length === 0) return;
       try {
         // Also covers callers that play in a gesture before the document listener.

@@ -11,10 +11,10 @@ Docker is the default. The wrapper checks the daemon and uses the pinned Bun ima
 | `just poc-002-install` | Q01 | `bun install --frozen-lockfile` |
 | `just poc-002-dev` | Q01 | Development server at http://localhost:5273 |
 | `just poc-002-typecheck` | Q01 | Strict TypeScript check |
-| `just poc-002-test` | Q01–Q08 | Content, core, records, harness, session/model, assets, wrapper, audio and art contract tests |
+| `just poc-002-test` | Q01–Q09 | Content, core, records, harness, session/model, assets, wrapper, audio and art contract tests |
 | `just poc-002-build` | Q01 | Verify/copy assets and build `dist/` |
 | `just poc-002-preview` | Q01 | Built prototype at http://localhost:4273 |
-| `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, battle, run and smoke harnesses, temporary artifacts |
+| `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, battle, keyboard gauntlet, run and smoke harnesses, temporary artifacts |
 | `just poc-002-replay FILE` | Q03 | Validate and replay a fight or gauntlet record |
 | `just poc-002-sweep --quick` | Q04 | Search all 154 scenario cells and report signals |
 | `just poc-002-probe` | Q04 | Search Warden openings and compare fixed policies |
@@ -170,6 +170,24 @@ Reset and Return to selection discard the attempt. The next launch has fresh
 state, no prior commands and no pending preview. Export first to retain a record.
 Direct `?screen=battle&encounter=…&party=…&start=…` URLs use the same export and reset
 controls.
+
+## Integrated verification (Q09)
+
+`just poc-002-test-browser` discovers four browser harnesses: battle controls,
+selection/run/export, the original smoke checks, and a keyboard-only trio gauntlet.
+The keyboard harness launches from selection, reaches victory through all three
+fights, downloads the record and replays that actual file through `bin/run replay`.
+It checks that previews request no audio and that committed play requests all six
+cue kinds. These automated checks do not constitute a human playtest or listening
+assessment.
+
+For this test, `createAudio().play` supports an opt-in
+`globalThis.__POC002_AUDIO_TEST_OBSERVER__` callback. It receives an independent copy
+of each nonempty cue request before the mute check. Observer exceptions are ignored;
+no observer is installed by the app, and playback and mute behavior are unchanged.
+The browser harness installs its collector before loading the page. Screenshots,
+downloads, cue-request evidence and Chrome profiles stay under the OS temporary
+directory; profiles and the runner's preview container are cleaned up automatically.
 
 ## Assets and copied patterns
 
