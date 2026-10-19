@@ -4,6 +4,7 @@ status: complete
 outcome: "ADR-0007, the POC 002 brief with a complete numerical specification v1 (tuning checked by a disposable simulator) and a Q01-Q10 plan with disjoint ownership are committed; entry points are corrected. Ready for Q01."
 source_baseline: 19af724
 candidate_revision: 6ae41af
+amendment_revision: dcd4b44
 artifacts:
   - docs/adr/0007-poc-002-component-combat.md
   - docs/adr/README.md
@@ -163,3 +164,12 @@ Also stale, but neither protected nor assigned: `docs/prototypes/poc-001-linked-
 ## Validation
 
 The skill directory was copied to `/tmp/tmp.N1N53J4dvW/ruach-handoff`, and `bun install --frozen-lockfile` ran there: exit 0, 6 packages installed. Nothing was installed in the repository. From the worktree root, `bun /tmp/tmp.N1N53J4dvW/ruach-handoff/scripts/validate.ts docs/mailbox/poc-002-component-combat/architect.md --repo .` exited 0 with `schema_version: 1`, `ok: true` and `diagnostics: []`. It resolved `/source_baseline` to `19af7248b20fb7e97d9176370aeac01aab22fbfc` and `/candidate_revision` to `6ae41af6576e40f48a42450ad032c331f03e440a`. The run was repeated after this paragraph was inserted (below the YAML block).
+
+## Amendment (2026-10-19): unfinished-attempt export
+
+Coordinator-authorized follow-up, resolving the first discovery of the [Q10 report](../poc-002-q10/architect.md). Commit `dcd4b44` (`amendment_revision` above) changes two documents:
+
+- **Plan, Q08 acceptance 3:** export is available at any time during the current attempt, until Reset or Return to selection. This covers a fight or a gauntlet, finished or unfinished, after a Brood's death and in `between-fights`. Browser tests export unfinished attempts (mid-fight, and mid-gauntlet after a death) and replay each to the exported state.
+- **Brief §12:** a dated note that a record may be unfinished. Its `finalState` is the state at export, in `player` or `between-fights`, and replay reports the final phase in place of an outcome.
+
+No rule, number or other checkpoint changes. The Q10 protocol's export instruction ("export first if the build allows it") still holds. Links and anchors in both edited files resolve (0 missing), and `git diff --cached --check` is clean. The handoff block, with `amendment_revision` added, was revalidated with the temporary-copy validator: exit 0, `ok: true`, `diagnostics: []`, and all three revisions resolved.
