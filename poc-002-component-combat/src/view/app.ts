@@ -3,11 +3,11 @@ import rawContent from '../../content/combat-content.v1.json';
 import { loadContent } from '../core/content';
 import type { FightOptions } from '../core/types';
 import { createAudio } from '../audio';
-import { mountBattle } from './battle';
+import { mountRun } from './run';
 import { mountSelect } from './select';
 import type { StartHandler } from './select';
 
-/** Shell only: Q02/Q05 supply live rules and session; Q08 supplies selection. */
+/** One shared Phaser game/audio player across selection and complete attempts. */
 export function mountApp(root: HTMLElement): () => void {
   const content = loadContent(rawContent);
   const title = document.createElement('h1'); title.textContent = 'TEHOM — Component Combat';
@@ -22,12 +22,16 @@ export function mountApp(root: HTMLElement): () => void {
   });
   const audio = createAudio();
   const query = new URLSearchParams(location.search);
-  const onExit = () => { location.search = ''; };
-  const start: StartHandler = request => {
-    if (request.kind === 'fight') location.search = new URLSearchParams({ screen: 'battle', encounter: request.encounterId, party: request.party.join(','), start: request.start }).toString();
-    // Gauntlet flow is supplied by Q08.
+  let dispose: () => void = () => {};
+  const onExit = () => {
+    dispose();
+    history.replaceState(null, '', location.pathname);
+    dispose = mountSelect(panel, start);
   };
-  let dispose: () => void;
+  const start: StartHandler = request => {
+    dispose();
+    dispose = mountRun(panel, request, { content, game, audio, onExit });
+  };
   if (query.get('screen') === 'battle') {
     const encounter = content.encounters.find(e => e.id === (query.get('encounter') ?? 'guard'));
     const requested = (query.get('party') ?? content.brood.map(b => b.id).join(',')).split(',');
@@ -38,7 +42,7 @@ export function mountApp(root: HTMLElement): () => void {
       dispose = () => { panel.textContent = ''; };
     } else {
       const options: FightOptions = { encounterId: encounter.id, party, start: preset.id };
-      dispose = mountBattle(panel, null, { ...options, game, audio, onExit });
+      dispose = mountRun(panel, { kind: 'fight', ...options }, { content, game, audio, onExit });
     }
   } else dispose = mountSelect(panel, start);
   return () => { dispose(); game.destroy(true); root.replaceChildren(); };
