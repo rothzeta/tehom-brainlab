@@ -49,12 +49,24 @@ export function probeOpenings(c: Content, encounter: EncounterId, o: HarnessOpti
   }
   return groups;
 }
-function summaries(groups: PartyOpenings[]): OpeningSummary[] {
+function includeOpeningBests(cells: Cell[], groups: PartyOpenings[]): void {
+  for (const group of groups) {
+    if (!group.salves) continue;
+    const target = cells.find(cell => cell.id === `${group.party.join('+')}/${group.encounter}/fresh`);
+    if (!target) continue;
+    for (const { result } of group.results) {
+      if (result.outcome === 'victory' && (target.result.outcome !== 'victory' || result.hp > target.result.hp || result.hp === target.result.hp && result.rounds < target.result.rounds)) target.result = result;
+    }
+  }
+}
+function summaries(c: Content, groups: PartyOpenings[]): OpeningSummary[] {
   const best = (results: OpeningResult[]) => results.filter(r => r.result.outcome === 'victory').sort((a, b) => b.result.hp - a.result.hp || a.result.rounds - b.result.rounds)[0] ?? null;
   return groups.map(g => {
     const winner = best(g.results);
+    const initial = createFight(c, { encounterId: g.encounter as EncounterId, party: g.party, start: 'fresh' });
+    const classes = ['control', 'mixed', ...initial.enemies.flatMap(e => e.parts.map(p => `${e.id}/${p.kind === 'body' ? 'core' : p.id}`))];
     return { ...g, count: g.results.length, wins: g.results.filter(r => r.result.outcome === 'victory').length, best: winner,
-      classes: [...new Set(g.results.map(r => r.opening.class))].sort().map(cls => {
+      classes: [...new Set(classes)].sort().map(cls => {
         const result = best(g.results.filter(r => r.opening.class === cls));
         return { class: cls, best: result, hpGap: result && winner ? winner.result.hp - result.result.hp : null };
       }) };
@@ -69,7 +81,8 @@ export function sweep(c: Content, options: Partial<HarnessOptions> = {}, selecti
   }
   const encounter = selection.probeEncounter === undefined ? 'warden' : selection.probeEncounter;
   const groups = encounter ? probeOpenings(c, encounter, o, chosen) : [];
-  return { kind: 'sweep', caveat: CAVEAT, contentVersion: c.contentVersion, options: o, cells, openings: summaries(groups), signals: [...openingSignals(groups), ...sweepSignals(cells)],
+  includeOpeningBests(cells, groups);
+  return { kind: 'sweep', caveat: CAVEAT, contentVersion: c.contentVersion, options: o, cells, openings: summaries(c, groups), signals: [...openingSignals(groups), ...sweepSignals(cells)],
     openingCoverage: encounter ? `Every distinct joint round-1 opening for ${encounter}, fresh, with/without Salves; other encounters are beam samples.` : 'Opening enumeration not requested.' };
 }
 export function probe(c: Content, encounter: EncounterId = 'warden', options: Partial<HarnessOptions> = {}, scan = false): Report {
@@ -77,10 +90,11 @@ export function probe(c: Content, encounter: EncounterId = 'warden', options: Pa
   if (!c.encounters.some(e => e.id === encounter)) throw new Error(`Unknown encounter ${encounter}`);
   const groups = probeOpenings(c, encounter, o); const cells: Cell[] = [];
   for (const party of parties(c)) {
-    cells.push(cell(c, party, encounter, 'fresh', { ...o, width: o.probeWidth, soloDepth: 0 }));
-    cells.push(cell(c, party, 'gauntlet', c.gauntlets[0]!.start, { ...o, width: o.probeWidth, soloDepth: 0 }));
+    cells.push(cell(c, party, encounter, 'fresh', o));
+    cells.push(cell(c, party, 'gauntlet', c.gauntlets[0]!.start, o));
   }
-  return { kind: 'probe', caveat: CAVEAT, contentVersion: c.contentVersion, options: o, cells, openings: summaries(groups), signals: [...openingSignals(groups), ...sweepSignals(cells)],
+  includeOpeningBests(cells, groups);
+  return { kind: 'probe', caveat: CAVEAT, contentVersion: c.contentVersion, options: o, cells, openings: summaries(c, groups), signals: [...openingSignals(groups), ...sweepSignals(cells)],
     openingCoverage: `Every distinct joint round-1 opening for ${encounter}, fresh, with/without Salves. All action orders and forfeitures; commuting equivalents collapsed.`, ...(scan ? { breakpoints: breakpoints(c) } : {}) };
 }
 function resultText(m: Metrics): string {
@@ -93,6 +107,8 @@ export function formatReport(report: Report): string {
   const lines = [`Q04 ${report.kind} content=${report.contentVersion}`, report.caveat,
     `beam width=${report.options.width}, depth=${report.options.depth} rounds per fight; exhaustive solo prefix=${report.options.soloDepth} completed rounds; probe continuation width=${report.options.probeWidth}`,
     'Objective: winning surviving HP, then fewer rounds. Beam priority: fight progress, HP, retained Salves and damage. Stable generation order breaks ties.',
+    'No-win HP and actions describe the best unfinished candidate, not a winning margin. Flags report evidence, not balance gates.',
+    'Policies: roster order; full-value Salves first; disable targets lowest-pool component, core targets life; poison then Guard refreshes when poison is zero; Rapture maximizes own cost until transformed then attacks; never-Revelation excludes positive costs; Revoke-every-Saw prioritizes Anzu before other actions.',
     report.openingCoverage];
   for (const cell of report.cells) {
     lines.push(`CELL ${cell.id} ${resultText(cell.result)}`);

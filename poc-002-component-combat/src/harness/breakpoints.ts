@@ -35,8 +35,10 @@ export function breakpoints(content: Content): BreakpointReport {
     for (const key of leaf.path.slice(0, -1)) parent = parent[key];
     parent[leaf.path.at(-1)!] = leaf.value + delta;
     const variant: NumericVariant = { path: '/' + leaf.path.join('/'), delta, value: leaf.value + delta, valid: false, exact: [] };
-    try { const c = loadContent(copy); variant.valid = true; variant.exact = hits(c).filter(h => h.exact); }
-    catch (e) { variant.reason = e instanceof Error ? e.message : String(e); }
+    let changed: Content;
+    try { changed = loadContent(copy); }
+    catch (e) { variant.reason = e instanceof Error ? e.message : String(e); variants.push(variant); continue; }
+    variant.valid = true; variant.exact = hits(changed).filter(h => h.exact);
     variants.push(variant);
   }
   return { baseline: hits(content), numbers: leaves.length, variants };

@@ -15,7 +15,8 @@ export function policyLine(c: Content, initial: BattleState, policy: Policy, dep
   const limit = depth * (s.party.length + 2) * s.run.encounters.length;
   for (let k = 0; k < limit && s.phase !== 'victory' && s.phase !== 'defeat' && s.round <= depth; k++) {
     const legal = actions(c, s, salves);
-    const actor = s.party.find(b => b.hp > 0 && !b.acted)?.id;
+    const sawRevoke = policy === 'Revoke-every-Saw' ? legal.find(cmd => cmd.kind === 'act' && cmd.action === 'revoke' && cmd.target && 'intent' in cmd.target && s.intents.some(i => cmd.target && 'intent' in cmd.target && i.id === cmd.target.intent && i.kind === 'saw')) : undefined;
+    const actor = sawRevoke?.kind === 'act' ? sawRevoke.actor : s.party.find(b => b.hp > 0 && !b.acted)?.id;
     let choices = legal.filter(a => a.kind !== 'act' || a.actor === actor);
     const rank = (cmd: Command): number => {
       if (cmd.kind === 'continue') return 10000;
@@ -37,12 +38,12 @@ export function policyLine(c: Content, initial: BattleState, policy: Policy, dep
         if (a.id === 'guard') return 4000;
         return -1000;
       }
-      if (policy === 'Rapture-as-soon-as-possible') return a.revelationCost * 100 + (damage ? 20 : 0) + (core ? 5 : 0);
+      if (policy === 'Rapture-as-soon-as-possible') return (s.party.find(b => b.id === cmd.actor)!.transformation ? 0 : a.revelationCost * 100) + (damage ? 20 : 0) + (core ? 5 : 0);
       if (policy === 'always-disable') return component && damage ? 2000 - part!.pool : core && damage ? 1000 : -100;
       return core && damage ? 2000 : component && damage ? 1000 : a.id === 'guard' ? 0 : -100;
     };
     choices = choices.filter(a => rank(a) > -20000).sort((a, b) => rank(b) - rank(a));
-    const cmd = choices[0] ?? legal.find(a => a.kind === 'endPhase')!;
+    const cmd = sawRevoke ?? choices[0] ?? legal.find(a => a.kind === 'endPhase')!;
     const result = applyCommand(c, s, cmd); if (!result.ok) throw new Error('Policy issued illegal command');
     steps.push({ before: s, command: cmd, events: result.events, state: result.state });
     if (cmd.kind === 'continue' || result.state.round > s.round) rounds++;

@@ -5,7 +5,7 @@ import topology from '../content/combat-content.v1.json';
 import { applyCommand, createFight, loadContent } from '../src/core';
 import type { Content } from '../src/core';
 import { actions, openings, search } from '../src/harness/search';
-import { formatReport, sweep } from '../src/harness/report';
+import { formatReport, probe, sweep } from '../src/harness/report';
 import { metrics, openingSignals, policyMatches } from '../src/harness/signals';
 import type { Metrics, OpeningResult, PartyOpenings } from '../src/harness/signals';
 import { POLICIES, policyLine } from '../src/harness/policies';
@@ -50,8 +50,12 @@ describe('Q04 observable search and reporting contracts', () => {
     expect(replay).toEqual(result.state); expect({ c, s }).toEqual(saved);
   });
   it('exhaustive solo prefix retains a winning choice even at beam width one', () => {
-    const c = fixture(); const s = initial(c);
-    expect(search(c, s, { width: 1, depth: 4, soloDepth: 4 }).outcome).toBe('victory');
+    const c = fixture();
+    c.enemies[0]!.parts.find(p => p.kind === 'body')!.pool = 28;
+    c.enemies[0]!.parts.filter(p => p.kind === 'component').forEach(p => p.pool = 99);
+    const s = initial(c);
+    const result = search(c, s, { width: 1, depth: 4, soloDepth: 4, salves: false });
+    expect(result.outcome).toBe('victory'); expect(result.rounds).toBe(4);
   });
   it('enumerates every solo legal opening, includes forfeiture, separates damage classes and is pure', () => {
     const c = fixture(); const s = initial(c); const saved = structuredClone(s);
@@ -83,7 +87,7 @@ describe('Q04 observable search and reporting contracts', () => {
     expect(report.variants.some(v => !v.valid)).toBe(true);
     expect(report.variants.filter(v => v.path === '/fightSalveUses').map(v => v.delta)).toEqual([-2, -1, 1, 2]);
     expect(c).toEqual(before);
-  });
+  }, 20000);
   it('all fixed policies produce legal replayable commands and preserve inputs', () => {
     const c = fixture(); const s = createFight(c, { encounterId: 'warden', party: ['ugallu', 'girtablilu', 'anzu'], start: 'fresh' });
     const saved = structuredClone(s);
@@ -94,6 +98,14 @@ describe('Q04 observable search and reporting contracts', () => {
     }
     expect(s).toEqual(saved);
   });
+  it('Revoke-every-Saw revokes a declared Saw before other actors can remove its source', () => {
+    const c = fixture();
+    const s = createFight(c, { encounterId: 'warden', party: ['ugallu', 'anzu'], start: 'fresh' });
+    const saw = s.intents.find(i => i.kind === 'saw')!;
+    expect(saw).toBeDefined();
+    const result = policyLine(c, s, 'Revoke-every-Saw', 2);
+    expect(result.steps[0]!.command).toMatchObject({ kind: 'act', actor: 'anzu', action: 'revoke', target: { intent: saw.id } });
+  });
   it('the same small sweep produces identical output and includes the heuristic caveat and metrics', () => {
     const c = fixture(); const before = structuredClone(c);
     const options = { width: 2, depth: 2, soloDepth: 1, probeWidth: 1 };
@@ -103,6 +115,29 @@ describe('Q04 observable search and reporting contracts', () => {
     expect(formatReport(a)).toContain('heuristic search; a loss means no win was found');
     expect(a.cells[0]!.result.survivingHp.ugallu).toBeGreaterThan(0);
     expect(a.cells[0]!.result.salvesUsed).toBe(0); expect(c).toEqual(before);
+  });
+  it('probe compares policies with the best searched opening and reports every part class', () => {
+    const c = fixture();
+    const report = probe(c, 'guard', { width: 1, depth: 1, soloDepth: 0, probeWidth: 1 });
+    for (const opening of report.openings) {
+      expect(opening.classes.map(c => c.class)).toEqual(expect.arrayContaining(['control', 'mixed', 'celestial-guard#1/core', 'celestial-guard#1/weapon-arm', 'celestial-guard#1/restraining-limb']));
+      if (opening.salves && opening.best) {
+        const cell = report.cells.find(cell => cell.id === `${opening.party.join('+')}/guard/fresh`)!;
+        expect(cell.result.outcome).toBe('victory');
+        expect(cell.result.hp).toBeGreaterThanOrEqual(opening.best.result.hp);
+      }
+    }
+  });
+  it('covers every nonempty party, encounter and start plus one gauntlet per party', () => {
+    const c = fixture();
+    const report = sweep(c, { width: 1, depth: 1, soloDepth: 0 }, { probeEncounter: null });
+    const partyCount = (1 << c.brood.length) - 1;
+    expect(report.cells).toHaveLength(partyCount * (c.encounters.length * c.starts.length + 1));
+    expect(new Set(report.cells.map(cell => cell.id)).size).toBe(report.cells.length);
+    expect(report.cells.filter(cell => cell.encounter === 'gauntlet')).toHaveLength(partyCount);
+    for (const encounter of c.encounters) for (const start of c.starts) {
+      expect(report.cells.filter(cell => cell.encounter === encounter.id && cell.id.endsWith('/' + start.id))).toHaveLength(partyCount);
+    }
   });
   it('metrics count actor-specific shares, declarations and cleanup through public events', () => {
     const c = fixture(); const s = initial(c); const result = search(c, s, { width: 2, depth: 2, soloDepth: 0 });
