@@ -1,10 +1,12 @@
 import { loadContent } from './content';
-import { applyCommand, parseCommand } from './engine';
+import { applyCommand } from './engine';
 import type { BattleState, CombatRecord, Content, RecordOptions, ReplayResult } from './types';
 
 /** Strict data-only records and pure replay; pattern copied from POC 001
  * src/core/run-record.ts at c82ec3c. Never execute or load anything from records. */
 type Check = (v: unknown, p: string) => void;
+/** UTF-8 input limit shared by data parsing and the bounded CLI reader. */
+export const MAX_RECORD_BYTES = 8 * 1024 * 1024;
 const fail = (p: string, why: string): never => { throw new Error(`Invalid record at ${p}: ${why}`); };
 const integer: Check = (v, p) => { if (typeof v !== 'number' || !Number.isInteger(v) || v < 0 || v > 2147483647) fail(p, 'expected nonnegative integer <= 2147483647'); };
 const text: Check = (v, p) => { if (typeof v !== 'string' || !v.trim()) fail(p, 'expected nonempty string'); };
@@ -30,8 +32,11 @@ const form = one('ugallu-rapture', 'ugallu-rupture', 'girtablilu-rapture', 'girt
 const enemy = one('celestial-guard', 'naming-scribe', 'corrected-beast', 'warden-of-correct-form');
 const encounter = one('guard', 'scribe', 'beast', 'guard-scribe', 'beast-scribe', 'guard-beast', 'warden');
 const start = one('fresh', 'wounded', 'primed');
-const instance: Check = (v, p) => { if (typeof v !== 'string' || !/^(celestial-guard|naming-scribe|corrected-beast|warden-of-correct-form)#[1-9][0-9]*$/.test(v)) fail(p, 'unknown enemy instance ID'); };
-const intentId: Check = (v, p) => { if (typeof v !== 'string' || !/^r[1-9][0-9]*\.(celestial-guard|naming-scribe|corrected-beast|warden-of-correct-form)#[1-9][0-9]*\.(strike|pin|inscribe|utter|gore|trample|clamp|saw|hymn|pulse)$/.test(v)) fail(p, 'unknown intent ID'); };
+const instance: Check = (v, p) => { if (typeof v !== 'string' || !/^(celestial-guard|naming-scribe|corrected-beast|warden-of-correct-form)#[1-9][0-9]*$/.test(v)) fail(p, 'unknown enemy instance ID'); integer(Number((v as string).split('#')[1]), p); };
+const intentId: Check = (v, p) => {
+  if (typeof v !== 'string' || !/^r[1-9][0-9]*\.(celestial-guard|naming-scribe|corrected-beast|warden-of-correct-form)#[1-9][0-9]*\.(strike|pin|inscribe|utter|gore|trample|clamp|saw|hymn|pulse)$/.test(v)) fail(p, 'unknown intent ID');
+  const pieces = (v as string).split('.'); integer(Number(pieces[0]!.slice(1)), p); instance(pieces[1], p);
+};
 const partTarget = object({ enemy: instance, part });
 const statusTarget: Check = (v, p) => v && typeof v === 'object' && 'brood' in v ? object({ brood })(v, p) : object({ enemy: instance })(v, p);
 const target: Check = (v, p) => {
@@ -79,7 +84,7 @@ const event = tagged({
   retaliated: { actor: brood, intent: intentId, target: partTarget, damage }, 'item-used': { actor: brood, item: one('salve'), target: brood, usesRemaining: integer },
   'combat-ended': { outcome: one('victory', 'defeat'), fightIndex: integer }, 'fight-continued': { encounterId: encounter, fightIndex: integer },
 });
-const command: Check = (v, p) => { if (!parseCommand(v)) fail(p, 'invalid command'); };
+const command = tagged({ act: { expectedRevision: integer, actor: brood, action, target }, endPhase: { expectedRevision: integer }, continue: { expectedRevision: integer } });
 const recordShape = object({ schema: one('tehom-combat-record/1'), prototypeId: one('poc-002-component-combat'), rulesVersion: one('poc-002-rules-v1'), contentVersion: text, buildRevision: text,
   content: (v) => { loadContent(v); }, run, initialState: state, commands: list(object({ command, revision: integer, events: list(event) })), finalState: state });
 /** Object keys are irrelevant for parity; array order is contractual (§12). */
@@ -92,20 +97,67 @@ function stateInvariants(c: Content, s: BattleState, p: string): void {
   const ids = s.party.map(b => b.id);
   if (!ids.length || new Set(ids).size !== ids.length || canonical(ids) !== canonical(['ugallu', 'girtablilu', 'anzu'].filter(id => ids.includes(id as typeof ids[number])))) fail(p, 'invalid party order or membership');
   if (s.round < 1 || s.fightIndex >= s.run.encounters.length || canonical(s.run.party) !== canonical(ids)) fail(p, 'invalid run position or party');
+  if (s.run.kind === 'fight') {
+    if (canonical(s.run.encounters) !== canonical([s.run.encounterId])) fail(p, 'invalid fight descriptor');
+  } else {
+    const gauntletId = s.run.gauntletId;
+    const g = c.gauntlets.find(g => g.id === gauntletId);
+    if (!g || canonical(s.run.encounters) !== canonical(g.encounters) || s.run.start !== g.start) fail(p, 'invalid gauntlet descriptor');
+  }
   for (const b of s.party) {
     const d = c.brood.find(x => x.id === b.id);
     if (!d || b.hp > b.maxHp || b.maxHp !== d.maxHp || b.revelationCap !== d.revelationCap || b.revelation > b.revelationCap || b.pendingCrossing !== null) fail(p, 'invalid Brood pools or pending crossing');
     if (b.hp > 0 && (b.transformation ? b.revelation !== b.revelationCap : b.revelation >= b.revelationCap)) fail(p, 'impossible Revelation/transformation invariant');
     if (b.transformation && (b.hp === 0 || b.transformation.id !== `${b.id}-${b.transformation.kind}` || !c.forms.some(f => f.id === b.transformation!.id))) fail(p, 'invalid transformation');
+    if (b.transformation && b.transformation.untilRound < s.round) fail(p, 'expired transformation');
+    if (b.statuses.hold && (b.id !== 'ugallu' || !ids.includes(b.statuses.hold.target))) fail(p, 'invalid Hold target');
+    if (Object.values(b.statuses).some(status => status && (b.hp === 0 || status.untilRound < s.round))) fail(p, 'invalid status on dead Brood or expired status');
   }
+  const encounter = c.encounters.find(e => e.id === s.run.encounters[s.fightIndex]);
+  if (!encounter || canonical(s.enemies.map(e => e.id)) !== canonical(encounter.enemies.map((id, i) => `${id}#${i + 1}`))) fail(p, 'enemy instances do not match encounter');
   if (new Set(s.enemies.map(e => e.id)).size !== s.enemies.length) fail(p, 'duplicate enemy instance');
   for (const e of s.enemies) {
     const d = c.enemies.find(x => x.id === e.definitionId);
-    if (!d || e.parts.length !== d.parts.length || new Set(e.parts.map(x => x.id)).size !== e.parts.length) fail(p, 'unknown enemy or parts');
-    for (const part of e.parts) { const def = d!.parts.find(x => x.id === part.id); if (!def || part.pool > part.maxPool || part.maxPool !== def.pool) fail(p, 'invalid part pool or ID'); }
+    if (!d || !e.id.startsWith(`${e.definitionId}#`) || canonical(e.parts.map(x => x.id)) !== canonical(d.parts.map(x => x.id))) fail(p, 'unknown enemy or parts');
+    for (const part of e.parts) {
+      const def = d!.parts.find(x => x.id === part.id)!;
+      if (part.pool > part.maxPool || part.maxPool !== def.pool || part.kind !== def.kind || part.armor !== def.armor || part.living !== def.living || part.shieldedBy !== def.shieldedBy) fail(p, 'invalid part pool or definition');
+    }
   }
+  const sourcePart = (id: string, part: string) => s.enemies.find(e => e.id === id)?.parts.some(p => p.id === part);
+  for (const b of s.party) for (const restraint of [b.statuses.pinned, b.statuses.clamped]) {
+    if (restraint && (!sourcePart(restraint.enemy, restraint.part) || restraint.untilRound < s.round)) fail(p, 'invalid restraint source or expiry');
+  }
+  if (new Set(s.intents.map(i => i.id)).size !== s.intents.length) fail(p, 'duplicate intent ID');
+  for (const i of s.intents) {
+    const e = s.enemies.find(e => e.id === i.enemy);
+    const d = e && c.enemies.find(d => d.id === e.definitionId)!.intents.find(d => d.kind === i.kind && d.sourcePart === i.sourcePart);
+    if (i.id !== `r${s.round}.${i.enemy}.${i.kind}` || !d) fail(p, 'invalid intent source or ID');
+    if (i.amount !== d!.amount || i.damageType !== d!.damageType || i.ward !== d!.ward || canonical(i.modifiers) !== canonical(d!.modifiers) || canonical(i.riders) !== canonical(d!.riders)) fail(p, 'intent differs from embedded definition');
+    const t = i.target;
+    if ('brood' in t && !ids.includes(t.brood) || 'enemy' in t && !s.enemies.some(e => e.id === t.enemy)) fail(p, 'invalid intent target');
+  }
+  for (const e of s.enemies) for (const w of e.wards) {
+    if (!sourcePart(w.sourceEnemy, w.sourcePart) || !s.intents.some(i => i.id === w.intent && i.enemy === w.sourceEnemy && i.sourcePart === w.sourcePart && i.kind === 'inscribe' && (i.status === 'pending' || i.status === 'resolved') && 'enemy' in i.target && i.target.enemy === e.id && i.ward === w.amount) || w.untilRound !== s.round) fail(p, 'invalid Ward source');
+  }
+  if (canonical(s.ledger.map(l => l.enemy)) !== canonical(s.enemies.filter(e => e.definitionId === 'celestial-guard').map(e => e.id))) fail(p, 'invalid ledger enemies');
+  if (s.carried.length) {
+    if (canonical(s.carried.map(b => b.id)) !== canonical(ids)) fail(p, 'invalid carried party');
+    for (const b of s.carried) {
+      const d = c.brood.find(d => d.id === b.id)!;
+      if (b.hp > d.maxHp || b.revelation > d.revelationCap || b.hp > 0 && b.revelation >= d.revelationCap) fail(p, 'invalid carried pools');
+    }
+  }
+  const livingBrood = s.party.some(b => b.hp > 0);
+  const livingEnemy = s.enemies.some(e => e.parts.some(p => p.kind === 'body' && p.pool > 0));
+  const expectedPhase = !livingBrood ? 'defeat' : livingEnemy ? 'player' : s.run.kind === 'gauntlet' && s.fightIndex + 1 < s.run.encounters.length ? 'between-fights' : 'victory';
+  if (s.phase !== expectedPhase) fail(p, 'impossible phase/outcome');
+  if (s.phase === 'between-fights' || s.phase === 'victory') {
+    if (s.party.some(b => b.transformation !== null) || canonical(s.carried) !== canonical(s.party.map(({ id, hp, revelation }) => ({ id, hp, revelation })))) fail(p, 'invalid victory reset or carried state');
+  } else if (s.fightIndex > 0 && s.carried.length !== s.party.length) fail(p, 'missing carried state');
 }
 export function parseRecord(json: unknown): CombatRecord {
+  if (typeof json === 'string' && new TextEncoder().encode(json).byteLength > MAX_RECORD_BYTES) fail('record', `input exceeds ${MAX_RECORD_BYTES} byte limit`);
   const value: unknown = typeof json === 'string' ? JSON.parse(json) : json;
   recordShape(value, 'record');
   const r = value as CombatRecord;

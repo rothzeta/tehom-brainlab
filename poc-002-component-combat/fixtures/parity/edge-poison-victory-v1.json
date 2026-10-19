@@ -1,0 +1,1833 @@
+{
+  "schema": "tehom-combat-record/1",
+  "prototypeId": "poc-002-component-combat",
+  "rulesVersion": "poc-002-rules-v1",
+  "contentVersion": "poc-002-content-v1",
+  "buildRevision": "unknown",
+  "content": {
+    "schema": "tehom-combat-content/1",
+    "contentVersion": "poc-002-content-v1",
+    "brood": [
+      {
+        "id": "ugallu",
+        "name": "Ugallu",
+        "maxHp": 40,
+        "revelationCap": 8,
+        "actions": [
+          "claw",
+          "rend",
+          "hold-the-threshold",
+          "guard",
+          "salve"
+        ],
+        "forms": [
+          "ugallu-rapture",
+          "ugallu-rupture"
+        ]
+      },
+      {
+        "id": "girtablilu",
+        "name": "Girtablilu",
+        "maxHp": 24,
+        "revelationCap": 8,
+        "actions": [
+          "pincer",
+          "envenom",
+          "rupture-venom",
+          "guard",
+          "salve"
+        ],
+        "forms": [
+          "girtablilu-rapture",
+          "girtablilu-rupture"
+        ]
+      },
+      {
+        "id": "anzu",
+        "name": "Anzû",
+        "maxHp": 22,
+        "revelationCap": 10,
+        "actions": [
+          "talon",
+          "stolen-bolt",
+          "revoke",
+          "guard",
+          "salve"
+        ],
+        "forms": [
+          "anzu-rapture",
+          "anzu-rupture"
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "claw",
+        "name": "Claw",
+        "target": "part",
+        "revelationCost": 0,
+        "effect": {
+          "kind": "damage",
+          "damageType": "physical",
+          "amount": 6,
+          "componentAmount": 6,
+          "ignoreComponentArmor": false
+        }
+      },
+      {
+        "id": "rend",
+        "name": "Rend",
+        "target": "part",
+        "revelationCost": 2,
+        "effect": {
+          "kind": "damage",
+          "damageType": "physical",
+          "amount": 3,
+          "componentAmount": 10,
+          "ignoreComponentArmor": true
+        }
+      },
+      {
+        "id": "hold-the-threshold",
+        "name": "Hold the Threshold",
+        "target": "brood",
+        "revelationCost": 0,
+        "effect": {
+          "kind": "hold",
+          "physicalReduction": 2,
+          "retaliation": 4
+        }
+      },
+      {
+        "id": "pincer",
+        "name": "Pincer",
+        "target": "part",
+        "revelationCost": 0,
+        "effect": {
+          "kind": "damage",
+          "damageType": "physical",
+          "amount": 5,
+          "componentAmount": 5,
+          "ignoreComponentArmor": false
+        }
+      },
+      {
+        "id": "envenom",
+        "name": "Envenom",
+        "target": "part",
+        "revelationCost": 0,
+        "effect": {
+          "kind": "envenom",
+          "amount": 2,
+          "poisonGain": 3,
+          "poisonCap": 6,
+          "weakenedReduction": 3
+        }
+      },
+      {
+        "id": "rupture-venom",
+        "name": "Rupture Venom",
+        "target": "poisoned-enemy",
+        "revelationCost": 2,
+        "effect": {
+          "kind": "rupture-venom",
+          "multiplier": 2
+        }
+      },
+      {
+        "id": "talon",
+        "name": "Talon",
+        "target": "part",
+        "revelationCost": 0,
+        "effect": {
+          "kind": "damage",
+          "damageType": "physical",
+          "amount": 5,
+          "componentAmount": 5,
+          "ignoreComponentArmor": false
+        }
+      },
+      {
+        "id": "stolen-bolt",
+        "name": "Stolen Bolt",
+        "target": "part",
+        "revelationCost": 2,
+        "effect": {
+          "kind": "damage",
+          "damageType": "magical",
+          "amount": 8,
+          "componentAmount": 8,
+          "ignoreComponentArmor": false
+        }
+      },
+      {
+        "id": "revoke",
+        "name": "Revoke",
+        "target": "intent",
+        "revelationCost": 4,
+        "effect": {
+          "kind": "revoke"
+        }
+      },
+      {
+        "id": "guard",
+        "name": "Guard",
+        "target": "none",
+        "revelationCost": 0,
+        "effect": {
+          "kind": "guard"
+        }
+      },
+      {
+        "id": "salve",
+        "name": "Salve",
+        "target": "brood",
+        "revelationCost": 0,
+        "effect": {
+          "kind": "heal",
+          "amount": 10
+        }
+      }
+    ],
+    "forms": [
+      {
+        "id": "ugallu-rapture",
+        "brood": "ugallu",
+        "kind": "rapture",
+        "durationRounds": 2,
+        "modifiers": [
+          {
+            "kind": "attack-bonus",
+            "actions": [
+              "claw",
+              "rend"
+            ],
+            "amount": 3,
+            "ignoreArmor": true
+          },
+          {
+            "kind": "block-actions",
+            "actions": [
+              "guard",
+              "hold-the-threshold"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ugallu-rupture",
+        "brood": "ugallu",
+        "kind": "rupture",
+        "durationRounds": 2,
+        "modifiers": [
+          {
+            "kind": "block-actions",
+            "actions": [
+              "hold-the-threshold"
+            ]
+          },
+          {
+            "kind": "incoming-bonus",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "girtablilu-rapture",
+        "brood": "girtablilu",
+        "kind": "rapture",
+        "durationRounds": 2,
+        "modifiers": [
+          {
+            "kind": "poison-set",
+            "amount": 6
+          },
+          {
+            "kind": "venom-multiplier",
+            "amount": 3
+          },
+          {
+            "kind": "round-hp-loss",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "girtablilu-rupture",
+        "brood": "girtablilu",
+        "kind": "rupture",
+        "durationRounds": 2,
+        "modifiers": [
+          {
+            "kind": "block-actions",
+            "actions": [
+              "envenom",
+              "rupture-venom"
+            ]
+          },
+          {
+            "kind": "round-hp-loss",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "id": "anzu-rapture",
+        "brood": "anzu",
+        "kind": "rapture",
+        "durationRounds": 2,
+        "modifiers": [
+          {
+            "kind": "bolt-amount",
+            "amount": 12
+          },
+          {
+            "kind": "revoke-any-source"
+          },
+          {
+            "kind": "block-actions",
+            "actions": [
+              "guard"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "anzu-rupture",
+        "brood": "anzu",
+        "kind": "rupture",
+        "durationRounds": 2,
+        "modifiers": [
+          {
+            "kind": "block-actions",
+            "actions": [
+              "stolen-bolt",
+              "revoke"
+            ]
+          }
+        ]
+      }
+    ],
+    "enemies": [
+      {
+        "id": "celestial-guard",
+        "name": "Celestial Guard",
+        "parts": [
+          {
+            "id": "body",
+            "name": "Body",
+            "kind": "body",
+            "pool": 22,
+            "armor": 2,
+            "living": true,
+            "shieldedBy": null
+          },
+          {
+            "id": "weapon-arm",
+            "name": "Weapon Arm",
+            "kind": "component",
+            "pool": 12,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          },
+          {
+            "id": "restraining-limb",
+            "name": "Restraining Limb",
+            "kind": "component",
+            "pool": 8,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          }
+        ],
+        "intents": [
+          {
+            "kind": "strike",
+            "sourcePart": "weapon-arm",
+            "schedule": {
+              "kind": "every-round"
+            },
+            "targeting": "ledger-then-highest-hp",
+            "damageType": "physical",
+            "amount": 9,
+            "ward": 0,
+            "modifiers": [],
+            "riders": []
+          },
+          {
+            "kind": "pin",
+            "sourcePart": "restraining-limb",
+            "schedule": {
+              "kind": "modulo",
+              "divisor": 2,
+              "remainder": 0,
+              "matches": true
+            },
+            "targeting": "lowest-hp",
+            "damageType": "physical",
+            "amount": 2,
+            "ward": 0,
+            "modifiers": [],
+            "riders": [
+              {
+                "kind": "pinned",
+                "durationRounds": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "naming-scribe",
+        "name": "Naming Scribe",
+        "parts": [
+          {
+            "id": "body",
+            "name": "Body",
+            "kind": "body",
+            "pool": 16,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          },
+          {
+            "id": "inscription-hand",
+            "name": "Inscription Hand",
+            "kind": "component",
+            "pool": 8,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          },
+          {
+            "id": "tongue",
+            "name": "Tongue",
+            "kind": "component",
+            "pool": 8,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          }
+        ],
+        "intents": [
+          {
+            "kind": "inscribe",
+            "sourcePart": "inscription-hand",
+            "schedule": {
+              "kind": "every-round"
+            },
+            "targeting": "first-other-enemy",
+            "damageType": "physical",
+            "amount": 0,
+            "ward": 3,
+            "modifiers": [],
+            "riders": []
+          },
+          {
+            "kind": "utter",
+            "sourcePart": "tongue",
+            "schedule": {
+              "kind": "every-round"
+            },
+            "targeting": "highest-revelation-untransformed",
+            "damageType": "magical",
+            "amount": 2,
+            "ward": 0,
+            "modifiers": [],
+            "riders": [
+              {
+                "kind": "revelation",
+                "amount": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "corrected-beast",
+        "name": "Corrected Beast",
+        "parts": [
+          {
+            "id": "core",
+            "name": "Core",
+            "kind": "body",
+            "pool": 18,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": "shell"
+          },
+          {
+            "id": "shell",
+            "name": "Shell",
+            "kind": "component",
+            "pool": 12,
+            "armor": 4,
+            "living": false,
+            "shieldedBy": null
+          },
+          {
+            "id": "locomotion-organ",
+            "name": "Locomotion Organ",
+            "kind": "component",
+            "pool": 9,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          }
+        ],
+        "intents": [
+          {
+            "kind": "gore",
+            "sourcePart": "core",
+            "schedule": {
+              "kind": "modulo",
+              "divisor": 3,
+              "remainder": 0,
+              "matches": false
+            },
+            "targeting": "lowest-hp",
+            "damageType": "physical",
+            "amount": 6,
+            "ward": 0,
+            "modifiers": [
+              {
+                "kind": "part-intact-bonus",
+                "part": "locomotion-organ",
+                "amount": 3
+              }
+            ],
+            "riders": []
+          },
+          {
+            "kind": "trample",
+            "sourcePart": "locomotion-organ",
+            "schedule": {
+              "kind": "modulo",
+              "divisor": 3,
+              "remainder": 0,
+              "matches": true
+            },
+            "targeting": "all-brood",
+            "damageType": "physical",
+            "amount": 5,
+            "ward": 0,
+            "modifiers": [],
+            "riders": []
+          }
+        ]
+      },
+      {
+        "id": "warden-of-correct-form",
+        "name": "Warden of Correct Form",
+        "parts": [
+          {
+            "id": "core",
+            "name": "Core",
+            "kind": "body",
+            "pool": 60,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          },
+          {
+            "id": "clamp",
+            "name": "Clamp",
+            "kind": "component",
+            "pool": 20,
+            "armor": 3,
+            "living": false,
+            "shieldedBy": null
+          },
+          {
+            "id": "saw",
+            "name": "Saw",
+            "kind": "component",
+            "pool": 30,
+            "armor": 3,
+            "living": false,
+            "shieldedBy": null
+          },
+          {
+            "id": "choir",
+            "name": "Choir",
+            "kind": "component",
+            "pool": 18,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          }
+        ],
+        "intents": [
+          {
+            "kind": "clamp",
+            "sourcePart": "clamp",
+            "schedule": {
+              "kind": "modulo",
+              "divisor": 3,
+              "remainder": 1,
+              "matches": true
+            },
+            "targeting": "highest-revelation-then-lowest-hp",
+            "damageType": "physical",
+            "amount": 4,
+            "ward": 0,
+            "modifiers": [],
+            "riders": [
+              {
+                "kind": "clamped",
+                "durationRounds": 2
+              }
+            ]
+          },
+          {
+            "kind": "saw",
+            "sourcePart": "saw",
+            "schedule": {
+              "kind": "modulo",
+              "divisor": 3,
+              "remainder": 2,
+              "matches": true
+            },
+            "targeting": "clamped-else-highest-hp",
+            "damageType": "physical",
+            "amount": 6,
+            "ward": 0,
+            "modifiers": [
+              {
+                "kind": "clamped-bonus",
+                "amount": 14
+              }
+            ],
+            "riders": []
+          },
+          {
+            "kind": "hymn",
+            "sourcePart": "choir",
+            "schedule": {
+              "kind": "modulo",
+              "divisor": 3,
+              "remainder": 0,
+              "matches": true
+            },
+            "targeting": "all-brood",
+            "damageType": "magical",
+            "amount": 3,
+            "ward": 0,
+            "modifiers": [],
+            "riders": [
+              {
+                "kind": "revelation",
+                "amount": 4
+              }
+            ]
+          },
+          {
+            "kind": "pulse",
+            "sourcePart": "core",
+            "schedule": {
+              "kind": "every-round"
+            },
+            "targeting": "all-brood",
+            "damageType": "magical",
+            "amount": 1,
+            "ward": 0,
+            "modifiers": [],
+            "riders": []
+          }
+        ]
+      }
+    ],
+    "encounters": [
+      {
+        "id": "guard",
+        "enemies": [
+          "celestial-guard"
+        ]
+      },
+      {
+        "id": "scribe",
+        "enemies": [
+          "naming-scribe"
+        ]
+      },
+      {
+        "id": "beast",
+        "enemies": [
+          "corrected-beast"
+        ]
+      },
+      {
+        "id": "guard-scribe",
+        "enemies": [
+          "celestial-guard",
+          "naming-scribe"
+        ]
+      },
+      {
+        "id": "beast-scribe",
+        "enemies": [
+          "corrected-beast",
+          "naming-scribe"
+        ]
+      },
+      {
+        "id": "guard-beast",
+        "enemies": [
+          "celestial-guard",
+          "corrected-beast"
+        ]
+      },
+      {
+        "id": "warden",
+        "enemies": [
+          "warden-of-correct-form"
+        ]
+      }
+    ],
+    "gauntlets": [
+      {
+        "id": "gauntlet-v1",
+        "encounters": [
+          "guard-scribe",
+          "guard-beast",
+          "warden"
+        ],
+        "start": "fresh",
+        "salveUses": 2
+      }
+    ],
+    "starts": [
+      {
+        "id": "fresh",
+        "kind": "full",
+        "revelationGap": 0
+      },
+      {
+        "id": "wounded",
+        "kind": "half-hp",
+        "revelationGap": 0
+      },
+      {
+        "id": "primed",
+        "kind": "below-cap",
+        "revelationGap": 2
+      }
+    ],
+    "fightSalveUses": 2
+  },
+  "run": {
+    "kind": "fight",
+    "encounterId": "scribe",
+    "party": [
+      "girtablilu"
+    ],
+    "start": "fresh",
+    "encounters": [
+      "scribe"
+    ]
+  },
+  "initialState": {
+    "round": 1,
+    "phase": "player",
+    "revision": 0,
+    "party": [
+      {
+        "id": "girtablilu",
+        "hp": 24,
+        "maxHp": 24,
+        "revelation": 0,
+        "revelationCap": 8,
+        "acted": false,
+        "statuses": {
+          "guard": null,
+          "hold": null,
+          "pinned": null,
+          "clamped": null
+        },
+        "transformation": null,
+        "pendingCrossing": null
+      }
+    ],
+    "enemies": [
+      {
+        "id": "naming-scribe#1",
+        "definitionId": "naming-scribe",
+        "parts": [
+          {
+            "id": "body",
+            "kind": "body",
+            "pool": 16,
+            "maxPool": 16,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          },
+          {
+            "id": "inscription-hand",
+            "kind": "component",
+            "pool": 8,
+            "maxPool": 8,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          },
+          {
+            "id": "tongue",
+            "kind": "component",
+            "pool": 8,
+            "maxPool": 8,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          }
+        ],
+        "poison": 0,
+        "weakened": null,
+        "wards": [
+          {
+            "sourceEnemy": "naming-scribe#1",
+            "sourcePart": "inscription-hand",
+            "intent": "r1.naming-scribe#1.inscribe",
+            "amount": 3,
+            "untilRound": 1
+          }
+        ]
+      }
+    ],
+    "intents": [
+      {
+        "id": "r1.naming-scribe#1.inscribe",
+        "enemy": "naming-scribe#1",
+        "sourcePart": "inscription-hand",
+        "kind": "inscribe",
+        "target": {
+          "enemy": "naming-scribe#1"
+        },
+        "damageType": "physical",
+        "amount": 0,
+        "modifiers": [],
+        "riders": [],
+        "ward": 3,
+        "status": "pending",
+        "cancellationReason": null
+      },
+      {
+        "id": "r1.naming-scribe#1.utter",
+        "enemy": "naming-scribe#1",
+        "sourcePart": "tongue",
+        "kind": "utter",
+        "target": {
+          "brood": "girtablilu"
+        },
+        "damageType": "magical",
+        "amount": 2,
+        "modifiers": [],
+        "riders": [
+          {
+            "kind": "revelation",
+            "amount": 3
+          }
+        ],
+        "ward": 0,
+        "status": "pending",
+        "cancellationReason": null
+      }
+    ],
+    "salveUses": 2,
+    "ledger": [],
+    "run": {
+      "kind": "fight",
+      "encounterId": "scribe",
+      "party": [
+        "girtablilu"
+      ],
+      "start": "fresh",
+      "encounters": [
+        "scribe"
+      ]
+    },
+    "fightIndex": 0,
+    "carried": []
+  },
+  "commands": [
+    {
+      "command": {
+        "kind": "act",
+        "expectedRevision": 0,
+        "actor": "girtablilu",
+        "action": "envenom",
+        "target": {
+          "enemy": "naming-scribe#1",
+          "part": "body"
+        }
+      },
+      "revision": 1,
+      "events": [
+        {
+          "kind": "action-used",
+          "actor": "girtablilu",
+          "action": "envenom",
+          "target": {
+            "enemy": "naming-scribe#1",
+            "part": "body"
+          }
+        },
+        {
+          "kind": "part-damaged",
+          "target": {
+            "enemy": "naming-scribe#1",
+            "part": "body"
+          },
+          "source": {
+            "kind": "action",
+            "actor": "girtablilu",
+            "action": "envenom"
+          },
+          "damage": {
+            "raw": 2,
+            "damageType": "physical",
+            "armor": 0,
+            "ward": 3,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 0
+          },
+          "remaining": 16
+        },
+        {
+          "kind": "status-applied",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "poison",
+          "amount": 3,
+          "untilRound": null,
+          "source": null
+        },
+        {
+          "kind": "status-applied",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "weakened",
+          "amount": 3,
+          "untilRound": 1,
+          "source": null
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "endPhase",
+        "expectedRevision": 1
+      },
+      "revision": 2,
+      "events": [
+        {
+          "kind": "intent-resolved",
+          "intent": "r1.naming-scribe#1.inscribe"
+        },
+        {
+          "kind": "brood-damaged",
+          "brood": "girtablilu",
+          "source": {
+            "kind": "intent",
+            "intent": "r1.naming-scribe#1.utter"
+          },
+          "damage": {
+            "raw": 2,
+            "damageType": "magical",
+            "armor": 0,
+            "ward": 0,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 2
+          },
+          "remaining": 22
+        },
+        {
+          "kind": "revelation-gained",
+          "brood": "girtablilu",
+          "amount": 3,
+          "revelation": 3,
+          "source": {
+            "kind": "intent",
+            "intent": "r1.naming-scribe#1.utter"
+          }
+        },
+        {
+          "kind": "intent-resolved",
+          "intent": "r1.naming-scribe#1.utter"
+        },
+        {
+          "kind": "poison-ticked",
+          "enemy": "naming-scribe#1",
+          "amount": 3,
+          "remainingPoison": 2
+        },
+        {
+          "kind": "part-damaged",
+          "target": {
+            "enemy": "naming-scribe#1",
+            "part": "body"
+          },
+          "source": {
+            "kind": "poison",
+            "enemy": "naming-scribe#1"
+          },
+          "damage": {
+            "raw": 3,
+            "damageType": "poison",
+            "armor": 0,
+            "ward": 0,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 3
+          },
+          "remaining": 13
+        },
+        {
+          "kind": "status-removed",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "weakened",
+          "reason": "expired"
+        },
+        {
+          "kind": "status-removed",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "ward",
+          "reason": "expired"
+        },
+        {
+          "kind": "round-started",
+          "round": 2
+        },
+        {
+          "kind": "intent-declared",
+          "intent": {
+            "id": "r2.naming-scribe#1.inscribe",
+            "enemy": "naming-scribe#1",
+            "sourcePart": "inscription-hand",
+            "kind": "inscribe",
+            "target": {
+              "enemy": "naming-scribe#1"
+            },
+            "damageType": "physical",
+            "amount": 0,
+            "modifiers": [],
+            "riders": [],
+            "ward": 3,
+            "status": "pending",
+            "cancellationReason": null
+          }
+        },
+        {
+          "kind": "status-applied",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "ward",
+          "amount": 3,
+          "untilRound": 2,
+          "source": {
+            "enemy": "naming-scribe#1",
+            "part": "inscription-hand"
+          }
+        },
+        {
+          "kind": "intent-declared",
+          "intent": {
+            "id": "r2.naming-scribe#1.utter",
+            "enemy": "naming-scribe#1",
+            "sourcePart": "tongue",
+            "kind": "utter",
+            "target": {
+              "brood": "girtablilu"
+            },
+            "damageType": "magical",
+            "amount": 2,
+            "modifiers": [],
+            "riders": [
+              {
+                "kind": "revelation",
+                "amount": 3
+              }
+            ],
+            "ward": 0,
+            "status": "pending",
+            "cancellationReason": null
+          }
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "act",
+        "expectedRevision": 2,
+        "actor": "girtablilu",
+        "action": "envenom",
+        "target": {
+          "enemy": "naming-scribe#1",
+          "part": "body"
+        }
+      },
+      "revision": 3,
+      "events": [
+        {
+          "kind": "action-used",
+          "actor": "girtablilu",
+          "action": "envenom",
+          "target": {
+            "enemy": "naming-scribe#1",
+            "part": "body"
+          }
+        },
+        {
+          "kind": "part-damaged",
+          "target": {
+            "enemy": "naming-scribe#1",
+            "part": "body"
+          },
+          "source": {
+            "kind": "action",
+            "actor": "girtablilu",
+            "action": "envenom"
+          },
+          "damage": {
+            "raw": 2,
+            "damageType": "physical",
+            "armor": 0,
+            "ward": 3,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 0
+          },
+          "remaining": 13
+        },
+        {
+          "kind": "status-applied",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "poison",
+          "amount": 5,
+          "untilRound": null,
+          "source": null
+        },
+        {
+          "kind": "status-applied",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "weakened",
+          "amount": 3,
+          "untilRound": 2,
+          "source": null
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "endPhase",
+        "expectedRevision": 3
+      },
+      "revision": 4,
+      "events": [
+        {
+          "kind": "intent-resolved",
+          "intent": "r2.naming-scribe#1.inscribe"
+        },
+        {
+          "kind": "brood-damaged",
+          "brood": "girtablilu",
+          "source": {
+            "kind": "intent",
+            "intent": "r2.naming-scribe#1.utter"
+          },
+          "damage": {
+            "raw": 2,
+            "damageType": "magical",
+            "armor": 0,
+            "ward": 0,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 2
+          },
+          "remaining": 20
+        },
+        {
+          "kind": "revelation-gained",
+          "brood": "girtablilu",
+          "amount": 3,
+          "revelation": 6,
+          "source": {
+            "kind": "intent",
+            "intent": "r2.naming-scribe#1.utter"
+          }
+        },
+        {
+          "kind": "intent-resolved",
+          "intent": "r2.naming-scribe#1.utter"
+        },
+        {
+          "kind": "poison-ticked",
+          "enemy": "naming-scribe#1",
+          "amount": 5,
+          "remainingPoison": 4
+        },
+        {
+          "kind": "part-damaged",
+          "target": {
+            "enemy": "naming-scribe#1",
+            "part": "body"
+          },
+          "source": {
+            "kind": "poison",
+            "enemy": "naming-scribe#1"
+          },
+          "damage": {
+            "raw": 5,
+            "damageType": "poison",
+            "armor": 0,
+            "ward": 0,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 5
+          },
+          "remaining": 8
+        },
+        {
+          "kind": "status-removed",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "weakened",
+          "reason": "expired"
+        },
+        {
+          "kind": "status-removed",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "ward",
+          "reason": "expired"
+        },
+        {
+          "kind": "round-started",
+          "round": 3
+        },
+        {
+          "kind": "intent-declared",
+          "intent": {
+            "id": "r3.naming-scribe#1.inscribe",
+            "enemy": "naming-scribe#1",
+            "sourcePart": "inscription-hand",
+            "kind": "inscribe",
+            "target": {
+              "enemy": "naming-scribe#1"
+            },
+            "damageType": "physical",
+            "amount": 0,
+            "modifiers": [],
+            "riders": [],
+            "ward": 3,
+            "status": "pending",
+            "cancellationReason": null
+          }
+        },
+        {
+          "kind": "status-applied",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "ward",
+          "amount": 3,
+          "untilRound": 3,
+          "source": {
+            "enemy": "naming-scribe#1",
+            "part": "inscription-hand"
+          }
+        },
+        {
+          "kind": "intent-declared",
+          "intent": {
+            "id": "r3.naming-scribe#1.utter",
+            "enemy": "naming-scribe#1",
+            "sourcePart": "tongue",
+            "kind": "utter",
+            "target": {
+              "brood": "girtablilu"
+            },
+            "damageType": "magical",
+            "amount": 2,
+            "modifiers": [],
+            "riders": [
+              {
+                "kind": "revelation",
+                "amount": 3
+              }
+            ],
+            "ward": 0,
+            "status": "pending",
+            "cancellationReason": null
+          }
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "act",
+        "expectedRevision": 4,
+        "actor": "girtablilu",
+        "action": "envenom",
+        "target": {
+          "enemy": "naming-scribe#1",
+          "part": "body"
+        }
+      },
+      "revision": 5,
+      "events": [
+        {
+          "kind": "action-used",
+          "actor": "girtablilu",
+          "action": "envenom",
+          "target": {
+            "enemy": "naming-scribe#1",
+            "part": "body"
+          }
+        },
+        {
+          "kind": "part-damaged",
+          "target": {
+            "enemy": "naming-scribe#1",
+            "part": "body"
+          },
+          "source": {
+            "kind": "action",
+            "actor": "girtablilu",
+            "action": "envenom"
+          },
+          "damage": {
+            "raw": 2,
+            "damageType": "physical",
+            "armor": 0,
+            "ward": 3,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 0
+          },
+          "remaining": 8
+        },
+        {
+          "kind": "status-applied",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "poison",
+          "amount": 6,
+          "untilRound": null,
+          "source": null
+        },
+        {
+          "kind": "status-applied",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "weakened",
+          "amount": 3,
+          "untilRound": 3,
+          "source": null
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "endPhase",
+        "expectedRevision": 5
+      },
+      "revision": 6,
+      "events": [
+        {
+          "kind": "intent-resolved",
+          "intent": "r3.naming-scribe#1.inscribe"
+        },
+        {
+          "kind": "brood-damaged",
+          "brood": "girtablilu",
+          "source": {
+            "kind": "intent",
+            "intent": "r3.naming-scribe#1.utter"
+          },
+          "damage": {
+            "raw": 2,
+            "damageType": "magical",
+            "armor": 0,
+            "ward": 0,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 2
+          },
+          "remaining": 18
+        },
+        {
+          "kind": "revelation-gained",
+          "brood": "girtablilu",
+          "amount": 2,
+          "revelation": 8,
+          "source": {
+            "kind": "intent",
+            "intent": "r3.naming-scribe#1.utter"
+          }
+        },
+        {
+          "kind": "intent-resolved",
+          "intent": "r3.naming-scribe#1.utter"
+        },
+        {
+          "kind": "transformation-started",
+          "brood": "girtablilu",
+          "transformation": {
+            "id": "girtablilu-rupture",
+            "kind": "rupture",
+            "untilRound": 4
+          }
+        },
+        {
+          "kind": "poison-ticked",
+          "enemy": "naming-scribe#1",
+          "amount": 6,
+          "remainingPoison": 5
+        },
+        {
+          "kind": "part-damaged",
+          "target": {
+            "enemy": "naming-scribe#1",
+            "part": "body"
+          },
+          "source": {
+            "kind": "poison",
+            "enemy": "naming-scribe#1"
+          },
+          "damage": {
+            "raw": 6,
+            "damageType": "poison",
+            "armor": 0,
+            "ward": 0,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 6
+          },
+          "remaining": 2
+        },
+        {
+          "kind": "brood-damaged",
+          "brood": "girtablilu",
+          "source": {
+            "kind": "form",
+            "brood": "girtablilu",
+            "form": "girtablilu-rupture"
+          },
+          "damage": {
+            "raw": 3,
+            "damageType": "magical",
+            "armor": 0,
+            "ward": 0,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 3
+          },
+          "remaining": 15
+        },
+        {
+          "kind": "status-removed",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "weakened",
+          "reason": "expired"
+        },
+        {
+          "kind": "status-removed",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "ward",
+          "reason": "expired"
+        },
+        {
+          "kind": "round-started",
+          "round": 4
+        },
+        {
+          "kind": "intent-declared",
+          "intent": {
+            "id": "r4.naming-scribe#1.inscribe",
+            "enemy": "naming-scribe#1",
+            "sourcePart": "inscription-hand",
+            "kind": "inscribe",
+            "target": {
+              "enemy": "naming-scribe#1"
+            },
+            "damageType": "physical",
+            "amount": 0,
+            "modifiers": [],
+            "riders": [],
+            "ward": 3,
+            "status": "pending",
+            "cancellationReason": null
+          }
+        },
+        {
+          "kind": "status-applied",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "ward",
+          "amount": 3,
+          "untilRound": 4,
+          "source": {
+            "enemy": "naming-scribe#1",
+            "part": "inscription-hand"
+          }
+        },
+        {
+          "kind": "intent-declared",
+          "intent": {
+            "id": "r4.naming-scribe#1.utter",
+            "enemy": "naming-scribe#1",
+            "sourcePart": "tongue",
+            "kind": "utter",
+            "target": {
+              "brood": "girtablilu"
+            },
+            "damageType": "magical",
+            "amount": 2,
+            "modifiers": [],
+            "riders": [
+              {
+                "kind": "revelation",
+                "amount": 3
+              }
+            ],
+            "ward": 0,
+            "status": "pending",
+            "cancellationReason": null
+          }
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "act",
+        "expectedRevision": 6,
+        "actor": "girtablilu",
+        "action": "guard",
+        "target": null
+      },
+      "revision": 7,
+      "events": [
+        {
+          "kind": "action-used",
+          "actor": "girtablilu",
+          "action": "guard",
+          "target": null
+        },
+        {
+          "kind": "status-applied",
+          "target": {
+            "brood": "girtablilu"
+          },
+          "status": "guard",
+          "amount": 0,
+          "untilRound": 4,
+          "source": null
+        }
+      ]
+    },
+    {
+      "command": {
+        "kind": "endPhase",
+        "expectedRevision": 7
+      },
+      "revision": 8,
+      "events": [
+        {
+          "kind": "intent-resolved",
+          "intent": "r4.naming-scribe#1.inscribe"
+        },
+        {
+          "kind": "brood-damaged",
+          "brood": "girtablilu",
+          "source": {
+            "kind": "intent",
+            "intent": "r4.naming-scribe#1.utter"
+          },
+          "damage": {
+            "raw": 2,
+            "damageType": "magical",
+            "armor": 0,
+            "ward": 0,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 1,
+            "hold": 0,
+            "applied": 1
+          },
+          "remaining": 14
+        },
+        {
+          "kind": "revelation-burned",
+          "brood": "girtablilu",
+          "amount": 3,
+          "applied": 3,
+          "remainingHp": 11,
+          "source": {
+            "kind": "intent",
+            "intent": "r4.naming-scribe#1.utter"
+          }
+        },
+        {
+          "kind": "intent-resolved",
+          "intent": "r4.naming-scribe#1.utter"
+        },
+        {
+          "kind": "poison-ticked",
+          "enemy": "naming-scribe#1",
+          "amount": 5,
+          "remainingPoison": 4
+        },
+        {
+          "kind": "part-damaged",
+          "target": {
+            "enemy": "naming-scribe#1",
+            "part": "body"
+          },
+          "source": {
+            "kind": "poison",
+            "enemy": "naming-scribe#1"
+          },
+          "damage": {
+            "raw": 5,
+            "damageType": "poison",
+            "armor": 0,
+            "ward": 0,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 2
+          },
+          "remaining": 0
+        },
+        {
+          "kind": "part-destroyed",
+          "target": {
+            "enemy": "naming-scribe#1",
+            "part": "body"
+          }
+        },
+        {
+          "kind": "enemy-died",
+          "enemy": "naming-scribe#1"
+        },
+        {
+          "kind": "status-removed",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "ward",
+          "reason": "enemy-died"
+        },
+        {
+          "kind": "status-removed",
+          "target": {
+            "enemy": "naming-scribe#1"
+          },
+          "status": "poison",
+          "reason": "enemy-died"
+        },
+        {
+          "kind": "brood-damaged",
+          "brood": "girtablilu",
+          "source": {
+            "kind": "form",
+            "brood": "girtablilu",
+            "form": "girtablilu-rupture"
+          },
+          "damage": {
+            "raw": 3,
+            "damageType": "magical",
+            "armor": 0,
+            "ward": 0,
+            "weakened": 0,
+            "rupture": 0,
+            "guard": 0,
+            "hold": 0,
+            "applied": 3
+          },
+          "remaining": 8
+        },
+        {
+          "kind": "transformation-ended",
+          "brood": "girtablilu",
+          "form": "girtablilu-rupture",
+          "reason": "victory",
+          "revelation": 4
+        },
+        {
+          "kind": "combat-ended",
+          "outcome": "victory",
+          "fightIndex": 0
+        }
+      ]
+    }
+  ],
+  "finalState": {
+    "round": 4,
+    "phase": "victory",
+    "revision": 8,
+    "party": [
+      {
+        "id": "girtablilu",
+        "hp": 8,
+        "maxHp": 24,
+        "revelation": 4,
+        "revelationCap": 8,
+        "acted": true,
+        "statuses": {
+          "guard": {
+            "untilRound": 4
+          },
+          "hold": null,
+          "pinned": null,
+          "clamped": null
+        },
+        "transformation": null,
+        "pendingCrossing": null
+      }
+    ],
+    "enemies": [
+      {
+        "id": "naming-scribe#1",
+        "definitionId": "naming-scribe",
+        "parts": [
+          {
+            "id": "body",
+            "kind": "body",
+            "pool": 0,
+            "maxPool": 16,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          },
+          {
+            "id": "inscription-hand",
+            "kind": "component",
+            "pool": 8,
+            "maxPool": 8,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          },
+          {
+            "id": "tongue",
+            "kind": "component",
+            "pool": 8,
+            "maxPool": 8,
+            "armor": 0,
+            "living": true,
+            "shieldedBy": null
+          }
+        ],
+        "poison": 0,
+        "weakened": null,
+        "wards": []
+      }
+    ],
+    "intents": [
+      {
+        "id": "r4.naming-scribe#1.inscribe",
+        "enemy": "naming-scribe#1",
+        "sourcePart": "inscription-hand",
+        "kind": "inscribe",
+        "target": {
+          "enemy": "naming-scribe#1"
+        },
+        "damageType": "physical",
+        "amount": 0,
+        "modifiers": [],
+        "riders": [],
+        "ward": 3,
+        "status": "resolved",
+        "cancellationReason": null
+      },
+      {
+        "id": "r4.naming-scribe#1.utter",
+        "enemy": "naming-scribe#1",
+        "sourcePart": "tongue",
+        "kind": "utter",
+        "target": {
+          "brood": "girtablilu"
+        },
+        "damageType": "magical",
+        "amount": 2,
+        "modifiers": [],
+        "riders": [
+          {
+            "kind": "revelation",
+            "amount": 3
+          }
+        ],
+        "ward": 0,
+        "status": "resolved",
+        "cancellationReason": null
+      }
+    ],
+    "salveUses": 2,
+    "ledger": [],
+    "run": {
+      "kind": "fight",
+      "encounterId": "scribe",
+      "party": [
+        "girtablilu"
+      ],
+      "start": "fresh",
+      "encounters": [
+        "scribe"
+      ]
+    },
+    "fightIndex": 0,
+    "carried": [
+      {
+        "id": "girtablilu",
+        "hp": 8,
+        "revelation": 4
+      }
+    ]
+  }
+}

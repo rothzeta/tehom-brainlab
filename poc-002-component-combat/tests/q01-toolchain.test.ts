@@ -4,9 +4,15 @@ import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-it.each([['replay', 'Q03'], ['sweep', 'Q04'], ['probe', 'Q04']])('%s names its implementing checkpoint and exits 2', (command, checkpoint) => {
+it.each([['sweep', 'Q04'], ['probe', 'Q04']])('%s names its implementing checkpoint and exits 2', (command, checkpoint) => {
   const run = spawnSync('./bin/run', [command!], { encoding: 'utf8' });
   expect(run.status).toBe(2); expect(run.stderr).toContain(checkpoint); expect(run.stderr).toContain(command);
+});
+it('replay dispatches to the implemented Q03 script', () => {
+  const run = spawnSync('./bin/run', ['replay', 'fixtures/parity/unfinished-player-v1.json'], { env: { ...process.env, POC002_MODE: 'host' }, encoding: 'utf8' });
+  expect(run.status).toBe(0);
+  expect(run.stdout).toMatch(/^commands=\d+ events=\d+ outcome=player\n$/);
+  expect(run.stderr).toBe('');
 });
 it.each(['word', '-1', '0', '65536', '999999999999999999999999'])('rejects invalid port %s clearly', port => {
   const run = spawnSync('./bin/run', ['dev'], { env: { ...process.env, POC002_PORT: port }, encoding: 'utf8' });
