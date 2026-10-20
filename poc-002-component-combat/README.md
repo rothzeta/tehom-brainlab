@@ -11,7 +11,7 @@ Docker is the default. The wrapper checks the daemon and uses the pinned Bun ima
 | `just poc-002-install` | Q01 | `bun install --frozen-lockfile` |
 | `just poc-002-dev` | Q01 | Development server at http://localhost:5273 |
 | `just poc-002-typecheck` | Q01 | Strict TypeScript check |
-| `just poc-002-test` | Q01–Q09 | Content, core, records, harness, session/model, assets, wrapper, audio and art contract tests |
+| `just poc-002-test` | Q01–Q09, FIX1 | Content, core, records, harness, session/model, assets, wrapper, audio and art contract tests |
 | `just poc-002-build` | Q01 | Verify/copy assets and build `dist/` |
 | `just poc-002-preview` | Q01 | Built prototype at http://localhost:4273 |
 | `just poc-002-test-browser` | Q01 | Fresh Docker build/preview, battle, keyboard gauntlet, run and smoke harnesses, temporary artifacts |
@@ -188,6 +188,19 @@ no observer is installed by the app, and playback and mute behavior are unchange
 The browser harness installs its collector before loading the page. Screenshots,
 downloads, cue-request evidence and Chrome profiles stay under the OS temporary
 directory; profiles and the runner's preview container are cleaned up automatically.
+
+## Portable limits and export provenance (FIX1)
+
+Content must satisfy the brief's A3 B1–B6 bounds for derived arithmetic as well
+as the integer field checks. Record parsing validates intent target categories
+and content-derived snapshot bounds without recomputing frozen targets.
+An otherwise legal command that would exceed 2,147,483,647 in its revision, round
+or a newly emitted expiry returns `limit-reached`, last in rejection precedence,
+with unchanged state and no events. Near-limit snapshots remain valid inputs.
+
+UI records embed the known build revision for both selection and direct battle
+routes. `buildRevision: unknown` means revision metadata was unavailable, including
+a dirty build; establish the tested revision before making quantitative claims.
 
 ## Assets and copied patterns
 
