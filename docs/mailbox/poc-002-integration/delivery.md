@@ -1,12 +1,14 @@
 task: P2-DELIVERY
 status: complete
-outcome: Reviewed POC 002 candidate fast-forwarded to local master; authorized origin push follows the report commit
+outcome: Reviewed POC 002 candidate fast-forwarded to master and pushed successfully to origin
 source_baseline: c82ec3c71a499760fc2bf7c40c9b162a6856d03b
 reviewed_revision: 5f4988f078cd9a118c5a736ce4acab6fcf1bdd5c
 delivered_revision: a2954136f4803536fa72d0623c3339d5673dba9b
 destination_branch: master
 remote: origin
-push_status: pending
+push_status: complete
+evidence_revision: 43c1e5befd31662b05c3feaa99955f6db1bcdf3a
+pushed_revision: 43c1e5befd31662b05c3feaa99955f6db1bcdf3a
 artifacts:
   - docs/mailbox/poc-002-integration/assignment-delivery.md
   - docs/mailbox/poc-002-integration/delivery.md
@@ -19,6 +21,8 @@ verification:
   - "git merge --ff-only a295413: exit 0; master tip equals the delivered revision and its tracked tree matches the accepted candidate exactly"
   - "Git whitespace check passes; protected CURRENT and TASK_LOGS paths unchanged"
   - "Application verification not rerun; existing integration and independent review evidence applies to identical reviewed content plus mailbox evidence"
+  - "git push origin master: exit 0; live remote master confirmed at 43c1e5befd31662b05c3feaa99955f6db1bcdf3a"
+  - "Temporary-copy handoff validation: exit 0, ok true, no diagnostics"
 review:
   - "Independent rereview2: PASS, zero blocking and zero optional findings, retained unchanged"
 discoveries: []
@@ -54,4 +58,23 @@ Reused the unchanged temporary handoff-skill copy at `/tmp/p2-int-q01-handoff.KC
 bun /tmp/p2-int-q01-handoff.KC0xMI/ruach-handoff/scripts/validate.ts docs/mailbox/poc-002-integration/delivery.md --repo .
 ```
 
-The report and unchanged assignment are committed explicitly on `master`; the report-creating SHA is returned separately from `delivered_revision`. The authorized `git push origin master` follows that commit. Its actual result and remote tip will be recorded after execution. No force push, other edits, branch deletion or worktree deletion.
+Initial validation exited 0 with `ok: true`, no diagnostics, and all three then-supplied revisions resolved. Explicit staging listed only this report and the unchanged assignment. Commit **`43c1e5befd31662b05c3feaa99955f6db1bcdf3a`** records both on `master`.
+
+## Push receipt
+
+Executed `git push origin master`, exit 0. Exact output:
+
+```text
+To github.com:rothzeta/tehom-brainlab.git
+   c82ec3c..43c1e5b  master -> master
+```
+
+Then `git ls-remote origin refs/heads/master` exited 0:
+
+```text
+43c1e5befd31662b05c3feaa99955f6db1bcdf3a	refs/heads/master
+```
+
+`git rev-parse master origin/master` returned that same full SHA twice. `git status --short` was empty. `git diff --exit-code 5f4988f HEAD -- . ':(exclude)docs/mailbox/**'` exited 0 with no output: delivered application content still equals the reviewed implementation.
+
+This report-only receipt update is validated and committed after the observed push so the durable report records its actual result. The receipt commit is then pushed with the same authorized, non-force `git push origin master`; its final local/remote SHA is returned in the terminal handoff. `delivered_revision` remains the exact candidate installed by the requested fast-forward; `evidence_revision` and `pushed_revision` above identify the initial report commit and observed push receipt. No force push, other edits, branch deletion or worktree deletion. No blockers.
