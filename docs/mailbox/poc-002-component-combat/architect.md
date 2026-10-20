@@ -7,6 +7,7 @@ candidate_revision: 6ae41af
 amendment_revision: dcd4b44
 amendment_2_revision: 835a09c
 amendment_3_revision: d887a98
+amendment_3b_revision: 4cdde49
 artifacts:
   - docs/adr/0007-poc-002-component-combat.md
   - docs/adr/README.md
@@ -222,3 +223,36 @@ Not chosen: wrapping, saturation, a round ceiling and ending combat automaticall
 **Plan.** Q01 acceptance 3 now requires a test-owned rejection for each of B1–B6, plus acceptance of v1. Q02 acceptance 7 now covers E01–E53. Q02 acceptance 1 already requires the §2 codes in precedence order, which includes `limit-reached`. Implementing these rules belongs to P2-FIX1. This amendment changes no code.
 
 **Checks.** The link check found 0 missing links in the brief and plan, and `git diff --check` was clean. The brief and plan were staged by name, then this report in a separate commit, each after confirming that no merge was in progress. The handoff block, with `amendment_3_revision` added, was revalidated with the temporary-copy validator.
+
+## Amendment 3b (2026-10-20): overflow-free intermediates
+
+This is a Coordinator-authorized follow-up to A3, after re-review finding R1 (`docs/mailbox/poc-002-review/rereview.md`, branch `p2-review` at `05d2ca1`, read-only). Commit `4cdde49` (`amendment_3b_revision`) adds a dated "A3 revision" to the brief's [Amendment A3](../../prototypes/poc-002-component-combat.md#amendment-a3-2026-10-19-portable-integer-range), with tags inline in §2, §4.2, §12 and §13.
+
+**R1 was correct.** A3-1 claimed that B1–B5 kept every intermediate within signed 32 bits. With armor and Ward each at 2147483647, `max(0, raw − armor − Ward)` passes through −4294967288. I had bounded sums and products but not chained subtraction.
+
+**Rulings.**
+
+- **A3-4, stepwise floored mitigation (§4.2, new E54).** Physical damage is evaluated as `max(0, max(0, raw − armor) − Ward)`, for actions, Envenom's hit and retaliation alike. For nonnegative inputs this equals the stated formula, so no result or event changes. I chose this over a reductions-sum bound because a sum bound would reject content the rules handle correctly and would need more terms. Stepwise evaluation fixes the only chained subtraction at its source.
+- **A3-5, the audit, with one new bound.** I checked every formula in §1–§10. §12's guarantee paragraph now names the bound that covers each operation:
+  - action raw: B1;
+  - poison: B2;
+  - intent base, Weakened and Rupture +1: B3. Base − Weakened lies in [−L, L], and adding Rupture stays ≤ base + bonus ≤ L;
+  - min(cap, R + n): B4;
+  - the ledger: B5 plus the ledger invariant;
+  - expiries and counters: A3-2.
+
+  Everything else subtracts one nonnegative value from another or takes a minimum, a half or a remainder: Guard, Hold, pool and HP loss, poison ticks, burns, the Salve's `min(amount, max HP − HP)`, Salve uses and ⌊cap/2⌋. The audit found one more range defect. A Revelation cap of 0, or a primed gap of 0 or above a cap, gives an invalid or negative starting Revelation. New **B7** therefore requires every Revelation cap ≥ 1, and each `below-cap` gap between 1 and the smallest cap. Expiry is now written as `round + (duration − 1)`, so the accepted sum never exceeds L.
+- **A3-3, revised.** The guarantee depends on initial-state invariants, which the brief now states. The fix branch already checks them as impossible states (`src/core/record.ts` on `p2-review`):
+  - HP ≤ max HP;
+  - Revelation ≤ cap;
+  - pool ≤ content pool;
+  - poison ≤ B2's Pmax;
+  - each Guard's current plus previous ledger ≤ the pool it has lost.
+
+  Play preserves all of them, and no headroom below L is required.
+
+**Possible mismatch for the Implementer.** The fix branch checks poison against the Envenom `poisonCap`. The brief now says B2's Pmax, the larger of the poison cap and any poison-set amount. The two agree for v1 (6 and 6), but they differ for content whose poison-set exceeds the cap.
+
+**Plan.** Q01 acceptance 3 now covers B1–B7, and Q02 acceptance 7 covers E01–E54. v1 passes B7 with a gap of 2 against a smallest cap of 8. The v1 numbers, formula results and tuning check are unchanged.
+
+**Checks.** The link check found 0 missing links in the brief, plan and report, and `git diff --check` was clean. The brief and plan were staged by name, then this report in a separate commit, each after confirming that no merge was in progress. The handoff block, with `amendment_3b_revision` added, was revalidated with the temporary-copy validator.

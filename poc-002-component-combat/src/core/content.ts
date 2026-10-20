@@ -91,6 +91,11 @@ function arithmeticBounds(c: Content): void {
   for (const e of c.enemies) for (const i of e.intents) for (const r of i.riders) {
     if (r.kind !== 'revelation' && r.durationRounds < 1) fail(`${e.id}.${i.kind}.${r.kind}.B6 durationRounds`, 'duration must be at least 1');
   }
+  for (const b of c.brood) if (b.revelationCap < 1) fail(`${b.id}.B7 revelationCap`, 'Revelation cap must be at least 1');
+  const smallestCap = Math.min(...c.brood.map(b => b.revelationCap));
+  for (const s of c.starts) if (s.kind === 'below-cap' && (s.revelationGap < 1 || s.revelationGap > smallestCap)) {
+    fail(`${s.id}.B7 revelationGap`, 'below-cap gap must be between 1 and the smallest Revelation cap');
+  }
 }
 export function loadContent(json: unknown): Content {
   const value: unknown = typeof json === 'string' ? JSON.parse(json) : json;

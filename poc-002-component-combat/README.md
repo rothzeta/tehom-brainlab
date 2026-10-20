@@ -189,10 +189,13 @@ The browser harness installs its collector before loading the page. Screenshots,
 downloads, cue-request evidence and Chrome profiles stay under the OS temporary
 directory; profiles and the runner's preview container are cleaned up automatically.
 
-## Portable limits and export provenance (FIX1)
+## Portable limits and export provenance (FIX1–FIX2)
 
-Content must satisfy the brief's A3 B1–B6 bounds for derived arithmetic as well
-as the integer field checks. Record parsing validates intent target categories
+Content must satisfy the brief's A3 B1–B7 bounds for derived arithmetic as well
+as the integer field checks. Revelation caps must be at least 1; each below-cap
+start gap must be between 1 and the smallest cap. Physical mitigation floors
+after armor and then after Ward, keeping intermediate arithmetic portable.
+Record parsing validates intent target categories
 and content-derived snapshot bounds without recomputing frozen targets.
 An otherwise legal command that would exceed 2,147,483,647 in its revision, round
 or a newly emitted expiry returns `limit-reached`, last in rejection precedence,
