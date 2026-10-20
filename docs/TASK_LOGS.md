@@ -1158,3 +1158,62 @@ The user left enemy placement to the Architect. On the Architect's open question
 **Process notes.**
 - Parallel bare browser runs contend for port 4173. Workers waited rather than override the port.
 - Starting the next plan on the unreviewed candidate saved time; each later merge of review fixes was conflict-free.
+
+## 2026-10-19 POC 002 council, design and delivery
+
+Recorded by the Coordinator from worker handoffs. Spans 2026-10-19 to 2026-10-20.
+
+**Source and council.**
+- The user pasted two documents from an external design conversation: a [critical review](mailbox/poc-002-council/source-1-critical-review.md) and [decisions](mailbox/poc-002-council/source-2-decisions.md).
+- The user asked for three councils, seated as Opus, Sol and Sol ([assignment](mailbox/poc-002-council/assignment-council.md)). All three Architects recommended `poc-002-component-combat`, Anzû as a new ID, declared intents, deferring Talk and Escape, and copied rather than shared patterns ([opus](mailbox/poc-002-council/architect-opus.md), [sol-a](mailbox/poc-002-council/architect-sol-a.md), [sol-b](mailbox/poc-002-council/architect-sol-b.md)).
+- They disagreed on the Revelation rule, the Warden fix, poison, and the Item. The user said "go as an orchestrator build the full poc". The Coordinator's four recommendations were adopted as provisional decisions P1–P4 (crossing-source Revelation, Warden core pulse, one Salve, a solo Ugallu route).
+
+**Design.** One Architect on the preferred Opus route wrote:
+- [ADR-0007](adr/0007-poc-002-component-combat.md), the [brief](prototypes/poc-002-component-combat.md) and the [plan](plans/2026-10-19-db0bad72-poc-002-component-combat.md) ([report](mailbox/poc-002-component-combat/architect.md));
+- the Q10 [protocol](playtests/poc-002-human-test-protocol.md).
+
+The tuning was checked with a disposable simulator. Q02's seed traces later reproduced the simulator's results exactly (solo Ugallu beats the Warden in round 18 with 3 HP).
+
+**Checkpoints.** Each ran on the preferred Sol route in its own worktree. The integration owner `p2-int` merged them in dependency order and reran full bare verification after each merge ([merge reports](mailbox/poc-002-integration/)).
+
+| Checkpoint | Run | Stops and resolution |
+| --- | --- | --- |
+| Q01 | Alone | — |
+| Q06, Q07 | In parallel with Q02 | — |
+| Q02 | In parallel with Q06, Q07 | S1: §3.4 contradicted E02 on end-of-round timing. Brief amendment A2, plus an 11-point consistency sweep; Q02 was authorized one merge to pick it up. |
+| Q03, Q04, Q05 | In parallel | Q04 hit S4/S5: Q01's deferred-command tests blocked implemented commands. Narrow exception: Q03 and Q04 each replaced only their own command's assertion. |
+| Q08 | Alone | S4: app wiring. Narrow `src/view/app.ts` exception. |
+| Q09 | Integration owner | S4: no cue-observation hook. Opt-in observer in `src/audio/index.ts`. |
+
+**Review.** Three rounds, by an independent Reviewer on the Sol route.
+- **Review 1** ([report](mailbox/poc-002-review/reviewer.md)) failed with three blocking findings and one optional:
+  - F1: impossible snapshot targets and poison accepted;
+  - F2: accepted content could emit integers outside the record range;
+  - F3: stale `docs/README.md`;
+  - O1, optional: exports always carried build `unknown`.
+
+  [FIX1](mailbox/poc-002-fix1/implementer.md) fixed F1, F3 and O1, then stopped on F2 under S1. Brief A3 added content bounds B1–B6 and the `limit-reached` rejection, and FIX1 completed.
+- **Re-review 1** ([report](mailbox/poc-002-review/rereview.md)) found one new blocking finding, R1: A3's intermediate-overflow guarantee was false for chained armor and Ward. The A3 revision added stepwise floored mitigation and B7 after a formula audit, and [FIX2](mailbox/poc-002-fix2/implementer.md) implemented it.
+- **Re-review 2** ([report](mailbox/poc-002-review/rereview2.md)) passed with no findings. This was the second fix cycle, at the escalation threshold.
+
+**Verification.** All checks were run by workers; the Coordinator ran none.
+- Integration evidence for the reviewed implementation `5f4988f` ([merge-fix2](mailbox/poc-002-integration/merge-fix2.md)): every `just poc-002-*` recipe passed bare. That covers 381 unit tests; 940 browser assertions over four harnesses; seed and parity replay; hostile rejection; `sweep --quick` (54 s) and `probe` (62 s), whose output was byte-identical across the FIX1, FIX2 and review runs.
+- The Reviewer reran the bare list independently.
+
+**Delivery.** The user authorized a local fast-forward and a push. `p2-int` fast-forwarded master `c82ec3c` → `a295413`, recorded [delivery](mailbox/poc-002-integration/delivery.md) at `43c1e5b` and a push receipt at `0d6e9a9`, and pushed to origin. The delivered tree equals the reviewed implementation plus mailbox evidence.
+
+**Cleanup.**
+- **Panes closed:** council `wFJ:p2`–`p4`; Architect `p5`; Q01 `p6`; integration owner `p7`; Q02 `p8`; Q06 `p9`; Q07 `pA`; Q03 `pB`; Q04 `pC`; Q05 `pD`; Q08 `pE`; Reviewer `pF`; FIX1 `pG`; FIX2 `pH`.
+- **Temporary directories removed:** the two Claude launch directories (`/tmp/ruach-herdr-9pm9P1`, `-VvLbsY`). The Codex launches reported none.
+- **Worktrees removed:** `-poc002` (formerly `-poc002-council`), `-p2-q01`–`q08`, `-p2-fix1`, `-p2-fix2` and `-p2-review`.
+- **Branches kept:** `poc-002-council`, `poc-002-component-combat`, `p2-q01`–`p2-q08`, `p2-fix1`, `p2-fix2` and `p2-review`.
+- No `poc-002-browser-` containers remain.
+
+**Limits.**
+- No human playtest. The sweep and probe flags (rare Hold and Anzû Guard, cleanup, one indifferent cell) are diagnostic, not balance verdicts. Search is heuristic.
+- No C# port or Godot work. POC 001 is unchanged.
+- Q02's stop happened before code; every stop was resolved by an Architect amendment or an explicit Coordinator exception, each recorded in its handoff.
+
+**Process notes.**
+- Herdr sometimes reported Codex workers as `blocked` while they were working. The Coordinator's wait script was hardened to check reports regardless of state.
+- The Architect and the integration owner briefly shared the integration worktree. Explicit-path staging rules avoided index collisions.
