@@ -7,6 +7,7 @@ import type {
 } from './types';
 
 const roster: BroodId[] = ['ugallu', 'girtablilu', 'anzu'];
+const integerLimit = 2147483647;
 const emptyStatuses = (): BroodState['statuses'] => ({ guard: null, hold: null, pinned: null, clamped: null });
 const emptyLedger = () => ({ ugallu: 0, girtablilu: 0, anzu: 0 });
 const body = (e: EnemyState) => e.parts.find(p => p.kind === 'body')!;
@@ -381,23 +382,34 @@ export function applyCommand(c: Content, state: BattleState, value: unknown): Co
   const cmd = parseCommand(value);
   const code = cmd ? rejection(c, state, cmd) : 'invalid-command';
   if (code) return { ok: false, state, events: [], error: { code } };
-  const s = structuredClone(state); const events: Event[] = [];
+  let s = structuredClone(state); const events: Event[] = [];
   s.revision++;
   if (cmd!.kind === 'act') action(c, s, cmd as Extract<Command, { kind: 'act' }>, events);
   else if (cmd!.kind === 'continue') {
     events.push({ kind: 'fight-continued', encounterId: s.run.encounters[s.fightIndex + 1]!, fightIndex: s.fightIndex + 1 });
-    const next = buildFight(c, s.run, s.fightIndex + 1, s.revision, s.salveUses, s.carried, events);
-    return { ok: true, state: next, events };
+    s = buildFight(c, s.run, s.fightIndex + 1, s.revision, s.salveUses, s.carried, events);
   } else {
     for (const b of s.party) if (b.hp > 0) b.acted = true;
     for (const i of s.intents) { resolveIntent(c, s, i, events); if (s.phase !== 'player') break; }
     if (s.phase === 'player') endRound(c, s, events);
   }
+  // A3-2: test the actual unit, including expiries that were emitted and then
+  // cleared by victory/death. These sums of portable integers remain exact in
+  // JavaScript numbers; none are committed if the portable limit is exceeded.
+  const expiryExceeded = events.some(e => e.kind === 'transformation-started'
+    ? e.transformation.untilRound > integerLimit
+    : e.kind === 'status-applied' && e.untilRound !== null && e.untilRound > integerLimit);
+  if (s.revision > integerLimit || s.round > integerLimit || expiryExceeded) return { ok: false, state, events: [], error: { code: 'limit-reached' } };
   return { ok: true, state: s, events };
 }
 export function legalActions(c: Content, s: BattleState): LegalAction[] {
+  // Ordinary states have sufficient headroom for every duration. Near the
+  // boundary, use the real transition so advertised legality matches commit.
+  const headroom = integerLimit - s.round;
+  const nearLimit = s.revision >= integerLimit || headroom < 1 || c.forms.some(f => f.durationRounds - 1 > headroom)
+    || c.enemies.some(e => e.intents.some(i => i.riders.some(r => r.kind !== 'revelation' && r.durationRounds - 1 > headroom)));
   const candidates: Command[] = [{ kind: 'endPhase', expectedRevision: s.revision }, { kind: 'continue', expectedRevision: s.revision }];
   const targets: Target[] = [null, ...s.party.map(b => ({ brood: b.id })), ...s.intents.map(i => ({ intent: i.id })), ...s.enemies.flatMap(e => [{ enemy: e.id }, ...e.parts.map(p => ({ enemy: e.id, part: p.id }))])];
   for (const b of s.party) for (const a of c.actions) for (const target of targets) candidates.push({ kind: 'act', expectedRevision: s.revision, actor: b.id, action: a.id, target });
-  return candidates.filter(cmd => !rejection(c, s, cmd)).map(command => ({ command, label: command.kind === 'act' ? c.actions.find(a => a.id === command.action)!.name : command.kind }));
+  return candidates.filter(cmd => !rejection(c, s, cmd) && (!nearLimit || applyCommand(c, s, cmd).ok)).map(command => ({ command, label: command.kind === 'act' ? c.actions.find(a => a.id === command.action)!.name : command.kind }));
 }

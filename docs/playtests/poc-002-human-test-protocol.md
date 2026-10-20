@@ -26,7 +26,7 @@ This protocol **reports counts** (for example "3 of 5 testers") with the support
 
 ### Build and conditions
 
-- Build from one committed revision of the POC 002 integration branch, with no uncommitted changes. Record the full SHA. Exported records embed it as `buildRevision`; a record showing `unknown` means the build was dirty, and quantitative claims from it cannot be trusted.
+- Build from one committed revision of the POC 002 integration branch, with no uncommitted changes. Record the full SHA. Exported records embed it as `buildRevision`; `unknown` means the build revision was unavailable (including a dirty build). Establish the tested revision before using that record for quantitative claims.
 - Record the rules version and content version shown in an exported record (v1: `poc-002-rules-v1`, `poc-002-content-v1`).
 - Use **no overrides**: no edited content, no environment variables, no debug start states. Run the proposed `just poc-002-build` then `just poc-002-preview`, bare, and open the printed URL.
 - Display: a browser window at least 1280×720 logical pixels, mouse and keyboard available. Record the browser and window size.
