@@ -109,7 +109,14 @@ Each accepted command increments the revision by exactly 1 and returns its order
 
 *(A2-3)* `invalid-command` covers only a structurally malformed command: an unknown command kind, a missing field or a wrong JSON type. `unknown-action` is an action ID absent from content. `action-unavailable` is an action outside the actor's kit, or blocked by a form or Pinned. `illegal-target` covers a target whose form does not match the action, an unknown enemy, part, intent or Brood ID, and any target that is invalid under §4–§9.
 
-*(A3-2)* `limit-reached` applies only to a command that passes every earlier check. Let L = 2³¹ − 1. The command is rejected if accepting it would set the revision, the round or a new expiry above L. An expiry is a transformation's `untilRound`, or the last round of Pinned or Clamped, each equal to round + duration − 1. The test uses the command's actual result, so a command whose resolution ends the battle before the next round is declared is not rejected because of the round. Implementations make the test without 32-bit overflow, for example as duration − 1 > L − round. No content rule can bound these counters, because a fight against dismantled ordinary enemies can last indefinitely (§8). The §12 content bounds keep every other integer at or below L. A preview of such a command shows the rejection. A forecast `endPhase` that would be rejected is returned as that rejection. *(A3-3)* An initial state needs no headroom below L: any revision, round or expiry up to L is valid, and the record's commands then simply stop where `limit-reached` applies.
+*(A3-2)* `limit-reached` applies only to a command that passes every earlier check. Let L = 2³¹ − 1. The command is rejected if accepting it would set the revision, the round or a new expiry above L. An expiry is a transformation's `untilRound`, or the last round of Pinned or Clamped, each computed as round + (duration − 1) *(A3 revision)*. The test uses the command's actual result, so a command whose resolution ends the battle before the next round is declared is not rejected because of the round. Implementations make the test without 32-bit overflow, for example as duration − 1 > L − round. No content rule can bound these counters, because a fight against dismantled ordinary enemies can last indefinitely (§8). The §12 content bounds keep every other integer at or below L. A preview of such a command shows the rejection. A forecast `endPhase` that would be rejected is returned as that rejection. *(A3-3)* An initial state needs no headroom below L: any revision, round or expiry up to L is valid, and the record's commands then simply stop where `limit-reached` applies. *(A3 revision 2026-10-20)* The §12 arithmetic guarantee also relies on these initial-state invariants, which replay already checks as impossible states (E45):
+- HP is at most max HP.
+- Revelation is at most the cap.
+- Each part's pool is at most its content pool.
+- Enemy poison is at most B2's Pmax.
+- For each Guard, its ledger values, current and previous round together, sum to at most the pool it has lost: its content pools minus its current pools.
+
+Play preserves every one of these.
 
 `endPhase` forfeits the unused actions of living Brood. It then resolves the enemy phase and the end of the round, and declares the next round, all within that one command.
 
@@ -156,6 +163,8 @@ An enemy has one **body** part (life) and named **component** parts (integrity).
 - **Poison ticks and Rupture Venom:** raw. They ignore armor, Ward and shielding.
 
 Ward is 3 when the enemy is warded (§8.2), otherwise 0. Rend ignores the armor of components, and Ugallu's Rapture ignores all armor; neither ignores Ward.
+
+*(A3-4, A3 revision 2026-10-20)* Physical damage is evaluated as max(0, max(0, raw − armor) − Ward), flooring after each subtraction. This applies to actions, Envenom's hit and retaliation alike. For nonnegative inputs it equals the formula above, so no result or event changes.
 
 **Destruction.** A part that reaches 0 is destroyed until the battle ends, with these immediate effects:
 
@@ -317,8 +326,20 @@ This is source 2's Clamp → Saw → Choir cycle with the [P2] pulse. Destroying
   - **B4 Revelation:** for each Brood, its cap plus the largest single Revelation gain in content, either an action cost or a Revelation rider.
   - **B5 pools:** for each enemy, the sum of its part pools. This bounds the ledger.
   - **B6 durations:** every form and rider `durationRounds` is at least 1.
+  - **B7 caps and presets** *(A3 revision 2026-10-20)*: every Brood's Revelation cap is at least 1. The Revelation gap of every `below-cap` start preset is between 1 and the smallest Brood cap. The primed Revelation, cap − gap, is then at least 0 and below the cap.
 
-  B1–B5 bound every integer the rules derive from content, intermediate sums and products included, so a 32-bit signed implementation never overflows on them. HP, pools, healing, applied damage, poison, Revelation and Salve uses are already capped by their own maxima. Only the run counters depend on play, and §2 *(A3-2)* handles them. Replay applies the same check to the embedded content. The formulas and v1 numbers are unchanged: the largest v1 value is 128 (B5, the Warden), and every v1 duration is 2.
+  *Guarantee (A3 revision 2026-10-20, replacing the original paragraph).* Each formula in §1–§10 is evaluated one binary operation at a time. The only chained subtraction is physical damage, which is evaluated stepwise by §4.2 *(A3-4)*. A subtraction of two values in [0, L] therefore lies in [−L, L]. Each sum, product and capped addition is covered by a bound, and every partial sum of nonnegative terms is at most its bounded total:
+  - raw damage and its bonuses: B1;
+  - poison: B2;
+  - intent damage, the Weakened subtraction and Ugallu's Rupture +1: B3;
+  - Revelation, as min(cap, R + n): B4;
+  - the ledger: B5 together with the ledger invariant (§2, A3-3);
+  - expiries: §2 *(A3-2)*;
+  - the revision and the round, each incremented by 1: §2 *(A3-2)*.
+
+  Everything else only subtracts a nonnegative value from a nonnegative one, or takes a minimum, a half or a remainder. That covers the Guard half, the Hold reduction, pool and HP loss, poison ticks, Revelation burns, Salve healing as min(amount, max HP − HP), Salve uses and ⌊cap/2⌋.
+
+  Under these bounds and the initial-state invariants of §2 *(A3-3)*, every operand and result is in [−L, L]. Every stored or emitted integer is in [0, L], so a signed 32-bit implementation never overflows. Replay applies the same check to the embedded content. The formulas and v1 numbers are unchanged: the largest v1 value is 128 (B5, the Warden), every v1 duration is 2, and the v1 primed gap is 2 against a smallest cap of 8.
 - **Record** (`schema: tehom-combat-record/1`): `prototypeId`, `rulesVersion` (`poc-002-rules-v1`), `contentVersion`, `buildRevision` (a commit, or the literal `unknown`), the **embedded content**, the run descriptor (fight or gauntlet, encounters, party, start preset), a **complete `initialState`**, and `commands[]`, each `{command, revision, events[]}`. It ends with the expected **`finalState`**. Only accepted commands are recorded; rejection fixtures are separate test fixtures. Gauntlet records hold the whole run, `continue` commands included.
   *Amended 2026-10-19 (P2-DESIGN):* a record may be **unfinished**, exported before the battle or run ends. Its `finalState` is the state at export, in phase `player` or `between-fights`. Replay accepts it under the same rules, and reports the final phase in place of an outcome. Nothing in the record marks it as abandoned: whether the player then reset is not part of the record.
 - **Canonical rules for parity:** integers are nonnegative, safe and below 2³¹. Arrays are ordered and contractual: the events, the intents and the party. Objects are compared after parsing, with key order irrelevant. Strings are compared by code point. Replay never trusts expected output as input: it re-executes and compares each command's events, then the final state, and reports the first divergence.
@@ -379,8 +400,9 @@ This is source 2's Clamp → Saw → Choir cycle with the [P2] pulse. Destroying
 | E49 | Revoke the Saw, or the Clamp intent | Revoking the Saw leaves Clamped in place until it expires; revoking the Clamp means no Clamped is applied |
 | E50 | Ugallu dies while holding an ally | Later intents are not redirected; Hold ends with Ugallu |
 | E51 | The held ally dies before an intent that targets it | The intent is skipped (E05), not redirected: the target check (§3.3a) comes before the redirect (§3.3b) *(A2-11)* |
-| E52 | Content whose numbers are each in range but whose derived arithmetic is not (e.g. a Rupture Venom multiplier of 2147483647 with poison cap 6) | `loadContent` rejects it (§12 B1–B6), so it is never played. A record embedding it fails to parse *(A3-1)* |
+| E52 | Content whose numbers are each in range but whose derived arithmetic is not (e.g. a Rupture Venom multiplier of 2147483647 with poison cap 6) | `loadContent` rejects it (§12 B1–B7), so it is never played. A record embedding it fails to parse *(A3-1)* |
 | E53 | An otherwise legal command would set the revision, round or a new expiry above 2³¹ − 1: any command at revision 2³¹ − 1; `endPhase` in round 2³¹ − 1 that does not end the battle; an action in that round that starts a transformation | `limit-reached`; nothing changes, no events. The same `endPhase` is accepted if the enemy phase or end of round ends the battle *(A3-2)* |
+| E54 | Content with large simultaneous reductions (e.g. a part armor of 2147483647 and a Ward of 2147483647, which pass B1–B7), hit by a physical action or retaliation | Damage 0 by stepwise flooring (§4.2 A3-4): no intermediate falls below −(2³¹ − 1), and the run records and replays *(A3 revision)* |
 
 ### Amendment A2 (2026-10-19): consistency rulings
 
@@ -407,9 +429,17 @@ Requested by the Coordinator after review finding F2 (`docs/mailbox/poc-002-revi
 
 | Tag | Section | Question | Ruling |
 | --- | --- | --- | --- |
-| A3-1 | §12, new E52 | How does content validation bound derived arithmetic, such as multipliers and additive bonuses? | Six conservative content bounds, B1–B6, each at most 2³¹ − 1; failing content is rejected by `loadContent` and in replay |
+| A3-1 | §12, new E52 | How does content validation bound derived arithmetic, such as multipliers and additive bonuses? | Six conservative content bounds, B1–B6 (B7 added by the A3 revision), each at most 2³¹ − 1; failing content is rejected by `loadContent` and in replay |
 | A3-2 | §2, new E53 | What happens when a legal command would push the revision, round or an expiry past 2³¹ − 1? | Atomic rejection with the new closed code `limit-reached`, checked last, after `illegal-target`. It is appended to the end of the rejection codes, an addition under plan stop condition S3 |
 | A3-3 | §2 | What initial-snapshot invariant applies near the boundary? | None beyond the existing range: no headroom is required, and commands stop at `limit-reached` |
+
+*A3 revision (2026-10-20).* Requested by the Coordinator after re-review finding R1 (`docs/mailbox/poc-002-review/rereview.md`, branch `p2-review` at `05d2ca1`). Content with armor and Ward each 2147483647 passes B1–B6, but max(0, raw − armor − Ward) passes through −4294967288. The original guarantee was therefore false. Every formula in §1–§10 was audited for subtractions, multiplications, sums and capped additions. The audit result is the guarantee paragraph in §12. No formula result, event or v1 number changes.
+
+| Tag | Section | Question | Ruling |
+| --- | --- | --- | --- |
+| A3-4 | §4.2, new E54 | How is a chain of reductions evaluated without 32-bit overflow? | Stepwise, flooring after each subtraction: max(0, max(0, raw − armor) − Ward). This is the only chained subtraction in the rules |
+| A3-5 | §12 | Do other formulas need bounds? | One more: B7, a Revelation cap of at least 1 and a primed gap between 1 and the smallest cap, so the primed state is valid. Expiries are computed as round + (duration − 1). The guarantee paragraph lists the bound that covers each operation |
+| A3-3 (revised) | §2 | Which initial-state invariants does the guarantee rely on? | The existing impossible-state checks, now stated: HP ≤ max HP, Revelation ≤ cap, pool ≤ content pool, poison ≤ Pmax, and each Guard's ledger sum ≤ the pool it has lost. No headroom below 2³¹ − 1 is required |
 
 ## Tuning check (v1)
 
