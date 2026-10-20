@@ -61,6 +61,37 @@ function unique(values: readonly string[], path: string): void {
 function reference(id: string, ids: readonly string[], path: string): void {
   if (!ids.includes(id)) fail(path, `unknown ID ${id}`);
 }
+/** Brief A3-1: conservative bounds include mutually exclusive alternatives and
+ * never subtract reductions. BigInt keeps validation itself overflow-free. */
+function arithmeticBounds(c: Content): void {
+  const sum = (values: number[]) => values.reduce((total, value) => total + BigInt(value), 0n);
+  const largest = (values: number[]) => values.reduce((max, value) => Math.max(max, value), 0);
+  const bound = (path: string, value: bigint) => { if (value > 2147483647n) fail(path, 'derived arithmetic exceeds portable integer limit 2147483647'); };
+  const modifiers = c.forms.flatMap(f => f.modifiers);
+  for (const a of c.actions) if (a.effect.kind === 'damage' || a.effect.kind === 'envenom') {
+    const alternatives = [a.effect.amount];
+    if (a.effect.kind === 'damage') alternatives.push(a.effect.componentAmount);
+    if (a.id === 'stolen-bolt') for (const m of modifiers) if (m.kind === 'bolt-amount') alternatives.push(m.amount);
+    const bonuses = modifiers.flatMap(m => m.kind === 'attack-bonus' && m.actions.includes(a.id) ? [m.amount] : []);
+    bound(`${a.id}.B1 action damage`, BigInt(largest(alternatives)) + sum(bonuses));
+  }
+  const poison = c.actions.flatMap(a => a.effect.kind === 'envenom' ? [a.effect] : []);
+  const pmax = largest([...poison.map(e => e.poisonCap), ...modifiers.flatMap(m => m.kind === 'poison-set' ? [m.amount] : [])]);
+  const mmax = largest([...c.actions.flatMap(a => a.effect.kind === 'rupture-venom' ? [a.effect.multiplier] : []), ...modifiers.flatMap(m => m.kind === 'venom-multiplier' ? [m.amount] : [])]);
+  bound('B2 poison product', BigInt(pmax) * BigInt(mmax));
+  bound('B2 poison gain', BigInt(pmax) + BigInt(largest(poison.map(e => e.poisonGain))));
+  const incoming = sum(modifiers.flatMap(m => m.kind === 'incoming-bonus' ? [m.amount] : []));
+  for (const e of c.enemies) {
+    bound(`${e.id}.B5 pools`, sum(e.parts.map(p => p.pool)));
+    for (const i of e.intents) bound(`${e.id}.${i.kind}.B3 intent damage`, BigInt(i.amount) + sum(i.modifiers.map(m => m.amount)) + incoming);
+  }
+  const gain = largest([...c.actions.map(a => a.revelationCost), ...c.enemies.flatMap(e => e.intents.flatMap(i => i.riders.flatMap(r => r.kind === 'revelation' ? [r.amount] : [])))]);
+  for (const b of c.brood) bound(`${b.id}.B4 Revelation`, BigInt(b.revelationCap) + BigInt(gain));
+  for (const f of c.forms) if (f.durationRounds < 1) fail(`${f.id}.B6 durationRounds`, 'duration must be at least 1');
+  for (const e of c.enemies) for (const i of e.intents) for (const r of i.riders) {
+    if (r.kind !== 'revelation' && r.durationRounds < 1) fail(`${e.id}.${i.kind}.${r.kind}.B6 durationRounds`, 'duration must be at least 1');
+  }
+}
 export function loadContent(json: unknown): Content {
   const value: unknown = typeof json === 'string' ? JSON.parse(json) : json;
   schema(value, 'content');
@@ -96,5 +127,6 @@ export function loadContent(json: unknown): Content {
   }
   for (const e of c.encounters) { unique(e.enemies, `${e.id}.enemies`); e.enemies.forEach(id => reference(id, ids.enemies, e.id)); }
   for (const g of c.gauntlets) { g.encounters.forEach(id => reference(id, ids.encounters, g.id)); reference(g.start, ids.starts, g.id); }
+  arithmeticBounds(c);
   return structuredClone(c);
 }
