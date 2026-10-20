@@ -191,7 +191,7 @@ function startForms(c: Content, s: BattleState, events: Event[]): void {
   for (const b of s.party) {
     if (b.pendingCrossing && b.hp > 0) {
       const f = c.forms.find(f => f.brood === b.id && f.kind === b.pendingCrossing)!;
-      b.transformation = { id: f.id, kind: f.kind, untilRound: s.round + f.durationRounds - 1 };
+      b.transformation = { id: f.id, kind: f.kind, untilRound: s.round + (f.durationRounds - 1) };
       events.push({ kind: 'transformation-started', brood: b.id, transformation: { ...b.transformation } });
     }
     b.pendingCrossing = null;
@@ -239,7 +239,8 @@ function hitPart(s: BattleState, e: EnemyState, p: PartState, raw: number, type:
   const d = blankDamage(raw, type);
   d.armor = type === 'physical' && !ignoreArmor ? p.armor : 0;
   d.ward = type === 'poison' ? 0 : Math.max(0, ...e.wards.map(w => w.amount));
-  d.applied = Math.min(p.pool, Math.max(0, raw - d.armor - d.ward));
+  // A3-4: floor each subtraction so even maximum armor plus Ward is portable.
+  d.applied = Math.min(p.pool, Math.max(0, Math.max(0, raw - d.armor) - d.ward));
   p.pool -= d.applied;
   events.push({ kind: 'part-damaged', target: { enemy: e.id, part: p.id }, source, damage: d, remaining: p.pool });
   if (source.kind === 'action' || source.kind === 'retaliation') {
@@ -338,7 +339,7 @@ function resolveIntent(c: Content, s: BattleState, i: DeclaredIntent, events: Ev
   // Damage for all recipients precedes all riders. Status riders precede gains.
   for (const b of recipients.filter(b => b.hp > 0)) {
     for (const r of i.riders) if (r.kind !== 'revelation') {
-      b.statuses[r.kind] = { enemy: e.id, part: p.id, untilRound: s.round + r.durationRounds - 1 };
+      b.statuses[r.kind] = { enemy: e.id, part: p.id, untilRound: s.round + (r.durationRounds - 1) };
       applied(events, { brood: b.id }, r.kind, 0, b.statuses[r.kind]!.untilRound, { enemy: e.id, part: p.id });
     }
     for (const r of i.riders) if (r.kind === 'revelation') gain(c, b, r.amount, { kind: 'intent', intent: i.id }, events);
