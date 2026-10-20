@@ -94,6 +94,8 @@ function canonical(v: unknown): string {
   return JSON.stringify(v);
 }
 function stateInvariants(c: Content, s: BattleState, p: string): void {
+  const envenoms = c.actions.flatMap(a => a.effect.kind === 'envenom' ? [a.effect] : []);
+  const poisonCap = Math.max(0, ...envenoms.map(e => e.poisonCap), ...c.forms.flatMap(f => f.modifiers.flatMap(m => m.kind === 'poison-set' ? [m.amount] : [])));
   const ids = s.party.map(b => b.id);
   if (!ids.length || new Set(ids).size !== ids.length || canonical(ids) !== canonical(['ugallu', 'girtablilu', 'anzu'].filter(id => ids.includes(id as typeof ids[number])))) fail(p, 'invalid party order or membership');
   if (s.round < 1 || s.fightIndex >= s.run.encounters.length || canonical(s.run.party) !== canonical(ids)) fail(p, 'invalid run position or party');
@@ -110,8 +112,10 @@ function stateInvariants(c: Content, s: BattleState, p: string): void {
     if (b.hp > 0 && (b.transformation ? b.revelation !== b.revelationCap : b.revelation >= b.revelationCap)) fail(p, 'impossible Revelation/transformation invariant');
     if (b.transformation && (b.hp === 0 || b.transformation.id !== `${b.id}-${b.transformation.kind}` || !c.forms.some(f => f.id === b.transformation!.id))) fail(p, 'invalid transformation');
     if (b.transformation && b.transformation.untilRound < s.round) fail(p, 'expired transformation');
+    if (b.transformation && b.transformation.untilRound - s.round >= c.forms.find(f => f.id === b.transformation!.id)!.durationRounds) fail(p, 'transformation duration exceeds content bound');
     if (b.statuses.hold && (b.id !== 'ugallu' || !ids.includes(b.statuses.hold.target))) fail(p, 'invalid Hold target');
     if (Object.values(b.statuses).some(status => status && (b.hp === 0 || status.untilRound < s.round))) fail(p, 'invalid status on dead Brood or expired status');
+    if ([b.statuses.guard, b.statuses.hold].some(status => status && status.untilRound !== s.round)) fail(p, 'invalid round-scoped status expiry');
   }
   const encounter = c.encounters.find(e => e.id === s.run.encounters[s.fightIndex]);
   if (!encounter || canonical(s.enemies.map(e => e.id)) !== canonical(encounter.enemies.map((id, i) => `${id}#${i + 1}`))) fail(p, 'enemy instances do not match encounter');
@@ -119,14 +123,23 @@ function stateInvariants(c: Content, s: BattleState, p: string): void {
   for (const e of s.enemies) {
     const d = c.enemies.find(x => x.id === e.definitionId);
     if (!d || !e.id.startsWith(`${e.definitionId}#`) || canonical(e.parts.map(x => x.id)) !== canonical(d.parts.map(x => x.id))) fail(p, 'unknown enemy or parts');
+    if (e.poison > poisonCap) fail(p, 'poison exceeds content cap');
+    if (e.weakened && (e.weakened.untilRound !== s.round || !envenoms.some(effect => effect.weakenedReduction === e.weakened!.amount))) fail(p, 'invalid Weakened amount or expiry');
     for (const part of e.parts) {
       const def = d!.parts.find(x => x.id === part.id)!;
       if (part.pool > part.maxPool || part.maxPool !== def.pool || part.kind !== def.kind || part.armor !== def.armor || part.living !== def.living || part.shieldedBy !== def.shieldedBy) fail(p, 'invalid part pool or definition');
     }
   }
   const sourcePart = (id: string, part: string) => s.enemies.find(e => e.id === id)?.parts.some(p => p.id === part);
-  for (const b of s.party) for (const restraint of [b.statuses.pinned, b.statuses.clamped]) {
+  for (const b of s.party) for (const kind of ['pinned', 'clamped'] as const) {
+    const restraint = b.statuses[kind];
     if (restraint && (!sourcePart(restraint.enemy, restraint.part) || restraint.untilRound < s.round)) fail(p, 'invalid restraint source or expiry');
+    if (restraint) {
+      const source = s.enemies.find(e => e.id === restraint.enemy)!;
+      const durations = c.enemies.find(e => e.id === source.definitionId)!.intents
+        .filter(i => i.sourcePart === restraint.part).flatMap(i => i.riders.flatMap(r => r.kind === kind ? [r.durationRounds] : []));
+      if (!durations.some(duration => restraint.untilRound - s.round < duration)) fail(p, 'restraint duration exceeds content bound');
+    }
   }
   if (new Set(s.intents.map(i => i.id)).size !== s.intents.length) fail(p, 'duplicate intent ID');
   for (const i of s.intents) {
@@ -135,12 +148,19 @@ function stateInvariants(c: Content, s: BattleState, p: string): void {
     if (i.id !== `r${s.round}.${i.enemy}.${i.kind}` || !d) fail(p, 'invalid intent source or ID');
     if (i.amount !== d!.amount || i.damageType !== d!.damageType || i.ward !== d!.ward || canonical(i.modifiers) !== canonical(d!.modifiers) || canonical(i.riders) !== canonical(d!.riders)) fail(p, 'intent differs from embedded definition');
     const t = i.target;
+    // Targets are frozen at declaration. Validate their category, never choose a
+    // new Brood from the snapshot's current HP, Revelation or ledger.
+    if (d!.targeting === 'all-brood' ? !('allBrood' in t) : d!.targeting === 'first-other-enemy' ? !('enemy' in t) : !('brood' in t)) fail(p, 'intent target shape contradicts embedded targeting rule');
     if ('brood' in t && !ids.includes(t.brood) || 'enemy' in t && !s.enemies.some(e => e.id === t.enemy)) fail(p, 'invalid intent target');
   }
   for (const e of s.enemies) for (const w of e.wards) {
     if (!sourcePart(w.sourceEnemy, w.sourcePart) || !s.intents.some(i => i.id === w.intent && i.enemy === w.sourceEnemy && i.sourcePart === w.sourcePart && i.kind === 'inscribe' && (i.status === 'pending' || i.status === 'resolved') && 'enemy' in i.target && i.target.enemy === e.id && i.ward === w.amount) || w.untilRound !== s.round) fail(p, 'invalid Ward source');
   }
   if (canonical(s.ledger.map(l => l.enemy)) !== canonical(s.enemies.filter(e => e.definitionId === 'celestial-guard').map(e => e.id))) fail(p, 'invalid ledger enemies');
+  for (const l of s.ledger) {
+    const removedPools = s.enemies.find(e => e.id === l.enemy)!.parts.reduce((sum, part) => sum + part.maxPool - part.pool, 0);
+    if ([...Object.values(l.current), ...Object.values(l.previous)].reduce((sum, damage) => sum + damage, 0) > removedPools) fail(p, 'ledger exceeds removed pools');
+  }
   if (s.carried.length) {
     if (canonical(s.carried.map(b => b.id)) !== canonical(ids)) fail(p, 'invalid carried party');
     for (const b of s.carried) {
@@ -165,6 +185,11 @@ export function parseRecord(json: unknown): CombatRecord {
   if (r.buildRevision !== 'unknown' && !/^[0-9a-f]{7,40}$/.test(r.buildRevision)) fail('buildRevision', 'expected commit or unknown');
   stateInvariants(r.content, r.initialState, 'initialState'); stateInvariants(r.content, r.finalState, 'finalState');
   if (canonical(r.run) !== canonical(r.initialState.run) || canonical(r.run) !== canonical(r.finalState.run)) fail('run', 'descriptor mismatch');
+  // The initial allowance constrains replay input. A changed final count is an
+  // expected-output divergence, reported by replay rather than used as input.
+  const run = r.initialState.run;
+  const salveUses = run.kind === 'fight' ? r.content.fightSalveUses : r.content.gauntlets.find(g => g.id === run.gauntletId)!.salveUses;
+  if (r.initialState.salveUses > salveUses) fail('initialState', 'Salve uses exceed content allowance');
   return structuredClone(r);
 }
 export function recordOf(options: RecordOptions): CombatRecord {

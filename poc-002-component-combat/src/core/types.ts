@@ -79,7 +79,7 @@ export type Command =
   | { kind: 'endPhase'; expectedRevision: number }
   | { kind: 'continue'; expectedRevision: number };
 /** Validation precedence, from brief §2; do not reorder. */
-export const REJECTION_CODES = ['invalid-command', 'stale-revision', 'wrong-phase', 'unknown-actor', 'actor-dead', 'already-acted', 'unknown-action', 'action-unavailable', 'no-item-uses', 'illegal-target'] as const;
+export const REJECTION_CODES = ['invalid-command', 'stale-revision', 'wrong-phase', 'unknown-actor', 'actor-dead', 'already-acted', 'unknown-action', 'action-unavailable', 'no-item-uses', 'illegal-target', 'limit-reached'] as const;
 export type RejectionCode = typeof REJECTION_CODES[number];
 export interface CommandError { code: RejectionCode }
 /** Components are nonnegative contributions, in the formula's order. Applied is
